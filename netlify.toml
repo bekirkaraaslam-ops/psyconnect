@@ -1,0 +1,53 @@
+# ============================================================
+# PsyConnect – Netlify Configuration
+# ============================================================
+
+[build]
+  command   = "npm run build"
+  publish   = ".next"
+
+  [build.environment]
+    NODE_VERSION = "20"
+    # Baileys native deps için
+    NPM_FLAGS = "--legacy-peer-deps"
+
+# ── Next.js desteği ─────────────────────────────────────────
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ── Scheduled Functions ──────────────────────────────────────
+# Netlify Scheduled Functions netlify/functions/ altında tanımlanır.
+# Her saatin başında 24s öncesi randevuları kontrol et.
+[functions]
+  directory     = "netlify/functions"
+  node_bundler  = "nft"
+
+# Baileys sadece scheduled function için external — server handler'ı etkilemez
+[functions."send-reminders"]
+  external_node_modules = ["@whiskeysockets/baileys", "@hapi/boom"]
+
+# ── Redirect: API Routes ─────────────────────────────────────
+# @netlify/plugin-nextjs Next.js API rotalarını otomatik olarak
+# Netlify Functions'a dönüştürür; manuel redirect GEREKMİYOR.
+# Yine de açıklık için aşağıda bırakılmıştır:
+#
+# [[redirects]]
+#   from   = "/api/*"
+#   to     = "/.netlify/functions/nextjs-server"
+#   status = 200
+
+# ── Headers ─────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+
+# ── Environment: Production ──────────────────────────────────
+[context.production.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# ── Environment: Deploy Preview ──────────────────────────────
+[context.deploy-preview.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
