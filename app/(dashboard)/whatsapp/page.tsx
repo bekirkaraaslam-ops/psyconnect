@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import QRConnect from '@/components/whatsapp/QRConnect'
+import ReminderTestButton from '@/components/whatsapp/ReminderTestButton'
 import { formatDateTime } from '@/lib/utils'
 
 export default async function WhatsAppPage() {
@@ -37,6 +38,13 @@ export default async function WhatsAppPage() {
         <div className="flex justify-center">
           <QRConnect isConnected={psychologist?.is_connected ?? false} />
         </div>
+
+        {/* Test butonu */}
+        {psychologist?.is_connected && (
+          <div className="flex justify-center">
+            <ReminderTestButton />
+          </div>
+        )}
 
         {/* Nasıl çalışır */}
         <div className="bg-white rounded-2xl border p-5 max-w-sm mx-auto" style={{ borderColor: '#dde5e2' }}>

@@ -30,17 +30,21 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const authRoutes = ['/login', '/register']
+  const publicRoutes = ['/', '/login', '/register']
   const isAuthRoute = authRoutes.some(r => pathname.startsWith(r))
+  const isPublicRoute = publicRoutes.includes(pathname)
 
-  if (!user && !isAuthRoute) {
+  // Giriş yapmış kullanıcı landing page veya auth sayfasına girerse dashboard'a yönlendir
+  if (user && (pathname === '/' || isAuthRoute)) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  if (user && isAuthRoute) {
+  // Giriş yapmamış kullanıcı korumalı sayfaya girerse login'e yönlendir
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 

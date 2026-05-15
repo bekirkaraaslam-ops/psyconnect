@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { disconnectWhatsApp } from '@/lib/whatsapp/baileys'
+import { waDisconnect } from '@/lib/whatsapp/client'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -15,6 +15,6 @@ export async function POST(req: NextRequest) {
 
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  await disconnectWhatsApp(psychologist.id)
+  await waDisconnect(psychologist.id)
   return NextResponse.json({ success: true })
 }

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 const navItems = [
   {
-    href: '/',
+    href: '/dashboard',
     label: 'Genel',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -53,7 +53,7 @@ export default function MobileNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t flex z-50" style={{ background: '#ffffff', borderColor: '#dde5e2' }}>
       {navItems.map(item => {
-        const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
+        const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
         return (
           <Link
             key={item.href}

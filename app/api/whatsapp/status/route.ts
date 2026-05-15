@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { isConnected } from '@/lib/whatsapp/baileys'
+import { waGetStatus } from '@/lib/whatsapp/client'
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
@@ -15,8 +15,9 @@ export async function GET(req: NextRequest) {
 
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
+  const waStatus = await waGetStatus(psychologist.id)
   return NextResponse.json({
     is_connected: psychologist.is_connected,
-    socket_alive: isConnected(psychologist.id),
+    socket_alive: waStatus.connected,
   })
 }

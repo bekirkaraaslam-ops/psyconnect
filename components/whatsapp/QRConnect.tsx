@@ -8,46 +8,70 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
   const [status, setStatus] = useState<Status>(isConnected ? 'connected' : 'idle')
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
-  const eventSourceRef = useRef<EventSource | null>(null)
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  function startConnection() {
+  function stopPolling() {
+    if (pollRef.current) {
+      clearInterval(pollRef.current)
+      pollRef.current = null
+    }
+  }
+
+  async function startConnection() {
     setStatus('loading')
     setQrDataUrl(null)
     setErrorMsg('')
+    stopPolling()
 
-    const es = new EventSource('/api/whatsapp/qr')
-    eventSourceRef.current = es
+    try {
+      const res = await fetch('/api/whatsapp/qr', { method: 'POST' })
+      if (!res.ok) throw new Error('Servis hatası')
 
-    es.addEventListener('qr', e => {
-      setQrDataUrl(e.data)
-      setStatus('qr')
-    })
+      // Railway'den QR ve durum bilgisini her 2 saniyede bir sorgula
+      pollRef.current = setInterval(async () => {
+        try {
+          const r = await fetch('/api/whatsapp/qr')
+          const data = await r.json()
 
-    es.addEventListener('connected', () => {
-      setStatus('connected')
-      es.close()
-    })
+          if (data.status === 'qr' && data.qr) {
+            setQrDataUrl(data.qr)
+            setStatus('qr')
+          } else if (data.status === 'connected') {
+            setStatus('connected')
+            setQrDataUrl(null)
+            stopPolling()
+          } else if (data.status === 'disconnected') {
+            setStatus('disconnected')
+            stopPolling()
+          }
+        } catch {
+          // polling hatası — sessizce devam et
+        }
+      }, 2000)
 
-    es.addEventListener('disconnected', () => {
-      setStatus('disconnected')
-      es.close()
-    })
+      // 3 dakika sonra timeout
+      setTimeout(() => {
+        if (pollRef.current) {
+          stopPolling()
+          setStatus('error')
+          setErrorMsg('QR kod zaman aşımına uğradı. Lütfen tekrar deneyin.')
+        }
+      }, 180000)
 
-    es.onerror = () => {
-      setErrorMsg('Bağlantı hatası oluştu. Lütfen tekrar deneyin.')
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.')
       setStatus('error')
-      es.close()
     }
   }
 
   async function handleDisconnect() {
-    eventSourceRef.current?.close()
+    stopPolling()
     const res = await fetch('/api/whatsapp/disconnect', { method: 'POST' })
     if (res.ok) setStatus('idle')
   }
 
   useEffect(() => {
-    return () => eventSourceRef.current?.close()
+    return () => stopPolling()
   }, [])
 
   return (
@@ -65,7 +89,7 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       </div>
 
-      {/* Status: connected */}
+      {/* connected */}
       {status === 'connected' && (
         <div className="text-center">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: '#dcfce7' }}>
@@ -85,7 +109,7 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       )}
 
-      {/* Status: idle / disconnected */}
+      {/* idle / disconnected */}
       {(status === 'idle' || status === 'disconnected') && (
         <div className="text-center">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: '#f1f5f9' }}>
@@ -109,7 +133,7 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       )}
 
-      {/* Status: loading */}
+      {/* loading */}
       {status === 'loading' && (
         <div className="text-center py-6">
           <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: '#4a7c6f', borderTopColor: 'transparent' }} />
@@ -117,7 +141,7 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       )}
 
-      {/* Status: qr */}
+      {/* qr */}
       {status === 'qr' && qrDataUrl && (
         <div className="text-center">
           <div className="p-3 rounded-2xl inline-block mb-4" style={{ background: '#f8fafc' }}>
@@ -135,7 +159,7 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       )}
 
-      {/* Status: error */}
+      {/* error */}
       {status === 'error' && (
         <div className="text-center">
           <p className="text-sm mb-4" style={{ color: '#dc2626' }}>{errorMsg}</p>
@@ -145,7 +169,6 @@ export default function QRConnect({ isConnected }: { isConnected: boolean }) {
         </div>
       )}
 
-      {/* Bilgi notu */}
       {(status === 'idle' || status === 'qr') && (
         <div className="mt-5 pt-5 border-t" style={{ borderColor: '#f1f5f9' }}>
           <p className="text-xs" style={{ color: '#94a3b8' }}>
