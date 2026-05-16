@@ -1,5 +1,6 @@
 import Topbar from '@/components/layout/Topbar'
 import AppointmentCalendar from '@/components/calendar/AppointmentCalendar'
+import PsyconnectPendingPanel from '@/components/calendar/PsyconnectPendingPanel'
 
 export default function CalendarPage() {
   return (
@@ -7,6 +8,7 @@ export default function CalendarPage() {
       <Topbar title="Takvim" />
 
       <div className="p-6">
+        <PsyconnectPendingPanel />
         <AppointmentCalendar />
       </div>
     </div>

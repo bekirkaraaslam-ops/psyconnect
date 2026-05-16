@@ -1,5 +1,5 @@
 export type SubscriptionStatus = 'active' | 'inactive' | 'trial'
-export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient'
+export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient' | 'psyconnect_pending'
 
 export interface Psychologist {
   id: string
