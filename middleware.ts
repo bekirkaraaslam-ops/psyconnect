@@ -4,7 +4,7 @@ import { updateSession } from '@/lib/supabase/middleware'
 const protectedRoutes = ['/dashboard', '/appointments', '/patients', '/whatsapp', '/settings', '/calendar']
 const authRoutes = ['/login', '/register']
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isProtectedRoute = protectedRoutes.some(r => pathname === r || pathname.startsWith(r + '/'))
