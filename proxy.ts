@@ -1,10 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const protectedRoutes = ['/dashboard', '/appointments', '/patients', '/whatsapp', '/settings']
+const protectedRoutes = ['/dashboard', '/appointments', '/patients', '/whatsapp', '/settings', '/calendar']
 const authRoutes = ['/login', '/register']
 
-export default async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isProtectedRoute = protectedRoutes.some(r => pathname === r || pathname.startsWith(r + '/'))
@@ -15,7 +15,7 @@ export default async function middleware(request: NextRequest) {
     c => c.name.includes('-auth-token') && c.value.length > 10
   )
 
-  // Giriş yapmış kullanıcı / veya auth sayfasına gelirse dashboard'a yönlendir
+  // Giriş yapmış kullanıcı auth sayfasına veya root'a gelirse dashboard'a yönlendir
   if (hasSession && (pathname === '/' || isAuthRoute)) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
