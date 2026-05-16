@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     const start = new Date(apt.appointment_date)
     const end = new Date(start.getTime() + (apt.duration_minutes ?? 50) * 60 * 1000)
     const colors = statusColor(apt.status as AppointmentStatus)
-    const patient = apt.patient as { name_surname: string } | null
+    const patient = apt.patient as unknown as { name_surname: string } | null
 
     return {
       id: apt.id,

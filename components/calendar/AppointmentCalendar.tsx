@@ -66,7 +66,6 @@ export default function AppointmentCalendar() {
         nowIndicator
         height="auto"
         eventDisplay="block"
-        eventCursor="pointer"
         buttonText={{
           today: 'Bugün',
           month: 'Ay',
