@@ -23,6 +23,10 @@ CREATE TABLE psychologists (
   is_connected         BOOLEAN NOT NULL DEFAULT FALSE,
   subscription_status  subscription_status NOT NULL DEFAULT 'trial',
   subscription_ends_at TIMESTAMPTZ,
+  klinik_adresi        TEXT,
+  harita_linki         TEXT,
+  online_gorusme_linki TEXT,
+  hosgeldiniz_mesaji   TEXT,
   created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -56,8 +60,27 @@ CREATE TABLE appointments (
   reminder_sent            BOOLEAN NOT NULL DEFAULT FALSE,
   reminder_sent_at         TIMESTAMPTZ,
   session_notes_encrypted  TEXT,
+  appointment_type         TEXT NOT NULL DEFAULT 'yuzyuze' CHECK (appointment_type IN ('online', 'yuzyuze')),
+  toplam_paket_seansi      INTEGER,
+  mevcut_seans_no          INTEGER,
+  is_first_session         BOOLEAN NOT NULL DEFAULT FALSE,
   created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLE: hasta_notlari
+-- =============================================
+CREATE TABLE hasta_notlari (
+  id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  psychologist_id       UUID NOT NULL REFERENCES psychologists(id) ON DELETE CASCADE,
+  hasta_id              UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  seans_tarihi          TIMESTAMPTZ NOT NULL,
+  seans_notu_encrypted  TEXT,
+  gelecek_plan_encrypted TEXT,
+  ev_odevi_encrypted    TEXT,
+  created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- =============================================
@@ -80,6 +103,8 @@ CREATE INDEX idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX idx_appointments_reminder ON appointments(reminder_sent, appointment_date)
   WHERE reminder_sent = FALSE AND status = 'waiting';
+CREATE INDEX idx_hasta_notlari_hasta ON hasta_notlari(hasta_id);
+CREATE INDEX idx_hasta_notlari_psikolog ON hasta_notlari(psychologist_id);
 
 -- =============================================
 -- UPDATED_AT TRIGGER
@@ -98,6 +123,8 @@ CREATE TRIGGER trg_patients_updated_at
   BEFORE UPDATE ON patients FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 CREATE TRIGGER trg_appointments_updated_at
   BEFORE UPDATE ON appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_hasta_notlari_updated_at
+  BEFORE UPDATE ON hasta_notlari FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- =============================================
 -- ROW LEVEL SECURITY
@@ -106,6 +133,7 @@ ALTER TABLE psychologists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reminder_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE hasta_notlari ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "psychologist_self" ON psychologists
   FOR ALL USING (auth.uid() = auth_user_id);
@@ -116,6 +144,11 @@ CREATE POLICY "patient_owner" ON patients
   );
 
 CREATE POLICY "appointment_owner" ON appointments
+  FOR ALL USING (
+    psychologist_id = (SELECT id FROM psychologists WHERE auth_user_id = auth.uid())
+  );
+
+CREATE POLICY "nota_owner" ON hasta_notlari
   FOR ALL USING (
     psychologist_id = (SELECT id FROM psychologists WHERE auth_user_id = auth.uid())
   );

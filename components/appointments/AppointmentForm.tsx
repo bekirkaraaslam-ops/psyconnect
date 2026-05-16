@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { AppointmentStatus } from '@/types'
 
@@ -18,6 +18,10 @@ interface Props {
     appointment_date: string
     duration_minutes: number
     status: AppointmentStatus
+    appointment_type: 'online' | 'yuzyuze'
+    toplam_paket_seansi: number | null
+    mevcut_seans_no: number | null
+    is_first_session: boolean
   }
 }
 
@@ -33,9 +37,22 @@ export default function AppointmentForm({ patients, appointment }: Props) {
       : '',
     duration_minutes: appointment?.duration_minutes ?? 50,
     status: appointment?.status ?? 'waiting' as AppointmentStatus,
+    appointment_type: appointment?.appointment_type ?? 'yuzyuze' as 'online' | 'yuzyuze',
+    toplam_paket_seansi: appointment?.toplam_paket_seansi ?? '' as number | '',
+    mevcut_seans_no: appointment?.mevcut_seans_no ?? '' as number | '',
+    is_first_session: appointment?.is_first_session ?? false,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [cancelCount, setCancelCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!form.patient_id) { setCancelCount(null); return }
+    fetch(`/api/patients/${form.patient_id}/cancel-count`)
+      .then(r => r.json())
+      .then(d => setCancelCount(d.cancelCount ?? null))
+      .catch(() => setCancelCount(null))
+  }, [form.patient_id])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -56,6 +73,10 @@ export default function AppointmentForm({ patients, appointment }: Props) {
         ...form,
         duration_minutes: Number(form.duration_minutes),
         appointment_date: new Date(form.appointment_date).toISOString(),
+        appointment_type: form.appointment_type,
+        toplam_paket_seansi: form.toplam_paket_seansi ? Number(form.toplam_paket_seansi) : null,
+        mevcut_seans_no: form.mevcut_seans_no ? Number(form.mevcut_seans_no) : null,
+        is_first_session: form.is_first_session,
       }),
     })
 
@@ -93,6 +114,16 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             <option key={p.id} value={p.id}>{p.name_surname}</option>
           ))}
         </select>
+        {cancelCount !== null && cancelCount > 0 && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm mt-2" style={{ background: '#fef3c7', color: '#92400e' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Bu hasta daha önce <strong className="mx-1">{cancelCount}</strong> randevuyu iptal etti.
+          </div>
+        )}
       </div>
 
       <div>
@@ -124,6 +155,73 @@ export default function AppointmentForm({ patients, appointment }: Props) {
         </select>
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Seans Tipi</label>
+        <div className="flex gap-3">
+          {(['yuzyuze', 'online'] as const).map(type => (
+            <label key={type} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="appointment_type"
+                value={type}
+                checked={form.appointment_type === type}
+                onChange={handleChange}
+                className="accent-[#4a7c6f]"
+              />
+              <span className="text-sm" style={{ color: '#334155' }}>
+                {type === 'yuzyuze' ? '🏢 Yüz Yüze' : '💻 Online'}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Paket Seans Takibi</label>
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <input
+              type="number"
+              name="mevcut_seans_no"
+              value={form.mevcut_seans_no}
+              onChange={handleChange}
+              min={1}
+              placeholder="Kaçıncı seans"
+              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+              style={{ borderColor: '#dde5e2', color: '#334155' }}
+            />
+          </div>
+          <div className="flex items-center text-sm" style={{ color: '#94a3b8' }}>/</div>
+          <div className="flex-1">
+            <input
+              type="number"
+              name="toplam_paket_seansi"
+              value={form.toplam_paket_seansi}
+              onChange={handleChange}
+              min={1}
+              placeholder="Toplam paket"
+              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+              style={{ borderColor: '#dde5e2', color: '#334155' }}
+            />
+          </div>
+        </div>
+        <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>Ör: 2 / 4 → 4 seanslık paketin 2. seansı</p>
+      </div>
+
+      <div className="flex items-center gap-3 py-1">
+        <input
+          type="checkbox"
+          id="is_first_session"
+          name="is_first_session"
+          checked={form.is_first_session}
+          onChange={e => setForm(prev => ({ ...prev, is_first_session: e.target.checked }))}
+          className="w-4 h-4 accent-[#4a7c6f]"
+        />
+        <label htmlFor="is_first_session" className="text-sm cursor-pointer" style={{ color: '#334155' }}>
+          İlk seans (hoş geldiniz mesajı gönderilir)
+        </label>
+      </div>
+
       {isEdit && (
         <div>
           <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Durum</label>
@@ -138,6 +236,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             <option value="confirmed">Onaylandı</option>
             <option value="canceled">İptal Edildi</option>
             <option value="completed">Tamamlandı</option>
+            <option value="cancelled_by_patient">Hasta İptal Etti</option>
           </select>
         </div>
       )}

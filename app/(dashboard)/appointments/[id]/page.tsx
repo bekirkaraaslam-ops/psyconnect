@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
 import { formatDateTime, appointmentStatusColor, appointmentStatusLabel, formatPhoneDisplay } from '@/lib/utils'
+import ManuelHatirlaticiButton from '@/components/appointments/ManuelHatirlaticiButton'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -11,11 +12,21 @@ interface Props {
 export default async function AppointmentDetailPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: psychologist } = await supabase
+    .from('psychologists')
+    .select('id')
+    .eq('auth_user_id', user!.id)
+    .single()
+
+  if (!psychologist) notFound()
 
   const { data: apt } = await supabase
     .from('appointments')
     .select('*, patient:patients(id, name_surname, phone_number)')
     .eq('id', id)
+    .eq('psychologist_id', psychologist.id)
     .single()
 
   if (!apt) notFound()
@@ -34,6 +45,8 @@ export default async function AppointmentDetailPage({ params }: Props) {
               Düzenle
             </Link>
           </div>
+
+          <ManuelHatirlaticiButton appointmentId={apt.id} />
 
           <div className="space-y-3 text-sm">
             <div>

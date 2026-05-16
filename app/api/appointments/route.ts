@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { patient_id, appointment_date, duration_minutes, status } = body
+  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session } = body
 
   if (!patient_id || !appointment_date) {
     return NextResponse.json({ error: 'Hasta ve tarih zorunludur.' }, { status: 400 })
@@ -29,6 +29,10 @@ export async function POST(req: NextRequest) {
       appointment_date,
       duration_minutes: duration_minutes ?? 50,
       status: status ?? 'waiting',
+      appointment_type: appointment_type ?? 'yuzyuze',
+      toplam_paket_seansi: toplam_paket_seansi ?? null,
+      mevcut_seans_no: mevcut_seans_no ?? null,
+      is_first_session: is_first_session ?? false,
     })
     .select()
     .single()
@@ -47,6 +51,8 @@ export async function GET(req: NextRequest) {
     .select('id')
     .eq('auth_user_id', user.id)
     .single()
+
+  if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const url = new URL(req.url)
   const from = url.searchParams.get('from')

@@ -4,6 +4,7 @@ import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
 import { formatDate, formatDateTime, formatPhoneDisplay, appointmentStatusColor, appointmentStatusLabel } from '@/lib/utils'
 import { decrypt as decryptNote } from '@/lib/crypto'
+import SeansNotlari from '@/components/patients/SeansNotlari'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -12,11 +13,21 @@ interface Props {
 export default async function PatientDetailPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: psychologist } = await supabase
+    .from('psychologists')
+    .select('id')
+    .eq('auth_user_id', user!.id)
+    .single()
+
+  if (!psychologist) notFound()
 
   const { data: patient } = await supabase
     .from('patients')
     .select('*')
     .eq('id', id)
+    .eq('psychologist_id', psychologist.id)
     .single()
 
   if (!patient) notFound()
@@ -25,6 +36,7 @@ export default async function PatientDetailPage({ params }: Props) {
     .from('appointments')
     .select('*')
     .eq('patient_id', id)
+    .eq('psychologist_id', psychologist.id)
     .order('appointment_date', { ascending: false })
     .limit(20)
 
@@ -36,7 +48,7 @@ export default async function PatientDetailPage({ params }: Props) {
     <div className="flex-1">
       <Topbar title={patient.name_surname} />
 
-      <div className="p-6 space-y-5 max-w-2xl">
+      <div className="p-6 space-y-5 max-w-4xl">
         {/* Patient Info Card */}
         <div className="bg-white rounded-2xl border p-5" style={{ borderColor: '#dde5e2' }}>
           <div className="flex items-start justify-between mb-4">
@@ -112,6 +124,8 @@ export default async function PatientDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        <SeansNotlari hastaId={id} hastaAdi={patient.name_surname} />
       </div>
     </div>
   )

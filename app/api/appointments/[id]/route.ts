@@ -11,10 +11,19 @@ export async function GET(_req: NextRequest, { params }: Context) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const { data: psychologist } = await supabase
+    .from('psychologists')
+    .select('id')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
   const { data } = await supabase
     .from('appointments')
     .select('*, patient:patients(name_surname, phone_number)')
     .eq('id', id)
+    .eq('psychologist_id', psychologist.id)
     .single()
 
   if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -34,13 +43,17 @@ export async function PATCH(req: NextRequest, { params }: Context) {
     .single()
 
   const body = await req.json()
-  const { patient_id, appointment_date, duration_minutes, status } = body
+  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session } = body
 
   const update: Record<string, unknown> = {}
-  if (patient_id) update.patient_id = patient_id
-  if (appointment_date) update.appointment_date = appointment_date
-  if (duration_minutes) update.duration_minutes = Number(duration_minutes)
-  if (status) update.status = status
+  if (patient_id !== undefined) update.patient_id = patient_id
+  if (appointment_date !== undefined) update.appointment_date = appointment_date
+  if (duration_minutes !== undefined) update.duration_minutes = Number(duration_minutes)
+  if (status !== undefined) update.status = status
+  if (appointment_type !== undefined) update.appointment_type = appointment_type
+  if (toplam_paket_seansi !== undefined) update.toplam_paket_seansi = toplam_paket_seansi ?? null
+  if (mevcut_seans_no !== undefined) update.mevcut_seans_no = mevcut_seans_no ?? null
+  if (is_first_session !== undefined) update.is_first_session = is_first_session
 
   const { data, error } = await supabase
     .from('appointments')

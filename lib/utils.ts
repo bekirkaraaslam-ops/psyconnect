@@ -62,6 +62,7 @@ export function appointmentStatusLabel(status: string): string {
     confirmed: 'Onaylandı',
     canceled: 'İptal Edildi',
     completed: 'Tamamlandı',
+    cancelled_by_patient: 'Hasta İptal Etti',
   }
   return map[status] ?? status
 }
@@ -72,6 +73,7 @@ export function appointmentStatusColor(status: string): string {
     confirmed: 'bg-green-100 text-green-800',
     canceled: 'bg-red-100 text-red-800',
     completed: 'bg-slate-100 text-slate-600',
+    cancelled_by_patient: 'bg-red-100 text-red-700',
   }
   return map[status] ?? 'bg-gray-100 text-gray-600'
 }

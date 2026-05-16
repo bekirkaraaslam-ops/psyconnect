@@ -20,8 +20,9 @@ export default async function AppointmentsPage() {
     .order('appointment_date', { ascending: false })
     .limit(50)
 
-  const upcoming = appointments?.filter(a => new Date(a.appointment_date) >= new Date() && a.status !== 'canceled') ?? []
-  const past = appointments?.filter(a => new Date(a.appointment_date) < new Date() || a.status === 'canceled') ?? []
+  const canceledStatuses = ['canceled', 'cancelled_by_patient']
+  const upcoming = appointments?.filter(a => new Date(a.appointment_date) >= new Date() && !canceledStatuses.includes(a.status)) ?? []
+  const past = appointments?.filter(a => new Date(a.appointment_date) < new Date() || canceledStatuses.includes(a.status)) ?? []
 
   return (
     <div className="flex-1">
@@ -100,6 +101,14 @@ function AppointmentRow({ apt }: { apt: any }) {
       <div className="flex items-center gap-2">
         {apt.reminder_sent && (
           <span className="text-xs" title="Hatırlatıcı gönderildi">💬</span>
+        )}
+        {apt.mevcut_seans_no && apt.toplam_paket_seansi && (
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: '#f0f9ff', color: '#0369a1' }}>
+            {apt.mevcut_seans_no}/{apt.toplam_paket_seansi}
+          </span>
+        )}
+        {apt.appointment_type === 'online' && (
+          <span className="text-xs" title="Online seans">💻</span>
         )}
         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${appointmentStatusColor(apt.status)}`}>
           {appointmentStatusLabel(apt.status)}

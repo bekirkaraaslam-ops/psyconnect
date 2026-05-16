@@ -39,6 +39,17 @@ export default async function WhatsAppPage() {
           <QRConnect isConnected={psychologist?.is_connected ?? false} />
         </div>
 
+        <div className="flex justify-center">
+          <a
+            href="/api/diagnose"
+            target="_blank"
+            className="text-xs underline"
+            style={{ color: '#64748b' }}
+          >
+            Sistem durumunu kontrol et →
+          </a>
+        </div>
+
         {/* Test butonu */}
         {psychologist?.is_connected && (
           <div className="flex justify-center">

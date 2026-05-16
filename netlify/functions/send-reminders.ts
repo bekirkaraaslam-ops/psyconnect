@@ -43,8 +43,12 @@ const handler = schedule('0 * * * *', async () => {
     .select(`
       id,
       appointment_date,
+      appointment_type,
+      toplam_paket_seansi,
+      mevcut_seans_no,
+      is_first_session,
       patient:patients(name_surname, phone_number),
-      psychologist:psychologists(id, full_name, is_connected)
+      psychologist:psychologists(id, full_name, is_connected, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji)
     `)
     .eq('reminder_sent', false)
     .neq('status', 'canceled')
@@ -76,11 +80,24 @@ const handler = schedule('0 * * * *', async () => {
     const date    = new Date(apt.appointment_date)
     const timeStr = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
     const dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+
+    const paketBilgisi = apt.mevcut_seans_no && apt.toplam_paket_seansi
+      ? ` (${apt.mevcut_seans_no}. seans / ${apt.toplam_paket_seansi} seanslık paket)`
+      : ''
+
+    let lokasyonBilgisi = ''
+    if (apt.appointment_type === 'online' && psychologist.online_gorusme_linki) {
+      lokasyonBilgisi = `\n\n🔗 *Online Görüşme Linki:* ${psychologist.online_gorusme_linki}`
+    } else if (apt.appointment_type === 'yuzyuze' && psychologist.harita_linki) {
+      lokasyonBilgisi = `\n\n📍 *Konum:* ${psychologist.harita_linki}`
+    }
+
     const message =
       `Sayın ${patient.name_surname},\n\n` +
       `${dateStr} tarihinde saat *${timeStr}*'de ` +
-      `*${psychologist.full_name}* ile randevunuz bulunmaktadır.\n\n` +
-      `Randevunuzu iptal etmek veya değiştirmek isterseniz lütfen bizimle iletişime geçin.`
+      `*${psychologist.full_name}* ile randevunuz bulunmaktadır${paketBilgisi}.` +
+      lokasyonBilgisi +
+      `\n\n✅ Onaylamak için *EVET* yazın\n❌ İptal etmek için *İPTAL* yazın`
 
     try {
       await sendViaRailway(psychologist.id, patient.phone_number, message)
@@ -96,6 +113,16 @@ const handler = schedule('0 * * * *', async () => {
       })
 
       console.log(`[send-reminders] ✓ Gönderildi → ${patient.name_surname}`)
+
+      if (apt.is_first_session && psychologist.hosgeldiniz_mesaji) {
+        await randomDelay()
+        await sendViaRailway(psychologist.id, patient.phone_number, psychologist.hosgeldiniz_mesaji)
+        await supabase
+          .from('appointments')
+          .update({ is_first_session: false })
+          .eq('id', apt.id)
+        console.log(`[send-reminders] ✓ Hoş geldiniz mesajı gönderildi → ${patient.name_surname}`)
+      }
     } catch (err: any) {
       console.error(`[send-reminders] ✗ Hata → ${apt.id}: ${err.message}`)
 

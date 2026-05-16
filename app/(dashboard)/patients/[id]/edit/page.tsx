@@ -11,11 +11,21 @@ interface Props {
 export default async function EditPatientPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: psychologist } = await supabase
+    .from('psychologists')
+    .select('id')
+    .eq('auth_user_id', user!.id)
+    .single()
+
+  if (!psychologist) notFound()
 
   const { data: patient } = await supabase
     .from('patients')
     .select('*')
     .eq('id', id)
+    .eq('psychologist_id', psychologist.id)
     .single()
 
   if (!patient) notFound()

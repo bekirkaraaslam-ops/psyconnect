@@ -1,11 +1,15 @@
 export type SubscriptionStatus = 'active' | 'inactive' | 'trial'
-export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed'
+export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient'
 
 export interface Psychologist {
   id: string
   auth_user_id: string
   full_name: string
   phone_number: string | null
+  klinik_adresi: string | null
+  harita_linki: string | null
+  online_gorusme_linki: string | null
+  hosgeldiniz_mesaji: string | null
   whatsapp_session: Record<string, unknown> | null
   is_connected: boolean
   subscription_status: SubscriptionStatus
@@ -26,6 +30,8 @@ export interface Patient {
   updated_at: string
 }
 
+export type AppointmentType = 'yuzyuze' | 'online'
+
 export interface Appointment {
   id: string
   psychologist_id: string
@@ -33,6 +39,10 @@ export interface Appointment {
   appointment_date: string
   duration_minutes: number
   status: AppointmentStatus
+  appointment_type: AppointmentType
+  toplam_paket_seansi: number | null
+  mevcut_seans_no: number | null
+  is_first_session: boolean
   reminder_sent: boolean
   reminder_sent_at: string | null
   session_notes_encrypted: string | null
@@ -63,6 +73,22 @@ export interface AppointmentFormData {
   appointment_date: string
   duration_minutes: number
   status: AppointmentStatus
+  appointment_type: AppointmentType
+  toplam_paket_seansi: number | null
+  mevcut_seans_no: number | null
+  is_first_session: boolean
+}
+
+export interface HastaNotu {
+  id: string
+  psychologist_id: string
+  hasta_id: string
+  seans_tarihi: string
+  seans_notu_encrypted: string | null
+  gelecek_plan_encrypted: string | null
+  ev_odevi_encrypted: string | null
+  created_at: string
+  updated_at: string
 }
 
 // Dashboard stats

@@ -22,10 +22,14 @@ export async function GET(_req: NextRequest, { params }: Context) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const psychologistId = await getPsychologistId(supabase, user.id)
+  if (!psychologistId) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
   const { data } = await supabase
     .from('patients')
     .select('*')
     .eq('id', id)
+    .eq('psychologist_id', psychologistId)
     .single()
 
   if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 })

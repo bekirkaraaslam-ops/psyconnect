@@ -8,7 +8,7 @@ export default async function SettingsPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id, full_name, phone_number, subscription_status, subscription_ends_at')
+    .select('id, full_name, phone_number, subscription_status, subscription_ends_at, klinik_adresi, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji')
     .eq('auth_user_id', user!.id)
     .single()
 
@@ -42,6 +42,18 @@ export default async function SettingsPage() {
                psychologist?.subscription_status === 'trial' ? 'Deneme' : 'Pasif'}
             </span>
           </div>
+        </div>
+
+        {/* Sistem tanılama */}
+        <div className="flex justify-end">
+          <a
+            href="/api/diagnose"
+            target="_blank"
+            className="text-xs underline"
+            style={{ color: '#64748b' }}
+          >
+            Sistem durumunu kontrol et →
+          </a>
         </div>
       </div>
     </div>

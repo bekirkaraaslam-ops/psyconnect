@@ -19,7 +19,7 @@ export default async function EditAppointmentPage({ params }: Props) {
     .single()
 
   const [{ data: apt }, { data: patients }] = await Promise.all([
-    supabase.from('appointments').select('*').eq('id', id).single(),
+    supabase.from('appointments').select('*').eq('id', id).eq('psychologist_id', psychologist!.id).single(),
     supabase.from('patients').select('id, name_surname, phone_number').eq('psychologist_id', psychologist!.id).eq('is_active', true).order('name_surname'),
   ])
 

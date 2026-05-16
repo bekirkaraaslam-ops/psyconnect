@@ -3,12 +3,17 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { normalizePhone } from '@/lib/utils'
 
 interface Props {
   psychologist: {
     id: string
     full_name: string
     phone_number: string | null
+    klinik_adresi: string | null
+    harita_linki: string | null
+    online_gorusme_linki: string | null
+    hosgeldiniz_mesaji: string | null
   } | null
   email: string
 }
@@ -17,6 +22,10 @@ export default function SettingsForm({ psychologist, email }: Props) {
   const router = useRouter()
   const [fullName, setFullName] = useState(psychologist?.full_name ?? '')
   const [phone, setPhone] = useState(psychologist?.phone_number ?? '')
+  const [klinikAdresi, setKlinikAdresi] = useState(psychologist?.klinik_adresi ?? '')
+  const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
+  const [onlineGorusmeLinki, setOnlineGorusmeLinki] = useState(psychologist?.online_gorusme_linki ?? '')
+  const [hosgeldinizMesaji, setHosgeldinizMesaji] = useState(psychologist?.hosgeldiniz_mesaji ?? '')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -30,7 +39,14 @@ export default function SettingsForm({ psychologist, email }: Props) {
     const supabase = createClient()
     const { error } = await supabase
       .from('psychologists')
-      .update({ full_name: fullName, phone_number: phone })
+      .update({
+        full_name: fullName,
+        phone_number: phone ? normalizePhone(phone) : null,
+        klinik_adresi: klinikAdresi || null,
+        harita_linki: haritaLinki || null,
+        online_gorusme_linki: onlineGorusmeLinki || null,
+        hosgeldiniz_mesaji: hosgeldinizMesaji || null,
+      })
       .eq('id', psychologist!.id)
 
     setLoading(false)
@@ -90,6 +106,60 @@ export default function SettingsForm({ psychologist, email }: Props) {
           style={{ borderColor: '#dde5e2', color: '#334155' }}
           placeholder="0532 123 45 67"
         />
+      </div>
+
+      <h3 className="font-semibold pt-1" style={{ color: '#334155' }}>Klinik Bilgileri</h3>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Klinik Adresi</label>
+        <textarea
+          rows={3}
+          value={klinikAdresi}
+          onChange={e => setKlinikAdresi(e.target.value)}
+          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none resize-none"
+          style={{ borderColor: '#dde5e2', color: '#334155' }}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Harita Linki (Google Maps vb.)</label>
+        <input
+          type="text"
+          value={haritaLinki}
+          onChange={e => setHaritaLinki(e.target.value)}
+          placeholder="https://maps.google.com/..."
+          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+          style={{ borderColor: '#dde5e2', color: '#334155' }}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Online Görüşme Linki (Zoom/Meet)</label>
+        <input
+          type="text"
+          value={onlineGorusmeLinki}
+          onChange={e => setOnlineGorusmeLinki(e.target.value)}
+          placeholder="https://zoom.us/j/..."
+          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+          style={{ borderColor: '#dde5e2', color: '#334155' }}
+        />
+      </div>
+
+      <h3 className="font-semibold pt-1" style={{ color: '#334155' }}>Hoş Geldiniz Mesajı</h3>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Hoş Geldiniz & Klinik Kuralları Mesajı</label>
+        <textarea
+          rows={5}
+          value={hosgeldinizMesaji}
+          onChange={e => setHosgeldinizMesaji(e.target.value)}
+          placeholder="Merhaba! Kliniğimize hoş geldiniz..."
+          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none resize-none"
+          style={{ borderColor: '#dde5e2', color: '#334155' }}
+        />
+        <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
+          İlk seans olarak işaretlenen randevularda bu mesaj otomatik gönderilir.
+        </p>
       </div>
 
       <button
