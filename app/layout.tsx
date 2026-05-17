@@ -10,6 +10,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Seansify – Klinik Yönetim',
   description: 'Psikologlar için akıllı klinik yönetim sistemi',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.svg',
+  },
 }
 
 export default function RootLayout({

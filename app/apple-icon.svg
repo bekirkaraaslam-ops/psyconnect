@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Arka plan -->
+  <rect width="180" height="180" rx="40" fill="#4a7c6f"/>
+  <!-- Takvim gövdesi (beyaz) -->
+  <rect x="28" y="52" width="124" height="106" rx="14" fill="white"/>
+  <!-- Takvim üst başlık (koyu yeşil) -->
+  <rect x="28" y="52" width="124" height="46" rx="14" fill="#2d5a50"/>
+  <rect x="28" y="80" width="124" height="18" fill="#2d5a50"/>
+  <!-- Takvim pimleri -->
+  <rect x="58" y="34" width="14" height="34" rx="7" fill="white"/>
+  <rect x="108" y="34" width="14" height="34" rx="7" fill="white"/>
+  <!-- Hasta / kişi ikonu -->
+  <circle cx="90" cy="115" r="18" fill="#4a7c6f"/>
+  <path d="M58 158C58 139 72 128 90 128C108 128 122 139 122 158" fill="#4a7c6f"/>
+</svg>
