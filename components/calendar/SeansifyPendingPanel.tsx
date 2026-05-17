@@ -13,7 +13,7 @@ interface PendingAppointment {
   } | null
 }
 
-export default function PsyconnectPendingPanel() {
+export default function SeansifyPendingPanel() {
   const [appointments, setAppointments] = useState<PendingAppointment[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -46,7 +46,7 @@ export default function PsyconnectPendingPanel() {
       style={{ borderColor: '#dde5e2' }}
     >
       <h2 className="mb-4 text-base font-semibold text-slate-700">
-        Psyconnect Tarafından Alınan Randevular
+        Seansify Tarafından Alınan Randevular
       </h2>
 
       <div className="flex flex-col gap-3">

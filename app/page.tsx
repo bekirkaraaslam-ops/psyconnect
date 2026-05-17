@@ -14,7 +14,7 @@ export default function LandingPage() {
                 <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 1-2 2H3" />
               </svg>
             </div>
-            <span className="font-semibold text-base text-white">PsyConnect</span>
+            <span className="font-semibold text-base text-white">Seansify</span>
           </div>
 
           {/* Nav buttons */}
@@ -86,7 +86,7 @@ export default function LandingPage() {
               <span className="w-3 h-3 rounded-full" style={{ background: '#ef4444' }}></span>
               <span className="w-3 h-3 rounded-full" style={{ background: '#f59e0b' }}></span>
               <span className="w-3 h-3 rounded-full" style={{ background: '#22c55e' }}></span>
-              <span className="ml-3 text-xs px-3 py-1 rounded" style={{ background: 'rgba(255,255,255,0.05)', color: '#475569' }}>psyconnect.app/dashboard</span>
+              <span className="ml-3 text-xs px-3 py-1 rounded" style={{ background: 'rgba(255,255,255,0.05)', color: '#475569' }}>seansify.app/dashboard</span>
             </div>
             {/* Mock dashboard content */}
             <div className="p-5 grid grid-cols-4 gap-3">
@@ -303,10 +303,10 @@ export default function LandingPage() {
                 <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 1-2 2H3" />
               </svg>
             </div>
-            <span className="text-sm font-semibold" style={{ color: '#64748b' }}>PsyConnect</span>
+            <span className="text-sm font-semibold" style={{ color: '#64748b' }}>Seansify</span>
           </div>
           <p className="text-xs" style={{ color: '#334155' }}>
-            © {new Date().getFullYear()} PsyConnect. Psikologlar için yapıldı.
+            © {new Date().getFullYear()} Seansify. Psikologlar için yapıldı.
           </p>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-xs" style={{ color: '#475569' }}>Giriş Yap</Link>

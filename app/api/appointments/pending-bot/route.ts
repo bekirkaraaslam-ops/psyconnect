@@ -19,7 +19,7 @@ export async function GET(_req: NextRequest) {
     .from('appointments')
     .select('id, appointment_date, duration_minutes, patient:patients(name_surname, phone_number)')
     .eq('psychologist_id', psychologist.id)
-    .eq('status', 'psyconnect_pending')
+    .eq('status', 'seansify_pending')
     .order('appointment_date', { ascending: true })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })

@@ -1,5 +1,5 @@
 -- =============================================
--- PsyConnect - Supabase Schema
+-- Seansify - Supabase Schema
 -- =============================================
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

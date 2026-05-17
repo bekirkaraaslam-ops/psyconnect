@@ -215,7 +215,7 @@ async function createBotAppointment(psychologistId, phone, nameSurname, slot, so
       patient_id: patient.id,
       appointment_date: slot.toISOString(),
       duration_minutes: 50,
-      status: 'psyconnect_pending',
+      status: 'seansify_pending',
       appointment_type: 'yuzyuze',
     })
 

@@ -1,7 +1,7 @@
 {
-  "name": "psyconnect-whatsapp-service",
+  "name": "seansify-whatsapp-service",
   "version": "1.0.0",
-  "description": "WhatsApp service for PsyConnect using Baileys",
+  "description": "WhatsApp service for Seansify using Baileys",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -8,7 +8,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'PsyConnect – Klinik Yönetim',
+  title: 'Seansify – Klinik Yönetim',
   description: 'Psikologlar için akıllı klinik yönetim sistemi',
 }
 

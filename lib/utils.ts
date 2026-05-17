@@ -63,7 +63,7 @@ export function appointmentStatusLabel(status: string): string {
     canceled: 'İptal Edildi',
     completed: 'Tamamlandı',
     cancelled_by_patient: 'Hasta İptal Etti',
-    psyconnect_pending: 'Bot Talebi',
+    seansify_pending: 'Bot Talebi',
   }
   return map[status] ?? status
 }
@@ -75,7 +75,7 @@ export function appointmentStatusColor(status: string): string {
     canceled: 'bg-red-100 text-red-800',
     completed: 'bg-slate-100 text-slate-600',
     cancelled_by_patient: 'bg-red-100 text-red-700',
-    psyconnect_pending: 'bg-amber-100 text-amber-800',
+    seansify_pending: 'bg-amber-100 text-amber-800',
   }
   return map[status] ?? 'bg-gray-100 text-gray-600'
 }

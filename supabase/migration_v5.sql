@@ -1,1 +1,1 @@
-ALTER TYPE appointment_status ADD VALUE IF NOT EXISTS 'psyconnect_pending';
+ALTER TYPE appointment_status ADD VALUE IF NOT EXISTS 'seansify_pending';
