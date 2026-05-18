@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
+import { PlanType } from '@/types'
 
 const navItems = [
   {
     href: '/dashboard',
     label: 'Genel Bakış',
+    whatsappLocked: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
@@ -19,6 +21,7 @@ const navItems = [
   {
     href: '/appointments',
     label: 'Randevular',
+    whatsappLocked: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -30,6 +33,7 @@ const navItems = [
   {
     href: '/calendar',
     label: 'Takvim',
+    whatsappLocked: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -43,6 +47,7 @@ const navItems = [
   {
     href: '/patients',
     label: 'Hastalar',
+    whatsappLocked: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -55,6 +60,7 @@ const navItems = [
   {
     href: '/whatsapp',
     label: 'WhatsApp',
+    whatsappLocked: true,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -64,6 +70,7 @@ const navItems = [
   {
     href: '/settings',
     label: 'Ayarlar',
+    whatsappLocked: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
@@ -73,9 +80,28 @@ const navItems = [
   },
 ]
 
-export default function Sidebar() {
+const LockIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+)
+
+const planLabels: Record<string, { label: string; color: string; bg: string }> = {
+  free: { label: 'Ücretsiz', color: '#64748b', bg: '#f1f5f9' },
+  baslangic: { label: 'Başlangıç', color: '#d97706', bg: '#fef3c7' },
+  pro: { label: 'Pro', color: '#4a7c6f', bg: '#e8f5f1' },
+}
+
+interface SidebarProps {
+  planType?: PlanType
+}
+
+export default function Sidebar({ planType = 'free' }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
+
+  const isWhatsappUnlocked = planType === 'pro'
 
   async function handleLogout() {
     const supabase = createClient()
@@ -83,6 +109,8 @@ export default function Sidebar() {
     router.push('/login')
     router.refresh()
   }
+
+  const planInfo = planLabels[planType] || planLabels.free
 
   return (
     <aside className="hidden md:flex flex-col w-60 min-h-screen border-r py-6" style={{ background: '#ffffff', borderColor: '#dde5e2' }}>
@@ -96,12 +124,22 @@ export default function Sidebar() {
           </div>
           <span className="font-semibold text-base" style={{ color: '#334155' }}>Seansify</span>
         </div>
+        <div className="mt-2">
+          <span
+            className="text-xs font-medium px-2 py-0.5 rounded-full"
+            style={{ background: planInfo.bg, color: planInfo.color }}
+          >
+            {planInfo.label}
+          </span>
+        </div>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-0.5">
         {navItems.map(item => {
           const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
+          const showLock = item.whatsappLocked && !isWhatsappUnlocked
+
           return (
             <Link
               key={item.href}
@@ -112,17 +150,38 @@ export default function Sidebar() {
                   ? 'text-white'
                   : 'hover:bg-gray-50'
               )}
-              style={isActive ? { background: '#4a7c6f', color: 'white' } : { color: '#64748b' }}
+              style={isActive ? { background: '#4a7c6f', color: 'white' } : { color: showLock ? '#94a3b8' : '#64748b' }}
             >
               {item.icon}
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {showLock && (
+                <span style={{ color: '#94a3b8' }}>
+                  <LockIcon />
+                </span>
+              )}
             </Link>
           )
         })}
       </nav>
 
+      {/* Upgrade butonu (free veya baslangic planında) */}
+      {planType !== 'pro' && (
+        <div className="px-3 mb-3">
+          <Link
+            href="/upgrade"
+            className="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-xs font-semibold transition-opacity hover:opacity-90"
+            style={{ background: '#e8f5f1', color: '#4a7c6f' }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="17 11 12 6 7 11" /><line x1="12" y1="18" x2="12" y2="6" />
+            </svg>
+            {planType === 'free' ? 'Plan Satın Al' : "Pro'ya Geç"}
+          </Link>
+        </div>
+      )}
+
       {/* Logout */}
-      <div className="px-3 mt-4">
+      <div className="px-3 mt-2">
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full transition-colors hover:bg-red-50"

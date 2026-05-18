@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import SettingsForm from '@/components/settings/SettingsForm'
+import ReferralPanel from '@/components/settings/ReferralPanel'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -43,6 +44,9 @@ export default async function SettingsPage() {
             </span>
           </div>
         </div>
+
+        {/* Referral paneli */}
+        <ReferralPanel />
 
         {/* Sistem tanılama */}
         <div className="flex justify-end">

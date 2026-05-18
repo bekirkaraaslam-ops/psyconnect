@@ -1,5 +1,6 @@
 export type SubscriptionStatus = 'active' | 'inactive' | 'trial'
 export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient' | 'seansify_pending'
+export type PlanType = 'free' | 'baslangic' | 'pro'
 
 export interface Psychologist {
   id: string
@@ -14,8 +15,37 @@ export interface Psychologist {
   is_connected: boolean
   subscription_status: SubscriptionStatus
   subscription_ends_at: string | null
+  plan_type: PlanType
+  ls_customer_id?: string
+  ls_subscription_id?: string
+  ls_subscription_status?: string
+  referral_code?: string
+  referred_by_code?: string
+  discount_percent: number
   created_at: string
   updated_at: string
+}
+
+export interface Referral {
+  id: string
+  referrer_id: string
+  referred_id: string
+  referral_code: string
+  status: 'pending' | 'active' | 'cancelled'
+  created_at: string
+  activated_at?: string
+  cancelled_at?: string
+}
+
+export interface DiscountCode {
+  id: string
+  psychologist_id: string
+  ls_discount_id?: string
+  code: string
+  percent_off: number
+  valid_until?: string
+  used: boolean
+  created_at: string
 }
 
 export interface Patient {
