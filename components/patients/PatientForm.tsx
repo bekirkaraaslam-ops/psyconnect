@@ -24,6 +24,7 @@ export default function PatientForm({ patient }: Props) {
     date_of_birth: patient?.date_of_birth ?? '',
     notes: patient?.notes ?? '',
   })
+  const [anamnezEnabled, setAnamnezEnabled] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -39,6 +40,7 @@ export default function PatientForm({ patient }: Props) {
     const payload = {
       ...form,
       phone_number: normalizePhone(form.phone_number),
+      ...(isEdit ? {} : { anamnez_enabled: anamnezEnabled }),
     }
 
     const url = isEdit ? `/api/patients/${patient.id}` : '/api/patients'
@@ -120,6 +122,22 @@ export default function PatientForm({ patient }: Props) {
           placeholder="Hasta hakkında notlarınız... (şifreli saklanır)"
         />
       </div>
+
+      {!isEdit && (
+        <div
+          className="flex items-center justify-between p-4 rounded-xl cursor-pointer"
+          style={{ background: anamnezEnabled ? '#f0fdf4' : '#f8fafc', border: `1px solid ${anamnezEnabled ? '#86efac' : '#dde5e2'}` }}
+          onClick={() => setAnamnezEnabled(v => !v)}
+        >
+          <div>
+            <p className="text-sm font-medium" style={{ color: '#334155' }}>Anamnez Formu Gönderilsin mi?</p>
+            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>İlk randevudan 1 gün önce hastaya WhatsApp ile form linki gönderilir</p>
+          </div>
+          <div className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 ${anamnezEnabled ? 'bg-green-500' : 'bg-gray-200'}`}>
+            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${anamnezEnabled ? 'translate-x-5' : 'translate-x-1'}`} />
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-3">
         <button

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatDate, formatDateTime, formatPhoneDisplay, appointmentStatusColor, appointmentStatusLabel } from '@/lib/utils'
 import { decrypt as decryptNote } from '@/lib/crypto'
 import SeansNotlari from '@/components/patients/SeansNotlari'
+import AnamnezPanel from '@/components/patients/AnamnezPanel'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -39,6 +40,16 @@ export default async function PatientDetailPage({ params }: Props) {
     .eq('psychologist_id', psychologist.id)
     .order('appointment_date', { ascending: false })
     .limit(20)
+
+  // Anamnez formu (varsa)
+  const { data: anamnezForm } = await supabase
+    .from('anamnez_forms')
+    .select('id, filled_at, expires_at, sikayet_encrypted, sure_encrypted, gecmis_tedavi_encrypted, ilac_kullanim_encrypted, aile_gecmis_encrypted, uyku_durum_encrypted, beslenme_durum_encrypted, acil_kisi_encrypted, ek_notlar_encrypted')
+    .eq('patient_id', id)
+    .eq('psychologist_id', psychologist.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   const decryptedNotes = patient.notes_encrypted
     ? (() => { try { return decryptNote(patient.notes_encrypted) } catch { return null } })()
@@ -124,6 +135,10 @@ export default async function PatientDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        {patient.anamnez_enabled && (
+          <AnamnezPanel form={anamnezForm ?? null} />
+        )}
 
         <SeansNotlari hastaId={id} hastaAdi={patient.name_surname} />
       </div>

@@ -29,6 +29,9 @@
 [functions."win-back"]
   external_node_modules = ["@whiskeysockets/baileys", "@hapi/boom"]
 
+[functions."anamnez-scheduler"]
+  node_bundler = "nft"
+
 # ── Redirect: API Routes ─────────────────────────────────────
 # @netlify/plugin-nextjs Next.js API rotalarını otomatik olarak
 # Netlify Functions'a dönüştürür; manuel redirect GEREKMİYOR.

@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { name_surname, phone_number, date_of_birth, notes } = body
+  const { name_surname, phone_number, date_of_birth, notes, anamnez_enabled } = body
 
   if (!name_surname || !phone_number) {
     return NextResponse.json({ error: 'Ad soyad ve telefon zorunludur.' }, { status: 400 })
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       phone_number: normalized,
       date_of_birth: date_of_birth || null,
       notes_encrypted,
+      anamnez_enabled: anamnez_enabled === true,
     })
     .select()
     .single()

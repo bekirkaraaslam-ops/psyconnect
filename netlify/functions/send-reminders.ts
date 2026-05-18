@@ -136,6 +136,60 @@ const handler = schedule('0 * * * *', async () => {
     await randomDelay()
   }
 
+  // ── Anamnez form gönderimleri ────────────────────────────────
+  const { data: anamnezPatients } = await supabase
+    .from('patients')
+    .select('id, name_surname, phone_number, psychologist_id')
+    .eq('anamnez_enabled', true)
+    .eq('is_active', true)
+    .is('anamnez_sent_at', null)
+    .not('anamnez_scheduled_at', 'is', null)
+    .lte('anamnez_scheduled_at', new Date().toISOString())
+
+  for (const patient of anamnezPatients ?? []) {
+    const { data: form } = await supabase
+      .from('anamnez_forms')
+      .select('token')
+      .eq('patient_id', patient.id)
+      .is('filled_at', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!form) continue
+
+    const { data: psych } = await supabase
+      .from('psychologists')
+      .select('is_connected')
+      .eq('id', patient.psychologist_id)
+      .single()
+
+    if (!psych?.is_connected) continue
+
+    const firstName = patient.name_surname.split(' ')[0]
+    const baseUrl   = process.env.NEXT_PUBLIC_APP_URL || 'https://seansify.app'
+    const formUrl   = `${baseUrl}/anamnez/${form.token}`
+
+    const message =
+      `Merhaba ${firstName}, yarınki seans öncesinde psikoloğunuzun sizi daha iyi tanıyabilmesi için ` +
+      `aşağıdaki kısa formu doldurmanızı rica ediyoruz 📋\n\n${formUrl}\n\nLink 7 gün geçerlidir.`
+
+    try {
+      await sendViaRailway(patient.psychologist_id, patient.phone_number, message)
+
+      await supabase
+        .from('patients')
+        .update({ anamnez_sent_at: new Date().toISOString() })
+        .eq('id', patient.id)
+
+      console.log(`[send-reminders] ✓ Anamnez linki gönderildi → ${patient.name_surname}`)
+    } catch (err: any) {
+      console.error(`[send-reminders] ✗ Anamnez hatası → ${patient.id}: ${err.message}`)
+    }
+
+    await randomDelay()
+  }
+
   return { statusCode: 200 }
 })
 
