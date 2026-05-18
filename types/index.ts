@@ -117,6 +117,10 @@ export interface HastaNotu {
   seans_notu_encrypted: string | null
   gelecek_plan_encrypted: string | null
   ev_odevi_encrypted: string | null
+  soap_s_encrypted?: string | null
+  soap_o_encrypted?: string | null
+  soap_a_encrypted?: string | null
+  soap_p_encrypted?: string | null
   created_at: string
   updated_at: string
 }

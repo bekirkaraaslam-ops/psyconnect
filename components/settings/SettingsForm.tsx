@@ -14,6 +14,8 @@ interface Props {
     harita_linki: string | null
     online_gorusme_linki: string | null
     hosgeldiniz_mesaji: string | null
+    work_start_hour: number | null
+    work_end_hour: number | null
   } | null
   email: string
 }
@@ -26,6 +28,8 @@ export default function SettingsForm({ psychologist, email }: Props) {
   const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
   const [onlineGorusmeLinki, setOnlineGorusmeLinki] = useState(psychologist?.online_gorusme_linki ?? '')
   const [hosgeldinizMesaji, setHosgeldinizMesaji] = useState(psychologist?.hosgeldiniz_mesaji ?? '')
+  const [workStartHour, setWorkStartHour] = useState(psychologist?.work_start_hour ?? 9)
+  const [workEndHour, setWorkEndHour] = useState(psychologist?.work_end_hour ?? 18)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -46,6 +50,8 @@ export default function SettingsForm({ psychologist, email }: Props) {
         harita_linki: haritaLinki || null,
         online_gorusme_linki: onlineGorusmeLinki || null,
         hosgeldiniz_mesaji: hosgeldinizMesaji || null,
+        work_start_hour: workStartHour,
+        work_end_hour: workEndHour,
       })
       .eq('id', psychologist!.id)
 
@@ -144,6 +150,40 @@ export default function SettingsForm({ psychologist, email }: Props) {
           style={{ borderColor: '#dde5e2', color: '#334155' }}
         />
       </div>
+
+      <h3 className="font-semibold pt-1" style={{ color: '#334155' }}>Mesai Saatleri</h3>
+
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Mesai Başlangıcı</label>
+          <select
+            value={workStartHour}
+            onChange={e => setWorkStartHour(Number(e.target.value))}
+            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+            style={{ borderColor: '#dde5e2', color: '#334155' }}
+          >
+            {Array.from({ length: 17 }, (_, i) => i + 6).map(h => (
+              <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Mesai Bitişi</label>
+          <select
+            value={workEndHour}
+            onChange={e => setWorkEndHour(Number(e.target.value))}
+            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+            style={{ borderColor: '#dde5e2', color: '#334155' }}
+          >
+            {Array.from({ length: 17 }, (_, i) => i + 6).map(h => (
+              <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <p className="text-xs -mt-3" style={{ color: '#94a3b8' }}>
+        Mesai saatleri dışında gelen WhatsApp mesajlarına otomatik yanıt gönderilir.
+      </p>
 
       <h3 className="font-semibold pt-1" style={{ color: '#334155' }}>Hoş Geldiniz Mesajı</h3>
 

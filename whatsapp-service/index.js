@@ -306,6 +306,31 @@ async function connectWhatsApp(psychologistId) {
       ).trim()
       const text = rawText.toUpperCase()
 
+      // ── Mesai dışı koruma ────────────────────────────────────
+      const { data: psyData } = await getSupabase()
+        .from('psychologists')
+        .select('work_start_hour, work_end_hour')
+        .eq('id', psychologistId)
+        .single()
+
+      const workStart = psyData?.work_start_hour ?? 9
+      const workEnd = psyData?.work_end_hour ?? 18
+      const nowHour = new Date().toLocaleString('tr-TR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Istanbul' })
+      const currentHour = parseInt(nowHour)
+      const isOutsideWorkHours = currentHour < workStart || currentHour >= workEnd
+
+      // EVET/İPTAL ve RANDEVU dışındaki mesajlar mesai dışında otomatik yanıtlansın
+      if (isOutsideWorkHours && text !== 'EVET' && text !== 'IPTAL' && text !== 'İPTAL' && !text.includes('RANDEVU')) {
+        const session = botSessions.get(phone)
+        if (!session || session.expiresAt <= Date.now()) {
+          const startStr = String(workStart).padStart(2, '0') + ':00'
+          await sock.sendMessage(jid, {
+            text: `Şu an mesai saatleri dışındayız. ${startStr}'de size yardımcı olmaya çalışacağız. 🕐`,
+          })
+          continue
+        }
+      }
+
       // ── Bot: Randevu talebi ──────────────────────────────────
       if (text.includes('RANDEVU') && rawText.length < 50) {
         const slots = await findAvailableSlots(psychologistId, 3)

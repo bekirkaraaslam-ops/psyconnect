@@ -38,6 +38,10 @@ export async function GET(_req: NextRequest, { params }: Props) {
     seans_notu: safeDecrypt(data.seans_notu_encrypted),
     gelecek_plan: safeDecrypt(data.gelecek_plan_encrypted),
     ev_odevi: safeDecrypt(data.ev_odevi_encrypted),
+    soap_s: safeDecrypt(data.soap_s_encrypted),
+    soap_o: safeDecrypt(data.soap_o_encrypted),
+    soap_a: safeDecrypt(data.soap_a_encrypted),
+    soap_p: safeDecrypt(data.soap_p_encrypted),
     created_at: data.created_at,
     updated_at: data.updated_at,
   })
@@ -57,13 +61,17 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { seans_tarihi, seans_notu, gelecek_plan, ev_odevi } = body
+  const { seans_tarihi, seans_notu, gelecek_plan, ev_odevi, soap_s, soap_o, soap_a, soap_p } = body
 
   const updateData: Record<string, string | null> = {}
   if (seans_tarihi !== undefined) updateData.seans_tarihi = seans_tarihi
   if (seans_notu !== undefined) updateData.seans_notu_encrypted = seans_notu ? encrypt(seans_notu) : null
   if (gelecek_plan !== undefined) updateData.gelecek_plan_encrypted = gelecek_plan ? encrypt(gelecek_plan) : null
   if (ev_odevi !== undefined) updateData.ev_odevi_encrypted = ev_odevi ? encrypt(ev_odevi) : null
+  if (soap_s !== undefined) updateData.soap_s_encrypted = soap_s ? encrypt(soap_s) : null
+  if (soap_o !== undefined) updateData.soap_o_encrypted = soap_o ? encrypt(soap_o) : null
+  if (soap_a !== undefined) updateData.soap_a_encrypted = soap_a ? encrypt(soap_a) : null
+  if (soap_p !== undefined) updateData.soap_p_encrypted = soap_p ? encrypt(soap_p) : null
 
   const { data, error } = await supabase
     .from('hasta_notlari')

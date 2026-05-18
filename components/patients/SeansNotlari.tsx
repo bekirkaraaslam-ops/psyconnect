@@ -13,6 +13,10 @@ interface NotDetay {
   seans_notu: string
   gelecek_plan: string
   ev_odevi: string
+  soap_s: string
+  soap_o: string
+  soap_a: string
+  soap_p: string
 }
 
 interface Props {
@@ -20,17 +24,65 @@ interface Props {
   hastaAdi: string
 }
 
+const SOAP_CARDS = [
+  {
+    key: 'soap_s' as const,
+    label: 'S — Subjektif',
+    sublabel: 'Danışanın Bu Seanstaki Anlatımları',
+    placeholder: 'Danışanın kendi ifadeleri, hisleri, şikayetleri...',
+    bg: '#eff6ff',
+    border: '#bfdbfe',
+    badge: '#3b82f6',
+  },
+  {
+    key: 'soap_o' as const,
+    label: 'O — Objektif',
+    sublabel: 'Gözlemler ve Davranışsal Bulgular',
+    placeholder: 'Görünüm, duygu durumu, davranış, iletişim tarzı...',
+    bg: '#f0fdf4',
+    border: '#bbf7d0',
+    badge: '#22c55e',
+  },
+  {
+    key: 'soap_a' as const,
+    label: 'A — Değerlendirme',
+    sublabel: 'Klinik Değerlendirme',
+    placeholder: 'Klinik izlenim, hipotezler, ilerleme değerlendirmesi...',
+    bg: '#fffbeb',
+    border: '#fde68a',
+    badge: '#f59e0b',
+  },
+  {
+    key: 'soap_p' as const,
+    label: 'P — Plan',
+    sublabel: 'Sonraki Adımlar',
+    placeholder: 'Sonraki seans hedefleri, teknikler, odak noktaları...',
+    bg: '#faf5ff',
+    border: '#e9d5ff',
+    badge: '#a855f7',
+  },
+]
+
 export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   const [notlar, setNotlar] = useState<NotOzet[]>([])
   const [secilenId, setSecilenId] = useState<string | null>(null)
-  const [detay, setDetay] = useState<NotDetay | null>(null)
+  const [, setDetay] = useState<NotDetay | null>(null)
   const [loading, setLoading] = useState(true)
   const [detayLoading, setDetayLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [sending, setSending] = useState(false)
   const [sendSuccess, setSendSuccess] = useState(false)
   const [sendError, setSendError] = useState('')
-  const [form, setForm] = useState({ seans_tarihi: '', seans_notu: '', gelecek_plan: '', ev_odevi: '' })
+  const [form, setForm] = useState({
+    seans_tarihi: '',
+    seans_notu: '',
+    gelecek_plan: '',
+    ev_odevi: '',
+    soap_s: '',
+    soap_o: '',
+    soap_a: '',
+    soap_p: '',
+  })
   const [yeniMode, setYeniMode] = useState(false)
   const [error, setError] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -60,6 +112,10 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       seans_notu: data.seans_notu ?? '',
       gelecek_plan: data.gelecek_plan ?? '',
       ev_odevi: data.ev_odevi ?? '',
+      soap_s: data.soap_s ?? '',
+      soap_o: data.soap_o ?? '',
+      soap_a: data.soap_a ?? '',
+      soap_p: data.soap_p ?? '',
     })
     setDetayLoading(false)
   }
@@ -75,6 +131,10 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       seans_notu: form.seans_notu,
       gelecek_plan: form.gelecek_plan,
       ev_odevi: form.ev_odevi,
+      soap_s: form.soap_s,
+      soap_o: form.soap_o,
+      soap_a: form.soap_a,
+      soap_p: form.soap_p,
     }
 
     let res: Response
@@ -118,7 +178,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
     await fetch(`/api/hasta-notlari/${secilenId}`, { method: 'DELETE' })
     setSecilenId(null)
     setDetay(null)
-    setForm({ seans_tarihi: '', seans_notu: '', gelecek_plan: '', ev_odevi: '' })
+    setForm({ seans_tarihi: '', seans_notu: '', gelecek_plan: '', ev_odevi: '', soap_s: '', soap_o: '', soap_a: '', soap_p: '' })
     await fetchNotlar()
   }
 
@@ -154,6 +214,10 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       seans_notu: '',
       gelecek_plan: '',
       ev_odevi: '',
+      soap_s: '',
+      soap_o: '',
+      soap_a: '',
+      soap_p: '',
     })
   }
 
@@ -206,7 +270,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
         </div>
 
         {/* SAĞ — Not Detayı */}
-        <div className="flex-1 p-5">
+        <div className="flex-1 p-5 overflow-y-auto" style={{ maxHeight: '600px' }}>
           {!secilenId && !yeniMode ? (
             <div className="flex items-center justify-center h-full text-sm" style={{ color: '#94a3b8' }}>
               Soldan bir seans seçin veya yeni seans ekleyin.
@@ -229,31 +293,32 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                 />
               </div>
 
-              {/* Seans Notu */}
-              <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: '#64748b' }}>SEANS NOTU</label>
-                <textarea
-                  value={form.seans_notu}
-                  onChange={e => setForm(p => ({ ...p, seans_notu: e.target.value }))}
-                  rows={4}
-                  placeholder="Bu seansın özeti, gözlemler..."
-                  className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
-                  style={{ borderColor: '#dde5e2', color: '#334155' }}
-                />
-              </div>
-
-              {/* Gelecek Plan */}
-              <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: '#64748b' }}>GELECEK SEANS PLANI</label>
-                <textarea
-                  value={form.gelecek_plan}
-                  onChange={e => setForm(p => ({ ...p, gelecek_plan: e.target.value }))}
-                  rows={3}
-                  placeholder="Bir sonraki seans için hedefler..."
-                  className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
-                  style={{ borderColor: '#dde5e2', color: '#334155' }}
-                />
-              </div>
+              {/* SOAP Kartları */}
+              {SOAP_CARDS.map(card => (
+                <div
+                  key={card.key}
+                  className="rounded-xl border p-3"
+                  style={{ background: card.bg, borderColor: card.border }}
+                >
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span
+                      className="text-xs font-bold px-1.5 py-0.5 rounded text-white"
+                      style={{ background: card.badge, fontSize: '10px' }}
+                    >
+                      {card.key.replace('soap_', '').toUpperCase()}
+                    </span>
+                    <span className="text-xs font-semibold" style={{ color: '#334155' }}>{card.sublabel}</span>
+                  </div>
+                  <textarea
+                    value={form[card.key]}
+                    onChange={e => setForm(p => ({ ...p, [card.key]: e.target.value }))}
+                    rows={3}
+                    placeholder={card.placeholder}
+                    className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none bg-white"
+                    style={{ borderColor: card.border, color: '#334155' }}
+                  />
+                </div>
+              ))}
 
               {/* Ev Ödevi */}
               <div>
@@ -287,6 +352,19 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                     )}
                   </div>
                 )}
+              </div>
+
+              {/* Genel Notlar (eski alan, uyumluluk için) */}
+              <div>
+                <label className="block text-xs font-medium mb-1" style={{ color: '#64748b' }}>GENEL NOTLAR</label>
+                <textarea
+                  value={form.seans_notu}
+                  onChange={e => setForm(p => ({ ...p, seans_notu: e.target.value }))}
+                  rows={2}
+                  placeholder="Ek notlar..."
+                  className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
+                  style={{ borderColor: '#dde5e2', color: '#334155' }}
+                />
               </div>
 
               {error && (

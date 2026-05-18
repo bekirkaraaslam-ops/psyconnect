@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { hasta_id, seans_tarihi, seans_notu, gelecek_plan, ev_odevi } = body
+  const { hasta_id, seans_tarihi, seans_notu, gelecek_plan, ev_odevi, soap_s, soap_o, soap_a, soap_p } = body
 
   if (!hasta_id || !seans_tarihi) {
     return NextResponse.json({ error: 'hasta_id ve seans_tarihi zorunludur.' }, { status: 400 })
@@ -56,6 +56,10 @@ export async function POST(req: NextRequest) {
   if (seans_notu) insertData.seans_notu_encrypted = encrypt(seans_notu)
   if (gelecek_plan) insertData.gelecek_plan_encrypted = encrypt(gelecek_plan)
   if (ev_odevi) insertData.ev_odevi_encrypted = encrypt(ev_odevi)
+  if (soap_s) insertData.soap_s_encrypted = encrypt(soap_s)
+  if (soap_o) insertData.soap_o_encrypted = encrypt(soap_o)
+  if (soap_a) insertData.soap_a_encrypted = encrypt(soap_a)
+  if (soap_p) insertData.soap_p_encrypted = encrypt(soap_p)
 
   const { data, error } = await supabase
     .from('hasta_notlari')
