@@ -228,7 +228,15 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
     <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#dde5e2' }}>
-        <h3 className="font-semibold" style={{ color: '#334155' }}>Seans Notları</h3>
+        <div className="flex items-center gap-3">
+          <h3 className="font-semibold" style={{ color: '#334155' }}>Seans Notları</h3>
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ background: '#f0f7f5' }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span className="text-xs font-medium" style={{ color: '#4a7c6f', fontSize: '10px' }}>Uçtan uca şifreli</span>
+          </div>
+        </div>
         <button
           onClick={handleYeni}
           className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg text-white"

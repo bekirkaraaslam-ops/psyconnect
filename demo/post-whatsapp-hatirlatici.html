@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 50%, #0d1f18 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Grid texture */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(37,211,102,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,211,102,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Glow blob — left leaning */
+  .glow {
+    position: absolute;
+    width: 700px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(37,211,102,0.08) 0%, rgba(74,124,111,0.06) 40%, transparent 70%);
+    top: 45%;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* Corner decorations */
+  .corner-tl, .corner-br {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+  }
+  .corner-tl {
+    top: 48px;
+    left: 48px;
+    border-top: 1.5px solid rgba(74,124,111,0.35);
+    border-left: 1.5px solid rgba(74,124,111,0.35);
+    border-radius: 4px 0 0 0;
+  }
+  .corner-br {
+    bottom: 48px;
+    right: 48px;
+    border-bottom: 1.5px solid rgba(74,124,111,0.35);
+    border-right: 1.5px solid rgba(74,124,111,0.35);
+    border-radius: 0 0 4px 0;
+  }
+
+  /* WhatsApp badge — top left */
+  .wa-badge {
+    position: absolute;
+    top: 68px;
+    left: 72px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(37,211,102,0.1);
+    border: 1px solid rgba(37,211,102,0.22);
+    border-radius: 100px;
+    padding: 10px 20px 10px 14px;
+  }
+
+  .wa-badge-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wa-badge span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #25D366;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Main content */
+  .content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 100px;
+    margin-top: -40px;
+  }
+
+  .main-text {
+    font-size: 80px;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+
+  .main-text .line1 {
+    display: block;
+    color: #94a3b8;
+    font-size: 68px;
+    font-weight: 700;
+  }
+
+  .main-text .line2 {
+    display: block;
+    font-size: 80px;
+  }
+
+  .main-text em {
+    font-style: normal;
+    background: linear-gradient(90deg, #f8fafc 0%, #6ee7b7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sub-text {
+    font-size: 20px;
+    color: #475569;
+    line-height: 1.65;
+    max-width: 660px;
+    margin: 0 auto;
+    font-weight: 400;
+  }
+
+  .sub-text strong {
+    color: #6ee7b7;
+    font-weight: 600;
+  }
+
+  /* Stats row */
+  .stats {
+    position: absolute;
+    bottom: 136px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    z-index: 2;
+  }
+
+  .stat {
+    padding: 0 56px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-size: 40px;
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-num.green {
+    background: linear-gradient(90deg, #4a7c6f, #6ee7b7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* Divider line above stats */
+  .stats-divider {
+    position: absolute;
+    bottom: 218px;
+    left: 72px;
+    right: 72px;
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    z-index: 2;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 72px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    z-index: 2;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-box {
+    width: 38px;
+    height: 38px;
+    background: #4a7c6f;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.01em;
+  }
+
+  .url {
+    font-size: 15px;
+    color: #475569;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  /* Phone mockup accent — right side */
+  .phone-accent {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 220px;
+    height: 420px;
+    border: 1.5px solid rgba(37,211,102,0.15);
+    border-radius: 36px;
+    background: rgba(37,211,102,0.03);
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .phone-accent::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: rgba(37,211,102,0.2);
+    border-radius: 3px;
+  }
+
+  /* Message bubbles inside phone */
+  .bubble {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    background: rgba(37,211,102,0.12);
+    border: 1px solid rgba(37,211,102,0.2);
+    border-radius: 12px 12px 12px 4px;
+    padding: 10px 12px;
+    font-size: 10px;
+    color: #6ee7b7;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .bubble.b1 { top: 60px; }
+  .bubble.b2 { top: 130px; background: rgba(74,124,111,0.15); border-radius: 12px 12px 4px 12px; color: #94a3b8; }
+  .bubble.b3 { top: 200px; }
+
+  .bubble-time {
+    font-size: 8px;
+    color: #334155;
+    margin-top: 4px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+  <div class="glow"></div>
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <!-- Phone accent - decorative -->
+  <div class="phone-accent">
+    <div class="bubble b1">
+      📅 Yarın 14:00 randevunuzu hatırlatırız. Onaylıyor musunuz?
+      <div class="bubble-time">Seansify · 09:00</div>
+    </div>
+    <div class="bubble b2">
+      Evet, geleceğim ✓
+      <div class="bubble-time">09:02</div>
+    </div>
+    <div class="bubble b3">
+      Harika! 1 saat kala tekrar hatırlatacağız 🙏
+      <div class="bubble-time">Seansify · 09:02</div>
+    </div>
+  </div>
+
+  <!-- WhatsApp Badge -->
+  <div class="wa-badge">
+    <div class="wa-badge-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/>
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.073-1.115l-.292-.173-3.028.9.9-3.028-.173-.292A7.96 7.96 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z" fill="#25D366"/>
+      </svg>
+    </div>
+    <span>Otomatik Hatırlatıcı</span>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1 class="main-text">
+      <span class="line1">Gelmedi mi?</span>
+      <span class="line2">Artık <em>önceden biliyorsun.</em></span>
+    </h1>
+
+    <p class="sub-text">
+      Randevudan <strong>24 saat</strong> ve <strong>1 saat</strong> önce otomatik WhatsApp mesajı gider.
+      Hasta onaylar, iptal eder ya da yeni saat ister — sen hiçbir şey yapmadan.
+    </p>
+  </div>
+
+  <!-- Divider -->
+  <div class="stats-divider"></div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num green">%40</div>
+      <div class="stat-label">No-show azalması</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0 dk</div>
+      <div class="stat-label">Manuel takip</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24s & 1s</div>
+      <div class="stat-label">Önce bildirim</div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="logo-area">
+      <div class="logo-box">
+        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+          <rect x="6" y="11" width="28" height="24" rx="3" fill="white"/>
+          <rect x="13" y="7" width="3" height="8" rx="1.5" fill="white"/>
+          <rect x="24" y="7" width="3" height="8" rx="1.5" fill="white"/>
+          <circle cx="20" cy="25" r="4" fill="#4a7c6f"/>
+          <path d="M13 35C13 31 16 28 20 28C24 28 27 31 27 35" fill="#4a7c6f"/>
+        </svg>
+      </div>
+      <span class="logo-name">Seansify</span>
+    </div>
+    <span class="url">seansify.com</span>
+  </div>
+
+</body>
+</html>

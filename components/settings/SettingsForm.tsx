@@ -16,9 +16,20 @@ interface Props {
     hosgeldiniz_mesaji: string | null
     work_start_hour: number | null
     work_end_hour: number | null
+    work_days: string[] | null
   } | null
   email: string
 }
+
+const ALL_DAYS = [
+  { key: 'pazartesi', label: 'Pzt' },
+  { key: 'salı', label: 'Sal' },
+  { key: 'çarşamba', label: 'Çar' },
+  { key: 'perşembe', label: 'Per' },
+  { key: 'cuma', label: 'Cum' },
+  { key: 'cumartesi', label: 'Cmt' },
+  { key: 'pazar', label: 'Paz' },
+]
 
 export default function SettingsForm({ psychologist, email }: Props) {
   const router = useRouter()
@@ -30,6 +41,9 @@ export default function SettingsForm({ psychologist, email }: Props) {
   const [hosgeldinizMesaji, setHosgeldinizMesaji] = useState(psychologist?.hosgeldiniz_mesaji ?? '')
   const [workStartHour, setWorkStartHour] = useState(psychologist?.work_start_hour ?? 9)
   const [workEndHour, setWorkEndHour] = useState(psychologist?.work_end_hour ?? 18)
+  const [workDays, setWorkDays] = useState<string[]>(
+    psychologist?.work_days ?? ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma']
+  )
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -52,6 +66,7 @@ export default function SettingsForm({ psychologist, email }: Props) {
         hosgeldiniz_mesaji: hosgeldinizMesaji || null,
         work_start_hour: workStartHour,
         work_end_hour: workEndHour,
+        work_days: workDays,
       })
       .eq('id', psychologist!.id)
 
@@ -184,6 +199,36 @@ export default function SettingsForm({ psychologist, email }: Props) {
       <p className="text-xs -mt-3" style={{ color: '#94a3b8' }}>
         Mesai saatleri dışında gelen WhatsApp mesajlarına otomatik yanıt gönderilir.
       </p>
+
+      <div>
+        <label className="block text-sm font-medium mb-2" style={{ color: '#334155' }}>Çalışma Günleri</label>
+        <div className="flex gap-2 flex-wrap">
+          {ALL_DAYS.map(day => {
+            const active = workDays.includes(day.key)
+            return (
+              <button
+                key={day.key}
+                type="button"
+                onClick={() =>
+                  setWorkDays(prev =>
+                    active ? prev.filter(d => d !== day.key) : [...prev, day.key]
+                  )
+                }
+                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  background: active ? '#4a7c6f' : '#f1f5f9',
+                  color: active ? '#fff' : '#64748b',
+                }}
+              >
+                {day.label}
+              </button>
+            )
+          })}
+        </div>
+        <p className="text-xs mt-1.5" style={{ color: '#94a3b8' }}>
+          Bot bu günlerdeki boş slotları hastaya önerir.
+        </p>
+      </div>
 
       <h3 className="font-semibold pt-1" style={{ color: '#334155' }}>Hoş Geldiniz Mesajı</h3>
 

@@ -15,25 +15,53 @@ export async function POST(req: NextRequest) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session } = body
+  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session, recurring } = body
 
   if (!patient_id || !appointment_date) {
     return NextResponse.json({ error: 'Hasta ve tarih zorunludur.' }, { status: 400 })
   }
 
+  const baseRecord = {
+    psychologist_id: psychologist.id,
+    patient_id,
+    duration_minutes: duration_minutes ?? 50,
+    status: status ?? 'waiting',
+    appointment_type: appointment_type ?? 'yuzyuze',
+    toplam_paket_seansi: toplam_paket_seansi ?? null,
+    mevcut_seans_no: mevcut_seans_no ?? null,
+    is_first_session: is_first_session ?? false,
+  }
+
+  // Tekrarlayan randevu
+  if (recurring?.frequency && recurring?.endDate) {
+    const dates: string[] = []
+    const start = new Date(appointment_date)
+    const end = new Date(recurring.endDate)
+    const intervalDays = recurring.frequency === 'weekly' ? 7 : recurring.frequency === 'biweekly' ? 14 : 30
+
+    const cursor = new Date(start)
+    while (cursor <= end) {
+      dates.push(cursor.toISOString())
+      if (recurring.frequency === 'monthly') {
+        cursor.setMonth(cursor.getMonth() + 1)
+      } else {
+        cursor.setDate(cursor.getDate() + intervalDays)
+      }
+    }
+
+    if (dates.length === 0) {
+      return NextResponse.json({ error: 'Geçerli tarih aralığı bulunamadı.' }, { status: 400 })
+    }
+
+    const records = dates.map(date => ({ ...baseRecord, appointment_date: date }))
+    const { error } = await supabase.from('appointments').insert(records)
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+    return NextResponse.json({ count: records.length }, { status: 201 })
+  }
+
   const { data, error } = await supabase
     .from('appointments')
-    .insert({
-      psychologist_id: psychologist.id,
-      patient_id,
-      appointment_date,
-      duration_minutes: duration_minutes ?? 50,
-      status: status ?? 'waiting',
-      appointment_type: appointment_type ?? 'yuzyuze',
-      toplam_paket_seansi: toplam_paket_seansi ?? null,
-      mevcut_seans_no: mevcut_seans_no ?? null,
-      is_first_session: is_first_session ?? false,
-    })
+    .insert({ ...baseRecord, appointment_date })
     .select()
     .single()
 

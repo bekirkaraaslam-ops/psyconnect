@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seansify – Ürün Sunumu</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    width: 1440px;
+    height: 900px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: #4a7c6f;
+    z-index: 9999;
+    transition: width linear;
+  }
+
+  /* ── SCENE WRAPPER ── */
+  .scene {
+    position: absolute;
+    inset: 0;
+    width: 1440px;
+    height: 900px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .scene.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .scene.fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  /* ── BACKGROUND IMAGE ── */
+  .scene-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+  }
+
+  .scene-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  /* ── CALLOUT CARDS ── */
+  .callout {
+    position: absolute;
+    background: rgba(13, 31, 24, 0.92);
+    border: 1px solid rgba(74, 124, 111, 0.5);
+    border-radius: 16px;
+    padding: 20px 24px;
+    max-width: 280px;
+    backdrop-filter: blur(12px);
+    color: white;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    z-index: 10;
+  }
+
+  .callout h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #6ee7b7;
+  }
+
+  .callout p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #94a3b8;
+  }
+
+  .callout.slide-in-right {
+    transform: translateX(60px);
+    transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+  }
+
+  .callout.slide-in-left {
+    transform: translateX(-60px);
+    transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+  }
+
+  .callout.slide-in-up {
+    transform: translateY(40px);
+    transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+  }
+
+  .callout.visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+
+  /* ── SPOTLIGHT ── */
+  .spotlight {
+    position: absolute;
+    border: 2px solid #4a7c6f;
+    border-radius: 8px;
+    box-shadow: 0 0 0 0 rgba(74, 124, 111, 0.4);
+    animation: pulse-border 1.5s ease-in-out infinite;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.8s;
+  }
+
+  .spotlight.visible {
+    opacity: 1;
+  }
+
+  @keyframes pulse-border {
+    0%   { box-shadow: 0 0 0 0   rgba(74, 124, 111, 0.6); }
+    70%  { box-shadow: 0 0 0 12px rgba(74, 124, 111, 0); }
+    100% { box-shadow: 0 0 0 0   rgba(74, 124, 111, 0); }
+  }
+
+  /* ── CURSOR DOT ── */
+  .cursor-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    z-index: 20;
+    pointer-events: none;
+    transition: left 0.6s ease, top 0.6s ease;
+  }
+
+  .cursor-dot.click {
+    animation: cursor-click 0.4s ease;
+  }
+
+  @keyframes cursor-click {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.8); background: rgba(74, 124, 111, 0.9); }
+    100% { transform: scale(1); }
+  }
+
+  /* ── SCENE 0 — INTRO ── */
+  #scene-intro {
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .intro-logo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+  }
+
+  .intro-logo-wrap.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .logo-icon {
+    width: 90px;
+    height: 90px;
+    background: #4a7c6f;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -2px;
+    box-shadow: 0 0 60px rgba(74, 124, 111, 0.5);
+  }
+
+  .intro-title {
+    font-size: 56px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .intro-subtitle {
+    font-size: 20px;
+    color: #94a3b8;
+    margin-top: -12px;
+    text-align: center;
+  }
+
+  .intro-domain {
+    font-size: 14px;
+    color: #4a7c6f;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ── SCENE 9 — WHATSAPP MOCKUP ── */
+  #scene-whatsapp-bot {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .wa-top-label {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(74, 124, 111, 0.15);
+    border: 1px solid rgba(74, 124, 111, 0.4);
+    border-radius: 10px;
+    padding: 8px 20px;
+    color: #6ee7b7;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.3s;
+    white-space: nowrap;
+  }
+
+  .wa-top-label.visible { opacity: 1; }
+
+  .wa-mockup {
+    width: 820px;
+    height: 800px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: scale(0.96) translateY(20px);
+    transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+  }
+
+  .wa-mockup.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  /* WhatsApp header */
+  .wa-header {
+    background: #075E54;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .wa-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #128C7E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .wa-header-info .wa-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .wa-header-info .wa-status {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .wa-header-icons {
+    margin-left: auto;
+    display: flex;
+    gap: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+  }
+
+  /* WhatsApp chat bg */
+  .wa-messages {
+    flex: 1;
+    background: #ECE5DD;
+    overflow-y: auto;
+    padding: 12px 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .wa-date-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+  }
+
+  .wa-date-sep span {
+    background: rgba(225, 220, 212, 0.95);
+    color: #54656f;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 7px;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+  }
+
+  .wa-scenario-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0 6px;
+  }
+
+  .wa-scenario-sep span {
+    background: #075E54;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 12px;
+  }
+
+  .wa-msg {
+    display: flex;
+    margin-bottom: 2px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .wa-msg.visible { opacity: 1; transform: translateY(0); }
+  .wa-msg.out { justify-content: flex-end; }
+  .wa-msg.in  { justify-content: flex-start; }
+
+  .wa-bubble {
+    max-width: 62%;
+    padding: 7px 10px 6px;
+    border-radius: 7.5px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.45;
+    position: relative;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    color: #111b21;
+  }
+
+  .wa-bubble.out {
+    background: #dcf8c6;
+    border-top-right-radius: 0;
+  }
+
+  .wa-bubble.in {
+    background: #fff;
+    border-top-left-radius: 0;
+  }
+
+  .wa-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    margin-top: 3px;
+  }
+
+  .wa-time { font-size: 11px; color: #667781; }
+  .wa-ticks { font-size: 13px; color: #53bdeb; }
+
+  .wa-quick-replies {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .wa-qr-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #0084ff;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .wa-qr-btn.clicked {
+    background: #dcf8c6;
+    border-color: #a0d8a0;
+    color: #128C7E;
+  }
+
+  .wa-typing {
+    display: none;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+
+  .wa-typing.show { display: flex; }
+
+  .wa-typing-bubble {
+    background: #fff;
+    border-radius: 7.5px;
+    border-top-left-radius: 0;
+    padding: 10px 14px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.2);
+  }
+
+  .wa-typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #8696a0;
+    animation: wa-bounce 1.2s infinite ease-in-out;
+  }
+
+  .wa-typing-dot:nth-child(1) { animation-delay: 0s; }
+  .wa-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .wa-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes wa-bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30%           { transform: translateY(-5px); }
+  }
+
+  /* WhatsApp input bar */
+  .wa-input-bar {
+    background: #f0f0f0;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-top: 1px solid #ddd;
+  }
+
+  .wa-input-bar .wa-emoji { font-size: 22px; color: #54656f; cursor: pointer; }
+  .wa-input-field {
+    flex: 1;
+    background: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 9px 14px;
+    font-size: 14px;
+    color: #111b21;
+    outline: none;
+  }
+  .wa-input-field::placeholder { color: #8696a0; }
+  .wa-input-bar .wa-mic { font-size: 22px; color: #54656f; cursor: pointer; }
+
+  /* ── SCENE 10 — OUTRO ── */
+  #scene-outro {
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .outro-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  }
+
+  .outro-wrap.visible { opacity: 1; transform: translateY(0); }
+
+  .outro-logo-icon {
+    width: 110px;
+    height: 110px;
+    background: #4a7c6f;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 80px rgba(74, 124, 111, 0.6);
+  }
+
+  .outro-title {
+    font-size: 64px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .outro-tagline {
+    font-size: 24px;
+    color: #94a3b8;
+    margin-top: -16px;
+  }
+
+  .outro-domain {
+    font-size: 20px;
+    color: #4a7c6f;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  /* scrollbar in wa-messages */
+  .wa-messages::-webkit-scrollbar { width: 4px; }
+  .wa-messages::-webkit-scrollbar-track { background: transparent; }
+  .wa-messages::-webkit-scrollbar-thumb { background: #c4bfb7; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ── PROGRESS BAR ── -->
+<div id="progress-bar"></div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 0 — INTRO
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-intro">
+  <div class="intro-logo-wrap" id="intro-logo">
+    <div class="logo-icon">S</div>
+    <div class="intro-title">Seansify</div>
+    <div class="intro-subtitle">Psikologlar için Akıllı Klinik Yönetimi</div>
+    <div class="intro-domain">seansify.com</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 1 — DASHBOARD
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-dashboard">
+  <div class="scene-bg" style="background-image: url('screenshots/01-dashboard.png');" id="bg-dashboard"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-right" id="callout-dashboard" style="top: 60px; right: 60px;">
+    <h3>Genel Bakis</h3>
+    <p>Tum randevulariniz, bekleyen onaylar ve hasta metrikleri tek ekranda gorunur.</p>
+  </div>
+  <div class="spotlight" id="spot-dashboard" style="top: 140px; left: 60px; width: 580px; height: 180px;"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 2 — HASTA LİSTESİ
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-patients">
+  <div class="scene-bg" style="background-image: url('screenshots/02-patients.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-left" id="callout-patients" style="top: 60px; left: 60px;">
+    <h3>Hasta Takibi</h3>
+    <p>Tum hastalariniz tek listede. Arama, filtreleme ve hizli erisim.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 3 — YENİ HASTA FORMU
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-new-patient">
+  <div class="scene-bg" style="background-image: url('screenshots/03-new-patient.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-right" id="callout-new-patient" style="top: 80px; right: 60px;">
+    <h3>Yeni Hasta Kaydi</h3>
+    <p>Ad, telefon, dogum tarihi ve ozel notlar sifreli saklanir.</p>
+  </div>
+  <div class="cursor-dot" id="cursor-new-patient" style="left: 520px; top: 320px;"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 4 — ANAMNEZ TOGGLE
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-anamnez">
+  <div class="scene-bg" style="background-image: url('screenshots/04-new-patient-anamnez.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-left" id="callout-anamnez" style="bottom: 80px; left: 60px;">
+    <h3>Anamnez Formu</h3>
+    <p>Ilk randevudan 1 gun once WhatsApp ile otomatik form linki gonderilir.</p>
+  </div>
+  <div class="spotlight" id="spot-anamnez" style="top: 460px; left: 200px; width: 540px; height: 60px;"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 5 — HASTA PROFİLİ
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-patient-detail">
+  <div class="scene-bg" id="bg-patient-detail" style="background-image: url('screenshots/05-patient-detail.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-right" id="callout-patient-detail" style="top: 80px; right: 60px;">
+    <h3>Hasta Profili</h3>
+    <p>Randevu gecmisi, seans notlari ve anamnez formu tek sayfada.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 6 — RANDEVULAR
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-appointments">
+  <div class="scene-bg" style="background-image: url('screenshots/06-appointments.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-left" id="callout-appointments" style="top: 60px; left: 60px;">
+    <h3>Randevu Yonetimi</h3>
+    <p>Durum takibi, iptal sayisi ve gecmis randevular.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 7 — TAKVİM
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-calendar">
+  <div class="scene-bg" style="background-image: url('screenshots/08-calendar.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-right" id="callout-calendar" style="top: 80px; right: 60px;">
+    <h3>Haftalik Takvim</h3>
+    <p>Randevularinizi gorsel takvimde yonetin, cakismalari onleyin.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 8 — WHATSAPP BAĞLANTISI
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-whatsapp-connect">
+  <div class="scene-bg" style="background-image: url('screenshots/09-whatsapp.png');"></div>
+  <div class="scene-overlay"></div>
+  <div class="callout slide-in-left" id="callout-whatsapp-connect" style="top: 60px; left: 60px;">
+    <h3>WhatsApp Baglantisi</h3>
+    <p>Kendi numaranizi QR kod ile baglayin — tek seferlik 2 dakika.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 9 — WHATSAPP BOT MOCKUp
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-whatsapp-bot">
+  <div class="wa-top-label" id="wa-top-label">WhatsApp Asistani — 7/24 Otomatik</div>
+
+  <div class="wa-mockup" id="wa-mockup">
+    <!-- Header -->
+    <div class="wa-header">
+      <div class="wa-avatar">&#x1F916;</div>
+      <div class="wa-header-info">
+        <div class="wa-name">Zeynep Kaya</div>
+        <div class="wa-status">Seansify asistani uzerinden</div>
+      </div>
+      <div class="wa-header-icons">
+        <span>&#128269;</span>
+        <span>&#128222;</span>
+        <span>&#8942;</span>
+      </div>
+    </div>
+
+    <!-- Messages area -->
+    <div class="wa-messages" id="wa-messages-area">
+      <div class="wa-date-sep"><span>BUGÜN</span></div>
+      <div class="wa-scenario-sep" id="wa-sep-1"><span>Senaryo 1 – AI Randevu Asistani</span></div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="wa-input-bar">
+      <span class="wa-emoji">&#128522;</span>
+      <input class="wa-input-field" type="text" placeholder="Bir mesaj yazin" readonly>
+      <span class="wa-mic">&#127908;</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SAHNE 10 — OUTRO
+════════════════════════════════════════════ -->
+<div class="scene" id="scene-outro">
+  <div class="outro-wrap" id="outro-wrap">
+    <div class="outro-logo-icon">S</div>
+    <div class="outro-title">Seansify</div>
+    <div class="outro-tagline">Klinigini Dijitalleştir</div>
+    <div class="outro-domain">seansify.com</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict'
+
+  /* ─── SAHNE TANIMI ─── */
+  const SCENES = [
+    { id: 'scene-intro',            duration: 4000  },
+    { id: 'scene-dashboard',        duration: 5000  },
+    { id: 'scene-patients',         duration: 4500  },
+    { id: 'scene-new-patient',      duration: 5000  },
+    { id: 'scene-anamnez',          duration: 5000  },
+    { id: 'scene-patient-detail',   duration: 5000  },
+    { id: 'scene-appointments',     duration: 4500  },
+    { id: 'scene-calendar',         duration: 5000  },
+    { id: 'scene-whatsapp-connect', duration: 5000  },
+    { id: 'scene-whatsapp-bot',     duration: 28000 },
+    { id: 'scene-outro',            duration: 5000  },
+  ]
+
+  const totalDuration = SCENES.reduce((s, sc) => s + sc.duration, 0)
+  let currentScene = -1
+  let progressStart = 0
+  let progressRafId = null
+
+  const progressBar = document.getElementById('progress-bar')
+
+  /* ─── YARDIMCI: eleman var mı kontrol ─── */
+  function el(id) { return document.getElementById(id) }
+  function addClass(id, cls) { const e = el(id); if (e) e.classList.add(cls) }
+
+  /* ─── SCREENSHOT VAR MI? ─── */
+  function checkImage(src, cb) {
+    const img = new Image()
+    img.onload  = () => cb(true)
+    img.onerror = () => cb(false)
+    img.src = src
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  function startProgress(duration) {
+    if (progressRafId) cancelAnimationFrame(progressRafId)
+    progressStart = performance.now()
+    const startWidth = parseFloat(progressBar.style.width) || 0
+
+    function tick(now) {
+      const elapsed = now - progressStart
+      const pct = Math.min(startWidth + (elapsed / totalDuration) * 100, 100)
+      progressBar.style.width = pct + '%'
+      if (elapsed < duration) progressRafId = requestAnimationFrame(tick)
+    }
+    progressRafId = requestAnimationFrame(tick)
+  }
+
+  /* ─── SAHNE GEÇİŞİ ─── */
+  function goToScene(index) {
+    const prev = SCENES[currentScene]
+    if (prev) {
+      const prevEl = el(prev.id)
+      if (prevEl) {
+        prevEl.classList.add('fade-out')
+        setTimeout(() => {
+          prevEl.classList.remove('active', 'fade-out')
+        }, 400)
+      }
+    }
+
+    currentScene = index
+    const scene = SCENES[index]
+    if (!scene) return
+
+    const sceneEl = el(scene.id)
+    if (!sceneEl) return
+
+    setTimeout(() => {
+      sceneEl.classList.add('active')
+      onSceneEnter(scene.id)
+      startProgress(scene.duration)
+
+      if (index + 1 < SCENES.length) {
+        setTimeout(() => goToScene(index + 1), scene.duration)
+      }
+    }, 50)
+  }
+
+  /* ─── CURSOR ANİMASYONU ─── */
+  function animateCursor(cursorId, positions, intervalMs) {
+    const cursor = el(cursorId)
+    if (!cursor) return
+    let i = 0
+    function step() {
+      if (i >= positions.length) return
+      const [x, y] = positions[i]
+      cursor.style.left = x + 'px'
+      cursor.style.top  = y + 'px'
+      setTimeout(() => {
+        cursor.classList.add('click')
+        setTimeout(() => cursor.classList.remove('click'), 400)
+      }, intervalMs * 0.5)
+      i++
+      if (i < positions.length) setTimeout(step, intervalMs)
+    }
+    setTimeout(step, 600)
+  }
+
+  /* ─── SAHNE GİRİŞ OLAYLARI ─── */
+  function onSceneEnter(sceneId) {
+    switch (sceneId) {
+
+      case 'scene-intro':
+        setTimeout(() => addClass('intro-logo', 'visible'), 100)
+        break
+
+      case 'scene-dashboard':
+        setTimeout(() => {
+          addClass('callout-dashboard', 'visible')
+          addClass('spot-dashboard', 'visible')
+        }, 400)
+        break
+
+      case 'scene-patients':
+        setTimeout(() => addClass('callout-patients', 'visible'), 400)
+        break
+
+      case 'scene-new-patient':
+        setTimeout(() => {
+          addClass('callout-new-patient', 'visible')
+          animateCursor('cursor-new-patient', [
+            [420, 280], [520, 350], [520, 420], [520, 490], [420, 560]
+          ], 900)
+        }, 400)
+        break
+
+      case 'scene-anamnez':
+        setTimeout(() => {
+          addClass('callout-anamnez', 'visible')
+          addClass('spot-anamnez', 'visible')
+        }, 400)
+        break
+
+      case 'scene-patient-detail':
+        checkImage('screenshots/05-patient-detail.png', (exists) => {
+          const bgEl = el('bg-patient-detail')
+          if (!exists && bgEl) {
+            bgEl.style.backgroundImage = "url('screenshots/02-patients.png')"
+          }
+        })
+        setTimeout(() => addClass('callout-patient-detail', 'visible'), 400)
+        break
+
+      case 'scene-appointments':
+        setTimeout(() => addClass('callout-appointments', 'visible'), 400)
+        break
+
+      case 'scene-calendar':
+        setTimeout(() => addClass('callout-calendar', 'visible'), 400)
+        break
+
+      case 'scene-whatsapp-connect':
+        setTimeout(() => addClass('callout-whatsapp-connect', 'visible'), 400)
+        break
+
+      case 'scene-whatsapp-bot':
+        setTimeout(() => {
+          addClass('wa-top-label', 'visible')
+          addClass('wa-mockup', 'visible')
+          startWhatsAppConversation()
+        }, 300)
+        break
+
+      case 'scene-outro':
+        setTimeout(() => addClass('outro-wrap', 'visible'), 200)
+        break
+    }
+  }
+
+  /* ─── WHATSAPP KONUŞMA ANİMASYONU ─── */
+  function startWhatsAppConversation() {
+    const area = document.getElementById('wa-messages-area')
+    if (!area) return
+
+    const now = new Date()
+    const hhmm = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0')
+
+    /* Mesaj dizisi: type = 'out'|'in'|'sep'|'pause' */
+    const messages = [
+      // ── Senaryo 1 ──
+      { type: 'out', text: 'Merhaba, randevu almak istiyorum 🙏', time: '14:23' },
+      { type: 'in',  text: 'Merhaba Zeynep Hanım! 👋 Ben Seansify asistanıyım. Randevu için hangi tarihler size uygun?', time: '14:23' },
+      { type: 'out', text: 'Bu hafta Çarşamba ya da Perşembe olabilir', time: '14:24' },
+      { type: 'in',  text: '📅 Müsait saatlerimiz:\n\n1️⃣ Çarşamba, 21 Mayıs – 14:00\n2️⃣ Çarşamba, 21 Mayıs – 16:30\n3️⃣ Perşembe, 22 Mayıs – 10:00\n\nHangisi size uygun? (1, 2 veya 3)', time: '14:24' },
+      { type: 'out', text: '1', time: '14:25' },
+      { type: 'in',  text: '✅ Randevunuz oluşturuldu!\n\n📅 Çarşamba, 21 Mayıs 2026\n⏰ Saat 14:00 – 50 dk\n\nGörüşmek üzere! 🙏', time: '14:25' },
+
+      { type: 'pause', ms: 2000 },
+
+      // ── Senaryo 2 ──
+      { type: 'sep', label: 'Senaryo 2 – Hatırlatıcı' },
+      { type: 'in',  text: 'Merhaba Zeynep Hanım 👋\n\nYarınki randevunuzu hatırlatmak istedik:\n📅 Çarşamba, 21 Mayıs – Saat 14:00\n\nRandevunuzu onaylıyor musunuz?', time: '14:26', quickReply: true },
+      { type: 'out', text: '✅ Evet, geleceğim', time: '14:26' },
+      { type: 'in',  text: 'Harika! 🎉 Görüşmek üzere, Zeynep Hanım!', time: '14:27' },
+
+      { type: 'pause', ms: 2000 },
+
+      // ── Senaryo 3 ──
+      { type: 'sep', label: 'Senaryo 3 – Anamnez Formu' },
+      { type: 'in',  text: 'Zeynep Hanım, ilk seansınız öncesinde aşağıdaki formu doldurmanızı rica ederiz:\n\n🔗 seansify.com/anamnez/abc123\n\n⏳ Link 7 gün geçerlidir.', time: '14:28' },
+    ]
+
+    let typingEl = null
+
+    function makeTyping() {
+      const wrap = document.createElement('div')
+      wrap.className = 'wa-typing show'
+      wrap.innerHTML = '<div class="wa-typing-bubble"><div class="wa-typing-dot"></div><div class="wa-typing-dot"></div><div class="wa-typing-dot"></div></div>'
+      return wrap
+    }
+
+    function makeSep(label) {
+      const d = document.createElement('div')
+      d.className = 'wa-scenario-sep'
+      d.innerHTML = '<span>' + label + '</span>'
+      return d
+    }
+
+    function makeMsg(msg) {
+      const wrap = document.createElement('div')
+      wrap.className = 'wa-msg ' + msg.type
+
+      const bubble = document.createElement('div')
+      bubble.className = 'wa-bubble ' + msg.type
+
+      const textEl = document.createElement('div')
+      textEl.style.whiteSpace = 'pre-line'
+      textEl.textContent = msg.text
+      bubble.appendChild(textEl)
+
+      if (msg.quickReply) {
+        const row = document.createElement('div')
+        row.className = 'wa-quick-replies'
+        const btn1 = document.createElement('button')
+        btn1.className = 'wa-qr-btn'
+        btn1.textContent = '✅ Evet, geleceğim'
+        const btn2 = document.createElement('button')
+        btn2.className = 'wa-qr-btn'
+        btn2.textContent = '❌ İptal etmek istiyorum'
+        row.appendChild(btn1)
+        row.appendChild(btn2)
+        bubble.appendChild(row)
+
+        // otomatik tıklama animasyonu
+        setTimeout(() => {
+          btn1.classList.add('clicked')
+        }, 2200)
+      }
+
+      const meta = document.createElement('div')
+      meta.className = 'wa-meta'
+      const timeEl = document.createElement('span')
+      timeEl.className = 'wa-time'
+      timeEl.textContent = msg.time
+      meta.appendChild(timeEl)
+      if (msg.type === 'out') {
+        const ticks = document.createElement('span')
+        ticks.className = 'wa-ticks'
+        ticks.textContent = '✓✓'
+        meta.appendChild(ticks)
+      }
+      bubble.appendChild(meta)
+      wrap.appendChild(bubble)
+      return wrap
+    }
+
+    let queue = [...messages]
+
+    function scrollBot() {
+      area.scrollTop = area.scrollHeight
+    }
+
+    function processNext() {
+      if (!queue.length) return
+
+      const msg = queue.shift()
+
+      if (msg.type === 'pause') {
+        setTimeout(processNext, msg.ms)
+        return
+      }
+
+      if (msg.type === 'sep') {
+        area.appendChild(makeSep(msg.label))
+        scrollBot()
+        setTimeout(processNext, 600)
+        return
+      }
+
+      if (msg.type === 'in') {
+        // yazıyor göster
+        if (typingEl) { typingEl.remove(); typingEl = null }
+        typingEl = makeTyping()
+        area.appendChild(typingEl)
+        scrollBot()
+
+        setTimeout(() => {
+          if (typingEl) { typingEl.remove(); typingEl = null }
+          const el = makeMsg(msg)
+          area.appendChild(el)
+          scrollBot()
+          requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')))
+
+          const delay = msg.quickReply ? 3200 : 2000
+          setTimeout(processNext, delay)
+        }, 1400)
+        return
+      }
+
+      // type === 'out'
+      const el = makeMsg(msg)
+      area.appendChild(el)
+      scrollBot()
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')))
+      setTimeout(processNext, 1800)
+    }
+
+    setTimeout(processNext, 800)
+  }
+
+  /* ─── BAŞLAT ─── */
+  window.addEventListener('load', () => {
+    // scene-5 arka plan fallback: screenshot yoksa patients kullan
+    checkImage('screenshots/05-patient-detail.png', (exists) => {
+      if (!exists) {
+        const bg = document.getElementById('bg-patient-detail')
+        if (bg) bg.style.backgroundImage = "url('screenshots/02-patients.png')"
+      }
+    })
+
+    goToScene(0)
+  })
+
+})()
+</script>
+</body>
+</html>

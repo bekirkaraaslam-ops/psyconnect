@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: linear-gradient(160deg, #080c14 0%, #0a1020 50%, #0f1a2e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  /* Subtle grid */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(100,116,139,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,116,139,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* Glow — right side */
+  .glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,124,111,0.10) 0%, rgba(30,41,59,0.05) 50%, transparent 70%);
+    top: 40%;
+    right: -80px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  /* Corner decorations */
+  .corner-tl, .corner-br {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+  }
+  .corner-tl {
+    top: 48px;
+    left: 48px;
+    border-top: 1.5px solid rgba(74,124,111,0.3);
+    border-left: 1.5px solid rgba(74,124,111,0.3);
+    border-radius: 4px 0 0 0;
+  }
+  .corner-br {
+    bottom: 48px;
+    right: 48px;
+    border-bottom: 1.5px solid rgba(74,124,111,0.3);
+    border-right: 1.5px solid rgba(74,124,111,0.3);
+    border-radius: 0 0 4px 0;
+  }
+
+  /* Security badge — top left */
+  .security-badge {
+    position: absolute;
+    top: 68px;
+    left: 72px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(100,116,139,0.1);
+    border: 1px solid rgba(100,116,139,0.2);
+    border-radius: 100px;
+    padding: 9px 18px 9px 14px;
+  }
+
+  .security-badge span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Left accent line */
+  .accent-line {
+    position: absolute;
+    left: 72px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 280px;
+    background: linear-gradient(180deg, transparent, #4a7c6f 30%, #6ee7b7 60%, transparent);
+    border-radius: 2px;
+  }
+
+  /* Main content */
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 0 0 0 108px;
+    margin-top: -30px;
+  }
+
+  .main-text {
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 36px;
+  }
+
+  .main-text .line1 {
+    display: block;
+    font-size: 82px;
+    color: #cbd5e1;
+    font-weight: 700;
+  }
+
+  .main-text .line2 {
+    display: block;
+    font-size: 88px;
+  }
+
+  .main-text em {
+    font-style: normal;
+    background: linear-gradient(90deg, #f8fafc 0%, #6ee7b7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sub-text {
+    font-size: 19px;
+    color: #475569;
+    line-height: 1.7;
+    max-width: 520px;
+    font-weight: 400;
+  }
+
+  .sub-text strong {
+    color: #6ee7b7;
+    font-weight: 600;
+  }
+
+  /* SOAP card — right side */
+  .soap-card {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    background: rgba(15,26,46,0.9);
+    border: 1px solid rgba(74,124,111,0.2);
+    border-radius: 20px;
+    padding: 28px 24px;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+  }
+
+  .soap-card-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .soap-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .soap-row:last-child { border-bottom: none; }
+
+  .soap-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(74,124,111,0.12);
+    border: 1px solid rgba(74,124,111,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #4a7c6f;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .soap-row.active .soap-letter {
+    background: rgba(110,231,183,0.15);
+    border-color: rgba(110,231,183,0.35);
+    color: #6ee7b7;
+  }
+
+  .soap-content {}
+  .soap-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 3px;
+  }
+  .soap-row.active .soap-title {
+    color: #94a3b8;
+  }
+
+  .soap-line {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    margin-top: 4px;
+  }
+  .soap-line.w80 { width: 80%; }
+  .soap-line.w60 { width: 60%; }
+  .soap-line.w90 { width: 90%; }
+
+  .soap-row.active .soap-line {
+    background: rgba(110,231,183,0.15);
+  }
+
+  /* Cursor blink on active */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 12px;
+    background: #6ee7b7;
+    margin-left: 4px;
+    vertical-align: middle;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Lock icon in card corner */
+  .card-lock {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    opacity: 0.3;
+  }
+
+  /* Stats row */
+  .stats {
+    position: absolute;
+    bottom: 136px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    z-index: 2;
+  }
+
+  .stat {
+    padding: 0 52px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-size: 34px;
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-num.teal {
+    background: linear-gradient(90deg, #4a7c6f, #6ee7b7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #334155;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  .stats-divider {
+    position: absolute;
+    bottom: 218px;
+    left: 72px;
+    right: 72px;
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+    z-index: 2;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 72px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    z-index: 2;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-box {
+    width: 38px;
+    height: 38px;
+    background: #4a7c6f;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.01em;
+  }
+
+  .url {
+    font-size: 15px;
+    color: #334155;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="glow"></div>
+  <div class="accent-line"></div>
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+
+  <!-- Security Badge -->
+  <div class="security-badge">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z" fill="#64748b"/>
+      <path d="M10 17l-3-3 1.4-1.4 1.6 1.6 4.6-4.6L16 11l-6 6z" fill="#94a3b8"/>
+    </svg>
+    <span>Şifreli &amp; Güvenli</span>
+  </div>
+
+  <!-- SOAP Card -->
+  <div class="soap-card">
+    <div class="card-lock">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="11" width="18" height="11" rx="2" fill="#334155"/>
+        <path d="M7 11V7a5 5 0 0110 0v4" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="soap-card-header">Seans Notu · SOAP</div>
+
+    <div class="soap-row">
+      <div class="soap-letter">S</div>
+      <div class="soap-content">
+        <div class="soap-title">Subjektif</div>
+        <div class="soap-line w80"></div>
+        <div class="soap-line w60" style="margin-top:5px;"></div>
+      </div>
+    </div>
+
+    <div class="soap-row">
+      <div class="soap-letter">O</div>
+      <div class="soap-content">
+        <div class="soap-title">Objektif</div>
+        <div class="soap-line w90"></div>
+      </div>
+    </div>
+
+    <div class="soap-row active">
+      <div class="soap-letter">A</div>
+      <div class="soap-content">
+        <div class="soap-title">Analiz</div>
+        <div class="soap-line w70" style="width:70%;"></div>
+        <div class="soap-line w50" style="width:50%; margin-top:5px;"></div>
+        <span class="cursor"></span>
+      </div>
+    </div>
+
+    <div class="soap-row">
+      <div class="soap-letter">P</div>
+      <div class="soap-content">
+        <div class="soap-title">Plan</div>
+        <div class="soap-line w60"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1 class="main-text">
+      <span class="line1">Notunuz,</span>
+      <span class="line2"><em>sadece sizin.</em></span>
+    </h1>
+
+    <p class="sub-text">
+      SOAP formatında yapılandırılmış,<br>
+      <strong>AES-256</strong> ile şifrelenmiş seans notları.<br>
+      <strong>KVKK uyumlu.</strong> Üçüncü taraf erişimi yok.
+    </p>
+  </div>
+
+  <!-- Divider -->
+  <div class="stats-divider"></div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num teal">AES-256</div>
+      <div class="stat-label">Şifreleme standardı</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">KVKK</div>
+      <div class="stat-label">Uyumlu altyapı</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Sıfır</div>
+      <div class="stat-label">3. taraf erişimi</div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="logo-area">
+      <div class="logo-box">
+        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+          <rect x="6" y="11" width="28" height="24" rx="3" fill="white"/>
+          <rect x="13" y="7" width="3" height="8" rx="1.5" fill="white"/>
+          <rect x="24" y="7" width="3" height="8" rx="1.5" fill="white"/>
+          <circle cx="20" cy="25" r="4" fill="#4a7c6f"/>
+          <path d="M13 35C13 31 16 28 20 28C24 28 27 31 27 35" fill="#4a7c6f"/>
+        </svg>
+      </div>
+      <span class="logo-name">Seansify</span>
+    </div>
+    <span class="url">seansify.com</span>
+  </div>
+
+</body>
+</html>

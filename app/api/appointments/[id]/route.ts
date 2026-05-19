@@ -79,12 +79,27 @@ export async function DELETE(_req: NextRequest, { params }: Context) {
     .eq('auth_user_id', user.id)
     .single()
 
-  const { error } = await supabase
+  const { data: apt, error } = await supabase
     .from('appointments')
     .update({ status: 'canceled' })
     .eq('id', id)
     .eq('psychologist_id', psychologist!.id)
+    .select('appointment_date, psychologist_id')
+    .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  // Bekleme listesi cascade — fire and forget
+  if (apt) {
+    fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/waiting-list/cascade`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        psychologist_id: apt.psychologist_id,
+        slot_date: apt.appointment_date,
+      }),
+    }).catch(() => {})
+  }
+
   return NextResponse.json({ success: true })
 }

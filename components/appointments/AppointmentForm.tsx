@@ -42,6 +42,9 @@ export default function AppointmentForm({ patients, appointment }: Props) {
     mevcut_seans_no: appointment?.mevcut_seans_no ?? '' as number | '',
     is_first_session: appointment?.is_first_session ?? false,
   })
+  const [recurring, setRecurring] = useState(false)
+  const [recurringFrequency, setRecurringFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly')
+  const [recurringEndDate, setRecurringEndDate] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [cancelCount, setCancelCount] = useState<number | null>(null)
@@ -77,6 +80,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
         toplam_paket_seansi: form.toplam_paket_seansi ? Number(form.toplam_paket_seansi) : null,
         mevcut_seans_no: form.mevcut_seans_no ? Number(form.mevcut_seans_no) : null,
         is_first_session: form.is_first_session,
+        recurring: !isEdit && recurring ? { frequency: recurringFrequency, endDate: recurringEndDate } : null,
       }),
     })
 
@@ -221,6 +225,61 @@ export default function AppointmentForm({ patients, appointment }: Props) {
           İlk seans (hoş geldiniz mesajı gönderilir)
         </label>
       </div>
+
+      {!isEdit && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 py-1">
+            <input
+              type="checkbox"
+              id="recurring"
+              checked={recurring}
+              onChange={e => setRecurring(e.target.checked)}
+              className="w-4 h-4 accent-[#4a7c6f]"
+            />
+            <label htmlFor="recurring" className="text-sm cursor-pointer" style={{ color: '#334155' }}>
+              Tekrarlayan randevu
+            </label>
+          </div>
+
+          {recurring && (
+            <div className="pl-7 space-y-3">
+              <div>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Tekrar Sıklığı</label>
+                <div className="flex gap-2">
+                  {([['weekly', 'Haftalık'], ['biweekly', '2 Haftada Bir'], ['monthly', 'Aylık']] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => setRecurringFrequency(val)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                      style={{
+                        background: recurringFrequency === val ? '#4a7c6f' : '#f1f5f9',
+                        color: recurringFrequency === val ? '#fff' : '#64748b',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Bitiş Tarihi *</label>
+                <input
+                  type="date"
+                  value={recurringEndDate}
+                  onChange={e => setRecurringEndDate(e.target.value)}
+                  required={recurring}
+                  className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+                  style={{ borderColor: '#dde5e2', color: '#334155' }}
+                />
+              </div>
+              <p className="text-xs" style={{ color: '#94a3b8' }}>
+                Her randevu ayrı ayrı oluşturulur ve bağımsız olarak düzenlenebilir.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {isEdit && (
         <div>
