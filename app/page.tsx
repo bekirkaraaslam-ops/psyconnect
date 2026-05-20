@@ -765,6 +765,7 @@ export default async function LandingPage() {
               <ul className="space-y-3">
                 <li><Link href="/gizlilik" className="text-xs transition-colors" style={{ color: '#475569' }}>Gizlilik Politikası</Link></li>
                 <li><Link href="/kullanim-kosullari" className="text-xs transition-colors" style={{ color: '#475569' }}>Kullanım Koşulları</Link></li>
+                <li><Link href="/iptal-iade" className="text-xs transition-colors" style={{ color: '#475569' }}>İptal ve İade Koşulları</Link></li>
               </ul>
             </div>
           </div>
