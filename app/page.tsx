@@ -453,7 +453,7 @@ export default async function LandingPage() {
                   'Randevu takvime otomatik işlenir, her yerden görürsünüz',
                   'Hatırlatıcı mesajlar sistem tarafından otomatik gönderilir',
                   'İptal = bekleme listesine otomatik teklif, saat dolar',
-                  'Hasta WhatsApp'tan onaylar, siz anlık bilgilendirilirsiniz',
+                  'Hasta WhatsApp üzerinden onaylar, siz anlık bilgilendirilirsiniz',
                   'Anamnez formu linke tıkla, dijital doldur, sistemde sakla',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm" style={{ color: '#cbd5e1' }}>
