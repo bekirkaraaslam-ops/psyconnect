@@ -23,6 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" className={`${inter.variable} h-full`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme:dark)').matches;if(t==='dark'||(t===null&&p)){document.documentElement.classList.add('dark')}}catch(e){}` }} />
+      </head>
       <body className="min-h-full">{children}</body>
     </html>
   )
