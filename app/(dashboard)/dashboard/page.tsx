@@ -74,9 +74,7 @@ export default async function OverviewPage() {
         </div>
 
         {/* Onay Bekleyen Randevular */}
-        {pendingBotApts && pendingBotApts.length > 0 && (
-          <PendingApprovalsPanel initialItems={pendingBotApts as any} />
-        )}
+        <PendingApprovalsPanel initialItems={(pendingBotApts ?? []) as any} />
 
         {/* 3 bilgi paneli */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
