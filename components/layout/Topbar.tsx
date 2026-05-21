@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { getInitials } from '@/lib/utils'
 import DarkModeToggle from './DarkModeToggle'
+import NotificationBell from './NotificationBell'
 
 interface TopbarProps {
   title: string
@@ -23,6 +24,7 @@ export default async function Topbar({ title }: TopbarProps) {
       <h1 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>{title}</h1>
 
       <div className="flex items-center gap-3">
+        <NotificationBell />
         <DarkModeToggle />
         {/* WhatsApp status indicator */}
         <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style={{
