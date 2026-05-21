@@ -150,6 +150,36 @@ export async function connectWhatsApp(
       }
     }
   })
+
+  sock.ev.on('messages.upsert', async ({ messages, type }) => {
+    if (type !== 'notify') return
+    for (const msg of messages) {
+      if (msg.key.fromMe) continue
+      if (!msg.message) continue
+      const text =
+        msg.message.conversation ||
+        msg.message.extendedTextMessage?.text ||
+        ''
+      if (!text.trim()) continue
+      const phone = msg.key.remoteJid?.replace('@s.whatsapp.net', '') ?? ''
+      if (!phone || phone.includes('@g.us')) continue
+
+      const appUrl = process.env.APP_URL
+      if (!appUrl) continue
+      try {
+        await fetch(`${appUrl}/api/whatsapp/incoming`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.WA_API_KEY ?? '',
+          },
+          body: JSON.stringify({ psychologistId, phone, message: text.trim() }),
+        })
+      } catch (err) {
+        console.error('[baileys] incoming webhook hatası:', err)
+      }
+    }
+  })
 }
 
 // ── Mesaj gönder ─────────────────────────────────────────────
