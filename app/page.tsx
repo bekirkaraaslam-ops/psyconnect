@@ -25,7 +25,7 @@ export default async function LandingPage() {
     <div className="min-h-screen" style={{ fontFamily: 'Inter, -apple-system, sans-serif' }}>
 
       {/* ── Navbar ── */}
-      <header className="sticky top-0 z-50" style={{ background: 'rgba(13,31,24,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+      <header className="sticky top-0 z-50" style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e2eae7' }}>
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#4a7c6f' }}>
@@ -39,38 +39,38 @@ export default async function LandingPage() {
                 <path d="M13 35C13 31 16 28 20 28C24 28 27 31 27 35" fill="#4a7c6f" />
               </svg>
             </div>
-            <span className="font-bold text-base text-white tracking-tight">Seansify</span>
+            <span className="font-bold text-base tracking-tight" style={{ color: '#0d1f18' }}>Seansify</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
             {['#ozellikler', '#fiyatlandirma', '#sss', '#iletisim'].map((href, i) => (
-              <a key={href} href={href} className="text-sm font-medium" style={{ color: '#94a3b8' }}>
+              <a key={href} href={href} className="text-sm font-medium" style={{ color: '#475569' }}>
                 {['Özellikler', 'Fiyatlandırma', 'SSS', 'İletişim'][i]}
               </a>
             ))}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login" className="px-4 py-2 text-sm font-medium rounded-lg" style={{ color: '#94a3b8' }}>Giriş Yap</Link>
+            <Link href="/login" className="px-4 py-2 text-sm font-medium rounded-lg" style={{ color: '#475569' }}>Giriş Yap</Link>
             <Link href="/register" className="btn-primary px-4 py-2 text-sm font-semibold rounded-lg" style={{ background: '#4a7c6f', color: '#ffffff' }}>
               Kliniğini Dijitalleştir
             </Link>
           </div>
 
           <details className="md:hidden group relative">
-            <summary className="list-none cursor-pointer flex items-center justify-center w-10 h-10 rounded-lg" style={{ color: '#94a3b8' }}>
+            <summary className="list-none cursor-pointer flex items-center justify-center w-10 h-10 rounded-lg" style={{ color: '#475569' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </summary>
-            <div className="absolute right-0 top-12 w-56 rounded-xl shadow-2xl p-4 flex flex-col gap-2" style={{ background: '#0f2620', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="absolute right-0 top-12 w-56 rounded-xl shadow-2xl p-4 flex flex-col gap-2" style={{ background: 'white', border: '1px solid #e2eae7' }}>
               {['#ozellikler', '#fiyatlandirma', '#sss', '#iletisim'].map((href, i) => (
-                <a key={href} href={href} className="px-3 py-2 text-sm rounded-lg" style={{ color: '#cbd5e1' }}>
+                <a key={href} href={href} className="px-3 py-2 text-sm rounded-lg" style={{ color: '#475569' }}>
                   {['Özellikler', 'Fiyatlandırma', 'SSS', 'İletişim'][i]}
                 </a>
               ))}
-              <hr style={{ borderColor: 'rgba(255,255,255,0.08)' }} />
-              <Link href="/login" className="px-3 py-2 text-sm rounded-lg" style={{ color: '#94a3b8' }}>Giriş Yap</Link>
+              <hr style={{ borderColor: '#e2eae7' }} />
+              <Link href="/login" className="px-3 py-2 text-sm rounded-lg" style={{ color: '#475569' }}>Giriş Yap</Link>
               <Link href="/register" className="px-3 py-2 text-sm font-semibold rounded-lg text-center" style={{ background: '#4a7c6f', color: 'white' }}>Kliniğini Dijitalleştir</Link>
             </div>
           </details>
@@ -78,20 +78,20 @@ export default async function LandingPage() {
       </header>
 
       {/* ── Hero ── */}
-      <section style={{ background: 'linear-gradient(160deg, #0d1f18 0%, #1a3a2e 60%, #0f2620 100%)', paddingBottom: '80px' }}>
+      <section style={{ background: 'linear-gradient(160deg, #f0f9f6 0%, #ffffff 55%, #e8f5f1 100%)', paddingBottom: '80px' }}>
         <div className="max-w-4xl mx-auto px-6 pt-24 pb-10 text-center">
-          <div className="animate-fade-in inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8 tracking-wide" style={{ background: 'rgba(74,124,111,0.18)', color: '#6ee7b7', border: '1px solid rgba(74,124,111,0.35)' }}>
+          <div className="animate-fade-in inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8 tracking-wide" style={{ background: 'rgba(74,124,111,0.1)', color: '#4a7c6f', border: '1px solid rgba(74,124,111,0.25)' }}>
             <span>✦</span>
             <span>Türkiye'nin Psikolog Platformu</span>
           </div>
 
-          <h1 className="animate-fade-up delay-100 text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight" style={{ color: '#f8fafc' }}>
+          <h1 className="animate-fade-up delay-100 text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight" style={{ color: '#0d1f18' }}>
             Klinik Yönetimini<br />Otomatikleştir
           </h1>
-          <p className="animate-fade-up delay-200 text-3xl md:text-5xl font-extrabold mb-8 tracking-tight" style={{ background: 'linear-gradient(90deg, #4a7c6f, #6ee7b7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+          <p className="animate-fade-up delay-200 text-3xl md:text-5xl font-extrabold mb-8 tracking-tight" style={{ background: 'linear-gradient(90deg, #4a7c6f, #2d9e7e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Hastalara Odaklan
           </p>
-          <p className="animate-fade-up delay-300 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#94a3b8' }}>
+          <p className="animate-fade-up delay-300 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed" style={{ color: '#64748b' }}>
             Randevularınızı yönetin, WhatsApp hatırlatıcıları otomatik gönderin ve yapay zeka asistanıyla 7/24 randevu alın.
           </p>
 
@@ -104,23 +104,23 @@ export default async function LandingPage() {
                 </svg>
               </span>
             </Link>
-            <a href="#nasil-calisir" className="btn-ghost inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold" style={{ background: 'rgba(255,255,255,0.07)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <a href="#nasil-calisir" className="btn-ghost inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold" style={{ background: 'rgba(74,124,111,0.08)', color: '#4a7c6f', border: '1px solid rgba(74,124,111,0.25)' }}>
               Nasıl Çalışır?
             </a>
           </div>
 
-          <div className="animate-fade-in delay-500 flex flex-wrap items-center justify-center gap-6 text-xs" style={{ color: '#64748b' }}>
+          <div className="animate-fade-in delay-500 flex flex-wrap items-center justify-center gap-6 text-xs" style={{ color: '#94a3b8' }}>
             <span className="flex items-center gap-1.5"><span>🔒</span> 256-bit SSL</span>
-            <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+            <span style={{ color: '#d1e9e2' }}>·</span>
             <span className="flex items-center gap-1.5"><span>🇹🇷</span> KVKK Uyumlu</span>
-            <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+            <span style={{ color: '#d1e9e2' }}>·</span>
             <span className="flex items-center gap-1.5"><span>⚡</span> 5 dakikada kurulum</span>
           </div>
         </div>
 
-        {/* ── Geliştirilmiş Dashboard Mockup ── */}
+        {/* ── Dashboard Mockup ── */}
         <div className="max-w-4xl mx-auto px-6 animate-float" style={{ animationDelay: '0.5s' }}>
-          <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ border: '1px solid rgba(255,255,255,0.09)' }}>
+          <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ border: '1px solid #dde5e2' }}>
             {/* Browser chrome */}
             <div className="flex items-center gap-2 px-4 py-3" style={{ background: '#0a1812', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
               <span className="w-3 h-3 rounded-full" style={{ background: '#ef4444' }} />
@@ -362,7 +362,7 @@ export default async function LandingPage() {
               {
                 step: '03', title: 'Randevular Oluştu — Sistem Devreye Giriyor',
                 desc: "Randevu eklediğinde sistem otomatik olarak harekete geçer: hasta WhatsApp'tan hatırlatıcı alır, onay butonuna basar.",
-                details: ['Randevu öncesi otomatik WhatsApp hatırlatıcısı', 'Hasta tek tıkla onar veya iptal eder', "Sen dashboard'dan her şeyi anlık görürsün"],
+                details: ['Randevu öncesi otomatik WhatsApp hatırlatıcısı', 'Hasta tek tıkla onaylar veya iptal eder', "Sen dashboard'dan her şeyi anlık görürsün"],
                 icon: <><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></>,
                 color: '#25D366', bg: '#e8f8ee',
               },
@@ -439,10 +439,10 @@ export default async function LandingPage() {
             </div>
 
             {/* Sonrası */}
-            <div className="rounded-2xl p-8" style={{ background: '#0d1f18', border: '2px solid #4a7c6f' }}>
+            <div className="rounded-2xl p-8" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(74,124,111,0.25)' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                   </svg>
                 </div>
@@ -456,8 +456,8 @@ export default async function LandingPage() {
                   'Hasta WhatsApp üzerinden onaylar, siz anlık bilgilendirilirsiniz',
                   'Anamnez formu linke tıkla, dijital doldur, sistemde sakla',
                 ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm" style={{ color: '#cbd5e1' }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.5" strokeLinecap="round" className="flex-shrink-0 mt-0.5">
+                  <li key={item} className="flex items-start gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2.5" strokeLinecap="round" className="flex-shrink-0 mt-0.5">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                     {item}
@@ -511,27 +511,27 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <div className="rounded-2xl p-8 relative" style={{ background: '#0d1f18', border: '2px solid #4a7c6f' }}>
+            <div className="rounded-2xl p-8 relative" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="px-4 py-1 rounded-full text-xs font-bold" style={{ background: '#4a7c6f', color: 'white' }}>EN POPÜLER</span>
+                <span className="px-4 py-1 rounded-full text-xs font-bold" style={{ background: '#2d5a51', color: 'white' }}>EN POPÜLER</span>
               </div>
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-1 text-white">Seansify Pro</h3>
-                <p className="text-xs mb-4" style={{ color: '#6ee7b7' }}>WhatsApp otomasyonu dahil</p>
+                <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>WhatsApp otomasyonu dahil</p>
                 <div className="flex items-end gap-1">
                   <span className="text-4xl font-extrabold text-white">1.850</span>
-                  <span className="text-lg font-semibold mb-1" style={{ color: '#64748b' }}>₺/ay</span>
+                  <span className="text-lg font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>₺/ay</span>
                 </div>
               </div>
               <ul className="space-y-3 mb-8">
                 {["Başlangıç'taki her şey", 'WhatsApp hatırlatıcı sistemi', 'Otomatik randevu asistanı', 'Bekleme listesi otomasyonu', 'Öncelikli destek', 'Gelecek tüm özellikler'].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm">
-                    <span className="mt-0.5 flex-shrink-0" style={{ color: '#6ee7b7' }}>✓</span>
-                    <span style={{ color: '#cbd5e1' }}>{item}</span>
+                    <span className="mt-0.5 flex-shrink-0 text-white">✓</span>
+                    <span style={{ color: 'rgba(255,255,255,0.9)' }}>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/upgrade?plan=pro" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90 shadow-lg" style={{ background: '#4a7c6f', color: 'white' }}>
+              <Link href="/upgrade?plan=pro" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90 shadow-lg" style={{ background: 'white', color: '#4a7c6f' }}>
                 Pro'ya Geç
               </Link>
             </div>
@@ -619,13 +619,13 @@ export default async function LandingPage() {
       </section>
 
       {/* ── Son CTA ── */}
-      <section className="py-24" style={{ background: '#0d1f18' }}>
+      <section className="py-24" style={{ background: '#4a7c6f' }}>
         <div className="max-w-xl mx-auto px-6 text-center">
           <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white">Kliniğini Bugün Dijitalleştir</h2>
-          <p className="text-base mb-10" style={{ color: '#94a3b8' }}>
+          <p className="text-base mb-10" style={{ color: 'rgba(255,255,255,0.75)' }}>
             14 gün boyunca tüm özellikleri ücretsiz deneyin. Beğenmezseniz ödeme yapmayın.
           </p>
-          <Link href="/register" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-sm shadow-xl" style={{ background: '#4a7c6f', color: '#ffffff' }}>
+          <Link href="/register" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-sm shadow-xl" style={{ background: 'white', color: '#4a7c6f' }}>
             14 Gün Ücretsiz Dene
             <span className="btn-arrow">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -637,7 +637,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ background: '#0a1812', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <footer style={{ background: '#1a3a2e', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="max-w-6xl mx-auto px-6 py-16">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
@@ -652,42 +652,42 @@ export default async function LandingPage() {
                 </div>
                 <span className="font-bold text-sm text-white">Seansify</span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>Psikologlar için akıllı klinik yönetim ve WhatsApp otomasyon platformu.</p>
+              <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>Psikologlar için akıllı klinik yönetim ve WhatsApp otomasyon platformu.</p>
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#64748b' }}>Ürün</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>Ürün</h4>
               <ul className="space-y-3">
-                <li><a href="#ozellikler" className="text-xs" style={{ color: '#475569' }}>Özellikler</a></li>
-                <li><a href="#fiyatlandirma" className="text-xs" style={{ color: '#475569' }}>Fiyatlandırma</a></li>
-                <li><a href="#sss" className="text-xs" style={{ color: '#475569' }}>SSS</a></li>
+                <li><a href="#ozellikler" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Özellikler</a></li>
+                <li><a href="#fiyatlandirma" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Fiyatlandırma</a></li>
+                <li><a href="#sss" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>SSS</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#64748b' }}>Hesap</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>Hesap</h4>
               <ul className="space-y-3">
-                <li><Link href="/login" className="text-xs" style={{ color: '#475569' }}>Giriş Yap</Link></li>
-                <li><Link href="/register" className="text-xs" style={{ color: '#475569' }}>Kayıt Ol</Link></li>
+                <li><Link href="/login" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Giriş Yap</Link></li>
+                <li><Link href="/register" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Kayıt Ol</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#64748b' }}>İletişim</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>İletişim</h4>
               <ul className="space-y-3">
-                <li><a href="mailto:destek@seansify.com" className="text-xs" style={{ color: '#475569' }}>destek@seansify.com</a></li>
-                <li><a href="#iletisim" className="text-xs" style={{ color: '#475569' }}>Destek Merkezi</a></li>
+                <li><a href="mailto:destek@seansify.com" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>destek@seansify.com</a></li>
+                <li><a href="#iletisim" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Destek Merkezi</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: '#64748b' }}>Yasal</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: 'rgba(255,255,255,0.45)' }}>Yasal</h4>
               <ul className="space-y-3">
-                <li><Link href="/gizlilik" className="text-xs" style={{ color: '#475569' }}>Gizlilik Politikası</Link></li>
-                <li><Link href="/kullanim-kosullari" className="text-xs" style={{ color: '#475569' }}>Kullanım Koşulları</Link></li>
-                <li><Link href="/iptal-iade" className="text-xs" style={{ color: '#475569' }}>İptal ve İade</Link></li>
+                <li><Link href="/gizlilik" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Gizlilik Politikası</Link></li>
+                <li><Link href="/kullanim-kosullari" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Kullanım Koşulları</Link></li>
+                <li><Link href="/iptal-iade" className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>İptal ve İade</Link></li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <p className="text-xs" style={{ color: '#334155' }}>© 2026 Seansify. Tüm hakları saklıdır.</p>
-            <p className="text-xs" style={{ color: '#334155' }}>KVKK kapsamında kişisel verileriniz korunmaktadır.</p>
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>© 2026 Seansify. Tüm hakları saklıdır.</p>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>KVKK kapsamında kişisel verileriniz korunmaktadır.</p>
           </div>
         </div>
       </footer>
