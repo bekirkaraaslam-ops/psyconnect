@@ -20,10 +20,8 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
     setLoading(null)
   }
 
-  if (!items.length) return null
-
   return (
-    <div className="bg-white rounded-2xl border" style={{ borderColor: '#f59e0b', borderWidth: '1.5px' }}>
+    <div className="bg-white rounded-2xl" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
       <div className="flex items-center gap-3 p-5 border-b" style={{ borderColor: '#fef3c7' }}>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#fef3c7' }}>
           <span style={{ fontSize: 16 }}>⏳</span>
@@ -33,6 +31,12 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
           {items.length}
         </span>
       </div>
+      {items.length === 0 ? (
+        <div className="px-5 py-4 flex items-center gap-2">
+          <span className="text-sm" style={{ color: '#16a34a' }}>✓</span>
+          <span className="text-sm" style={{ color: '#94a3b8' }}>Onay bekleyen randevu yok</span>
+        </div>
+      ) : (
       <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
         {items.map(apt => {
           const initials = apt.patient?.name_surname
@@ -81,6 +85,7 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
           )
         })}
       </div>
+      )}
     </div>
   )
 }
