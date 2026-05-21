@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getInitials } from '@/lib/utils'
+import DarkModeToggle from './DarkModeToggle'
 
 interface TopbarProps {
   title: string
@@ -18,10 +19,11 @@ export default async function Topbar({ title }: TopbarProps) {
   const initials = getInitials(name)
 
   return (
-    <header className="h-16 border-b flex items-center justify-between px-6" style={{ background: '#ffffff', borderColor: '#dde5e2' }}>
-      <h1 className="text-lg font-semibold" style={{ color: '#334155' }}>{title}</h1>
+    <header className="h-16 border-b flex items-center justify-between px-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+      <h1 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>{title}</h1>
 
       <div className="flex items-center gap-3">
+        <DarkModeToggle />
         {/* WhatsApp status indicator */}
         <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style={{
           background: psychologist?.is_connected ? '#dcfce7' : '#f1f5f9',

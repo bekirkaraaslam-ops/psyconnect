@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <>
       <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="afterInteractive" />
-      <div className="flex min-h-screen" style={{ background: '#F0F4F2' }}>
+      <div className="flex min-h-screen" style={{ background: 'var(--background)' }}>
         <Sidebar planType={planType} />
         <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-0">
           {children}

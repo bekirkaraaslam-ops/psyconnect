@@ -63,7 +63,7 @@ export default function MobileNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t flex z-50" style={{ background: '#ffffff', borderColor: '#dde5e2' }}>
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t flex z-50" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
       {navItems.map(item => {
         const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
         return (

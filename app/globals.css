@@ -15,6 +15,60 @@
   --ring: #4a7c6f;
 }
 
+html.dark {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --primary: #5a9e8f;
+  --primary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #334155;
+  --input: #334155;
+  --ring: #5a9e8f;
+}
+
+html.dark body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+html.dark .bg-white {
+  background-color: var(--card) !important;
+}
+
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background:#ffffff"] {
+  background: var(--card) !important;
+}
+
+html.dark [style*="background: #F0F4F2"],
+html.dark [style*="background: #f0f4f2"] {
+  background: var(--background) !important;
+}
+
+html.dark [style*="color: #334155"] { color: var(--foreground) !important; }
+html.dark [style*="color: #475569"] { color: #94a3b8 !important; }
+html.dark [style*="color: #64748b"] { color: #94a3b8 !important; }
+html.dark [style*="borderColor: #dde5e2"],
+html.dark [style*="border-color: #dde5e2"] { border-color: var(--border) !important; }
+
+html.dark .border { border-color: var(--border); }
+html.dark .border-b { border-color: var(--border); }
+html.dark .border-t { border-color: var(--border); }
+html.dark .border-r { border-color: var(--border); }
+html.dark .divide-y > * { border-color: var(--border); }
+
+html.dark .hover\:bg-gray-50:hover { background-color: #1e293b !important; }
+html.dark input, html.dark select, html.dark textarea {
+  background-color: #1e293b;
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+html.dark ::-webkit-scrollbar-track { background: #1e293b; }
+html.dark ::-webkit-scrollbar-thumb { background: #475569; }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -109,6 +163,38 @@ body {
   transform: translateY(-2px);
   background: rgba(255,255,255,0.12) !important;
   border-color: rgba(255,255,255,0.22) !important;
+}
+
+/* ── FullCalendar mobil düzeltmesi ── */
+@media (max-width: 767px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .fc .fc-toolbar-title {
+    font-size: 0.95rem !important;
+  }
+  .fc .fc-button {
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+  }
+  .fc .fc-timegrid-slot {
+    height: 2.2em !important;
+  }
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.75rem;
+    padding: 4px 2px;
+  }
+  .fc-event-title {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fc-timegrid-event .fc-event-main {
+    padding: 1px 3px !important;
+  }
 }
 
 .delay-100 { animation-delay: 0.1s; }

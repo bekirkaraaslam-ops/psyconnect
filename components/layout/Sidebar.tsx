@@ -124,7 +124,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
   const planInfo = planLabels[planType] || planLabels.free
 
   return (
-    <aside className="hidden md:flex flex-col w-60 min-h-screen border-r py-6" style={{ background: '#ffffff', borderColor: '#dde5e2' }}>
+    <aside className="hidden md:flex flex-col w-60 min-h-screen border-r py-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
       {/* Logo */}
       <div className="px-6 mb-8">
         <div className="flex items-center gap-2.5">
@@ -133,7 +133,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
               <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 1-2 2H3" />
             </svg>
           </div>
-          <span className="font-semibold text-base" style={{ color: '#334155' }}>Seansify</span>
+          <span className="font-semibold text-base" style={{ color: 'var(--foreground)' }}>Seansify</span>
         </div>
         <div className="mt-2">
           <span
@@ -159,7 +159,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
                 isActive
                   ? 'text-white'
-                  : 'hover:bg-gray-50'
+                  : 'hover:bg-gray-100 dark:hover:bg-slate-700'
               )}
               style={isActive ? { background: '#4a7c6f', color: 'white' } : { color: showLock ? '#94a3b8' : '#64748b' }}
             >

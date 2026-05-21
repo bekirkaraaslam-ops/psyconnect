@@ -42,12 +42,17 @@ export default async function PatientsPage() {
         </div>
 
         {!patients || patients.length === 0 ? (
-          <div className="bg-white rounded-2xl border p-12 text-center" style={{ borderColor: '#dde5e2' }}>
-            <div className="text-4xl mb-3">👥</div>
-            <p className="font-medium mb-1" style={{ color: '#334155' }}>Henüz hasta kaydı yok</p>
-            <p className="text-sm mb-4" style={{ color: '#94a3b8' }}>İlk hastanızı ekleyerek başlayın.</p>
+          <div className="bg-white rounded-2xl border p-12 flex flex-col items-center text-center" style={{ borderColor: '#dde5e2' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="mb-4">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <p className="font-semibold mb-1" style={{ color: '#334155' }}>Henüz hasta kaydı yok</p>
+            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk hastanı ekleyerek randevu yönetimine başla.</p>
             <Link href="/patients/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4a7c6f' }}>
-              Hasta Ekle
+              İlk Hastanı Ekle →
             </Link>
           </div>
         ) : (

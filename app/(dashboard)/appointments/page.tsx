@@ -45,7 +45,7 @@ export default async function AppointmentsPage() {
           </Link>
         </div>
 
-        {upcoming.length > 0 && (
+        {upcoming.length > 0 ? (
           <div className="mb-6">
             <h2 className="text-sm font-semibold mb-3" style={{ color: '#64748b' }}>YAKLAŞAN</h2>
             <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
@@ -56,7 +56,20 @@ export default async function AppointmentsPage() {
               </div>
             </div>
           </div>
-        )}
+        ) : (appointments && appointments.length > 0) ? (
+          <div className="mb-6 bg-white rounded-2xl border p-8 flex flex-col items-center text-center" style={{ borderColor: '#dde5e2' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-3">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <p className="text-sm font-medium mb-1" style={{ color: '#475569' }}>Yaklaşan randevu yok</p>
+            <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>Tüm randevular geçmişte kaldı. Yeni bir randevu ekleyin.</p>
+            <Link href="/appointments/new" className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg text-white" style={{ background: '#4a7c6f' }}>
+              Yeni Randevu →
+            </Link>
+          </div>
+        ) : null}
 
         {past.length > 0 && (
           <div>
@@ -72,12 +85,17 @@ export default async function AppointmentsPage() {
         )}
 
         {(!appointments || appointments.length === 0) && (
-          <div className="bg-white rounded-2xl border p-12 text-center" style={{ borderColor: '#dde5e2' }}>
-            <div className="text-4xl mb-3">📅</div>
-            <p className="font-medium mb-1" style={{ color: '#334155' }}>Randevu kaydı yok</p>
-            <p className="text-sm mb-4" style={{ color: '#94a3b8' }}>İlk randevunuzu oluşturun.</p>
+          <div className="bg-white rounded-2xl border p-12 flex flex-col items-center text-center" style={{ borderColor: '#dde5e2' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="mb-4">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <line x1="8" y1="14" x2="8" y2="14" /><line x1="12" y1="14" x2="12" y2="14" /><line x1="16" y1="14" x2="16" y2="14" />
+            </svg>
+            <p className="font-semibold mb-1" style={{ color: '#334155' }}>Henüz randevu yok</p>
+            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk randevunuzu oluşturarak hasta takibine başlayın.</p>
             <Link href="/appointments/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4a7c6f' }}>
-              Randevu Ekle
+              İlk Randevunu Ekle →
             </Link>
           </div>
         )}

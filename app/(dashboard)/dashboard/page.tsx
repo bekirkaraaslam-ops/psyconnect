@@ -3,7 +3,7 @@ import Topbar from '@/components/layout/Topbar'
 import PendingApprovalsPanel from '@/components/dashboard/PendingApprovalsPanel'
 import { formatDateTime, appointmentStatusColor, appointmentStatusLabel } from '@/lib/utils'
 import Link from 'next/link'
-import { startOfDay, endOfDay, endOfWeek, startOfWeek } from 'date-fns'
+import { startOfDay, endOfDay, endOfWeek, startOfWeek, addDays } from 'date-fns'
 
 export default async function OverviewPage() {
   const supabase = await createClient()
@@ -20,6 +20,8 @@ export default async function OverviewPage() {
   const now = new Date()
   const todayStart = startOfDay(now).toISOString()
   const todayEnd = endOfDay(now).toISOString()
+  const tomorrowStart = startOfDay(addDays(now, 1)).toISOString()
+  const tomorrowEnd = endOfDay(addDays(now, 1)).toISOString()
   const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
   const weekEnd = endOfWeek(now, { weekStartsOn: 1 }).toISOString()
 
@@ -33,6 +35,8 @@ export default async function OverviewPage() {
     { data: unfilledAnamnez },
     { count: canceledCount },
     { count: cascadeOfferedCount },
+    { data: todayTimeline },
+    { data: tomorrowTimeline },
   ] = await Promise.all([
     supabase.from('patients').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).eq('is_active', true),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd),
@@ -43,6 +47,8 @@ export default async function OverviewPage() {
     supabase.from('anamnez_forms').select('id, expires_at, created_at, patient:patients(name_surname)').eq('psychologist_id', psychologistId).is('filled_at', null).order('created_at', { ascending: false }).limit(5),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).in('status', ['canceled', 'cancelled_by_patient']).gte('updated_at', weekStart).lte('updated_at', weekEnd),
     supabase.from('waiting_list').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).not('offer_sent_at', 'is', null).gte('offer_sent_at', weekStart).lte('offer_sent_at', weekEnd),
+    supabase.from('appointments').select('*, patient:patients(name_surname)').eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd).in('status', ['waiting', 'confirmed']).order('appointment_date'),
+    supabase.from('appointments').select('*, patient:patients(name_surname)').eq('psychologist_id', psychologistId).gte('appointment_date', tomorrowStart).lte('appointment_date', tomorrowEnd).in('status', ['waiting', 'confirmed']).order('appointment_date'),
   ])
 
   const stats = [
@@ -159,6 +165,9 @@ export default async function OverviewPage() {
 
         </div>
 
+        {/* Bugün / Yarın Timeline */}
+        <DayTimeline todayApts={todayTimeline ?? []} tomorrowApts={tomorrowTimeline ?? []} />
+
         {/* Upcoming Appointments */}
         <div className="bg-white rounded-2xl border" style={{ borderColor: '#dde5e2' }}>
           <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: '#dde5e2' }}>
@@ -169,8 +178,19 @@ export default async function OverviewPage() {
           </div>
 
           {!upcomingAppointments || upcomingAppointments.length === 0 ? (
-            <div className="p-8 text-center text-sm" style={{ color: '#94a3b8' }}>
-              Yaklaşan randevu bulunmuyor.
+            <div className="p-10 text-center">
+              <div className="flex justify-center mb-3">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium mb-1" style={{ color: '#475569' }}>Yaklaşan randevu yok</p>
+              <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>Yeni bir randevu ekleyerek başlayın.</p>
+              <Link href="/appointments/new" className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg text-white" style={{ background: '#4a7c6f' }}>
+                Randevu Ekle →
+              </Link>
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
@@ -194,7 +214,7 @@ export default async function OverviewPage() {
           )}
         </div>
 
-        {/* Quick Actions */}
+        {/* Hızlı Eylemler */}
         <div className="grid grid-cols-2 gap-4">
           <Link href="/appointments/new" className="bg-white rounded-2xl p-5 border flex items-center gap-3 hover:shadow-sm transition-shadow" style={{ borderColor: '#dde5e2' }}>
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#e8f5f1' }}>
@@ -225,5 +245,79 @@ export default async function OverviewPage() {
 
       </div>
     </div>
+  )
+}
+
+function DayTimeline({ todayApts, tomorrowApts }: { todayApts: any[]; tomorrowApts: any[] }) {
+  return (
+    <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
+      <div className="flex border-b" style={{ borderColor: '#dde5e2' }}>
+        <div className="flex-1 px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155', borderRight: '1px solid #dde5e2' }}>
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#4a7c6f' }} />
+          Bugün
+          <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
+            {todayApts.length} seans
+          </span>
+        </div>
+        <div className="flex-1 px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155' }}>
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#3b82f6' }} />
+          Yarın
+          <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#3b82f6' }}>
+            {tomorrowApts.length} seans
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2">
+        <div className="divide-y sm:border-r" style={{ borderColor: '#f1f5f9' }}>
+          {todayApts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <p className="text-xs" style={{ color: '#94a3b8' }}>Bugün randevu yok</p>
+            </div>
+          ) : (
+            todayApts.map((apt: any) => <TimelineRow key={apt.id} apt={apt} />)
+          )}
+        </div>
+        <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
+          {tomorrowApts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <p className="text-xs" style={{ color: '#94a3b8' }}>Yarın randevu yok</p>
+            </div>
+          ) : (
+            tomorrowApts.map((apt: any) => <TimelineRow key={apt.id} apt={apt} />)
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TimelineRow({ apt }: { apt: any }) {
+  const saat = new Date(apt.appointment_date).toLocaleTimeString('tr-TR', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul'
+  })
+  const isOnline = apt.appointment_type === 'online'
+  const isConfirmed = apt.status === 'confirmed'
+
+  return (
+    <Link href={`/appointments/${apt.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
+      <div className="text-xs font-mono font-semibold w-11 shrink-0 text-right" style={{ color: '#4a7c6f' }}>{saat}</div>
+      <div className="w-px h-8 shrink-0" style={{ background: '#e2e8f0' }} />
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium truncate" style={{ color: '#334155' }}>{apt.patient?.name_surname}</div>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <span className="text-xs" style={{ color: '#94a3b8' }}>{isOnline ? '💻 Online' : '🏢 Yüz yüze'}</span>
+        </div>
+      </div>
+      <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${isConfirmed ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
+        {isConfirmed ? 'Onaylı' : 'Bekliyor'}
+      </span>
+    </Link>
   )
 }

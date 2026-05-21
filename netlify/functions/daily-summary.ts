@@ -83,13 +83,15 @@ const handler = schedule('30 5 * * *', async () => {
       const paket = apt.mevcut_seans_no && apt.toplam_paket_seansi
         ? ` (${apt.mevcut_seans_no}/${apt.toplam_paket_seansi})`
         : ''
-      return `${tip} ${saatStr} – ${apt.patient?.name_surname}${paket}`
+      return `• ${saatStr} — ${apt.patient?.name_surname}${paket} ${tip}`
     }).join('\n')
 
+    const firstName = psychologist.full_name.split(' ')[0]
     const message =
-      `📋 *Günlük Randevu Özeti – ${dateStr}*\n\n` +
+      `Günaydın Dr. ${firstName} 👋\n\n` +
+      `Bugün *${appointments.length} seansınız* var:\n` +
       `${randevuListesi}\n\n` +
-      `Toplam: *${appointments.length} randevu*`
+      `İyi çalışmalar!`
 
     try {
       await sendViaRailway(psychologist.id, normalizePhone(psychologist.phone_number), message)
