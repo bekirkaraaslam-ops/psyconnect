@@ -19,7 +19,7 @@ async function sendViaRailway(psychologistId: string, phone: string, message: st
   })
 }
 
-export const handler = schedule('0 10 * * *', async () => {
+export const handler = schedule('5 10 * * *', async () => {
   const supabase = getSupabase()
 
   const now = new Date()

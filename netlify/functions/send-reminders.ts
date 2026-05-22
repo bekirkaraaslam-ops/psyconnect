@@ -52,6 +52,7 @@ const handler = schedule('0 * * * *', async () => {
     `)
     .eq('reminder_sent', false)
     .neq('status', 'canceled')
+    .neq('status', 'cancelled_by_patient')
     .neq('status', 'completed')
     .gte('appointment_date', from)
     .lte('appointment_date', to)

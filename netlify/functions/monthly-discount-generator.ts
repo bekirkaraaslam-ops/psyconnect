@@ -1,6 +1,6 @@
 import { schedule } from '@netlify/functions'
 import { createClient } from '@supabase/supabase-js'
-import { REFERRAL_RULES } from '../../lib/referral'
+import { REFERRAL_RULES } from '../../lib/referral-rules'
 
 function getSupabase() {
   return createClient(
