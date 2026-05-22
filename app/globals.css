@@ -288,6 +288,37 @@ body {
   }
 }
 
+/* ── Landing page: dark mode uygulanmaz ── */
+html.dark [data-page="landing"] .bg-white {
+  background-color: white !important;
+}
+html.dark [data-page="landing"] [style*="background: #e8f5f1"],
+html.dark [data-page="landing"] [style*="background:#e8f5f1"] {
+  background: #e8f5f1 !important;
+}
+html.dark [data-page="landing"] [style*="background: #f0f9f6"],
+html.dark [data-page="landing"] [style*="background:#f0f9f6"] {
+  background: #f0f9f6 !important;
+}
+html.dark [data-page="landing"] [style*="background: #eff6ff"],
+html.dark [data-page="landing"] [style*="background:#eff6ff"] {
+  background: #eff6ff !important;
+}
+html.dark [data-page="landing"] [style*="background: #faf5ff"],
+html.dark [data-page="landing"] [style*="background:#faf5ff"] {
+  background: #faf5ff !important;
+}
+html.dark [data-page="landing"] [style*="background: #fff1f2"],
+html.dark [data-page="landing"] [style*="background:#fff1f2"] {
+  background: #fff1f2 !important;
+}
+html.dark [data-page="landing"] [style*="background: #f1f5f9"],
+html.dark [data-page="landing"] [style*="background:#f1f5f9"] {
+  background: #f1f5f9 !important;
+}
+html.dark [data-page="landing"] body,
+html.dark [data-page="landing"] { color: inherit; }
+
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }

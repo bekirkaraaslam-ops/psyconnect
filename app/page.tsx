@@ -22,7 +22,7 @@ export default async function LandingPage() {
   const psychologistCount = await getPsychologistCount()
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: 'Inter, -apple-system, sans-serif', background: '#f4faf7' }}>
+    <div data-page="landing" className="min-h-screen" style={{ fontFamily: 'Inter, -apple-system, sans-serif', background: '#f4faf7' }}>
 
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-50" style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #c8e6dc' }}>
