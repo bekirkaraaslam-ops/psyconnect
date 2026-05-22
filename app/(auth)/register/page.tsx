@@ -43,7 +43,8 @@ function RegisterForm() {
       return
     }
 
-    router.push('/upgrade')
+    const upgradeUrl = referralCode.trim() ? `/upgrade?ref=${referralCode.trim()}` : '/upgrade'
+    router.push(upgradeUrl)
     router.refresh()
   }
 

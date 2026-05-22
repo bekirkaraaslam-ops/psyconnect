@@ -1,10 +1,10 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { REFERRAL_RULES } from '@/lib/referral-rules'
 
 export { REFERRAL_RULES }
 
 export async function calculateAndUpdateDiscount(psychologistId: string) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const { data: psych } = await supabase
     .from('psychologists')
@@ -35,7 +35,7 @@ export async function calculateAndUpdateDiscount(psychologistId: string) {
 }
 
 export async function activateReferral(referredId: string) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const { data: referral } = await supabase
     .from('referrals')
@@ -51,7 +51,7 @@ export async function activateReferral(referredId: string) {
 }
 
 export async function cancelReferral(referredId: string) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const { data: referral } = await supabase
     .from('referrals')
