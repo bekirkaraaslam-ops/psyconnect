@@ -36,6 +36,7 @@ export default function SeansifyPendingPanel() {
     await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
     setActionLoading(null)
     await fetchPending()
+    window.dispatchEvent(new CustomEvent('calendar:refresh'))
   }
 
   if (loading || appointments.length === 0) return null

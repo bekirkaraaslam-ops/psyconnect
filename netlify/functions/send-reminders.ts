@@ -10,8 +10,9 @@ function getSupabase() {
 
 function getReminderWindow() {
   const now = Date.now()
-  const from = new Date(now + 23 * 60 * 60 * 1000).toISOString()
-  const to   = new Date(now + 25 * 60 * 60 * 1000).toISOString()
+  // 18-26 saat arası: dar pencerede Railway düşükse retry fırsatı tanır
+  const from = new Date(now + 18 * 60 * 60 * 1000).toISOString()
+  const to   = new Date(now + 26 * 60 * 60 * 1000).toISOString()
   return { from, to }
 }
 

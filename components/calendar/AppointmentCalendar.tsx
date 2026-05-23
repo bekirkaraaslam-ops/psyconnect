@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -12,6 +12,12 @@ import trLocale from '@fullcalendar/core/locales/tr'
 export default function AppointmentCalendar() {
   const router = useRouter()
   const calendarRef = useRef<FullCalendar>(null)
+
+  useEffect(() => {
+    const handler = () => calendarRef.current?.getApi().refetchEvents()
+    window.addEventListener('calendar:refresh', handler)
+    return () => window.removeEventListener('calendar:refresh', handler)
+  }, [])
 
   const fetchEvents = useCallback(async (info: EventSourceFuncArg) => {
     const params = new URLSearchParams({
