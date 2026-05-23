@@ -35,6 +35,9 @@
 [functions."send-welcomes"]
   node_bundler = "nft"
 
+[functions."reconnect-wa"]
+  node_bundler = "nft"
+
 # ── Redirect: API Routes ─────────────────────────────────────
 # @netlify/plugin-nextjs Next.js API rotalarını otomatik olarak
 # Netlify Functions'a dönüştürür; manuel redirect GEREKMİYOR.
