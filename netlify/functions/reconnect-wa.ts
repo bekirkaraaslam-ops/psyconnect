@@ -24,8 +24,22 @@ async function isSocketAlive(psychologistId: string): Promise<boolean> {
   }
 }
 
+async function triggerDisconnect(psychologistId: string): Promise<void> {
+  try {
+    await fetch(`${WA_URL}/disconnect/${psychologistId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': WA_KEY! },
+    })
+  } catch {
+    // disconnect başarısız olsa da connect dene
+  }
+}
+
 async function triggerReconnect(psychologistId: string): Promise<boolean> {
   try {
+    // Önce eski bozuk socket'ı temizle, sonra yeniden bağlan
+    await triggerDisconnect(psychologistId)
+    await new Promise(resolve => setTimeout(resolve, 3000))
     const res = await fetch(`${WA_URL}/connect/${psychologistId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': WA_KEY! },
