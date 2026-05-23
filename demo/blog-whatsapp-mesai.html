@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seansify — Blog Görseli</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #ccc;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 40px 20px;
+    }
+
+    .slide {
+      width: 540px;
+      height: 540px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Arka plan */
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, #daf0ea 0%, #eaf6f2 40%, #f4faf8 100%);
+    }
+
+    /* Büyük merkez daire */
+    .big-circle {
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(74, 124, 111, 0.18);
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 70%);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Küçük noktalar */
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+      background: #4a7c6f;
+      opacity: 0.18;
+    }
+
+    /* İçerik */
+    .content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+      padding: 56px 52px;
+    }
+
+    .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: #4a7c6f;
+      margin-bottom: 28px;
+    }
+
+    .main-time {
+      font-size: 96px;
+      font-weight: 800;
+      color: #0d1f18;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -2px;
+    }
+
+    .main-label {
+      font-size: 26px;
+      font-weight: 600;
+      color: #4a7c6f;
+      margin-bottom: 28px;
+    }
+
+    .divider {
+      width: 36px;
+      height: 2px;
+      background: #4a7c6f;
+      border-radius: 2px;
+      margin-bottom: 24px;
+      opacity: 0.5;
+    }
+
+    .sub {
+      font-size: 16px;
+      font-weight: 400;
+      color: #1a3d2b;
+      line-height: 1.65;
+      max-width: 340px;
+    }
+
+    .sub strong {
+      font-weight: 700;
+    }
+
+    .brand {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #4a7c6f;
+      opacity: 0.6;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #4a7c6f;
+      opacity: 0.6;
+    }
+
+    .download-btn {
+      padding: 12px 36px;
+      background: #4a7c6f;
+      color: #f8fafc;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .download-btn:hover { background: #3a6459; }
+  </style>
+</head>
+<body>
+
+  <div class="slide" id="kare">
+    <div class="bg"></div>
+    <div class="big-circle"></div>
+
+    <!-- Dağınık noktalar -->
+    <div class="dot" style="width:5px;height:5px;top:68px;left:92px;"></div>
+    <div class="dot" style="width:4px;height:4px;top:110px;left:420px;"></div>
+    <div class="dot" style="width:6px;height:6px;top:180px;left:54px;"></div>
+    <div class="dot" style="width:4px;height:4px;top:290px;left:36px;"></div>
+    <div class="dot" style="width:5px;height:5px;top:390px;left:80px;"></div>
+    <div class="dot" style="width:4px;height:4px;top:440px;left:460px;"></div>
+    <div class="dot" style="width:6px;height:6px;top:460px;left:200px;"></div>
+    <div class="dot" style="width:4px;height:4px;top:60px;left:320px;"></div>
+    <div class="dot" style="width:5px;height:5px;top:320px;left:490px;"></div>
+    <div class="dot" style="width:3px;height:3px;top:200px;left:490px;"></div>
+
+    <div class="content">
+      <div class="tag">Psikolog Notları</div>
+      <div class="main-time">21:00</div>
+      <div class="main-label">Gün bitti.</div>
+      <div class="divider"></div>
+      <div class="sub">
+        WhatsApp'ta "yarın saat kaçtı?" mesajı bekliyor.<br />
+        Cevap verirseniz sınır kalmıyor.<br />
+        <strong>Vermezseniz danışan endişeleniyor.</strong>
+      </div>
+    </div>
+
+    <div class="brand">
+      <div class="brand-dot"></div>
+      SEANSIFY
+      <div class="brand-dot"></div>
+    </div>
+  </div>
+
+  <button class="download-btn" onclick="dl()">İndir — 1080×1080px</button>
+
+  <script>
+    async function dl() {
+      const el = document.getElementById('kare')
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#eaf6f2',
+        logging: false,
+        width: 540,
+        height: 540,
+      })
+      const link = document.createElement('a')
+      link.download = 'blog-whatsapp-mesai.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    }
+  </script>
+
+</body>
+</html>

@@ -1,24 +1,17 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, Suspense } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 function RegisterForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [referralCode, setReferralCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    const ref = searchParams.get('ref')
-    if (ref) setReferralCode(ref.toUpperCase())
-  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -32,7 +25,6 @@ function RegisterForm() {
       options: {
         data: {
           full_name: fullName,
-          referral_code: referralCode.trim().toUpperCase() || undefined,
         },
       },
     })
@@ -43,8 +35,7 @@ function RegisterForm() {
       return
     }
 
-    const upgradeUrl = referralCode.trim() ? `/upgrade?ref=${referralCode.trim()}` : '/upgrade'
-    router.push(upgradeUrl)
+    router.push('/upgrade')
     router.refresh()
   }
 
@@ -103,27 +94,6 @@ function RegisterForm() {
             style={{ borderColor: '#dde5e2', color: '#334155' }}
             placeholder="En az 6 karakter"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>
-            Referral Kodu{' '}
-            <span className="font-normal" style={{ color: '#94a3b8' }}>(opsiyonel)</span>
-          </label>
-          <input
-            type="text"
-            value={referralCode}
-            onChange={e => setReferralCode(e.target.value.toUpperCase())}
-            maxLength={8}
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none font-mono tracking-widest"
-            style={{ borderColor: '#dde5e2', color: '#334155' }}
-            placeholder="XXXXXXXX"
-          />
-          {referralCode && (
-            <p className="text-xs mt-1" style={{ color: '#4a7c6f' }}>
-              İlk ay %10 indirim kazanacaksın.
-            </p>
-          )}
         </div>
 
         <button

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seansify — Asistan Carousel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    text-align: center;
+    color: #6ee7b7;
+    font-size: 18px;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .subtitle {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 40px;
+  }
+
+  .slides-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .slide-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .slide-label {
+    color: #6ee7b7;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* 1080x1080 rendered at 540x540 (50% scale) for screen */
+  .slide {
+    width: 540px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* ── SLIDE 1 — Kapak ── */
+  .slide-1 {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px;
+  }
+  .slide-1 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 28px;
+    padding: 6px 16px;
+    border: 1px solid #6ee7b7;
+    border-radius: 100px;
+  }
+  .slide-1 .main-price {
+    font-size: 44px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .slide-1 .main-label {
+    font-size: 17px;
+    color: #94a3b8;
+    margin-bottom: 36px;
+  }
+  .slide-1 .divider {
+    width: 40px;
+    height: 2px;
+    background: #6ee7b7;
+    margin: 0 auto 28px;
+    border-radius: 2px;
+  }
+  .slide-1 .sub-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #6ee7b7;
+    margin-bottom: 4px;
+  }
+  .slide-1 .sub-label {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 40px;
+  }
+  .slide-1 .logo {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .slide-1 .logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6ee7b7;
+  }
+  .slide-1 .logo-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+  }
+  .slide-1 .logo-text span { color: #6ee7b7; }
+
+  /* ── SLIDE 2 — Problem ── */
+  .slide-2 {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 52px;
+  }
+  .slide-2 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 36px;
+  }
+  .slide-2 .main {
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 24px;
+  }
+  .slide-2 .main em {
+    font-style: normal;
+    color: #6ee7b7;
+  }
+  .slide-2 .sub {
+    font-size: 17px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+  .slide-2 .decor {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+  }
+  .slide-2 .decor span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #1e3a2f;
+  }
+  .slide-2 .decor span.active { background: #6ee7b7; }
+
+  /* ── SLIDE 3 — Liste ── */
+  .slide-3 {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 52px 56px;
+  }
+  .slide-3 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 20px;
+  }
+  .slide-3 .title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 32px;
+  }
+  .slide-3 .items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .slide-3 .item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #122b1f;
+    border-radius: 12px;
+    padding: 14px 20px;
+  }
+  .slide-3 .item-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6ee7b7;
+    flex-shrink: 0;
+  }
+  .slide-3 .item-text {
+    font-size: 15px;
+    color: #e2e8f0;
+    font-weight: 500;
+    text-align: left;
+  }
+  .slide-3 .footer {
+    margin-top: 28px;
+    font-size: 13px;
+    color: #6ee7b7;
+    font-weight: 600;
+  }
+
+  /* ── SLIDE 4 — Karşılaştırma ── */
+  .slide-4 {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 52px 48px;
+  }
+  .slide-4 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 28px;
+  }
+  .slide-4 .compare {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 28px;
+  }
+  .slide-4 .col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+  .slide-4 .col.left { background: #1a1a2e; }
+  .slide-4 .col.right { background: #122b1f; }
+  .slide-4 .divider-v {
+    width: 1px;
+    background: #1e3a2f;
+    align-self: stretch;
+    margin: 8px 0;
+  }
+  .slide-4 .col-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+  .slide-4 .col.right .col-label { color: #6ee7b7; }
+  .slide-4 .col-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+  }
+  .slide-4 .col-detail {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+    text-align: center;
+  }
+  .slide-4 .col.right .col-detail { color: #94a3b8; }
+  .slide-4 .bottom-line {
+    font-size: 15px;
+    color: #6ee7b7;
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  /* ── SLIDE 5 — Veri ── */
+  .slide-5 {
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 56px;
+  }
+  .slide-5 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 28px;
+  }
+  .slide-5 .big-num {
+    font-size: 100px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -4px;
+    margin-bottom: 4px;
+  }
+  .slide-5 .big-unit {
+    font-size: 28px;
+    font-weight: 700;
+    color: #6ee7b7;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+  .slide-5 .desc {
+    font-size: 16px;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 340px;
+  }
+  .slide-5 .arrow {
+    font-size: 24px;
+    color: #6ee7b7;
+    margin-bottom: 12px;
+  }
+  .slide-5 .result {
+    font-size: 15px;
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+  .slide-5 .result em {
+    font-style: normal;
+    color: #6ee7b7;
+  }
+
+  /* ── SLIDE 6 — CTA ── */
+  .slide-6 {
+    background: #4a7c6f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide-6::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(110,231,183,0.12);
+  }
+  .slide-6::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(110,231,183,0.08);
+  }
+  .slide-6 .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .slide-6 .main {
+    font-size: 46px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .slide-6 .main-sub {
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+  }
+  .slide-6 .desc {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+    margin-bottom: 44px;
+    max-width: 340px;
+    position: relative; z-index: 1;
+  }
+  .slide-6 .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative; z-index: 1;
+  }
+  .slide-6 .logo-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+  .slide-6 .logo-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+  }
+  .slide-6 .logo-name span { color: #6ee7b7; }
+  .slide-6 .url {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── Download Button ── */
+  .download-btn {
+    background: #4a7c6f;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+  }
+  .download-btn:hover { opacity: 0.85; }
+  .download-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .download-all-btn {
+    display: block;
+    margin: 0 auto 56px;
+    background: #6ee7b7;
+    color: #0d1f18;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+  }
+  .download-all-btn:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<h1>Seansify — Asistan Carousel</h1>
+<p class="subtitle">6 slayt · 1080×1080px · Instagram Grid uyumlu</p>
+
+<button class="download-all-btn" onclick="downloadAll()">Tümünü İndir (6 slayt)</button>
+
+<div class="slides-grid">
+
+  <!-- SLIDE 1 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 1 / 6 — Kapak</div>
+    <div class="slide slide-1" id="slide-1">
+      <div class="tag">Özel Pratik Gerçeği</div>
+      <div class="main-price">25.000 ₺</div>
+      <div class="main-label">Tam zamanlı asistan maaşı / ay</div>
+      <div class="divider"></div>
+      <div class="sub-price">Çok daha azı</div>
+      <div class="sub-label">Otomasyon maliyeti / ay</div>
+      <div class="logo">
+        <div class="logo-dot"></div>
+        <div class="logo-text"><span>Seans</span>ify</div>
+      </div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-1', 'seansify-slide-1-kapak')">İndir</button>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 2 / 6 — Problem</div>
+    <div class="slide slide-2" id="slide-2">
+      <div class="tag">Sorun</div>
+      <div class="main">Asistan tutmak<br><em>lüks</em> gibi görünüyor.</div>
+      <div class="sub">Ama idari iş<br>ortadan kalkmıyor.</div>
+      <div class="decor">
+        <span class="active"></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-2', 'seansify-slide-2-problem')">İndir</button>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 3 / 6 — Asistan Ne Yapar?</div>
+    <div class="slide slide-3" id="slide-3">
+      <div class="tag">Asistanın Yaptıkları</div>
+      <div class="title">Bir asistan ne yapar?</div>
+      <div class="items">
+        <div class="item"><div class="item-dot"></div><div class="item-text">Randevu hatırlatır</div></div>
+        <div class="item"><div class="item-dot"></div><div class="item-text">Yeni hasta formlarını doldurtur</div></div>
+        <div class="item"><div class="item-dot"></div><div class="item-text">İptal & yeniden planlama yapar</div></div>
+        <div class="item"><div class="item-dot"></div><div class="item-text">Mesai dışı soruları yanıtlar</div></div>
+      </div>
+      <div class="footer">Bunların tamamı otomatikleştirilebilir.</div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-3', 'seansify-slide-3-liste')">İndir</button>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 4 / 6 — Karşılaştırma</div>
+    <div class="slide slide-4" id="slide-4">
+      <div class="tag">Karşılaştırma</div>
+      <div class="compare">
+        <div class="col left">
+          <div class="col-label">Asistan</div>
+          <div class="col-price">25K ₺</div>
+          <div class="col-detail">Maaş · SGK · İzin<br>Yönetim yükü</div>
+        </div>
+        <div class="divider-v"></div>
+        <div class="col right">
+          <div class="col-label">Seansify</div>
+          <div class="col-price">↓↓</div>
+          <div class="col-detail">Sabit · Düşük<br>7/24 · Sıfır yönetim</div>
+        </div>
+      </div>
+      <div class="bottom-line">"İkisi de aynı işi yapıyor. Biri uyumuyor."</div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-4', 'seansify-slide-4-karsilastirma')">İndir</button>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 5 / 6 — Veri</div>
+    <div class="slide slide-5" id="slide-5">
+      <div class="tag">Gerçek Veri</div>
+      <div class="big-num">3</div>
+      <div class="big-unit">saat / hafta</div>
+      <div class="desc">Psikologların haftada idari işe<br>harcadığı ortalama süre.</div>
+      <div class="arrow">↓</div>
+      <div class="result">Seansify ile <em>20 dakikaya</em> iniyor.</div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-5', 'seansify-slide-5-veri')">İndir</button>
+  </div>
+
+  <!-- SLIDE 6 -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 6 / 6 — CTA</div>
+    <div class="slide slide-6" id="slide-6">
+      <div class="tag">14 Gün Ücretsiz</div>
+      <div class="main">Asistan ararken</div>
+      <div class="main-sub">geçen zamanı hastana ver.</div>
+      <div class="desc">Kurulum yok.<br>14 gün boyunca tam erişim.</div>
+      <div class="logo">
+        <div class="logo-dot"></div>
+        <div class="logo-name"><span>Seans</span>ify</div>
+      </div>
+      <div class="url">seansify.com</div>
+    </div>
+    <button class="download-btn" onclick="downloadSlide('slide-6', 'seansify-slide-6-cta')">İndir</button>
+  </div>
+
+</div>
+
+<script>
+async function downloadSlide(id, filename) {
+  const el = document.getElementById(id)
+  const btn = el.parentElement.querySelector('.download-btn')
+  btn.disabled = true
+  btn.textContent = 'Hazırlanıyor...'
+
+  try {
+    const canvas = await html2canvas(el, {
+      width: 540,
+      height: 540,
+      scale: 2, // 540 * 2 = 1080px
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+    })
+
+    const link = document.createElement('a')
+    link.download = filename + '.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  } finally {
+    btn.disabled = false
+    btn.textContent = 'İndir'
+  }
+}
+
+async function downloadAll() {
+  const slides = [
+    ['slide-1', 'seansify-slide-1-kapak'],
+    ['slide-2', 'seansify-slide-2-problem'],
+    ['slide-3', 'seansify-slide-3-liste'],
+    ['slide-4', 'seansify-slide-4-karsilastirma'],
+    ['slide-5', 'seansify-slide-5-veri'],
+    ['slide-6', 'seansify-slide-6-cta'],
+  ]
+  const btn = document.querySelector('.download-all-btn')
+  btn.disabled = true
+  btn.textContent = 'İndiriliyor...'
+
+  for (let i = 0; i < slides.length; i++) {
+    btn.textContent = `İndiriliyor... (${i + 1}/6)`
+    await downloadSlide(slides[i][0], slides[i][1])
+    await new Promise(r => setTimeout(r, 400))
+  }
+
+  btn.disabled = false
+  btn.textContent = 'Tümünü İndir (6 slayt)'
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Seansify — WhatsApp Bot Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #060f0c;
+      font-family: Inter, sans-serif;
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    h1 { color: #6ee7b7; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+    .slide-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .label { color: #475569; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    canvas { width: 256px; height: 320px; border-radius: 8px; }
+    button.dl {
+      background: #4a7c6f; color: white; border: none;
+      padding: 8px 20px; border-radius: 8px; font-size: 12px;
+      font-weight: 700; cursor: pointer; font-family: Inter, sans-serif;
+    }
+    button.dl:hover { background: #3d6b5f; }
+    .dl-all {
+      background: #6ee7b7; color: #0d1f18; border: none;
+      padding: 12px 32px; border-radius: 10px; font-size: 14px;
+      font-weight: 900; cursor: pointer; font-family: Inter, sans-serif;
+    }
+    .dl-all:hover { background: #4dd4a4; }
+  </style>
+</head>
+<body>
+
+<h1>Seansify — WhatsApp Bot Carousel 4:5 (6 Slayt · 1080×1350)</h1>
+<div class="grid" id="grid"></div>
+<button class="dl-all" onclick="downloadAll()">Tümünü İndir (PNG)</button>
+
+<script>
+const W = 1080
+const H = 1350
+const M = 110  // safe zone margin
+
+const slides = [
+  { label: 'Slayt 1 — Kapak',   fn: drawSlide1 },
+  { label: 'Slayt 2 — Adım 1',  fn: drawSlide2 },
+  { label: 'Slayt 3 — Adım 2',  fn: drawSlide3 },
+  { label: 'Slayt 4 — Adım 3',  fn: drawSlide4 },
+  { label: 'Slayt 5 — Adım 4',  fn: drawSlide5 },
+  { label: 'Slayt 6 — CTA',     fn: drawSlide6 },
+]
+
+const canvases = []
+
+document.fonts.ready.then(() => {
+  const grid = document.getElementById('grid')
+  slides.forEach((s, i) => {
+    const wrap = document.createElement('div')
+    wrap.className = 'slide-wrap'
+    const lbl = document.createElement('div')
+    lbl.className = 'label'
+    lbl.textContent = s.label
+    const c = document.createElement('canvas')
+    c.width = W; c.height = H
+    canvases.push(c)
+    const btn = document.createElement('button')
+    btn.className = 'dl'
+    btn.textContent = 'PNG İndir'
+    btn.onclick = () => downloadOne(c, `seansify-wabot-${i+1}.png`)
+    wrap.appendChild(lbl); wrap.appendChild(c); wrap.appendChild(btn)
+    grid.appendChild(wrap)
+    s.fn(c.getContext('2d'))
+  })
+})
+
+const GREEN1 = '#6ee7b7'
+const GREEN2 = '#4a7c6f'
+const WHITE  = '#f8fafc'
+const GRAY   = '#94a3b8'
+
+function bg(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, W, H)
+  grad.addColorStop(0, '#0d1f18')
+  grad.addColorStop(1, '#071410')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, W, H)
+}
+
+function logo(ctx) {
+  ctx.save()
+  ctx.font = `700 30px Inter, sans-serif`
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'right'
+  const iw = ctx.measureText('ify').width
+  const x = W - M, y = H - 80
+  ctx.fillStyle = GREEN1; ctx.fillText('seans', x - iw, y)
+  ctx.fillStyle = WHITE;  ctx.fillText('ify', x, y)
+  ctx.restore()
+}
+
+function tag(ctx, text) {
+  ctx.save()
+  ctx.font = `700 28px Inter, sans-serif`
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left'
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.65
+  ctx.fillText(text, M, 80)
+  ctx.restore()
+}
+
+function rrect(ctx, x, y, w, h, r, color, alpha) {
+  ctx.save()
+  if (alpha !== undefined) ctx.globalAlpha = alpha
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w, y,     x + w, y + h, r)
+  ctx.arcTo(x + w, y + h, x,     y + h, r)
+  ctx.arcTo(x,     y + h, x,     y,     r)
+  ctx.arcTo(x,     y,     x + w, y,     r)
+  ctx.closePath()
+  ctx.fillStyle = color; ctx.fill()
+  ctx.restore()
+}
+
+function calendarIcon(ctx, cx, cy, size) {
+  const s = size / 40
+  const tx = cx - 20 * s, ty = cy - 20 * s
+  const px = x => tx + x * s, py = y => ty + y * s
+  rrect(ctx, px(6), py(11), 28*s, 24*s, 3*s, WHITE, 0.9)
+  rrect(ctx, px(13), py(7),  3*s,  8*s, 1.5*s, WHITE, 0.9)
+  rrect(ctx, px(24), py(7),  3*s,  8*s, 1.5*s, WHITE, 0.9)
+  ctx.beginPath()
+  ctx.arc(px(20), py(25), 4.5*s, 0, Math.PI*2)
+  ctx.fillStyle = GREEN2; ctx.fill()
+}
+
+function chatMockup(ctx, y, messages) {
+  const mx = M, mw = W - M * 2
+  const boxH = messages.length * 128 + 48
+  rrect(ctx, mx, y, mw, boxH, 20, '#142d24', 0.85)
+
+  let cy = y + 36
+  messages.forEach(msg => {
+    if (msg.type === 'in') {
+      rrect(ctx, mx + 20, cy, mw * 0.64, 88, 14, '#1e3d30')
+      ctx.font = `400 32px Inter, sans-serif`
+      ctx.fillStyle = WHITE; ctx.textAlign = 'left'
+      ctx.fillText(msg.text, mx + 44, cy + 56)
+    } else {
+      const bw = mw * 0.64
+      rrect(ctx, mx + mw - bw - 20, cy, bw, 88, 14, GREEN2)
+      ctx.font = msg.bold ? `700 32px Inter, sans-serif` : `400 32px Inter, sans-serif`
+      ctx.fillStyle = WHITE; ctx.textAlign = 'right'
+      ctx.fillText(msg.text, mx + mw - 44, cy + 56)
+    }
+    ctx.textAlign = 'left'
+    cy += 112
+  })
+
+  return y + boxH
+}
+
+// ─── SLIDE 1 — KAPAK ──────────────────────────────────────
+function drawSlide1(ctx) {
+  bg(ctx)
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(-80, H + 80, 480, 0, Math.PI * 2)
+  ctx.fillStyle = GREEN2; ctx.globalAlpha = 0.07; ctx.fill()
+  ctx.restore()
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(W/2, 400, 155, 0, Math.PI * 2)
+  ctx.fillStyle = '#1a3530'; ctx.fill()
+  ctx.beginPath()
+  ctx.arc(W/2, 400, 155, 0, Math.PI * 2)
+  ctx.strokeStyle = GREEN1; ctx.lineWidth = 6; ctx.globalAlpha = 0.3; ctx.stroke()
+  ctx.restore()
+
+  ctx.save()
+  ctx.font = `900 120px Inter, sans-serif`
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.9
+  ctx.fillText('💬', W/2, 405)
+  ctx.restore()
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'
+
+  ctx.font = `900 86px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Hastanız WhatsApp\'tan', W/2, 716)
+  ctx.fillText('"randevu" yazıyor.', W/2, 816)
+
+  ctx.font = `700 58px Inter, sans-serif`
+  ctx.fillStyle = GREEN1
+  ctx.fillText('Sonra ne oluyor?', W/2, 948)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 2 — ADIM 1 ─────────────────────────────────────
+function drawSlide2(ctx) {
+  bg(ctx)
+  tag(ctx, 'Adım 1')
+
+  ctx.textAlign = 'right'
+  ctx.font = `900 200px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.06
+  ctx.fillText('1', W - 40, 300); ctx.globalAlpha = 1
+
+  chatMockup(ctx, 180, [
+    { text: 'randevu', type: 'in' },
+    { text: '📅 Müsait günler:', type: 'out' },
+  ])
+
+  const days = ['Salı, 27 Mayıs', 'Çarşamba, 28 Mayıs', 'Cuma, 30 Mayıs']
+  let dy = 520
+  days.forEach((d, i) => {
+    rrect(ctx, M, dy, W - M*2, 68, 10, '#1e3d30', 0.7)
+    ctx.font = `400 32px Inter, sans-serif`
+    ctx.fillStyle = GREEN1; ctx.textAlign = 'left'
+    ctx.fillText(`${i+1}.`, M + 28, dy + 44)
+    ctx.fillStyle = WHITE
+    ctx.fillText(d, M + 68, dy + 44)
+    dy += 84
+  })
+
+  ctx.textAlign = 'left'
+  ctx.font = `700 40px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Bot müsait günleri anında sunar.', M, 900)
+
+  ctx.font = `400 34px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Siz hiçbir şey yazmıyorsunuz.', M, 954)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 3 — ADIM 2 ─────────────────────────────────────
+function drawSlide3(ctx) {
+  bg(ctx)
+  tag(ctx, 'Adım 2')
+
+  ctx.textAlign = 'right'
+  ctx.font = `900 200px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.06
+  ctx.fillText('2', W - 40, 300); ctx.globalAlpha = 1
+
+  chatMockup(ctx, 180, [
+    { text: 'Salı, 27 Mayıs', type: 'in' },
+    { text: '🕐 Müsait saatler:', type: 'out' },
+  ])
+
+  const hours = ['10:00', '13:00', '15:30']
+  let hy = 520
+  hours.forEach((h, i) => {
+    rrect(ctx, M, hy, W - M*2, 68, 10, '#1e3d30', 0.7)
+    ctx.font = `400 32px Inter, sans-serif`
+    ctx.fillStyle = GREEN1; ctx.textAlign = 'left'
+    ctx.fillText(`${i+1}.`, M + 28, hy + 44)
+    ctx.fillStyle = WHITE
+    ctx.fillText(h, M + 68, hy + 44)
+    hy += 84
+  })
+
+  ctx.textAlign = 'left'
+  ctx.font = `700 40px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Hasta saati seçer.', M, 900)
+
+  ctx.font = `400 34px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Takviminize göre otomatik listelenir.', M, 954)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 4 — ADIM 3 ─────────────────────────────────────
+function drawSlide4(ctx) {
+  bg(ctx)
+  tag(ctx, 'Adım 3')
+
+  ctx.textAlign = 'right'
+  ctx.font = `900 200px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.06
+  ctx.fillText('3', W - 40, 300); ctx.globalAlpha = 1
+
+  const endY = chatMockup(ctx, 180, [
+    { text: '10:00', type: 'in' },
+    { text: 'Adınızı ve soyadınızı yazar mısınız?', type: 'out' },
+    { text: 'Ayşe Demir', type: 'in' },
+  ])
+
+  rrect(ctx, M, endY + 28, W - M*2, 108, 16, '#1a4a35')
+  ctx.font = `700 36px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.textAlign = 'left'
+  ctx.fillText('✅  Randevunuz oluşturuldu! 📅', M + 28, endY + 92)
+
+  ctx.textAlign = 'left'
+  ctx.font = `700 40px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Ad soyad — randevu tamam.', M, endY + 240)
+
+  ctx.font = `400 34px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Takvim anında güncellenir.', M, endY + 292)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 5 — ADIM 4 ─────────────────────────────────────
+function drawSlide5(ctx) {
+  bg(ctx)
+  tag(ctx, 'Adım 4')
+
+  ctx.textAlign = 'right'
+  ctx.font = `900 200px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.06
+  ctx.fillText('4', W - 40, 300); ctx.globalAlpha = 1
+
+  const endY = chatMockup(ctx, 180, [
+    { text: '⏰ Yarın 10:00 randevunuz var.', type: 'out' },
+    { text: 'Onaylamak ister misiniz?', type: 'out' },
+    { text: 'ONAYLA ✓', type: 'in', bold: true },
+  ])
+
+  rrect(ctx, M, endY + 28, W - M*2, 108, 16, '#1a4a35')
+  ctx.font = `700 36px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.textAlign = 'left'
+  ctx.fillText('✅  Randevunuz onaylandı!', M + 28, endY + 92)
+
+  ctx.textAlign = 'left'
+  ctx.font = `700 40px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('24 saat önce otomatik hatırlatma.', M, endY + 236)
+
+  ctx.font = `400 34px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('"ONAYLA" veya "İPTAL" — tek kelime.', M, endY + 288)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 6 — CTA ────────────────────────────────────────
+function drawSlide6(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, W, H)
+  grad.addColorStop(0, '#1a3d33'); grad.addColorStop(1, '#0d2a22')
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H)
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(W + 100, -100, 560, 0, Math.PI * 2)
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.05; ctx.fill()
+  ctx.restore()
+
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.3
+  ctx.fillRect(0, 0, W, 5); ctx.globalAlpha = 1
+
+  // inline logo
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'
+  ctx.font = `900 110px Inter, sans-serif`
+  const w1 = ctx.measureText('seans').width
+  const w2 = ctx.measureText('ify').width
+  const iconSize = 96, gap = 24
+  const totalW = iconSize + gap + w1 + w2
+  const startX = W/2 - totalW/2
+  const logoY = 420
+
+  calendarIcon(ctx, startX + iconSize/2, logoY - iconSize * 0.35, iconSize)
+  ctx.fillStyle = GREEN1; ctx.fillText('seans', startX + iconSize + gap, logoY)
+  ctx.fillStyle = WHITE;  ctx.fillText('ify', startX + iconSize + gap + w1, logoY)
+
+  ctx.textAlign = 'center'
+
+  ctx.font = `900 80px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Randevu sisteminiz', W/2, 620)
+
+  ctx.font = `900 86px Inter, sans-serif`
+  ctx.fillStyle = GREEN1
+  ctx.fillText('7/24 çalışıyor.', W/2, 724)
+
+  ctx.font = `400 42px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Siz uyurken bile.', W/2, 820)
+
+  // ayırıcı çizgi
+  ctx.fillStyle = GREEN2; ctx.globalAlpha = 0.3
+  ctx.fillRect(W/2 - 160, 870, 320, 2); ctx.globalAlpha = 1
+
+  rrect(ctx, W/2 - 310, 926, 620, 112, 56, GREEN1)
+  ctx.font = `900 40px Inter, sans-serif`
+  ctx.fillStyle = '#0d1f18'
+  ctx.fillText('14 gün ücretsiz → seansify.com', W/2, 994)
+
+  logo(ctx)
+}
+
+// ─── DOWNLOAD ─────────────────────────────────────────────
+function downloadOne(canvas, name) {
+  const a = document.createElement('a')
+  a.download = name; a.href = canvas.toDataURL('image/png'); a.click()
+}
+
+function downloadAll() {
+  canvases.forEach((c, i) => {
+    setTimeout(() => downloadOne(c, `seansify-wabot-${i+1}.png`), i * 500)
+  })
+}
+</script>
+</body>
+</html>

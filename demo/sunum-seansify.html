@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seansify — Psikolog Sunumu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #1a1a2e;
+  padding: 20px;
+}
+
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.controls button {
+  background: #4a7c6f;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.slide {
+  width: 297mm;
+  min-height: 167mm;
+  margin: 0 auto 16px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-number {
+  position: absolute;
+  bottom: 16px;
+  right: 24px;
+  font-size: 11px;
+  opacity: 0.4;
+  color: white;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* ── SLIDE 1: KAPAK ── */
+.s1 {
+  background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0f2744 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  text-align: center;
+}
+
+.s1::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(74,124,111,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.s1::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; right: -60px;
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(110,231,183,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.s1-logo {
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: -3px;
+  color: white;
+  line-height: 1;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.s1-logo span {
+  background: linear-gradient(135deg, #6ee7b7, #4a7c6f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.s1-tagline-main {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
+}
+
+.s1-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #4a7c6f, #6ee7b7);
+  margin: 20px auto;
+  border-radius: 2px;
+}
+
+.s1-slogan {
+  font-size: 15px;
+  font-weight: 300;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+
+.s1-slogan strong {
+  color: #6ee7b7;
+  font-weight: 500;
+}
+
+.s1-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(74,124,111,0.2);
+  border: 1px solid rgba(110,231,183,0.3);
+  border-radius: 100px;
+  padding: 8px 20px;
+  margin-top: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.s1-badge-dot {
+  width: 8px; height: 8px;
+  background: #6ee7b7;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.s1-badge span {
+  font-size: 12px;
+  color: #6ee7b7;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ── SLIDE 2: PROBLEM ── */
+.s2 {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 44px 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  min-height: 167mm;
+}
+
+.s2-left {
+  flex: 0 0 220px;
+}
+
+.s2-phone {
+  background: #0d0d0d;
+  border-radius: 28px;
+  padding: 12px;
+  border: 2px solid #2a2a3e;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.s2-phone-screen {
+  background: #1c1c1e;
+  border-radius: 20px;
+  padding: 16px 14px;
+  min-height: 200px;
+}
+
+.s2-time {
+  text-align: center;
+  color: white;
+  font-size: 32px;
+  font-weight: 200;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.s2-date-small {
+  text-align: center;
+  color: #8e8e93;
+  font-size: 10px;
+  margin-bottom: 14px;
+}
+
+.s2-notif {
+  background: #2c2c2e;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.s2-notif-icon {
+  width: 28px; height: 28px;
+  background: #128C7E;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.s2-notif-text {
+  flex: 1;
+}
+
+.s2-notif-app {
+  font-size: 9px;
+  color: #8e8e93;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.s2-notif-msg {
+  font-size: 10px;
+  color: #e5e5ea;
+  line-height: 1.4;
+}
+
+.s2-right {
+  flex: 1;
+}
+
+.slide-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ef4444;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slide-label::before {
+  content: '';
+  width: 24px; height: 2px;
+  background: #ef4444;
+  border-radius: 2px;
+}
+
+.slide-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.slide-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.s2-problems {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.s2-problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.s2-problem-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.s2-problem-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.s2-problem-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* ── SLIDE 3: KARŞILAŞTIRMA ── */
+.s3 {
+  background: #0f172a;
+  padding: 44px 56px;
+  min-height: 167mm;
+}
+
+.slide-label-neutral {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4a7c6f;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slide-label-neutral::before {
+  content: '';
+  width: 24px; height: 2px;
+  background: #4a7c6f;
+  border-radius: 2px;
+}
+
+.s3-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 24px;
+  font-size: 12px;
+}
+
+.s3-table thead tr th {
+  padding: 14px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.s3-table thead tr th:first-child {
+  background: #1e293b;
+  color: #64748b;
+  text-align: left;
+  border-radius: 10px 0 0 0;
+  width: 30%;
+}
+
+.s3-table thead tr th:nth-child(2) {
+  background: #2d1f1f;
+  color: #f87171;
+  text-align: center;
+  border-left: 1px solid #3f2828;
+}
+
+.s3-table thead tr th:nth-child(3) {
+  background: #1a2e28;
+  color: #6ee7b7;
+  text-align: center;
+  border-radius: 0 10px 0 0;
+  border-left: 1px solid #2d4a40;
+}
+
+.s3-table tbody tr td {
+  padding: 13px 18px;
+  vertical-align: top;
+  border-top: 1px solid #1e293b;
+  line-height: 1.5;
+}
+
+.s3-table tbody tr td:first-child {
+  background: #1e293b;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.s3-table tbody tr td:nth-child(2) {
+  background: rgba(45,31,31,0.5);
+  color: #fca5a5;
+  text-align: center;
+  font-size: 11px;
+  border-left: 1px solid #3f2828;
+}
+
+.s3-table tbody tr td:nth-child(3) {
+  background: rgba(26,46,40,0.5);
+  color: #a7f3d0;
+  text-align: center;
+  font-size: 11px;
+  border-left: 1px solid #2d4a40;
+}
+
+.s3-table tbody tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+.s3-table tbody tr:last-child td:last-child { border-radius: 0 0 10px 0; }
+
+.s3-note {
+  margin-top: 16px;
+  background: rgba(74,124,111,0.1);
+  border-left: 3px solid #4a7c6f;
+  padding: 10px 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ── SLIDE 4: ÇÖZÜM ── */
+.s4 {
+  background: linear-gradient(160deg, #0a1628 0%, #0d2418 60%, #0f1f0a 100%);
+  padding: 44px 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  min-height: 167mm;
+}
+
+.s4-left { flex: 1; }
+
+.s4-right {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.s4-laptop {
+  background: #1a1a2e;
+  border-radius: 12px;
+  border: 1px solid #2a3a4a;
+  padding: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.s4-laptop-screen {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 160px;
+}
+
+.s4-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.s4-screen-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.s4-screen-dots span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+
+.s4-screen-title {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.s4-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.s4-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.s4-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #94a3b8;
+  border-radius: 4px;
+}
+
+.s4-cal-cell.has-apt {
+  background: rgba(74,124,111,0.4);
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+.s4-cal-cell.today {
+  background: #4a7c6f;
+  color: white;
+  font-weight: 700;
+}
+
+.s4-laptop-base {
+  height: 8px;
+  background: #2a2a3e;
+  border-radius: 0 0 8px 8px;
+  margin-top: 2px;
+}
+
+.s4-badge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.s4-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(74,124,111,0.1);
+  border: 1px solid rgba(74,124,111,0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.s4-badge-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.s4-badge-text {
+  font-size: 11px;
+  color: #a7f3d0;
+  font-weight: 600;
+}
+
+.s4-badge-sub {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.s4-security {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 20px;
+}
+
+.s4-security span {
+  font-size: 11px;
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+/* ── SLIDE 5: BEKLEME LİSTESİ ── */
+.s5 {
+  background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+  padding: 44px 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  min-height: 167mm;
+}
+
+.s5-left { flex: 1; }
+.s5-right { flex: 0 0 280px; }
+
+.s5-flow {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #1e293b;
+}
+
+.s5-flow-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.s5-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.s5-step.cancelled {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+
+.s5-step.waiting {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+
+.s5-step.booked {
+  background: rgba(74,124,111,0.15);
+  border: 1px solid rgba(110,231,183,0.25);
+}
+
+.s5-step-icon { font-size: 16px; flex-shrink: 0; }
+
+.s5-step-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.s5-step-sub {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.s5-arrow {
+  text-align: center;
+  color: #334155;
+  font-size: 16px;
+  margin: 2px 0;
+}
+
+.s5-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.s5-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.s5-feature-dot {
+  width: 6px; height: 6px;
+  background: #6ee7b7;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.s5-feature-text {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.s5-feature-text strong {
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+/* ── SLIDE 7: TERAPÖTİK BAĞ ── */
+.s7 {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
+  padding: 44px 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  min-height: 167mm;
+}
+
+.s7-left { flex: 1; }
+
+.s7-right {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.s7-card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #334155;
+}
+
+.s7-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.s7-card-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.s7-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.s7-card-sub {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.s7-brifing-content {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1.7;
+}
+
+.s7-brifing-content strong {
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+.s7-wa-bubble {
+  background: #005c4b;
+  border-radius: 10px 10px 10px 2px;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #e9fbe5;
+  line-height: 1.5;
+}
+
+.s7-wa-time {
+  text-align: right;
+  font-size: 9px;
+  color: #a8d5c2;
+  margin-top: 4px;
+}
+
+.s7-features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.s7-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.s7-feature-num {
+  width: 28px; height: 28px;
+  background: rgba(74,124,111,0.2);
+  border: 1px solid rgba(110,231,183,0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6ee7b7;
+  flex-shrink: 0;
+}
+
+.s7-feature-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.s7-feature-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* ── SLIDE 8: ROI ── */
+.s8 {
+  background: linear-gradient(135deg, #0a1628 0%, #0d1f18 100%);
+  padding: 44px 56px;
+  min-height: 167mm;
+}
+
+.s8-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 24px;
+}
+
+.s8-table thead tr th {
+  padding: 14px 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.s8-table thead tr th:first-child {
+  background: rgba(74,124,111,0.15);
+  color: #6ee7b7;
+  border-radius: 10px 0 0 0;
+  text-align: left;
+  width: 35%;
+}
+
+.s8-table thead tr th:nth-child(2) {
+  background: rgba(74,124,111,0.1);
+  color: #94a3b8;
+  text-align: center;
+  border-left: 1px solid rgba(74,124,111,0.2);
+  width: 35%;
+}
+
+.s8-table thead tr th:nth-child(3) {
+  background: rgba(74,124,111,0.15);
+  color: #6ee7b7;
+  border-radius: 0 10px 0 0;
+  text-align: center;
+  border-left: 1px solid rgba(74,124,111,0.2);
+}
+
+.s8-table tbody tr td {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(74,124,111,0.1);
+}
+
+.s8-table tbody tr td:first-child {
+  background: rgba(74,124,111,0.07);
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.s8-table tbody tr td:nth-child(2) {
+  background: rgba(74,124,111,0.04);
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+  border-left: 1px solid rgba(74,124,111,0.1);
+}
+
+.s8-table tbody tr td:nth-child(3) {
+  background: rgba(74,124,111,0.07);
+  color: #6ee7b7;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border-left: 1px solid rgba(74,124,111,0.1);
+}
+
+.s8-table tbody tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+.s8-table tbody tr:last-child td:last-child { border-radius: 0 0 10px 0; }
+
+.s8-summary {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.s8-summary-box {
+  flex: 1;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.s8-summary-box.cost {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+
+.s8-summary-box.gain {
+  background: rgba(74,124,111,0.15);
+  border: 1px solid rgba(110,231,183,0.3);
+}
+
+.s8-summary-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.s8-summary-value {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.s8-summary-box.cost .s8-summary-value { color: #fca5a5; }
+.s8-summary-box.gain .s8-summary-value { color: #6ee7b7; }
+
+/* ── SLIDE 9: REFERRAL ── */
+.s9 {
+  background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+  padding: 44px 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  min-height: 167mm;
+}
+
+.s9-left { flex: 1; }
+.s9-right { flex: 0 0 280px; }
+
+.s9-flow {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #1e293b;
+  text-align: center;
+}
+
+.s9-person {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.s9-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.s9-avatar.green { background: rgba(74,124,111,0.3); border: 2px solid #4a7c6f; }
+.s9-avatar.blue { background: rgba(59,130,246,0.2); border: 2px solid #3b82f6; }
+
+.s9-name {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.s9-persons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 16px 0;
+}
+
+.s9-arrow-icon {
+  font-size: 24px;
+  color: #6ee7b7;
+}
+
+.s9-rewards {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.s9-reward {
+  flex: 1;
+  background: rgba(74,124,111,0.15);
+  border: 1px solid rgba(110,231,183,0.2);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.s9-reward-icon { font-size: 20px; margin-bottom: 4px; }
+
+.s9-reward-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-bottom: 2px;
+}
+
+.s9-reward-desc {
+  font-size: 9px;
+  color: #64748b;
+}
+
+.s9-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.s9-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.s9-step-num {
+  width: 28px; height: 28px;
+  background: #4a7c6f;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+
+.s9-step-text {
+  font-size: 13px;
+  color: #e2e8f0;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.s9-step-sub {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* ── SLIDE 10: KAPANIŞ ── */
+.s10 {
+  background: linear-gradient(160deg, #0a1628 0%, #0d2418 50%, #0a1628 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  text-align: center;
+  min-height: 167mm;
+}
+
+.s10-tag {
+  display: inline-block;
+  background: rgba(74,124,111,0.2);
+  border: 1px solid rgba(110,231,183,0.3);
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: 11px;
+  color: #6ee7b7;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.s10-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.s10-title span {
+  background: linear-gradient(135deg, #6ee7b7, #4a7c6f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.s10-sub {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.s10-qr-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.s10-qr {
+  width: 130px; height: 130px;
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px rgba(110,231,183,0.2), 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.s10-qr-inner {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.qr-cell {
+  border-radius: 1px;
+  background: #0d1f18;
+}
+
+.qr-cell.w { background: transparent; }
+
+.s10-qr-label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.s10-qr-label strong {
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+.s10-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #4a7c6f, #6ee7b7);
+  color: #0d1f18;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 100px;
+  margin-top: 24px;
+  letter-spacing: -0.3px;
+  box-shadow: 0 8px 32px rgba(74,124,111,0.4);
+}
+
+.s10-url {
+  font-size: 12px;
+  color: #4a7c6f;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+}
+
+.s10-trial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.s10-trial span {
+  color: #6ee7b7;
+  font-weight: 600;
+}
+
+/* ── PRINT ── */
+@media print {
+  body {
+    background: white;
+    padding: 0;
+  }
+
+  .controls { display: none; }
+
+  .slide {
+    width: 297mm;
+    height: 210mm;
+    min-height: 210mm;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .slide:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+}
+
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="controls no-print">
+  <button onclick="window.print()">🖨️ PDF Olarak Kaydet (Ctrl+P → PDF olarak kaydet)</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 1: KAPAK
+════════════════════════════════════════════════════════ -->
+<div class="slide s1">
+  <div class="s1-logo">Seansify<span>.</span></div>
+  <div class="s1-tagline-main">Sınırlarınızı Koruyan, Kliniğinizi Büyüten Dijital Asistanınız</div>
+  <div class="s1-divider"></div>
+  <div class="s1-slogan">Siz sadece <strong>terapiye odaklanın,</strong> geri kalan her şeyi Seansify yönetsin.</div>
+  <div class="s1-badge">
+    <div class="s1-badge-dot"></div>
+    <span>14 Gün Ücretsiz Deneme</span>
+  </div>
+  <div class="slide-number">01 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 2: PROBLEM
+════════════════════════════════════════════════════════ -->
+<div class="slide s2">
+  <div class="s2-left">
+    <div class="s2-phone">
+      <div class="s2-phone-screen">
+        <div class="s2-time">02:30</div>
+        <div class="s2-date-small">Çarşamba, 20 Mayıs</div>
+        <div class="s2-notif">
+          <div class="s2-notif-icon">💬</div>
+          <div class="s2-notif-text">
+            <div class="s2-notif-app">WhatsApp · Danışan</div>
+            <div class="s2-notif-msg">"Hocam yarın boş musunuz? Çok kötü hissediyorum"</div>
+          </div>
+        </div>
+        <div class="s2-notif">
+          <div class="s2-notif-icon">💬</div>
+          <div class="s2-notif-text">
+            <div class="s2-notif-app">WhatsApp · Danışan</div>
+            <div class="s2-notif-msg">"Seansı iptal etmek zorundayım, para iadesi?"</div>
+          </div>
+        </div>
+        <div class="s2-notif">
+          <div class="s2-notif-icon">💬</div>
+          <div class="s2-notif-text">
+            <div class="s2-notif-app">WhatsApp · Danışan</div>
+            <div class="s2-notif-msg">"Hocam nerede kalmıştık geçen hafta?"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s2-right">
+    <div class="slide-label">Problem</div>
+    <div class="slide-title">Terapi Odasındaki Başarınız,<br>Mesai Dışında Sizi Yoruyor</div>
+    <div class="slide-subtitle">Sınır ihlalleri, gözden kaçan ödemeler ve idari yükler motivasyonunuzu tüketir.</div>
+
+    <div class="s2-problems">
+      <div class="s2-problem-item">
+        <div class="s2-problem-icon">🚫</div>
+        <div>
+          <div class="s2-problem-title">Sınır İhlalleri</div>
+          <div class="s2-problem-desc">Gece yarısı gelen mesajlara "hayır" demeye çalışmak, profesyonel kimliğinizi aşındırıyor.</div>
+        </div>
+      </div>
+      <div class="s2-problem-item">
+        <div class="s2-problem-icon">📉</div>
+        <div>
+          <div class="s2-problem-title">İptal Edilen Seanslar</div>
+          <div class="s2-problem-desc">Son dakika iptalleri gelir kaybı yaratıyor ve boş kalan saatleri doldurmak mümkün olmuyor.</div>
+        </div>
+      </div>
+      <div class="s2-problem-item">
+        <div class="s2-problem-icon">📋</div>
+        <div>
+          <div class="s2-problem-title">Kağıt Formlar & Kayıp Notlar</div>
+          <div class="s2-problem-desc">Anamnez formlarını elle doldurmak, seans notlarını bulmak ve hasta geçmişini takip etmek saatler alıyor.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">02 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 3: KARŞILAŞTIRMA
+════════════════════════════════════════════════════════ -->
+<div class="slide s3">
+  <div class="slide-label-neutral">Karşılaştırma</div>
+  <div class="slide-title" style="color:white;">Neden Fiziksel Asistan Yerine Dijital Zeka?</div>
+  <div class="slide-subtitle" style="color:#94a3b8;">Geleneksel sekreteryanın gizli maliyetleri ve limitleri.</div>
+
+  <table class="s3-table">
+    <thead>
+      <tr>
+        <th>Kriter</th>
+        <th>👩‍💼 İnsan Asistan</th>
+        <th>🤖 Seansify</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Çalışma Saatleri</td>
+        <td>Sadece 09:00 – 18:00 arası</td>
+        <td>7/24 Kesintisiz. Gece 3'te bile yanıt verir.</td>
+      </tr>
+      <tr>
+        <td>Hata Payı</td>
+        <td>Aramayı unutabilir, notları karıştırabilir</td>
+        <td>Sıfır hata. 45. gün radarı saniyesinde çalışır.</td>
+      </tr>
+      <tr>
+        <td>Kriz Yönetimi</td>
+        <td>İnisiyatif alamaz, panikler</td>
+        <td>Kriz Kalkanı ile yasal protokole yönlendirir.</td>
+      </tr>
+      <tr>
+        <td>Aylık Maliyet</td>
+        <td>Asgari Ücret + SGK + Yemek + Yol (~45.000 TL+)</td>
+        <td>Sadece kahve parasına eşdeğer sembolik yatırım.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="s3-note">
+    💡 "Bir asistan işe almak, kliniğinize ayda en az 45.000 TL sabit gider yükler. Seansify ise hata yapmayan, uyumayan ve maliyeti geleneksel asistanın %5'i bile olmayan kusursuz bir sistemdir."
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">03 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4: ÇÖZÜM
+════════════════════════════════════════════════════════ -->
+<div class="slide s4">
+  <div class="s4-left">
+    <div class="slide-label-neutral">Çözüm</div>
+    <div class="slide-title" style="color:white;">Yeni Nesil Dijital<br>Klinik Yöneticiniz</div>
+    <div class="slide-subtitle" style="color:#94a3b8;">Seansify, randevularınızı KVKK uyumlu ve %100 güvenli biçimde yönetir.</div>
+
+    <div class="s4-badge-list">
+      <div class="s4-badge-item">
+        <div class="s4-badge-icon">📅</div>
+        <div>
+          <div class="s4-badge-text">Akıllı Takvim Yönetimi</div>
+          <div class="s4-badge-sub">Çakışma yok, gözden kaçan randevu yok</div>
+        </div>
+      </div>
+      <div class="s4-badge-item">
+        <div class="s4-badge-icon">💬</div>
+        <div>
+          <div class="s4-badge-text">WhatsApp Otomasyonu</div>
+          <div class="s4-badge-sub">Hatırlatıcı, onay ve iptal akışları otomatik</div>
+        </div>
+      </div>
+      <div class="s4-badge-item">
+        <div class="s4-badge-icon">📋</div>
+        <div>
+          <div class="s4-badge-text">Dijital Anamnez & SOAP Notları</div>
+          <div class="s4-badge-sub">Kağıt form yok, her şey güvenli ve düzenli</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s4-security">
+      <span>🔒</span>
+      <span>Uçtan Uca Şifreli — Bankalarla Aynı Güvenlik Altyapısı</span>
+    </div>
+  </div>
+
+  <div class="s4-right">
+    <div class="s4-laptop">
+      <div class="s4-laptop-screen">
+        <div class="s4-screen-header">
+          <div class="s4-screen-dots">
+            <span style="background:#ff5f57;"></span>
+            <span style="background:#febc2e;"></span>
+            <span style="background:#28c840;"></span>
+          </div>
+          <div class="s4-screen-title">Seansify — Takvim</div>
+        </div>
+        <div class="s4-cal-grid">
+          <div class="s4-cal-day">Pzt</div><div class="s4-cal-day">Sal</div><div class="s4-cal-day">Çar</div><div class="s4-cal-day">Per</div><div class="s4-cal-day">Cum</div><div class="s4-cal-day">Cmt</div><div class="s4-cal-day">Paz</div>
+          <div class="s4-cal-cell"></div><div class="s4-cal-cell"></div><div class="s4-cal-cell has-apt">1</div><div class="s4-cal-cell has-apt">2</div><div class="s4-cal-cell has-apt">3</div><div class="s4-cal-cell">4</div><div class="s4-cal-cell">5</div>
+          <div class="s4-cal-cell has-apt">6</div><div class="s4-cal-cell">7</div><div class="s4-cal-cell has-apt">8</div><div class="s4-cal-cell has-apt">9</div><div class="s4-cal-cell has-apt">10</div><div class="s4-cal-cell">11</div><div class="s4-cal-cell">12</div>
+          <div class="s4-cal-cell has-apt">13</div><div class="s4-cal-cell">14</div><div class="s4-cal-cell has-apt">15</div><div class="s4-cal-cell today">16</div><div class="s4-cal-cell has-apt">17</div><div class="s4-cal-cell">18</div><div class="s4-cal-cell">19</div>
+          <div class="s4-cal-cell has-apt">20</div><div class="s4-cal-cell has-apt">21</div><div class="s4-cal-cell">22</div><div class="s4-cal-cell has-apt">23</div><div class="s4-cal-cell">24</div><div class="s4-cal-cell">25</div><div class="s4-cal-cell">26</div>
+        </div>
+      </div>
+      <div class="s4-laptop-base"></div>
+    </div>
+
+    <div style="background:rgba(74,124,111,0.08);border:1px solid rgba(110,231,183,0.15);border-radius:10px;padding:12px 14px;margin-top:4px;">
+      <div style="font-size:9px;color:#64748b;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">🔒 Hasta Notu</div>
+      <div style="font-size:10px;color:#94a3b8;line-height:1.6;">Geçen hafta kaygı yönetimi…</div>
+      <div style="font-size:9px;color:#4a7c6f;margin-top:6px;font-weight:600;">● Uçtan Uca Şifreli</div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#6ee7b7;opacity:0.4;">04 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5: BEKLEME LİSTESİ
+════════════════════════════════════════════════════════ -->
+<div class="slide s5">
+  <div class="s5-left">
+    <div class="slide-label-neutral">Süper Güç #1</div>
+    <div class="slide-title" style="color:white;">Boş Kalan Saatleri<br>Sessizce Dolduran Zeka</div>
+    <div class="slide-subtitle" style="color:#94a3b8;">Bekleme Listesi ve Tekrarlayan Randevu sistemi.</div>
+
+    <div class="s5-features">
+      <div class="s5-feature">
+        <div class="s5-feature-dot"></div>
+        <div class="s5-feature-text">
+          Bir seans iptal mi oldu? <strong>Bekleme listesindekilere saniyeler içinde</strong> WhatsApp teklifi gider — boşluk otomatik dolar.
+        </div>
+      </div>
+      <div class="s5-feature">
+        <div class="s5-feature-dot"></div>
+        <div class="s5-feature-text">
+          Danışan EVET derse randevu <strong>otomatik oluşturulur,</strong> HAYIR derse sıradaki kişiye geçilir.
+        </div>
+      </div>
+      <div class="s5-feature">
+        <div class="s5-feature-dot"></div>
+        <div class="s5-feature-text">
+          <strong>Tekrarlayan Randevu</strong> ile düzenli danışanlarınız sisteme kilitlenir — her hafta tek tek hatırlatamazsınız.
+        </div>
+      </div>
+      <div class="s5-feature">
+        <div class="s5-feature-dot"></div>
+        <div class="s5-feature-text">
+          30 dakika cevap gelmezse <strong>sıradaki kişiye otomatik geçer.</strong> Hiçbir müdahale gerektirmez.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s5-right">
+    <div class="s5-flow">
+      <div class="s5-flow-title">Cascade Sistemi — Otomatik Akış</div>
+      <div class="s5-step cancelled">
+        <div class="s5-step-icon">❌</div>
+        <div>
+          <div class="s5-step-text">Seans İptal Edildi</div>
+          <div class="s5-step-sub">Salı 14:00 — Ayşe H.</div>
+        </div>
+      </div>
+      <div class="s5-arrow">↓</div>
+      <div class="s5-step waiting">
+        <div class="s5-step-icon">📋</div>
+        <div>
+          <div class="s5-step-text">Bekleme Listesi Tarandı</div>
+          <div class="s5-step-sub">3 kişi Salı öğleden sonra müsait</div>
+        </div>
+      </div>
+      <div class="s5-arrow">↓</div>
+      <div class="s5-step waiting">
+        <div class="s5-step-icon">💬</div>
+        <div>
+          <div class="s5-step-text">WhatsApp Teklifi Gönderildi</div>
+          <div class="s5-step-sub">En uygun kişiye — 30 dk bekleme</div>
+        </div>
+      </div>
+      <div class="s5-arrow">↓</div>
+      <div class="s5-step booked">
+        <div class="s5-step-icon">✅</div>
+        <div>
+          <div class="s5-step-text">Randevu Oluşturuldu</div>
+          <div class="s5-step-sub">Mehmet K. — Salı 14:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">05 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 7: TERAPÖTİK BAĞ
+════════════════════════════════════════════════════════ -->
+<div class="slide s7">
+  <div class="s7-left">
+    <div class="slide-label-neutral">Süper Güç #2</div>
+    <div class="slide-title" style="color:white;">Danışanlarınıza Karşı<br>Her Zaman En Hazırlıklı Haliniz</div>
+    <div class="slide-subtitle" style="color:#94a3b8;">Dijital Anamnez, SOAP Notları ve Sessiz Bağ Kurucu.</div>
+
+    <div class="s7-features">
+      <div class="s7-feature-item">
+        <div class="s7-feature-num">1</div>
+        <div>
+          <div class="s7-feature-title">Dijital Anamnez Formu</div>
+          <div class="s7-feature-desc">Danışan ilk seans öncesi formu kendi dolduruyor. Siz ilk görüşmeye tam hazır giriyorsunuz — kağıt yok, veri kaybı yok.</div>
+        </div>
+      </div>
+      <div class="s7-feature-item">
+        <div class="s7-feature-num">2</div>
+        <div>
+          <div class="s7-feature-title">Otomatik Doğum Günü Mesajı</div>
+          <div class="s7-feature-desc">Her danışanın özel gününde zarif bir kutlama mesajı — hiçbir idari çaba harcamadan terapötik bağı güçlendirin.</div>
+        </div>
+      </div>
+      <div class="s7-feature-item">
+        <div class="s7-feature-num">3</div>
+        <div>
+          <div class="s7-feature-title">45. Gün Radar Sistemi</div>
+          <div class="s7-feature-desc">45 gündür görünmeyen eski danışanlarınıza otomatik "sizi özledik" mesajı — geri dönüş oranını artırır.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s7-right">
+    <div class="s7-card">
+      <div class="s7-card-header">
+        <div class="s7-card-icon" style="background:rgba(74,124,111,0.2);">📝</div>
+        <div>
+          <div class="s7-card-title">Dijital Anamnez Formu</div>
+          <div class="s7-card-sub">Hasta kendi dolduruyor — seans öncesi hazır</div>
+        </div>
+      </div>
+      <div class="s7-brifing-content">
+        <strong>Şikâyet:</strong> Yoğun kaygı, uyku sorunları (6 ay önce başladı)<br><br>
+        <strong>Geçmiş:</strong> Daha önce terapi almadı. Aile öyküsü: depresyon.<br><br>
+        <strong>Beklenti:</strong> Günlük işlevselliğini yeniden kazanmak istiyor.<br><br>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #1e293b;font-size:9px;color:#4a7c6f;font-weight:600;">✓ İlk seans öncesi QR ile otomatik gönderildi</div>
+      </div>
+    </div>
+
+    <div class="s7-card" style="background:#1a2e28;border-color:#2d4a40;">
+      <div class="s7-card-header">
+        <div class="s7-card-icon" style="background:rgba(18,140,126,0.3);">🎂</div>
+        <div>
+          <div class="s7-card-title">Doğum Günü Mesajı</div>
+          <div class="s7-card-sub">Otomatik Gönderildi · WhatsApp</div>
+        </div>
+      </div>
+      <div class="s7-wa-bubble">
+        Merhaba Zeynep Hanım 🎉 Bugün doğum gününüz! Güzel bir gün geçirmenizi diliyorum. Görüşmek üzere 💚
+      </div>
+      <div class="s7-wa-time">09:00 ✓✓</div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">06 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 8: ROI
+════════════════════════════════════════════════════════ -->
+<div class="slide s8">
+  <div class="slide-label-neutral">Kârlılık & ROI</div>
+  <div class="slide-title" style="color:white;">Bir Gider Kalemi Değil, <span style="color:#6ee7b7;">Gelir Kaynağı</span></div>
+  <div class="slide-subtitle" style="color:#94a3b8;">Seansify kendi aylık ücretini otomatik olarak öder ve sizi kâra geçirir.</div>
+
+  <table class="s8-table">
+    <thead>
+      <tr>
+        <th>Seansify'ın Sessiz Hamlesi</th>
+        <th>Çözdüğü Sorun</th>
+        <th>Aylık Ek Kazanç</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="display:flex;align-items:center;gap:8px;">🎯 45. Gün Radar</td>
+        <td>Terapiyi unutan 1 eski danışanı otomatik mesajla geri getirir</td>
+        <td>+3.000 TL</td>
+      </tr>
+      <tr>
+        <td style="display:flex;align-items:center;gap:8px;">📋 Bekleme Listesi</td>
+        <td>İptal olan 1 seansın yerini saniyeler içinde otomatik doldurur</td>
+        <td>+3.000 TL</td>
+      </tr>
+      <tr>
+        <td style="display:flex;align-items:center;gap:8px;">🛡️ Mesai Dışı Kalkan</td>
+        <td>Hafta sonu / gece gelen 1 yeni başvuruyu kaçırmadan yakalar</td>
+        <td>+2.000 TL</td>
+      </tr>
+      <tr>
+        <td style="display:flex;align-items:center;gap:8px;">💬 WhatsApp Hatırlatıcı</td>
+        <td>Otomatik seans hatırlatıcısı ile no-show oranını ciddi ölçüde düşürür</td>
+        <td>+1.500 TL</td>
+      </tr>
+      <tr>
+        <td style="display:flex;align-items:center;gap:8px;">🎂 Doğum Günü Mesajı</td>
+        <td>Pasif danışanlarda randevu alma motivasyonu yaratır</td>
+        <td>+500 TL</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="s8-summary">
+    <div class="s8-summary-box cost">
+      <div>
+        <div class="s8-summary-label">Seansify'ın Aylık Maliyeti</div>
+        <div style="font-size:10px;color:#64748b;margin-top:4px;">Tüm özellikler dahil</div>
+      </div>
+      <div class="s8-summary-value">~1.850 TL</div>
+    </div>
+    <div class="s8-summary-box gain">
+      <div>
+        <div class="s8-summary-label">Elde Edilen Toplam Ek Gelir</div>
+        <div style="font-size:10px;color:#64748b;margin-top:4px;">Muhafazakâr tahminle</div>
+      </div>
+      <div class="s8-summary-value">10.000 TL</div>
+    </div>
+    <div class="s8-summary-box gain" style="background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.3);">
+      <div>
+        <div class="s8-summary-label">Net Kâr</div>
+        <div style="font-size:10px;color:#64748b;margin-top:4px;">İlk aydan itibaren</div>
+      </div>
+      <div class="s8-summary-value" style="color:#fde68a;">+8.150 TL</div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">07 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 9: REFERRAL
+════════════════════════════════════════════════════════ -->
+<div class="slide s9">
+  <div class="s9-left">
+    <div class="slide-label-neutral">Büyüme Motoru</div>
+    <div class="slide-title" style="color:white;">Meslektaşlarınızla Büyüyün,<br>Sistemi Bedavaya Getirin</div>
+    <div class="slide-subtitle" style="color:#94a3b8;">Seansify'ı önerin — hem siz kazanın, hem meslektaşınız kazansın.</div>
+
+    <div class="s9-steps">
+      <div class="s9-step-item">
+        <div class="s9-step-num">1</div>
+        <div>
+          <div class="s9-step-text">Kendi referans linkinizi paylaşın</div>
+          <div class="s9-step-sub">Ayarlar → Referral bölümünden linkinizi kopyalayın, meslektaşınıza gönderin.</div>
+        </div>
+      </div>
+      <div class="s9-step-item">
+        <div class="s9-step-num">2</div>
+        <div>
+          <div class="s9-step-text">Meslektaşınız üye olsun</div>
+          <div class="s9-step-sub">Meslektaşınız linkinizden kaydolduğunda her iki taraf da bonus kazanır.</div>
+        </div>
+      </div>
+      <div class="s9-step-item">
+        <div class="s9-step-num">3</div>
+        <div>
+          <div class="s9-step-text">Sistemi tamamen bedavaya kullanın</div>
+          <div class="s9-step-sub">Aktif bir ağ kurarak Seansify'ı hiç ücret ödemeden sürdürülebilir şekilde kullanabilirsiniz.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s9-right">
+    <div class="s9-flow">
+      <div class="s5-flow-title">Referral Döngüsü</div>
+      <div class="s9-persons-row">
+        <div class="s9-person">
+          <div class="s9-avatar green">👩‍⚕️</div>
+          <div class="s9-name">Siz (Psikolog)</div>
+        </div>
+        <div class="s9-arrow-icon">🤝</div>
+        <div class="s9-person">
+          <div class="s9-avatar blue">👨‍⚕️</div>
+          <div class="s9-name">Meslektaşınız</div>
+        </div>
+      </div>
+      <div class="s9-rewards">
+        <div class="s9-reward">
+          <div class="s9-reward-icon">🎁</div>
+          <div class="s9-reward-title">Siz Kazanırsınız</div>
+          <div class="s9-reward-desc">Ücretsiz ay veya nakit indirim</div>
+        </div>
+        <div class="s9-reward">
+          <div class="s9-reward-icon">🎁</div>
+          <div class="s9-reward-title">O da Kazanır</div>
+          <div class="s9-reward-desc">Uzatılmış deneme süresi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:#94a3b8;">08 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 11-A: ZAMAN KAZANCI
+════════════════════════════════════════════════════════ -->
+<style>
+.s11 {
+  background: #f8fafc;
+  padding: 36px 44px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 167mm;
+}
+.s11-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4a7c6f;
+}
+.s11-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0d1f18;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.s11-title span { color: #4a7c6f; }
+.s11-sub {
+  font-size: 13px;
+  color: #64748b;
+  max-width: 560px;
+  line-height: 1.55;
+}
+.s11-body {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  flex: 1;
+}
+.s11-table-wrap {
+  flex: 1;
+}
+.s11-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+.s11-table thead tr {
+  background: #0d1f18;
+  color: white;
+}
+.s11-table thead th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.3px;
+}
+.s11-table thead th.green-col {
+  background: #4a7c6f;
+  color: #6ee7b7;
+}
+.s11-table tbody tr:nth-child(odd) { background: #f1f5f9; }
+.s11-table tbody tr:nth-child(even) { background: #e8f0ed; }
+.s11-table tbody td {
+  padding: 9px 12px;
+  color: #1e293b;
+  vertical-align: top;
+  line-height: 1.4;
+}
+.s11-table tbody td.label-col {
+  font-weight: 600;
+  color: #0d1f18;
+  width: 38%;
+}
+.s11-table tbody td.manual-col {
+  color: #dc2626;
+  font-weight: 600;
+  width: 22%;
+}
+.s11-table tbody td.auto-col {
+  color: #16a34a;
+  font-weight: 700;
+  width: 18%;
+}
+.s11-table tfoot td {
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 12px;
+}
+.s11-table tfoot td.total-label { color: #0d1f18; background: #cbd5e1; }
+.s11-table tfoot td.total-manual { color: #dc2626; background: #fee2e2; }
+.s11-table tfoot td.total-auto { color: #16a34a; background: #dcfce7; font-size: 13px; }
+.s11-right {
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 8px;
+}
+.s11-hourglass {
+  font-size: 60px;
+  line-height: 1;
+}
+.s11-badge {
+  background: linear-gradient(135deg, #4a7c6f, #6ee7b7);
+  border-radius: 16px;
+  padding: 16px 14px;
+  text-align: center;
+  width: 100%;
+}
+.s11-badge-num {
+  font-size: 38px;
+  font-weight: 900;
+  color: white;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.s11-badge-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.s11-tagline {
+  font-size: 10.5px;
+  color: #475569;
+  text-align: center;
+  line-height: 1.5;
+}
+.s11-tagline strong { color: #4a7c6f; }
+</style>
+
+<!-- Konuşmacı: "Finansal kazancın ötesinde, klinikteki en değerli varlığınız zamanınızdır. WhatsApp trafiğini yönetmek, iptal olan seansı doldurmak, seans öncesi not aramak — bunlar her ay 32 saatinizi çalıyor. 32 saat neredeyse tam bir çalışma haftasına eşit. Seansify bu idari yüklerin tamamını otopilota bağlar. Bu zamanı ister fazladan seans yapıp gelirinizi katlayın, ister ailenizle geçirin." -->
+<div class="slide s11">
+  <div class="s11-label">Zaman Yönetimi</div>
+  <div class="s11-title">Ayda 32 Saat: Hayatınızı<br><span>(ve Hafta Sonlarınızı)</span> Geri Kazanın</div>
+  <div class="s11-sub">Sizin zamanınız paha biçilemez. Seansify size her ay fazladan 1 tam çalışma haftası hediye eder.</div>
+
+  <div class="s11-body">
+    <div class="s11-table-wrap">
+      <table class="s11-table">
+        <thead>
+          <tr>
+            <th>Çalınan Gizli Zaman (İdari Yükler)</th>
+            <th>İnsan Emeği ile</th>
+            <th class="green-col">Seansify ile (Otopilot)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-col">WhatsApp Randevu & İletişim Trafiği<br><span style="font-size:10px;color:#64748b;font-weight:400;">Boş saat arama, gece mesajlarına yanıt</span></td>
+            <td class="manual-col">~14 Saat/ay<br><span style="font-size:9.5px;font-weight:400;">(günde ~30 dk)</span></td>
+            <td class="auto-col">0 Saat<br><span style="font-size:9.5px;font-weight:400;">Danışan kendi seçer, bot yanıtlar</span></td>
+          </tr>
+          <tr>
+            <td class="label-col">İptal & Bekleme Listesi Yönetimi<br><span style="font-size:10px;color:#64748b;font-weight:400;">Boşlukları doldurmak için tek tek arama</span></td>
+            <td class="manual-col">~10 Saat/ay<br><span style="font-size:9.5px;font-weight:400;">(haftada ~2.5 saat)</span></td>
+            <td class="auto-col">0 Saat<br><span style="font-size:9.5px;font-weight:400;">Sistem anında listeye mesaj atar</span></td>
+          </tr>
+          <tr>
+            <td class="label-col">Danışan Takibi & Seans Hazırlığı<br><span style="font-size:10px;color:#64748b;font-weight:400;">Not arama, 45. gün takibi, doğum günleri</span></td>
+            <td class="manual-col">~8 Saat/ay<br><span style="font-size:9.5px;font-weight:400;">(haftada ~2 saat)</span></td>
+            <td class="auto-col">0 Saat<br><span style="font-size:9.5px;font-weight:400;">Radar ve bildirimler devrededir</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="total-label">TOPLAM ZAMAN</td>
+            <td class="total-manual">Kayıp 32 Saat!</td>
+            <td class="total-auto">32 SAAT SİZE KALIR</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="s11-right">
+      <div class="s11-hourglass">⏳</div>
+      <div class="s11-badge">
+        <div class="s11-badge-num">32</div>
+        <div class="s11-badge-label">Saat / Ay</div>
+      </div>
+      <div class="s11-tagline">= <strong>1 tam çalışma haftası</strong><br>her ay size geri döner</div>
+    </div>
+  </div>
+
+  <div class="slide-number" style="color:#4a7c6f;opacity:0.5;">09 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 10: KAPANIŞ
+════════════════════════════════════════════════════════ -->
+<div class="slide s10">
+  <div class="s10-tag">Hemen Başlayın</div>
+  <div class="s10-title">Kendinize Zaman,<br><span>Kliniğinize Değer</span> Katın</div>
+  <div class="s10-sub">Dijital asistanınızı bugün işe alın — 14 gün boyunca ücretsiz deneyin.</div>
+
+  <div class="s10-qr-wrapper">
+    <div class="s10-qr">
+      <svg width="106" height="106" viewBox="0 0 106 106" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="106" height="106" fill="white"/>
+        <!-- QR corner squares -->
+        <rect x="8" y="8" width="28" height="28" rx="3" fill="#0d1f18"/>
+        <rect x="12" y="12" width="20" height="20" rx="1" fill="white"/>
+        <rect x="15" y="15" width="14" height="14" rx="1" fill="#0d1f18"/>
+        <rect x="70" y="8" width="28" height="28" rx="3" fill="#0d1f18"/>
+        <rect x="74" y="12" width="20" height="20" rx="1" fill="white"/>
+        <rect x="77" y="15" width="14" height="14" rx="1" fill="#0d1f18"/>
+        <rect x="8" y="70" width="28" height="28" rx="3" fill="#0d1f18"/>
+        <rect x="12" y="74" width="20" height="20" rx="1" fill="white"/>
+        <rect x="15" y="77" width="14" height="14" rx="1" fill="#0d1f18"/>
+        <!-- QR data dots (simplified pattern) -->
+        <rect x="42" y="8" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="50" y="8" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="8" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="16" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="16" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="24" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="50" y="24" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="8" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="16" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="24" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="8" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="24" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="8" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="16" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="42" width="5" height="5" rx="1" fill="#4a7c6f"/>
+        <rect x="50" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="42" width="5" height="5" rx="1" fill="#4a7c6f"/>
+        <rect x="42" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="50" y="50" width="5" height="5" rx="1" fill="#4a7c6f"/>
+        <rect x="58" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="58" width="5" height="5" rx="1" fill="#4a7c6f"/>
+        <rect x="50" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="58" width="5" height="5" rx="1" fill="#4a7c6f"/>
+        <rect x="70" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="78" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="86" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="94" y="42" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="70" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="86" y="50" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="70" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="78" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="94" y="58" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="50" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="66" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="74" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="82" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="90" y="70" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="78" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="78" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="66" y="78" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="82" y="78" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="86" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="50" y="86" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="58" y="86" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="74" y="86" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="90" y="86" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="42" y="94" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="66" y="94" width="5" height="5" rx="1" fill="#0d1f18"/>
+        <rect x="82" y="94" width="5" height="5" rx="1" fill="#0d1f18"/>
+      </svg>
+    </div>
+    <div class="s10-url">seansify.com</div>
+    <div class="s10-cta-btn">
+      ✨ 14 Gün Ücretsiz Deneyin
+    </div>
+    <div class="s10-trial">
+      <span>✓</span> Kredi kartı gerekmez &nbsp;·&nbsp; <span>✓</span> 5 dakikada kurulum &nbsp;·&nbsp; <span>✓</span> İstediğinizde iptal
+    </div>
+  </div>
+  <div class="slide-number" style="color:#6ee7b7;opacity:0.4;">11 / 11</div>
+</div>
+
+</body>
+</html>

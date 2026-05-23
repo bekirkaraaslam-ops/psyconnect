@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    gap: 40px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+  }
+
+  h2 {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* ─── Varyant A — Koyu Gradient + Dot ─── */
+  #varA {
+    width: 800px;
+    height: 800px;
+    background: linear-gradient(145deg, #0d1f18 0%, #1a3a2e 60%, #0f2920 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #varA .dot-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(110,231,183,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  #varA .glow {
+    position: absolute;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,124,111,0.22) 0%, transparent 65%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #varA .wordmark {
+    position: relative;
+    z-index: 1;
+    font-size: 132px;
+    font-weight: 900;
+    letter-spacing: -6px;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+  }
+  #varA .seans { color: #5fbfa8; }
+  #varA .ify   { color: #ffffff; }
+
+  /* ─── Varyant B — Solid Yeşil + Halkalar ─── */
+  #varB {
+    width: 800px;
+    height: 800px;
+    background: linear-gradient(145deg, #2d6a5e 0%, #1e4f45 50%, #183d35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #varB .ring {
+    position: absolute;
+    width: 680px; height: 680px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #varB .ring2 {
+    position: absolute;
+    width: 540px; height: 540px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #varB .wordmark {
+    position: relative;
+    z-index: 1;
+    font-size: 132px;
+    font-weight: 900;
+    letter-spacing: -6px;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+  }
+  #varB .seans { color: #a7f3d0; }
+  #varB .ify   { color: #ffffff; }
+
+  /* ─── Varyant C — Minimal Koyu + Alt çizgi ─── */
+  #varC {
+    width: 800px;
+    height: 800px;
+    background: #0d1f18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #varC::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #4a7c6f, transparent);
+  }
+
+  #varC .wordmark {
+    font-size: 132px;
+    font-weight: 900;
+    letter-spacing: -6px;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+  }
+  #varC .seans { color: #6ee7b7; }
+  #varC .ify   { color: #ffffff; }
+
+  #varC .tagline {
+    font-size: 20px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* ─── Butonlar ─── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: -16px;
+  }
+
+  .dl-btn {
+    background: #4a7c6f;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .dl-btn:hover { background: #3d6b5f; }
+
+  .var-label {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: -24px;
+    align-self: flex-start;
+    padding-left: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Seansify — Profil Resmi Varyantları (800×800)</h2>
+
+<span class="var-label">A — Koyu Gradient</span>
+<div id="varA">
+  <div class="dot-bg"></div>
+  <div class="glow"></div>
+  <div class="wordmark">
+    <span class="seans">Seans</span><span class="ify">ify</span>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="dl-btn" onclick="indir('varA', 'seansify-profil-koyu')">⬇ PNG İndir</button>
+</div>
+
+<span class="var-label">B — Yeşil Gradient</span>
+<div id="varB">
+  <div class="ring"></div>
+  <div class="ring2"></div>
+  <div class="wordmark">
+    <span class="seans">Seans</span><span class="ify">ify</span>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="dl-btn" onclick="indir('varB', 'seansify-profil-yesil')">⬇ PNG İndir</button>
+</div>
+
+<span class="var-label">C — Minimal</span>
+<div id="varC">
+  <div class="wordmark">
+    <span class="seans">Seans</span><span class="ify">ify</span>
+  </div>
+  <div class="tagline">klinik yönetim</div>
+</div>
+<div class="btn-row">
+  <button class="dl-btn" onclick="indir('varC', 'seansify-profil-minimal')">⬇ PNG İndir</button>
+</div>
+
+<script>
+function indir(id, dosyaAdi) {
+  const el = document.getElementById(id);
+  html2canvas(el, {
+    width: 800,
+    height: 800,
+    scale: 1,
+    useCORS: true,
+    backgroundColor: null,
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = dosyaAdi + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+</script>
+</body>
+</html>

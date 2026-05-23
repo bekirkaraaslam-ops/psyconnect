@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1600" />
+<title>Seansify Pro – Seansify</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1600px;
+    height: 1200px;
+    overflow: hidden;
+    background: #1c2e2b;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Background mesh ── */
+  .bg-mesh {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .bg-mesh::before {
+    content: '';
+    position: absolute;
+    width: 900px; height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4a7c6f30 0%, transparent 60%);
+    top: -300px; left: -200px;
+  }
+
+  .bg-mesh::after {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4a7c6f20 0%, transparent 60%);
+    bottom: -200px; right: -100px;
+  }
+
+  .bg-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 1600px; height: 1200px;
+    opacity: 0.035;
+    background-image: radial-gradient(circle, #a7f3d0 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    width: 1340px;
+  }
+
+  /* ── Left: branding ── */
+  .left {
+    flex: 0 0 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 52px;
+    height: 52px;
+    background: #4a7c6f;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-text {
+    font-size: 26px;
+    font-weight: 700;
+    color: #e2e8f0;
+    letter-spacing: -0.5px;
+  }
+
+  .badge-popular {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #4a7c6f, #3d6b5f);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 8px 18px;
+    border-radius: 100px;
+    width: fit-content;
+  }
+
+  .star { font-size: 14px; }
+
+  .headline {
+    font-size: 52px;
+    font-weight: 800;
+    color: #f1f5f9;
+    line-height: 1.15;
+    letter-spacing: -1px;
+  }
+
+  .headline .accent {
+    color: #5fb3a1;
+  }
+
+  .sub {
+    font-size: 20px;
+    color: #94a3b8;
+    line-height: 1.6;
+    max-width: 440px;
+  }
+
+  .proof-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .proof-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .proof-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: #5fb3a1;
+    letter-spacing: -0.5px;
+  }
+
+  .proof-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  .proof-divider {
+    width: 1px;
+    height: 40px;
+    background: #334155;
+  }
+
+  /* ── Right: card ── */
+  .right {
+    flex: 1;
+  }
+
+  .card {
+    background: linear-gradient(145deg, #243b38 0%, #1e3330 100%);
+    border-radius: 32px;
+    border: 1.5px solid #4a7c6f55;
+    padding: 52px 56px;
+    box-shadow:
+      0 0 0 1px #4a7c6f22,
+      0 32px 80px rgba(0,0,0,0.4),
+      0 0 120px rgba(74,124,111,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Top glow line */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 40px; right: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4a7c6f80, transparent);
+  }
+
+  .plan-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #5fb3a1;
+    margin-bottom: 10px;
+  }
+
+  .plan-name {
+    font-size: 42px;
+    font-weight: 800;
+    color: #f1f5f9;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .plan-desc {
+    font-size: 16px;
+    color: #94a3b8;
+    margin-bottom: 40px;
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 44px;
+    padding-bottom: 44px;
+    border-bottom: 1px solid #2d4a46;
+  }
+
+  .price-amount {
+    font-size: 72px;
+    font-weight: 900;
+    color: #f1f5f9;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .price-currency {
+    font-size: 36px;
+    font-weight: 700;
+    color: #5fb3a1;
+  }
+
+  .price-period {
+    font-size: 20px;
+    color: #64748b;
+    margin-left: 4px;
+  }
+
+  .features { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+  }
+
+  .check-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: rgba(74,124,111,0.25);
+  }
+
+  .feature-text { color: #e2e8f0; font-weight: 500; }
+
+  .feature-badge {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: #5fb3a1;
+    background: rgba(74,124,111,0.2);
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    border: 1px solid rgba(74,124,111,0.3);
+  }
+
+  .cta-area {
+    margin-top: 44px;
+    padding-top: 44px;
+    border-top: 1px solid #2d4a46;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #4a7c6f, #3d6b5f);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 18px 44px;
+    border-radius: 16px;
+    text-decoration: none;
+    box-shadow: 0 8px 32px rgba(74,124,111,0.4), 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .cta-note {
+    font-size: 14px;
+    color: #64748b;
+    text-align: right;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-dot"></div>
+
+<div class="container">
+  <!-- Left -->
+  <div class="left">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <span class="logo-text">Seansify</span>
+    </div>
+
+    <div class="badge-popular">
+      <span class="star">★</span>
+      En Popüler Plan
+    </div>
+
+    <div>
+      <div class="headline">
+        Tam entegrasyon,<br />
+        <span class="accent">WhatsApp</span><br />
+        otomasyonu
+      </div>
+    </div>
+
+    <p class="sub">
+      Hatırlatıcılar, doğum günü mesajları ve randevu asistanı ile pratiğinizi otomatize edin.
+    </p>
+
+    <div class="proof-row">
+      <div class="proof-item">
+        <span class="proof-num">%100</span>
+        <span class="proof-label">WA Otomasyonu</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">∞</span>
+        <span class="proof-label">Sınırsız hasta</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">7/24</span>
+        <span class="proof-label">Otomatik asistan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Card -->
+  <div class="right">
+    <div class="card">
+      <div class="plan-label">En iyi değer</div>
+      <div class="plan-name">Seansify Pro</div>
+      <div class="plan-desc">Tüm özellikler, tam WhatsApp entegrasyonu</div>
+
+      <div class="price-row">
+        <span class="price-amount">1850</span>
+        <span class="price-currency">₺</span>
+        <span class="price-period">/ay</span>
+      </div>
+
+      <ul class="features">
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">Sınırsız hasta kaydı</span>
+        </li>
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">Randevu takvimi</span>
+        </li>
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">Seans notları</span>
+        </li>
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">WhatsApp hatırlatıcı</span>
+          <span class="feature-badge">Dahil</span>
+        </li>
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">Otomatik randevu asistanı</span>
+          <span class="feature-badge">Dahil</span>
+        </li>
+        <li class="feature-item">
+          <div class="check-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5fb3a1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="feature-text">Öncelikli destek</span>
+        </li>
+      </ul>
+
+      <div class="cta-area">
+        <div class="cta-btn">
+          <span>Seansify Pro Seç</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+        <div class="cta-note">
+          Güvenli ödeme<br/>
+          <strong style="color:#94a3b8">seansify.app</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

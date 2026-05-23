@@ -53,6 +53,9 @@ export async function POST(req: NextRequest) {
           },
           email: user.email,
           name: psych.full_name || '',
+          billing_address: {
+            country: 'TR',
+          },
         },
         checkout_options: {
           embed: false,

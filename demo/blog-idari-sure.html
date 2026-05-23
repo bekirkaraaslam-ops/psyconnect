@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Blog Görseli — İdari Süre</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    padding: 40px 20px;
+  }
+
+  .slide-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .slide {
+    width: 540px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Arka plan katmanları */
+  .bg-base {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #f0fdf8 0%, #e6f7f2 40%, #f5fbf8 100%);
+  }
+
+  .bg-glow-top {
+    position: absolute;
+    top: -60px;
+    right: -40px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,124,111,0.12) 0%, transparent 70%);
+  }
+
+  .bg-glow-bottom {
+    position: absolute;
+    bottom: -50px;
+    left: -30px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(110,231,183,0.18) 0%, transparent 70%);
+  }
+
+  .bg-dots {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bg-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    border: 1px solid rgba(74,124,111,0.1);
+  }
+
+  .bg-line-2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(74,124,111,0.05);
+  }
+
+  /* İçerik */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    padding: 0 48px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #4a7c6f;
+    margin-bottom: 20px;
+  }
+
+  .number {
+    font-size: 108px;
+    font-weight: 800;
+    line-height: 1;
+    color: #0d1f18;
+    letter-spacing: -4px;
+    margin-bottom: 4px;
+  }
+
+  .number-unit {
+    font-size: 30px;
+    font-weight: 700;
+    color: #4a7c6f;
+    letter-spacing: -0.5px;
+    margin-bottom: 24px;
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: rgba(74,124,111,0.3);
+    margin-bottom: 24px;
+  }
+
+  .description {
+    font-size: 15.5px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #3d5a52;
+    max-width: 340px;
+  }
+
+  .description strong {
+    color: #0d1f18;
+    font-weight: 700;
+  }
+
+  .brand {
+    position: absolute;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .brand-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a7c6f;
+    opacity: 0.5;
+  }
+
+  .brand-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(13,31,24,0.3);
+    letter-spacing: 1.5px;
+  }
+
+  /* İndir butonu */
+  .btn-download {
+    padding: 12px 32px;
+    background: #4a7c6f;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: inherit;
+  }
+
+  .btn-download:hover { opacity: 0.85; }
+  .btn-download:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<div class="slide-wrap">
+  <div class="slide" id="slide">
+    <div class="bg-base"></div>
+    <div class="bg-glow-top"></div>
+    <div class="bg-glow-bottom"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line-2"></div>
+
+    <div class="bg-dots">
+      <svg width="540" height="540" xmlns="http://www.w3.org/2000/svg">
+        <g fill="rgba(74,124,111,0.08)">
+          <circle cx="54" cy="54" r="1.5"/>
+          <circle cx="108" cy="54" r="1.5"/>
+          <circle cx="162" cy="54" r="1.5"/>
+          <circle cx="216" cy="54" r="1.5"/>
+          <circle cx="270" cy="54" r="1.5"/>
+          <circle cx="324" cy="54" r="1.5"/>
+          <circle cx="378" cy="54" r="1.5"/>
+          <circle cx="432" cy="54" r="1.5"/>
+          <circle cx="486" cy="54" r="1.5"/>
+          <circle cx="54" cy="108" r="1.5"/>
+          <circle cx="108" cy="108" r="1.5"/>
+          <circle cx="162" cy="108" r="1.5"/>
+          <circle cx="216" cy="108" r="1.5"/>
+          <circle cx="270" cy="108" r="1.5"/>
+          <circle cx="324" cy="108" r="1.5"/>
+          <circle cx="378" cy="108" r="1.5"/>
+          <circle cx="432" cy="108" r="1.5"/>
+          <circle cx="486" cy="108" r="1.5"/>
+          <circle cx="54" cy="162" r="1.5"/>
+          <circle cx="108" cy="162" r="1.5"/>
+          <circle cx="162" cy="162" r="1.5"/>
+          <circle cx="216" cy="162" r="1.5"/>
+          <circle cx="270" cy="162" r="1.5"/>
+          <circle cx="324" cy="162" r="1.5"/>
+          <circle cx="378" cy="162" r="1.5"/>
+          <circle cx="432" cy="162" r="1.5"/>
+          <circle cx="486" cy="162" r="1.5"/>
+          <circle cx="54" cy="216" r="1.5"/>
+          <circle cx="108" cy="216" r="1.5"/>
+          <circle cx="162" cy="216" r="1.5"/>
+          <circle cx="216" cy="216" r="1.5"/>
+          <circle cx="270" cy="216" r="1.5"/>
+          <circle cx="324" cy="216" r="1.5"/>
+          <circle cx="378" cy="216" r="1.5"/>
+          <circle cx="432" cy="216" r="1.5"/>
+          <circle cx="486" cy="216" r="1.5"/>
+          <circle cx="54" cy="270" r="1.5"/>
+          <circle cx="108" cy="270" r="1.5"/>
+          <circle cx="162" cy="270" r="1.5"/>
+          <circle cx="216" cy="270" r="1.5"/>
+          <circle cx="270" cy="270" r="1.5"/>
+          <circle cx="324" cy="270" r="1.5"/>
+          <circle cx="378" cy="270" r="1.5"/>
+          <circle cx="432" cy="270" r="1.5"/>
+          <circle cx="486" cy="270" r="1.5"/>
+          <circle cx="54" cy="324" r="1.5"/>
+          <circle cx="108" cy="324" r="1.5"/>
+          <circle cx="162" cy="324" r="1.5"/>
+          <circle cx="216" cy="324" r="1.5"/>
+          <circle cx="270" cy="324" r="1.5"/>
+          <circle cx="324" cy="324" r="1.5"/>
+          <circle cx="378" cy="324" r="1.5"/>
+          <circle cx="432" cy="324" r="1.5"/>
+          <circle cx="486" cy="324" r="1.5"/>
+          <circle cx="54" cy="378" r="1.5"/>
+          <circle cx="108" cy="378" r="1.5"/>
+          <circle cx="162" cy="378" r="1.5"/>
+          <circle cx="216" cy="378" r="1.5"/>
+          <circle cx="270" cy="378" r="1.5"/>
+          <circle cx="324" cy="378" r="1.5"/>
+          <circle cx="378" cy="378" r="1.5"/>
+          <circle cx="432" cy="378" r="1.5"/>
+          <circle cx="486" cy="378" r="1.5"/>
+          <circle cx="54" cy="432" r="1.5"/>
+          <circle cx="108" cy="432" r="1.5"/>
+          <circle cx="162" cy="432" r="1.5"/>
+          <circle cx="216" cy="432" r="1.5"/>
+          <circle cx="270" cy="432" r="1.5"/>
+          <circle cx="324" cy="432" r="1.5"/>
+          <circle cx="378" cy="432" r="1.5"/>
+          <circle cx="432" cy="432" r="1.5"/>
+          <circle cx="486" cy="432" r="1.5"/>
+          <circle cx="54" cy="486" r="1.5"/>
+          <circle cx="108" cy="486" r="1.5"/>
+          <circle cx="162" cy="486" r="1.5"/>
+          <circle cx="216" cy="486" r="1.5"/>
+          <circle cx="270" cy="486" r="1.5"/>
+          <circle cx="324" cy="486" r="1.5"/>
+          <circle cx="378" cy="486" r="1.5"/>
+          <circle cx="432" cy="486" r="1.5"/>
+          <circle cx="486" cy="486" r="1.5"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="content">
+      <div class="eyebrow">Düşündürücü bir hesap</div>
+      <div class="number">150</div>
+      <div class="number-unit">saat / yıl</div>
+      <div class="divider"></div>
+      <div class="description">
+        Randevu, hatırlatıcı, form, not —<br>
+        bunlar için harcanan süre yılda<br>
+        <strong>neredeyse 4 çalışma haftası</strong> tutuyor.
+      </div>
+    </div>
+
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">SEANSIFY</div>
+      <div class="brand-dot"></div>
+    </div>
+  </div>
+
+  <button class="btn-download" id="btn" onclick="download()">PNG İndir (1080×1080)</button>
+</div>
+
+<script>
+async function download() {
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Hazırlanıyor...';
+
+  const el = document.getElementById('slide');
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#f0fdf8',
+    logging: false,
+    width: 540,
+    height: 540
+  });
+
+  const link = document.createElement('a');
+  link.download = 'seansify-idari-sure.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  btn.disabled = false;
+  btn.textContent = 'PNG İndir (1080×1080)';
+}
+</script>
+</body>
+</html>

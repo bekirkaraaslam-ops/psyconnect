@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seansify — KVKK Carousel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .slide-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .slide {
+      width: 540px;
+      height: 540px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 56px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide .dots {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.07;
+    }
+
+    .slide-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .slide-main {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 20px;
+    }
+
+    .slide-sub {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.65;
+      opacity: 0.82;
+    }
+
+    .brand {
+      margin-top: 36px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      opacity: 0.5;
+    }
+
+    .download-btn {
+      padding: 10px 28px;
+      background: #4a7c6f;
+      color: #f8fafc;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    .download-btn:hover { background: #3a6459; }
+
+    /* ── Slayt 1 ── */
+    #s1 { background: linear-gradient(145deg, #0d1f18 0%, #163324 100%); color: #f8fafc; }
+    #s1 .slide-main { font-size: 30px; color: #f8fafc; }
+    #s1 .slide-sub  { color: #6ee7b7; font-size: 20px; font-weight: 600; opacity: 1; }
+    #s1 .dots.d1 { width: 320px; height: 320px; background: #6ee7b7; top: -100px; right: -100px; }
+    #s1 .dots.d2 { width: 180px; height: 180px; background: #4a7c6f; bottom: -60px; left: -60px; }
+
+    /* ── Slayt 2 ── */
+    #s2 { background: linear-gradient(145deg, #1a3d2b 0%, #0d1f18 100%); color: #f8fafc; }
+    #s2 .slide-label { color: #6ee7b7; }
+    #s2 .slide-main  { font-size: 26px; }
+    #s2 .dots.d1 { width: 260px; height: 260px; background: #4a7c6f; bottom: -80px; right: -80px; }
+
+    /* ── Slayt 3 ── */
+    #s3 { background: linear-gradient(145deg, #163324 0%, #1a3d2b 100%); color: #f8fafc; }
+    #s3 .slide-label { color: #6ee7b7; }
+    #s3 .slide-main  { font-size: 26px; }
+    #s3 .dots.d1 { width: 200px; height: 200px; background: #6ee7b7; top: -60px; left: -60px; }
+    #s3 .dots.d2 { width: 140px; height: 140px; background: #4a7c6f; bottom: -40px; right: -40px; }
+
+    /* ── Slayt 4 ── */
+    #s4 { background: linear-gradient(145deg, #4a7c6f 0%, #1a3d2b 100%); color: #f8fafc; }
+    #s4 .slide-label { color: #d1fae5; }
+    #s4 .slide-main  { font-size: 27px; }
+    #s4 .dots.d1 { width: 240px; height: 240px; background: #0d1f18; top: -70px; right: -70px; }
+
+    /* ── Slayt 5 ── */
+    #s5 { background: linear-gradient(145deg, #0d1f18 0%, #163324 100%); color: #f8fafc; }
+    #s5 .slide-main  { font-size: 26px; }
+    #s5 .cta-link    { font-size: 22px; font-weight: 800; color: #6ee7b7; margin-top: 16px; }
+    #s5 .dots.d1 { width: 300px; height: 300px; background: #4a7c6f; top: -100px; left: -100px; }
+    #s5 .dots.d2 { width: 160px; height: 160px; background: #6ee7b7; bottom: -50px; right: -50px; }
+  </style>
+</head>
+<body>
+
+  <!-- SLAYT 1 -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s1">
+      <div class="dots d1"></div>
+      <div class="dots d2"></div>
+      <div class="slide-main">2016'dan beri yürürlükteyiz diyorlar.</div>
+      <div class="slide-sub">Ama muayenehanelerin önemli bir kısmı hâlâ kağıt dosyayla çalışıyor.</div>
+      <div class="brand">SEANSIFY</div>
+    </div>
+    <button class="download-btn" onclick="download('s1', 'kvkk-1-hook')">İndir</button>
+  </div>
+
+  <!-- SLAYT 2 -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s2">
+      <div class="dots d1"></div>
+      <div class="slide-label">KVKK Gerçeği</div>
+      <div class="slide-main">KVKK, sağlık verisini "özel nitelikli kişisel veri" olarak tanımlıyor.</div>
+      <div class="slide-sub">Bu kategori en yüksek koruma seviyesini gerektiriyor. Kağıt dosya bu gereklilikler açısından ciddi bir açık bırakıyor.</div>
+      <div class="brand">SEANSIFY</div>
+    </div>
+    <button class="download-btn" onclick="download('s2', 'kvkk-2-gercek')">İndir</button>
+  </div>
+
+  <!-- SLAYT 3 -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s3">
+      <div class="dots d1"></div>
+      <div class="dots d2"></div>
+      <div class="slide-label">Yaygın Tablo</div>
+      <div class="slide-main">Çoğu özel pratik hâlâ kağıt kullanıyor.</div>
+      <div class="slide-sub">Bu bir tercih değil — dijital alternatiflere ulaşılamamış olmanın sonucu. Fark var.</div>
+      <div class="brand">SEANSIFY</div>
+    </div>
+    <button class="download-btn" onclick="download('s3', 'kvkk-3-tablo')">İndir</button>
+  </div>
+
+  <!-- SLAYT 4 -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s4">
+      <div class="dots d1"></div>
+      <div class="slide-label">Dijital Geçiş Ne Demek?</div>
+      <div class="slide-main">Danışan formu kendisi dolduruyor. Siz sadece onaylıyorsunuz.</div>
+      <div class="slide-sub">Veriler şifreli, erişim kayıtlı. Kağıt yok, kayıp dosya yok, ekstra iş yok.</div>
+      <div class="brand">SEANSIFY</div>
+    </div>
+    <button class="download-btn" onclick="download('s4', 'kvkk-4-cozum')">İndir</button>
+  </div>
+
+  <!-- SLAYT 5 -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s5">
+      <div class="dots d1"></div>
+      <div class="dots d2"></div>
+      <div class="slide-main">Dijital kliniğinizi 10 dakikada kurabilirsiniz.</div>
+      <div class="cta-link">seansify.com</div>
+<div class="brand">SEANSIFY</div>
+    </div>
+    <button class="download-btn" onclick="download('s5', 'kvkk-5-cta')">İndir</button>
+  </div>
+
+  <script>
+    async function download(id, filename) {
+      const el = document.getElementById(id)
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        width: 540,
+        height: 540,
+      })
+      const link = document.createElement('a')
+      link.download = `${filename}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    }
+  </script>
+
+</body>
+</html>

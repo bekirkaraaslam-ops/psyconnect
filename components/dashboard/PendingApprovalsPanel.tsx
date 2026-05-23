@@ -6,6 +6,8 @@ interface PendingAppointment {
   id: string
   appointment_date: string
   duration_minutes: number
+  booking_name: string | null
+  booking_phone: string | null
   patient: { name_surname: string; phone_number: string } | null
 }
 
@@ -15,9 +17,14 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
 
   async function handle(id: string, action: 'approve' | 'reject') {
     setLoading(id)
-    await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
-    setItems(prev => prev.filter(i => i.id !== id))
-    setLoading(null)
+    try {
+      const res = await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
+      if (res.ok) {
+        setItems(prev => prev.filter(i => i.id !== id))
+      }
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (
@@ -39,12 +46,14 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
       ) : (
       <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
         {items.map(apt => {
-          const initials = apt.patient?.name_surname
-            ?.split(' ')
+          const displayName = apt.patient?.name_surname ?? apt.booking_name ?? 'Misafir'
+          const initials = displayName
+            .split(' ')
             .map((n: string) => n[0])
             .join('')
             .toUpperCase()
-            .slice(0, 2) ?? '?'
+            .slice(0, 2)
+          const isBookingPage = !apt.patient && apt.booking_name
           return (
             <div key={apt.id} className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
@@ -55,8 +64,15 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
                   {initials}
                 </div>
                 <div>
-                  <div className="text-sm font-medium" style={{ color: '#334155' }}>
-                    {apt.patient?.name_surname}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium" style={{ color: '#334155' }}>
+                      {displayName}
+                    </span>
+                    {isBookingPage && (
+                      <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ background: '#eff6ff', color: '#3b82f6' }}>
+                        Online
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs" style={{ color: '#64748b' }}>
                     {formatDateTime(apt.appointment_date)} · {apt.duration_minutes} dk

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Seansify — İdari Yük Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #060f0c;
+      font-family: Inter, sans-serif;
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    h1 { color: #6ee7b7; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+    .slide-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .label { color: #475569; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    canvas { width: 320px; height: 320px; border-radius: 8px; }
+    button.dl {
+      background: #4a7c6f; color: white; border: none;
+      padding: 8px 20px; border-radius: 8px; font-size: 12px;
+      font-weight: 700; cursor: pointer; font-family: Inter, sans-serif;
+    }
+    button.dl:hover { background: #3d6b5f; }
+    .dl-all {
+      background: #6ee7b7; color: #0d1f18; border: none;
+      padding: 12px 32px; border-radius: 10px; font-size: 14px;
+      font-weight: 900; cursor: pointer; font-family: Inter, sans-serif;
+    }
+    .dl-all:hover { background: #4dd4a4; }
+  </style>
+</head>
+<body>
+
+<h1>Seansify — İdari Yük Carousel (6 Slayt)</h1>
+<div class="grid" id="grid"></div>
+<button class="dl-all" onclick="downloadAll()">Tümünü İndir (PNG)</button>
+
+<script>
+const W = 1080
+const slides = [
+  { label: 'Slayt 1 — Kapak',         fn: drawSlide1 },
+  { label: 'Slayt 2 — 8 Saat',        fn: drawSlide2 },
+  { label: 'Slayt 3 — Nereye Gidiyor', fn: drawSlide3 },
+  { label: 'Slayt 4 — Kırılma',        fn: drawSlide4 },
+  { label: 'Slayt 5 — Çözüm',         fn: drawSlide5 },
+  { label: 'Slayt 6 — CTA',           fn: drawSlide6 },
+]
+
+const canvases = []
+
+document.fonts.ready.then(() => {
+  const grid = document.getElementById('grid')
+  slides.forEach((s, i) => {
+    const wrap = document.createElement('div')
+    wrap.className = 'slide-wrap'
+    const lbl = document.createElement('div')
+    lbl.className = 'label'
+    lbl.textContent = s.label
+    const c = document.createElement('canvas')
+    c.width = W; c.height = W
+    canvases.push(c)
+    const btn = document.createElement('button')
+    btn.className = 'dl'
+    btn.textContent = 'PNG İndir'
+    btn.onclick = () => downloadOne(c, `seansify-idari-${i+1}.png`)
+    wrap.appendChild(lbl); wrap.appendChild(c); wrap.appendChild(btn)
+    grid.appendChild(wrap)
+    s.fn(c.getContext('2d'))
+  })
+})
+
+const GREEN1 = '#6ee7b7'
+const GREEN2 = '#4a7c6f'
+const WHITE  = '#f8fafc'
+const GRAY   = '#94a3b8'
+
+function bg(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, W, W)
+  grad.addColorStop(0, '#0d1f18')
+  grad.addColorStop(1, '#071410')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, W, W)
+}
+
+function logo(ctx) {
+  ctx.save()
+  ctx.font = `700 28px Inter, sans-serif`
+  ctx.textBaseline = 'alphabetic'
+  ctx.textAlign = 'right'
+  const iw = ctx.measureText('ify').width
+  const x = W - 110, y = W - 72
+  ctx.fillStyle = GREEN1; ctx.fillText('seans', x - iw, y)
+  ctx.fillStyle = WHITE;  ctx.fillText('ify', x, y)
+  ctx.restore()
+}
+
+function tag(ctx, text) {
+  ctx.save()
+  ctx.font = `700 26px Inter, sans-serif`
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left'
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.65
+  ctx.fillText(text, 110, 72)
+  ctx.restore()
+}
+
+function rrect(ctx, x, y, w, h, r, color, alpha) {
+  ctx.save()
+  if (alpha !== undefined) ctx.globalAlpha = alpha
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w, y,     x + w, y + h, r)
+  ctx.arcTo(x + w, y + h, x,     y + h, r)
+  ctx.arcTo(x,     y + h, x,     y,     r)
+  ctx.arcTo(x,     y,     x + w, y,     r)
+  ctx.closePath()
+  ctx.fillStyle = color; ctx.fill()
+  ctx.restore()
+}
+
+function calendarIcon(ctx, cx, cy, size) {
+  const s = size / 40
+  const tx = cx - 20 * s, ty = cy - 20 * s
+  const px = x => tx + x * s, py = y => ty + y * s
+  rrect(ctx, px(6), py(11), 28*s, 24*s, 3*s, WHITE, 0.9)
+  rrect(ctx, px(13), py(7),  3*s,  8*s, 1.5*s, WHITE, 0.9)
+  rrect(ctx, px(24), py(7),  3*s,  8*s, 1.5*s, WHITE, 0.9)
+  ctx.beginPath()
+  ctx.arc(px(20), py(25), 4.5*s, 0, Math.PI*2)
+  ctx.fillStyle = GREEN2; ctx.fill()
+}
+
+// ─── SLIDE 1 — KAPAK ──────────────────────────────────────
+function drawSlide1(ctx) {
+  bg(ctx)
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(W + 60, -60, 460, 0, Math.PI * 2)
+  ctx.fillStyle = GREEN2; ctx.globalAlpha = 0.07; ctx.fill()
+  ctx.restore()
+
+  // saat ikonu (manuel çizim)
+  const cx = W/2, cy = 310, r = 120
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.fillStyle = '#1a3530'; ctx.fill()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.strokeStyle = GREEN1; ctx.lineWidth = 8; ctx.globalAlpha = 0.5; ctx.stroke()
+  ctx.globalAlpha = 1
+
+  // akrep & yelkovan
+  ctx.strokeStyle = WHITE; ctx.lineWidth = 10; ctx.lineCap = 'round'
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - 72); ctx.stroke()
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + 52, cy + 28); ctx.stroke()
+  ctx.beginPath()
+  ctx.arc(cx, cy, 10, 0, Math.PI * 2)
+  ctx.fillStyle = GREEN1; ctx.fill()
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'
+
+  ctx.font = `900 76px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Randevu almak, hatırlatma', W/2, 560)
+  ctx.fillText('atmak, form toplamak —', W/2, 650)
+
+  ctx.font = `700 54px Inter, sans-serif`
+  ctx.fillStyle = GREEN1
+  ctx.fillText('bunları sen mi yapıyorsun hâlâ?', W/2, 760)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 2 — 8 SAAT ─────────────────────────────────────
+function drawSlide2(ctx) {
+  const grad = ctx.createRadialGradient(W/2, W/2, 0, W/2, W/2, W * 0.72)
+  grad.addColorStop(0, '#112b20'); grad.addColorStop(1, '#0d1f18')
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, W)
+
+  tag(ctx, 'Gerçek mi?')
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'
+
+  ctx.font = `900 300px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.08
+  ctx.fillText('8s', W/2, 660); ctx.globalAlpha = 1
+
+  ctx.font = `900 240px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.fillText('8 saat', W/2, 640)
+
+  ctx.font = `700 52px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Haftada ortalama bu kadar', W/2, 734)
+  ctx.fillText('idari işe gidiyor.', W/2, 802)
+
+  ctx.font = `400 36px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Randevu alma, hatırlatma, form, not…', W/2, 886)
+
+  ctx.font = `300 24px Inter, sans-serif`
+  ctx.fillStyle = '#475569'
+  ctx.fillText('Özel pratik yapan psikolog ortalaması', W/2, W - 60)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 3 — NEREYE GİDİYOR? ───────────────────────────
+function drawSlide3(ctx) {
+  bg(ctx)
+  tag(ctx, 'Bu saatler nereye gidiyor?')
+
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'
+
+  const items = [
+    { text: 'Randevu almak & düzenlemek',  sure: '~2 saat' },
+    { text: 'Hastaları aramak / yazmak',    sure: '~2 saat' },
+    { text: 'Kağıt form doldurmak',         sure: '~2 saat' },
+    { text: 'Seans notu tutmak',            sure: '~2 saat' },
+  ]
+
+  let y = 220
+  items.forEach(item => {
+    rrect(ctx, 110, y - 48, W - 220, 80, 14, '#1a3530', 0.6)
+
+    ctx.beginPath()
+    ctx.arc(110 + 24, y - 8, 8, 0, Math.PI * 2)
+    ctx.fillStyle = GREEN1; ctx.fill()
+
+    ctx.font = `700 38px Inter, sans-serif`
+    ctx.fillStyle = WHITE
+    ctx.fillText(item.text, 110 + 48, y)
+
+    ctx.font = `700 34px Inter, sans-serif`
+    ctx.fillStyle = GREEN1
+    ctx.textAlign = 'right'
+    ctx.fillText(item.sure, W - 110, y)
+    ctx.textAlign = 'left'
+
+    y += 112
+  })
+
+  ctx.fillStyle = GREEN2; ctx.globalAlpha = 0.4
+  ctx.fillRect(110, y + 8, 380, 3); ctx.globalAlpha = 1
+
+  ctx.font = `700 38px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('Toplam: haftada ~8 saat', 110, y + 62)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 4 — KIRILMA NOKTASI ────────────────────────────
+function drawSlide4(ctx) {
+  bg(ctx)
+  tag(ctx, 'Dur bir dakika.')
+
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'
+
+  ctx.font = `700 58px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Bu saatlerde kaç seans', W/2, 280)
+  ctx.fillText('yapabilirdin?', W/2, 352)
+
+  // büyük rakam
+  ctx.font = `900 260px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.1
+  ctx.fillText('4', W/2, 700); ctx.globalAlpha = 1
+
+  ctx.font = `900 200px Inter, sans-serif`
+  ctx.fillStyle = GREEN1
+  ctx.fillText('2–4', W/2, 680)
+
+  ctx.font = `700 48px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('seans daha', W/2, 756)
+
+  // pill
+  rrect(ctx, W/2 - 280, 808, 560, 78, 39, '#1a3530')
+  ctx.font = `400 34px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('= ayda ciddi bir gelir farkı', W/2, 857)
+
+  logo(ctx)
+}
+
+// ─── SLIDE 5 — ÇÖZÜM ──────────────────────────────────────
+function drawSlide5(ctx) {
+  bg(ctx)
+  tag(ctx, 'Çözüm')
+
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'
+
+  ctx.font = `900 72px Inter, sans-serif`
+  ctx.fillStyle = GREEN1; ctx.fillText('Otomasyona bırak.', 110, 210)
+
+  const items = [
+    'WhatsApp\'tan otomatik hatırlatma',
+    'Hasta kendi formunu dolduruyor',
+    'Takvim tek ekranda',
+    'SOAP notu yapılandırılmış, hızlı',
+  ]
+
+  let y = 318
+  items.forEach(item => {
+    ctx.save()
+    ctx.strokeStyle = GREEN1; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.lineJoin = 'round'
+    ctx.beginPath()
+    ctx.moveTo(110, y - 10); ctx.lineTo(122, y + 4); ctx.lineTo(144, y - 20)
+    ctx.stroke(); ctx.restore()
+
+    ctx.font = `400 42px Inter, sans-serif`
+    ctx.fillStyle = WHITE
+    ctx.fillText(item, 168, y)
+    y += 112
+  })
+
+  logo(ctx)
+}
+
+// ─── SLIDE 6 — CTA ────────────────────────────────────────
+function drawSlide6(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, W, W)
+  grad.addColorStop(0, '#1a3d33'); grad.addColorStop(1, '#0d2a22')
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, W)
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(W + 80, -80, 500, 0, Math.PI * 2)
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.05; ctx.fill()
+  ctx.restore()
+
+  ctx.fillStyle = GREEN1; ctx.globalAlpha = 0.3
+  ctx.fillRect(0, 0, W, 5); ctx.globalAlpha = 1
+
+  // inline logo: ikon + seansify
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'
+  ctx.font = `900 110px Inter, sans-serif`
+  const w1 = ctx.measureText('seans').width
+  const w2 = ctx.measureText('ify').width
+  const iconSize = 96, gap = 24
+  const totalW = iconSize + gap + w1 + w2
+  const startX = W/2 - totalW/2
+  const logoY = 330
+
+  calendarIcon(ctx, startX + iconSize/2, logoY - iconSize * 0.35, iconSize)
+  ctx.fillStyle = GREEN1; ctx.fillText('seans', startX + iconSize + gap, logoY)
+  ctx.fillStyle = WHITE;  ctx.fillText('ify', startX + iconSize + gap + w1, logoY)
+
+  ctx.textAlign = 'center'
+  ctx.font = `900 80px Inter, sans-serif`
+  ctx.fillStyle = WHITE
+  ctx.fillText('Zamanını geri al.', W/2, 530)
+
+  ctx.font = `400 40px Inter, sans-serif`
+  ctx.fillStyle = GRAY
+  ctx.fillText('İdari işlere değil, hastana odaklan.', W/2, 626)
+
+  rrect(ctx, W/2 - 310, 710, 620, 108, 54, GREEN1)
+  ctx.font = `900 38px Inter, sans-serif`
+  ctx.fillStyle = '#0d1f18'
+  ctx.fillText('14 gün ücretsiz → seansify.com', W/2, 776)
+
+  ctx.globalAlpha = 1
+}
+
+// ─── DOWNLOAD ─────────────────────────────────────────────
+function downloadOne(canvas, name) {
+  const a = document.createElement('a')
+  a.download = name; a.href = canvas.toDataURL('image/png'); a.click()
+}
+
+function downloadAll() {
+  canvases.forEach((c, i) => {
+    setTimeout(() => downloadOne(c, `seansify-idari-${i+1}.png`), i * 500)
+  })
+}
+</script>
+</body>
+</html>

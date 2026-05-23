@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seansify — SOAP Carousel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .slide-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .slide {
+      width: 540px;
+      height: 540px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: #6ee7b7;
+      margin-bottom: 32px;
+    }
+
+    .main {
+      font-size: 38px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .accent { color: #6ee7b7; }
+
+    .divider {
+      width: 32px;
+      height: 2px;
+      background: #6ee7b7;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      opacity: 0.55;
+    }
+
+    .sub {
+      font-size: 17px;
+      font-weight: 500;
+      color: #f8fafc;
+      opacity: 0.75;
+      line-height: 1.65;
+      max-width: 380px;
+    }
+
+    .brand {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #f8fafc;
+      opacity: 0.28;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bd {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #f8fafc;
+      opacity: 0.5;
+    }
+
+    .download-btn {
+      padding: 10px 28px;
+      background: #4a7c6f;
+      color: #f8fafc;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .download-btn:hover { background: #3a6459; }
+
+    /* ── S1 — Hook ── */
+    /* Büyük dolgu daire sağ üstte + ince kenarlıklı halka sol altta */
+    #s1 { background: linear-gradient(145deg, #0d1f18 0%, #1a3d2b 100%); }
+    #s1 .main { font-size: 44px; }
+    #s1 .c1 { width: 340px; height: 340px; background: #6ee7b7; opacity: 0.05; top: -120px; right: -120px; }
+    #s1 .c2 { width: 200px; height: 200px; border: 1.5px solid #4a7c6f; opacity: 0.18; bottom: -70px; left: -70px; background: transparent; }
+    #s1 .c3 { width: 80px; height: 80px; background: #6ee7b7; opacity: 0.07; top: 60px; left: 40px; }
+
+    /* ── S2 — Problem ── */
+    /* Köşegen bantlı arka plan etkisi: üç farklı boyutta halka, merkeze yakın */
+    #s2 { background: linear-gradient(200deg, #1a3d2b 0%, #0d1f18 100%); }
+    #s2 .c1 { width: 420px; height: 420px; border: 1px solid #4a7c6f; opacity: 0.10; top: 50%; left: 50%; transform: translate(-50%, -50%); background: transparent; }
+    #s2 .c2 { width: 280px; height: 280px; border: 1px solid #6ee7b7; opacity: 0.07; top: 50%; left: 50%; transform: translate(-50%, -50%); background: transparent; }
+    #s2 .c3 { width: 90px; height: 90px; background: #4a7c6f; opacity: 0.12; bottom: -30px; right: 60px; }
+
+    /* ── S3 — SOAP Nedir ── */
+    /* Dağınık küçük noktalar + sağ alt büyük dolgu */
+    #s3 { background: linear-gradient(120deg, #163324 0%, #0d1f18 60%, #1a3d2b 100%); }
+    #s3 .main { font-size: 72px; letter-spacing: 8px; }
+    #s3 .c1 { width: 60px; height: 60px; background: #6ee7b7; opacity: 0.08; top: 48px; left: 52px; }
+    #s3 .c2 { width: 30px; height: 30px; background: #6ee7b7; opacity: 0.10; top: 140px; right: 64px; }
+    #s3 .c3 { width: 45px; height: 45px; background: #4a7c6f; opacity: 0.12; bottom: 80px; left: 80px; }
+    #s3 .c4 { width: 260px; height: 260px; background: #4a7c6f; opacity: 0.06; bottom: -90px; right: -90px; }
+
+    /* ── S4 — Çözüm ── */
+    /* Tek büyük halka sol-orta + küçük dolgu sağ üst */
+    #s4 { background: linear-gradient(145deg, #4a7c6f 0%, #163324 70%, #0d1f18 100%); }
+    #s4 .tag { color: #d1fae5; }
+    #s4 .c1 { width: 380px; height: 380px; border: 1.5px solid #0d1f18; opacity: 0.20; top: 50%; left: -120px; transform: translateY(-50%); background: transparent; }
+    #s4 .c2 { width: 100px; height: 100px; background: #0d1f18; opacity: 0.15; top: 44px; right: 52px; }
+    #s4 .c3 { width: 50px; height: 50px; background: #6ee7b7; opacity: 0.10; bottom: 56px; right: 100px; }
+
+    /* ── S5 — CTA ── */
+    /* Sağ altta büyük dolgu + sol üstte iki iç içe halka */
+    #s5 { background: linear-gradient(170deg, #0d1f18 0%, #163324 100%); }
+    #s5 .main { font-size: 34px; }
+    #s5 .cta { font-size: 30px; font-weight: 800; color: #6ee7b7; margin-top: 14px; }
+    #s5 .c1 { width: 240px; height: 240px; border: 1.5px solid #4a7c6f; opacity: 0.15; top: -60px; left: -60px; background: transparent; }
+    #s5 .c2 { width: 140px; height: 140px; border: 1px solid #6ee7b7; opacity: 0.10; top: -20px; left: -20px; background: transparent; }
+    #s5 .c3 { width: 300px; height: 300px; background: #6ee7b7; opacity: 0.04; bottom: -110px; right: -110px; }
+  </style>
+</head>
+<body>
+
+  <!-- S1 — HOOK -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s1">
+      <div class="circle c1"></div>
+      <div class="circle c2"></div>
+      <div class="circle c3"></div>
+      <div class="tag">Seans Notu</div>
+      <div class="main">
+        Seansı bitirdiniz.<br />
+        <span class="accent">Notlar hâlâ açık.</span>
+      </div>
+      <div class="brand"><div class="bd"></div>SEANSIFY<div class="bd"></div></div>
+    </div>
+    <button class="download-btn" onclick="dl('s1','soap-1-hook')">İndir</button>
+  </div>
+
+  <!-- S2 — PROBLEM -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s2">
+      <div class="circle c1"></div>
+      <div class="circle c2"></div>
+      <div class="circle c3"></div>
+      <div class="tag">Problem</div>
+      <div class="main">Seans sırasında not almak dikkatı böler.</div>
+      <div class="divider"></div>
+      <div class="sub">Seans bittikten sonra yazmak da ertelenir. İkisi de yorucu.</div>
+      <div class="brand"><div class="bd"></div>SEANSIFY<div class="bd"></div></div>
+    </div>
+    <button class="download-btn" onclick="dl('s2','soap-2-problem')">İndir</button>
+  </div>
+
+  <!-- S3 — SOAP NEDİR -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s3">
+      <div class="circle c1"></div>
+      <div class="circle c2"></div>
+      <div class="circle c3"></div>
+      <div class="circle c4"></div>
+      <div class="tag">Format</div>
+      <div class="main accent">SOAP</div>
+      <div class="divider"></div>
+      <div class="sub">
+        Subjektif · Objektif<br />
+        Değerlendirme · Plan<br />
+        <span style="color:#f8fafc; font-weight:600;">Dört başlık. Her şey yerli yerinde.</span>
+      </div>
+      <div class="brand"><div class="bd"></div>SEANSIFY<div class="bd"></div></div>
+    </div>
+    <button class="download-btn" onclick="dl('s3','soap-3-format')">İndir</button>
+  </div>
+
+  <!-- S4 — ÇÖZÜM -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s4">
+      <div class="circle c1"></div>
+      <div class="circle c2"></div>
+      <div class="circle c3"></div>
+      <div class="tag">Seansify ile</div>
+      <div class="main">Seans notu<br /><span class="accent">3 dakika.</span></div>
+      <div class="divider"></div>
+      <div class="sub">Yapay zeka anahtar noktaları çıkarıyor. Siz onaylıyorsunuz. Klinik kontrolü bırakmıyorsunuz.</div>
+      <div class="brand"><div class="bd"></div>SEANSIFY<div class="bd"></div></div>
+    </div>
+    <button class="download-btn" onclick="dl('s4','soap-4-cozum')">İndir</button>
+  </div>
+
+  <!-- S5 — CTA -->
+  <div class="slide-wrapper">
+    <div class="slide" id="s5">
+      <div class="circle c1"></div>
+      <div class="circle c2"></div>
+      <div class="circle c3"></div>
+      <div class="main">Not yükünü<br />sisteme bırakın.</div>
+      <div class="cta">seansify.com</div>
+      <div class="brand"><div class="bd"></div>SEANSIFY<div class="bd"></div></div>
+    </div>
+    <button class="download-btn" onclick="dl('s5','soap-5-cta')">İndir</button>
+  </div>
+
+  <script>
+    async function dl(id, filename) {
+      const el = document.getElementById(id)
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#0d1f18',
+        logging: false,
+        width: 540,
+        height: 540,
+      })
+      const link = document.createElement('a')
+      link.download = `${filename}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    }
+  </script>
+
+</body>
+</html>

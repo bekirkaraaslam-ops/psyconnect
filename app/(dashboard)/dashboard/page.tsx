@@ -3,7 +3,7 @@ import Topbar from '@/components/layout/Topbar'
 import PendingApprovalsPanel from '@/components/dashboard/PendingApprovalsPanel'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
-import { startOfDay, endOfDay, endOfWeek, startOfWeek, addDays } from 'date-fns'
+import { startOfDay, endOfDay, endOfWeek, startOfWeek, addDays, subDays } from 'date-fns'
 
 export default async function OverviewPage() {
   const supabase = await createClient()
@@ -11,7 +11,7 @@ export default async function OverviewPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id, full_name, subscription_status, is_connected')
+    .select('id, full_name, subscription_status, plan_type, is_connected')
     .eq('auth_user_id', user!.id)
     .single()
 
@@ -24,6 +24,7 @@ export default async function OverviewPage() {
   const tomorrowEnd = endOfDay(addDays(now, 1)).toISOString()
   const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
   const weekEnd = endOfWeek(now, { weekStartsOn: 1 }).toISOString()
+  const yesterdayStart = startOfDay(subDays(now, 1)).toISOString()
 
   const [
     { count: totalPatients },
@@ -36,25 +37,42 @@ export default async function OverviewPage() {
     { count: cascadeOfferedCount },
     { data: todayTimeline },
     { data: tomorrowTimeline },
+    { data: pastApts },
+    { data: recentNotes },
   ] = await Promise.all([
     supabase.from('patients').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).eq('is_active', true),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', now.toISOString()).lte('appointment_date', weekEnd).neq('status', 'canceled'),
-    supabase.from('appointments').select('id, appointment_date, duration_minutes, patient:patients(name_surname, phone_number)').eq('psychologist_id', psychologistId).eq('status', 'seansify_pending').order('appointment_date'),
+    supabase.from('appointments').select('id, appointment_date, duration_minutes, booking_name, booking_phone, patient:patients(name_surname, phone_number)').eq('psychologist_id', psychologistId).eq('status', 'seansify_pending').order('appointment_date'),
     supabase.from('waiting_list').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).in('status', ['waiting', 'offered']),
     supabase.from('anamnez_forms').select('id, expires_at, created_at, patient:patients(name_surname)').eq('psychologist_id', psychologistId).is('filled_at', null).order('created_at', { ascending: false }).limit(5),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).in('status', ['canceled', 'cancelled_by_patient']).gte('updated_at', weekStart).lte('updated_at', weekEnd),
     supabase.from('waiting_list').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).not('offer_sent_at', 'is', null).gte('offer_sent_at', weekStart).lte('offer_sent_at', weekEnd),
     supabase.from('appointments').select('*, patient:patients(name_surname)').eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd).in('status', ['waiting', 'confirmed']).order('appointment_date'),
     supabase.from('appointments').select('*, patient:patients(name_surname)').eq('psychologist_id', psychologistId).gte('appointment_date', tomorrowStart).lte('appointment_date', tomorrowEnd).in('status', ['waiting', 'confirmed']).order('appointment_date'),
+    supabase.from('appointments').select('id, appointment_date, patient:patients(id, name_surname)').eq('psychologist_id', psychologistId).in('status', ['confirmed', 'completed', 'waiting']).gte('appointment_date', yesterdayStart).lt('appointment_date', now.toISOString()).order('appointment_date', { ascending: false }),
+    supabase.from('hasta_notlari').select('hasta_id, seans_tarihi').eq('psychologist_id', psychologistId).gte('seans_tarihi', yesterdayStart).lte('seans_tarihi', now.toISOString()),
   ])
+
+  const missingNoteApts = (pastApts ?? []).filter((apt: any) => {
+    if (!apt.patient?.id) return false
+    const aptDateStr = new Date(apt.appointment_date).toDateString()
+    return !(recentNotes ?? []).some((note: any) =>
+      note.hasta_id === apt.patient.id &&
+      new Date(note.seans_tarihi).toDateString() === aptDateStr
+    )
+  })
+
+  const isPro = psychologist?.plan_type === 'pro'
 
   const stats = [
     { label: 'Toplam Hasta', value: totalPatients ?? 0, color: '#4a7c6f', icon: '👥' },
     { label: 'Bugünkü Randevular', value: todayCount ?? 0, color: '#3b82f6', icon: '📅' },
     { label: 'Bu Hafta', value: weekCount ?? 0, color: '#8b5cf6', icon: '🗓️' },
-    { label: 'WA Durumu', value: psychologist?.is_connected ? 'Bağlı' : 'Bağlı Değil', color: psychologist?.is_connected ? '#16a34a' : '#dc2626', icon: '💬' },
+    ...(isPro ? [{ label: 'WA Durumu', value: psychologist?.is_connected ? 'Bağlı' : 'Bağlı Değil', color: psychologist?.is_connected ? '#16a34a' : '#dc2626', icon: '💬' }] : []),
   ]
+
+  const isNew = (totalPatients ?? 0) === 0
 
   return (
     <div className="flex-1">
@@ -62,13 +80,50 @@ export default async function OverviewPage() {
 
       <div className="p-6 space-y-6">
 
+        {/* Başlarken kartı — yalnızca hiç hastası olmayan yeni kullanıcılara */}
+        {isNew && (
+          <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#dde5e2', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: '#e8f5f1' }}>🚀</div>
+              <div>
+                <div className="text-sm font-semibold" style={{ color: '#334155' }}>Seansify'a Hoş Geldin</div>
+                <div className="text-xs" style={{ color: '#94a3b8' }}>Başlamak için şu 3 adımı tamamla</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Link href="/patients/new" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>1</div>
+                <div>
+                  <div className="text-sm font-medium" style={{ color: '#334155' }}>İlk hastanı ekle</div>
+                  <div className="text-xs" style={{ color: '#94a3b8' }}>Hasta kaydı oluştur</div>
+                </div>
+              </Link>
+              <Link href="/whatsapp" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>2</div>
+                <div>
+                  <div className="text-sm font-medium" style={{ color: '#334155' }}>WhatsApp'ı bağla</div>
+                  <div className="text-xs" style={{ color: '#94a3b8' }}>Hatırlatıcılar için gerekli</div>
+                </div>
+              </Link>
+              <Link href="/appointments/new" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>3</div>
+                <div>
+                  <div className="text-sm font-medium" style={{ color: '#334155' }}>Randevu oluştur</div>
+                  <div className="text-xs" style={{ color: '#94a3b8' }}>İlk seansını planla</div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map(stat => (
-            <div key={stat.label} className="bg-white rounded-2xl p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-              <div className="text-2xl mb-2">{stat.icon}</div>
-              <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</div>
-              <div className="text-xs" style={{ color: '#64748b' }}>{stat.label}</div>
+            <div key={stat.label} className="bg-white rounded-2xl p-5 flex items-center gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
+              <div>
+                <div className="text-2xl font-bold leading-none mb-1" style={{ color: stat.color }}>{stat.value}</div>
+                <div className="text-xs" style={{ color: '#64748b' }}>{stat.label}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -160,6 +215,44 @@ export default async function OverviewPage() {
           </div>
 
         </div>
+
+        {/* Eksik SOAP Notu Uyarısı */}
+        {missingNoteApts.length > 0 && (
+          <div className="bg-white rounded-2xl" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-center gap-3 p-5 border-b" style={{ borderColor: '#fef3c7' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#fef3c7' }}>
+                <span style={{ fontSize: 16 }}>📝</span>
+              </div>
+              <h2 className="font-semibold" style={{ color: '#334155' }}>Seans Notu Eklenmemiş</h2>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#b45309' }}>
+                {missingNoteApts.length}
+              </span>
+            </div>
+            <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
+              {missingNoteApts.map((apt: any) => {
+                const saat = new Date(apt.appointment_date).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
+                const gun = new Date(apt.appointment_date).toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Istanbul' })
+                const initials = (apt.patient?.name_surname ?? 'H').split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+                return (
+                  <Link key={apt.id} href={`/appointments/${apt.id}`} className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold text-white" style={{ background: '#f59e0b' }}>
+                        {initials}
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium" style={{ color: '#334155' }}>{apt.patient?.name_surname}</div>
+                        <div className="text-xs" style={{ color: '#64748b' }}>{gun} · {saat}</div>
+                      </div>
+                    </div>
+                    <span className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: '#fef3c7', color: '#b45309' }}>
+                      Not ekle →
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Bugün / Yarın Timeline */}
         <DayTimeline todayApts={todayTimeline ?? []} tomorrowApts={tomorrowTimeline ?? []} />

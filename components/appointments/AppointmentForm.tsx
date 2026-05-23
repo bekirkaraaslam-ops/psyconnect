@@ -16,7 +16,6 @@ interface Props {
     id: string
     patient_id: string
     appointment_date: string
-    duration_minutes: number
     status: AppointmentStatus
     appointment_type: 'online' | 'yuzyuze'
     toplam_paket_seansi: number | null
@@ -35,7 +34,6 @@ export default function AppointmentForm({ patients, appointment }: Props) {
     appointment_date: appointment?.appointment_date
       ? new Date(appointment.appointment_date).toISOString().slice(0, 16)
       : '',
-    duration_minutes: appointment?.duration_minutes ?? 50,
     status: appointment?.status ?? 'waiting' as AppointmentStatus,
     appointment_type: appointment?.appointment_type ?? 'yuzyuze' as 'online' | 'yuzyuze',
     toplam_paket_seansi: appointment?.toplam_paket_seansi ?? '' as number | '',
@@ -74,7 +72,6 @@ export default function AppointmentForm({ patients, appointment }: Props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...form,
-        duration_minutes: Number(form.duration_minutes),
         appointment_date: new Date(form.appointment_date).toISOString(),
         appointment_type: form.appointment_type,
         toplam_paket_seansi: form.toplam_paket_seansi ? Number(form.toplam_paket_seansi) : null,
@@ -141,22 +138,6 @@ export default function AppointmentForm({ patients, appointment }: Props) {
           className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
           style={{ borderColor: '#dde5e2', color: '#334155' }}
         />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Süre (dakika)</label>
-        <select
-          name="duration_minutes"
-          value={form.duration_minutes}
-          onChange={handleChange}
-          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
-          style={{ borderColor: '#dde5e2', color: '#334155' }}
-        >
-          <option value={30}>30 dakika</option>
-          <option value={50}>50 dakika</option>
-          <option value={60}>60 dakika</option>
-          <option value={90}>90 dakika</option>
-        </select>
       </div>
 
       <div>

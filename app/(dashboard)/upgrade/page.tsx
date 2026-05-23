@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const plans = [
+const plans: { key: string; name: string; price: string; description: string; features: string[]; lockedFeatures: string[]; note?: string; highlight: boolean }[] = [
   {
     key: 'baslangic',
     name: 'Başlangıç',
@@ -23,10 +23,9 @@ const plans = [
       'Sınırsız hasta kaydı',
       'Randevu takvimi',
       'Seans notları',
-      'WhatsApp hatırlatıcı (Pro gerektirir)',
-      'Otomatik randevu asistanı (Pro gerektirir)',
     ],
-    lockedFeatures: ['WhatsApp hatırlatıcı', 'Otomatik randevu asistanı'],
+    lockedFeatures: [],
+    note: 'WhatsApp özellikleri Pro\'ya dahildir.',
     highlight: false,
   },
   {
@@ -177,6 +176,12 @@ function UpgradeContent() {
                     )
                   })}
                 </ul>
+
+                {'note' in plan && plan.note && (
+                  <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
+                    {plan.note}
+                  </p>
+                )}
 
                 <button
                   onClick={() => handleCheckout(plan.key)}
