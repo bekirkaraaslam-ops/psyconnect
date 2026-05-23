@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık']
+
+async function sendWhatsApp(psychologistId: string, phone: string, message: string) {
+  if (!process.env.WA_SERVICE_URL || !process.env.WA_API_KEY) return
+  try {
+    await fetch(`${process.env.WA_SERVICE_URL}/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.WA_API_KEY },
+      body: JSON.stringify({ psychologistId, phone, message }),
+    })
+  } catch {
+    // Bildirim hatası randevu kaydını engellemez
+  }
+}
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -8,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, is_connected')
     .eq('auth_user_id', user.id)
     .single()
 
@@ -66,6 +81,24 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  // Hastaya WhatsApp bildirimi gönder
+  if (psychologist.is_connected) {
+    const { data: patient } = await supabase
+      .from('patients')
+      .select('name_surname, phone_number')
+      .eq('id', patient_id)
+      .single()
+
+    if (patient?.phone_number) {
+      const d = new Date(appointment_date)
+      const dateStr = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+      const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+      const msg = `📅 Randevunuz oluşturuldu!\n\n👤 ${patient.name_surname}\n🗓 ${dateStr} — ${timeStr}\n\nRandevunuzu onaylamak için *ONAYLA*, iptal için *İPTAL* yazabilirsiniz.`
+      await sendWhatsApp(psychologist.id, patient.phone_number, msg)
+    }
+  }
+
   return NextResponse.json(data, { status: 201 })
 }
 

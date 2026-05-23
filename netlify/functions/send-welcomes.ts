@@ -79,11 +79,6 @@ const handler = schedule('*/30 * * * *', async () => {
     const psych = patient.psychologist as any
     if (!psych?.is_connected) {
       console.log(`[send-welcomes] ${patient.id} — psikolog WA bağlı değil, atlandı.`)
-      // Bağlı olmasa da sent_at'ı işaretle ki sürekli denemeyelim
-      await supabase
-        .from('patients')
-        .update({ welcome_sent_at: new Date().toISOString() })
-        .eq('id', patient.id)
       continue
     }
 
