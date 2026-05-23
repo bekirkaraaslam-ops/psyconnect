@@ -51,11 +51,15 @@ async function getAvailableSlots(
     .from('appointments')
     .select('appointment_date')
     .eq('psychologist_id', psychologistId)
-    .gte('appointment_date', `${dayIso}T00:00:00`)
-    .lte('appointment_date', `${dayIso}T23:59:59`)
+    .gte('appointment_date', `${dayIso}T00:00:00+03:00`)
+    .lte('appointment_date', `${dayIso}T23:59:59+03:00`)
     .not('status', 'in', '("canceled","cancelled_by_patient")')
 
-  const bookedHours = new Set((booked ?? []).map((a: { appointment_date: string }) => new Date(a.appointment_date).getHours()))
+  // UTC+3 (Türkiye) saatine çevirerek karşılaştır
+  const bookedHours = new Set((booked ?? []).map((a: { appointment_date: string }) => {
+    const d = new Date(a.appointment_date)
+    return (d.getUTCHours() + 3) % 24
+  }))
   const slots: string[] = []
   for (let h = workStartHour; h < workEndHour; h++) {
     if (!bookedHours.has(h)) slots.push(`${String(h).padStart(2, '0')}:00`)
