@@ -18,7 +18,7 @@ async function updateSubscriptionVariant(subscriptionId: string, variantId: numb
         data: {
           type: 'subscriptions',
           id: String(subscriptionId),
-          attributes: { variant_id: variantId },
+          attributes: { variant_id: variantId, disable_prorations: true },
         },
       }),
     })
