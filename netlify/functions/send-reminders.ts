@@ -80,8 +80,8 @@ const handler = schedule('0 * * * *', async () => {
     }
 
     const date    = new Date(apt.appointment_date)
-    const timeStr = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-    const dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+    const timeStr = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
+    const dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', timeZone: 'Europe/Istanbul' })
 
     const paketBilgisi = apt.mevcut_seans_no && apt.toplam_paket_seansi
       ? ` (${apt.mevcut_seans_no}. seans / ${apt.toplam_paket_seansi} seanslık paket)`

@@ -92,8 +92,8 @@ export async function POST(req: NextRequest) {
 
     if (patient?.phone_number) {
       const d = new Date(appointment_date)
-      const dateStr = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
-      const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+      const dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Istanbul' })
+      const timeStr = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
       const msg = `📅 Randevunuz oluşturuldu!\n\n👤 ${patient.name_surname}\n🗓 ${dateStr} — ${timeStr}\n\nRandevunuzu onaylamak için *ONAYLA*, iptal için *İPTAL* yazabilirsiniz.`
       await sendWhatsApp(psychologist.id, patient.phone_number, msg)
     }

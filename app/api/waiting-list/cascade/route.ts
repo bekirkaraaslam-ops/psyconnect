@@ -28,8 +28,10 @@ export async function POST(req: NextRequest) {
 
   const supabase = getSupabase()
   const slot = new Date(slot_date)
-  const slotDay = DAY_MAP[slot.getDay()]
-  const slotHour = slot.getHours()
+  // Istanbul time = UTC+3 (Turkey has no DST)
+  const ist = new Date(slot.getTime() + 3 * 60 * 60 * 1000)
+  const slotDay = DAY_MAP[ist.getUTCDay()]
+  const slotHour = ist.getUTCHours()
 
   // Bekleme listesindeki en uygun kişiyi bul
   const { data: candidates } = await supabase
