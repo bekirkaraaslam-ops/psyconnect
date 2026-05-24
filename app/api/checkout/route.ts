@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
 
   if (!psych) return NextResponse.json({ error: 'Psikolog kaydı bulunamadı' }, { status: 404 })
 
+  let validReferralApplied = false
+
   if (referralCode && !psych.referred_by_code) {
     const { data: referrer } = await supabase
       .from('psychologists')
@@ -40,6 +42,8 @@ export async function POST(req: NextRequest) {
         referral_code: referralCode.toUpperCase(),
         status: 'pending',
       }, { onConflict: 'referred_id' })
+
+      validReferralApplied = true
     }
   }
 
@@ -56,6 +60,9 @@ export async function POST(req: NextRequest) {
           billing_address: {
             country: 'TR',
           },
+          ...(validReferralApplied && process.env.LEMONSQUEEZY_REFERRAL_DISCOUNT_CODE && {
+            discount_code: process.env.LEMONSQUEEZY_REFERRAL_DISCOUNT_CODE,
+          }),
         },
         checkout_options: {
           embed: false,
