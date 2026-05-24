@@ -3,8 +3,6 @@ import Topbar from '@/components/layout/Topbar'
 import PendingApprovalsPanel from '@/components/dashboard/PendingApprovalsPanel'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
-import { startOfDay, endOfDay, endOfWeek, startOfWeek, addDays, subDays } from 'date-fns'
-
 export default async function OverviewPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,14 +15,38 @@ export default async function OverviewPage() {
 
   const psychologistId = psychologist?.id
 
+  // Istanbul (UTC+3) gün sınırları — Railway UTC'de çalıştığından offset'i elle belirtiyoruz
   const now = new Date()
-  const todayStart = startOfDay(now).toISOString()
-  const todayEnd = endOfDay(now).toISOString()
-  const tomorrowStart = startOfDay(addDays(now, 1)).toISOString()
-  const tomorrowEnd = endOfDay(addDays(now, 1)).toISOString()
-  const weekStart = startOfWeek(now, { weekStartsOn: 1 }).toISOString()
-  const weekEnd = endOfWeek(now, { weekStartsOn: 1 }).toISOString()
-  const yesterdayStart = startOfDay(subDays(now, 1)).toISOString()
+  const TZ = '+03:00'
+  const pad = (n: number) => String(n).padStart(2, '0')
+
+  // Verilen UTC anının Istanbul tarih bileşenlerini döndürür
+  function istParts(date: Date) {
+    const ist = new Date(date.getTime() + 3 * 60 * 60 * 1000)
+    return { y: ist.getUTCFullYear(), mo: ist.getUTCMonth(), d: ist.getUTCDate(), dow: ist.getUTCDay() }
+  }
+
+  // Istanbul saatini ISO string olarak üretir (ay/gün taşması için Date constructor kullanır)
+  function istISO(date: Date, h: number, m: number, s: number) {
+    const { y, mo, d } = istParts(date)
+    return `${y}-${pad(mo + 1)}-${pad(d)}T${pad(h)}:${pad(m)}:${pad(s)}${TZ}`
+  }
+
+  const msDay = 86_400_000
+  const yesterday = new Date(now.getTime() - msDay)
+  const tomorrow  = new Date(now.getTime() + msDay)
+
+  const todayStart     = istISO(now,      0,  0,  0)
+  const todayEnd       = istISO(now,     23, 59, 59)
+  const tomorrowStart  = istISO(tomorrow,  0,  0,  0)
+  const tomorrowEnd    = istISO(tomorrow, 23, 59, 59)
+  const yesterdayStart = istISO(yesterday, 0,  0,  0)
+
+  // Pazartesi = haftanın başı
+  const { dow } = istParts(now)
+  const daysFromMon = (dow + 6) % 7
+  const weekStart = istISO(new Date(now.getTime() - daysFromMon * msDay),      0,  0,  0)
+  const weekEnd   = istISO(new Date(now.getTime() + (6 - daysFromMon) * msDay), 23, 59, 59)
 
   const [
     { count: totalPatients },
