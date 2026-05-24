@@ -194,20 +194,25 @@ async function findAvailableSlots(psychologistId, count) {
 
   const slots = []
   const cursor = new Date(now)
-  cursor.setSeconds(0, 0)
-  cursor.setMinutes(Math.ceil((cursor.getMinutes() + 61) / slotDuration) * slotDuration)
+  const newMinutes = Math.ceil((cursor.getUTCMinutes() + 61) / slotDuration) * slotDuration
+  cursor.setUTCMinutes(newMinutes, 0, 0)
 
   while (slots.length < count && cursor < rangeEnd) {
-    const dayName = DAY_MAP[cursor.getDay()]
-    const hour = cursor.getHours()
+    // Istanbul time = UTC+3 (Turkey has no DST)
+    const ist = new Date(cursor.getTime() + 3 * 60 * 60 * 1000)
+    const dayName = DAY_MAP[ist.getUTCDay()]
+    const hour = ist.getUTCHours()
 
     if (!workDays.includes(dayName) || hour < workStart || hour >= workEnd) {
       if (!workDays.includes(dayName) || hour >= workEnd) {
-        cursor.setDate(cursor.getDate() + 1)
-        cursor.setHours(workStart, 0, 0, 0)
+        // next day workStart in Istanbul
+        ist.setUTCDate(ist.getUTCDate() + 1)
+        ist.setUTCHours(workStart, 0, 0, 0)
       } else {
-        cursor.setHours(workStart, 0, 0, 0)
+        // today workStart in Istanbul
+        ist.setUTCHours(workStart, 0, 0, 0)
       }
+      cursor.setTime(ist.getTime() - 3 * 60 * 60 * 1000)
       continue
     }
 
@@ -217,7 +222,7 @@ async function findAvailableSlots(psychologistId, count) {
     const conflict = occupied.some(o => slotStart < o.end && slotEnd > o.start)
     if (!conflict) slots.push(new Date(cursor))
 
-    cursor.setMinutes(cursor.getMinutes() + slotDuration)
+    cursor.setUTCMinutes(cursor.getUTCMinutes() + slotDuration)
   }
 
   return slots
