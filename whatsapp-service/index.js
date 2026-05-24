@@ -61,7 +61,7 @@ function sessionDir(id) {
   return dir
 }
 
-// ── DB'den session yükle ─────────────────────────────────────
+// ── DB'den session yükle (tüm dosyalar) ─────────────────────
 async function loadSession(id) {
   const { data } = await getSupabase()
     .from('psychologists')
@@ -72,17 +72,29 @@ async function loadSession(id) {
   if (!data?.whatsapp_session?.creds) return false
 
   const dir = sessionDir(id)
-  fs.writeFileSync(
-    path.join(dir, 'creds.json'),
-    JSON.stringify(data.whatsapp_session.creds)
-  )
+  const session = data.whatsapp_session
+
+  // creds.json her zaman yaz
+  fs.writeFileSync(path.join(dir, 'creds.json'), JSON.stringify(session.creds))
+
+  // Signal anahtar dosyalarını geri yükle
+  if (session.keys && typeof session.keys === 'object') {
+    for (const [filename, content] of Object.entries(session.keys)) {
+      try {
+        fs.writeFileSync(path.join(dir, filename), JSON.stringify(content))
+      } catch {}
+    }
+  }
+
   return true
 }
 
-// ── DB'ye session kaydet ─────────────────────────────────────
+// ── DB'ye session kaydet (tüm dosyalar) ─────────────────────
 async function saveSession(id) {
-  const credsPath = path.join(sessionDir(id), 'creds.json')
+  const dir = sessionDir(id)
+  const credsPath = path.join(dir, 'creds.json')
   if (!fs.existsSync(credsPath)) return
+
   let creds
   try {
     const raw = fs.readFileSync(credsPath, 'utf8')
@@ -91,9 +103,24 @@ async function saveSession(id) {
   } catch {
     return
   }
+
+  // Signal anahtar dosyalarını oku
+  const keys = {}
+  try {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+      if (file === 'creds.json') continue
+      if (!file.endsWith('.json')) continue
+      try {
+        const content = fs.readFileSync(path.join(dir, file), 'utf8')
+        if (content && content.trim()) keys[file] = JSON.parse(content)
+      } catch {}
+    }
+  } catch {}
+
   await getSupabase()
     .from('psychologists')
-    .update({ whatsapp_session: { creds }, is_connected: true })
+    .update({ whatsapp_session: { creds, keys }, is_connected: true })
     .eq('id', id)
 }
 
@@ -296,20 +323,32 @@ async function connectWhatsApp(psychologistId) {
 
     if (connection === 'close') {
       const code = (lastDisconnect?.error)?.output?.statusCode
+      const errMsg = lastDisconnect?.error?.message ?? ''
       sockets.delete(psychologistId)
       qrCodes.delete(psychologistId)
       statuses.set(psychologistId, 'disconnected')
       await setConnected(psychologistId, false)
 
-      if (code !== DisconnectReason.loggedOut) {
-        setTimeout(() => connectWhatsApp(psychologistId), 5000)
-      } else {
+      if (code === DisconnectReason.loggedOut) {
         getSupabase()
           .from('psychologists')
           .update({ whatsapp_session: null })
           .eq('id', psychologistId)
           .then(() => {})
           .catch(() => {})
+      } else if (errMsg.includes('Bad MAC') || code === 401 || code === 403) {
+        // Bozuk session — temizle ve QR ile yeniden bağlan
+        console.warn(`[${psychologistId}] Bad MAC / auth hatası — session temizleniyor`)
+        const dir = sessionDir(psychologistId)
+        try { fs.rmSync(dir, { recursive: true, force: true }) } catch {}
+        await getSupabase()
+          .from('psychologists')
+          .update({ whatsapp_session: null })
+          .eq('id', psychologistId)
+          .catch(() => {})
+        setTimeout(() => connectWhatsApp(psychologistId), 3000)
+      } else {
+        setTimeout(() => connectWhatsApp(psychologistId), 5000)
       }
     }
   })
@@ -444,7 +483,9 @@ async function connectWhatsApp(psychologistId) {
         // Bekleme listesi isteği
         if (isBeklemIntent(text)) {
           botSessions.delete(phone)
-          const registrationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/bekle/${psychologistId}`
+          const { data: psySlug } = await getSupabase().from('psychologists').select('booking_slug').eq('id', psychologistId).single()
+          const waitSlug = psySlug?.booking_slug ?? psychologistId
+          const registrationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/bekle/${waitSlug}`
           await sock.sendMessage(jid, {
             text: `Sizi bekleme listesine ekleyebiliriz! Aşağıdaki linkten bilgilerinizi doldurun, müsait randevu çıktığında WhatsApp'tan bildirim alırsınız:\n\n${registrationUrl}`,
           })
@@ -568,38 +609,28 @@ app.get('/status/:id', (req, res) => {
 app.post('/send', async (req, res) => {
   const { psychologistId, phone, message } = req.body
 
-  let sock = sockets.get(psychologistId)
+  const sock = sockets.get(psychologistId)
 
   if (!sock || statuses.get(psychologistId) !== 'connected') {
-    await loadSession(psychologistId)
-    const dir = sessionDir(psychologistId)
-    const { state, saveCreds } = await useMultiFileAuthState(dir)
-    const { version } = await fetchLatestBaileysVersion()
-
-    sock = makeWASocket({
-      version,
-      auth: {
-        creds: state.creds,
-        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' })),
-      },
-      printQRInTerminal: false,
-      logger: pino({ level: 'silent' }),
-    })
-    sockets.set(psychologistId, sock)
-    sock.ev.on('creds.update', saveCreds)
-
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Bağlantı zaman aşımı')), 25000)
-      sock.ev.on('connection.update', ({ connection }) => {
-        if (connection === 'open') { clearTimeout(timeout); resolve() }
-        if (connection === 'close') { clearTimeout(timeout); reject(new Error('Bağlanamadı')) }
-      })
-    })
+    // Bağlı değilse yeniden bağlanmayı tetikle — ama ikinci socket AÇMA
+    if (statuses.get(psychologistId) === 'disconnected' || !sock) {
+      connectWhatsApp(psychologistId).catch(() => {})
+    }
+    return res.status(503).json({ error: 'WhatsApp bağlı değil, yeniden bağlanıyor' })
   }
 
-  const jid = `${phone}@s.whatsapp.net`
-  await sock.sendMessage(jid, { text: message })
-  res.json({ ok: true })
+  try {
+    const jid = `${normalizePhone(phone)}@s.whatsapp.net`
+    await sock.sendMessage(jid, { text: message })
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('[send] sendMessage hatası:', err.message)
+    // Gönderim hatasında socket'i temizle ve reconnect tetikle
+    sockets.delete(psychologistId)
+    statuses.set(psychologistId, 'disconnected')
+    connectWhatsApp(psychologistId).catch(() => {})
+    res.status(500).json({ error: 'Mesaj gönderilemedi, yeniden bağlanıyor' })
+  }
 })
 
 // ── Cascade offer endpoint — Next.js'den çağrılır ────────────
