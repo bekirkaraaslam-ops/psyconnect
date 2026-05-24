@@ -1,28 +1,41 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { format, formatDistanceToNow, isToday, isTomorrow } from 'date-fns'
-import { tr } from 'date-fns/locale'
+
+const TZ = 'Europe/Istanbul'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function formatDate(date: string | Date): string {
-  return format(new Date(date), 'dd MMM yyyy', { locale: tr })
+  return new Date(date).toLocaleDateString('tr-TR', {
+    day: '2-digit', month: 'short', year: 'numeric', timeZone: TZ,
+  })
 }
 
 export function formatDateTime(date: string | Date): string {
-  return format(new Date(date), 'dd MMM yyyy HH:mm', { locale: tr })
+  return new Date(date).toLocaleString('tr-TR', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ,
+  })
 }
 
 export function formatTime(date: string | Date): string {
-  return format(new Date(date), 'HH:mm', { locale: tr })
+  return new Date(date).toLocaleTimeString('tr-TR', {
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ,
+  })
+}
+
+function istDayStr(d: Date): string {
+  return d.toLocaleDateString('tr-TR', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' })
 }
 
 export function formatRelative(date: string | Date): string {
   const d = new Date(date)
-  if (isToday(d)) return `Bugün ${formatTime(d)}`
-  if (isTomorrow(d)) return `Yarın ${formatTime(d)}`
+  const now = new Date()
+  if (istDayStr(d) === istDayStr(now)) return `Bugün ${formatTime(d)}`
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  if (istDayStr(d) === istDayStr(tomorrow)) return `Yarın ${formatTime(d)}`
   return formatDateTime(d)
 }
 

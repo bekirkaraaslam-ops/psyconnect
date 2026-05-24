@@ -32,7 +32,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
   const [form, setForm] = useState({
     patient_id: appointment?.patient_id ?? searchParams.get('patient_id') ?? '',
     appointment_date: appointment?.appointment_date
-      ? new Date(appointment.appointment_date).toISOString().slice(0, 16)
+      ? new Date(new Date(appointment.appointment_date).getTime() + 3 * 60 * 60 * 1000).toISOString().slice(0, 16)
       : '',
     status: appointment?.status ?? 'waiting' as AppointmentStatus,
     appointment_type: appointment?.appointment_type ?? 'yuzyuze' as 'online' | 'yuzyuze',
@@ -72,7 +72,12 @@ export default function AppointmentForm({ patients, appointment }: Props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...form,
-        appointment_date: new Date(form.appointment_date).toISOString(),
+        appointment_date: (() => {
+          const [dp, tp] = form.appointment_date.split('T')
+          const [y, mo, d] = dp.split('-').map(Number)
+          const [h, mi] = tp.split(':').map(Number)
+          return new Date(Date.UTC(y, mo - 1, d, h - 3, mi)).toISOString()
+        })(),
         appointment_type: form.appointment_type,
         toplam_paket_seansi: form.toplam_paket_seansi ? Number(form.toplam_paket_seansi) : null,
         mevcut_seans_no: form.mevcut_seans_no ? Number(form.mevcut_seans_no) : null,

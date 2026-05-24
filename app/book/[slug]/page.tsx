@@ -28,12 +28,17 @@ function generateSlots(psych: Psychologist, bookedISO: string[]): Slot[] {
   const now = new Date()
   const bookedSet = new Set(bookedISO)
 
-  for (let dayOffset = 0; dayOffset < 28; dayOffset++) {
-    const date = new Date(now)
-    date.setDate(now.getDate() + dayOffset)
-    date.setHours(0, 0, 0, 0)
+  // Bugünün Istanbul tarihini UTC offset olarak hesapla (UTC+3)
+  const nowIst = new Date(now.getTime() + 3 * 60 * 60 * 1000)
+  const baseYear = nowIst.getUTCFullYear()
+  const baseMonth = nowIst.getUTCMonth()
+  const baseDay = nowIst.getUTCDate()
 
-    const jsDay = date.getDay() // 0=Pazar
+  for (let dayOffset = 0; dayOffset < 28; dayOffset++) {
+    // Istanbul'da bu günün tarihini temsil eden UTC gece yarısı
+    const istMidnight = new Date(Date.UTC(baseYear, baseMonth, baseDay + dayOffset))
+    const jsDay = istMidnight.getUTCDay() // 0=Pazar (Istanbul günü)
+
     const isWorkDay = (psych.work_days ?? []).some(d => DAY_MAP[d] === jsDay)
     if (!isWorkDay) continue
 
@@ -42,16 +47,20 @@ function generateSlots(psych: Psychologist, bookedISO: string[]): Slot[] {
     let minute = 0
 
     while (true) {
-      const slotStart = new Date(date)
-      slotStart.setHours(hour, minute, 0, 0)
+      // Istanbul saatini UTC'ye çevir (Istanbul = UTC+3)
+      const slotStart = new Date(Date.UTC(
+        istMidnight.getUTCFullYear(),
+        istMidnight.getUTCMonth(),
+        istMidnight.getUTCDate(),
+        hour - 3, minute, 0, 0
+      ))
 
-      const slotEnd = new Date(slotStart.getTime() + psych.session_duration_minutes * 60 * 1000)
+      const slotEndMs = slotStart.getTime() + psych.session_duration_minutes * 60 * 1000
+      const slotEndIstHour = new Date(slotEndMs + 3 * 60 * 60 * 1000).getUTCHours()
+      const slotEndIstMin  = new Date(slotEndMs + 3 * 60 * 60 * 1000).getUTCMinutes()
       const endHour = psych.work_end_hour
 
-      if (slotEnd.getHours() > endHour || (slotEnd.getHours() === endHour && slotEnd.getMinutes() > 0)) break
-      if (slotEnd.getHours() === endHour && slotEnd.getMinutes() === 0) {
-        // tam bitiş saatinde biter, geçerli
-      }
+      if (slotEndIstHour > endHour || (slotEndIstHour === endHour && slotEndIstMin > 0)) break
 
       // Geçmiş slotları ve 2 saatten az kalanları atla
       if (slotStart.getTime() < now.getTime() + 2 * 60 * 60 * 1000) {
