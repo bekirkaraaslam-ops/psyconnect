@@ -97,7 +97,7 @@ export default function BookingPage() {
   const [psych, setPsych] = useState<Psychologist | null>(null)
   const [slots, setSlots] = useState<Slot[]>([])
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
-  const [form, setForm] = useState({ name: '', phone: '' })
+  const [form, setForm] = useState({ name: '', phone: '', appointment_type: 'yuzyuze' as 'online' | 'yuzyuze' })
   const [step, setStep] = useState<'slots' | 'form' | 'success' | 'error'>('slots')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -121,7 +121,7 @@ export default function BookingPage() {
     const res = await fetch(`/api/book/${slug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slot: selectedSlot, name: form.name, phone: form.phone }),
+      body: JSON.stringify({ slot: selectedSlot, name: form.name, phone: form.phone, appointment_type: form.appointment_type }),
     })
     const data = await res.json()
     setSubmitting(false)
@@ -213,6 +213,28 @@ export default function BookingPage() {
               <p className="text-sm font-semibold" style={{ color: '#334155' }}>
                 {slots.find(s => s.datetime === selectedSlot)?.label}
               </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: '#334155' }}>Seans Tipi *</label>
+              <div className="grid grid-cols-2 gap-2">
+                {(['yuzyuze', 'online'] as const).map(type => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setForm(p => ({ ...p, appointment_type: type }))}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-colors"
+                    style={{
+                      borderColor: form.appointment_type === type ? '#4a7c6f' : '#dde5e2',
+                      background: form.appointment_type === type ? '#f0fdf4' : '#fff',
+                      color: form.appointment_type === type ? '#4a7c6f' : '#64748b',
+                    }}
+                  >
+                    <span>{type === 'yuzyuze' ? '🏢' : '💻'}</span>
+                    {type === 'yuzyuze' ? 'Yüz Yüze' : 'Online'}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>

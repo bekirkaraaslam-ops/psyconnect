@@ -1,5 +1,5 @@
 export type SubscriptionStatus = 'active' | 'inactive' | 'trial'
-export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient' | 'seansify_pending'
+export type AppointmentStatus = 'waiting' | 'confirmed' | 'canceled' | 'completed' | 'cancelled_by_patient' | 'seansify_pending' | 'no_show'
 export type PlanType = 'free' | 'baslangic' | 'pro'
 
 export interface Psychologist {

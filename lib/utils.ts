@@ -77,6 +77,7 @@ export function appointmentStatusLabel(status: string): string {
     completed: 'Tamamlandı',
     cancelled_by_patient: 'Hasta İptal Etti',
     seansify_pending: 'Bot Talebi',
+    no_show: 'Tamamlanamadı',
   }
   return map[status] ?? status
 }
@@ -89,6 +90,7 @@ export function appointmentStatusColor(status: string): string {
     completed: 'bg-slate-100 text-slate-600',
     cancelled_by_patient: 'bg-red-100 text-red-700',
     seansify_pending: 'bg-amber-100 text-amber-800',
+    no_show: 'bg-yellow-100 text-yellow-800',
   }
   return map[status] ?? 'bg-gray-100 text-gray-600'
 }

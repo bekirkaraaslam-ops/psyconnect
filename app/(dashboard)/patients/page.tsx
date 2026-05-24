@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
-import { formatDate, formatPhoneDisplay, getInitials } from '@/lib/utils'
+import PatientCard from '@/components/patients/PatientCard'
 
 export default async function PatientsPage() {
   const supabase = await createClient()
@@ -56,34 +56,10 @@ export default async function PatientsPage() {
             </Link>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
-            <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
-              {patients.map(patient => (
-                <Link
-                  key={patient.id}
-                  href={`/patients/${patient.id}`}
-                  className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-white" style={{ background: '#4a7c6f' }}>
-                      {getInitials(patient.name_surname)}
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: '#334155' }}>{patient.name_surname}</div>
-                      <div className="text-xs" style={{ color: '#64748b' }}>{formatPhoneDisplay(patient.phone_number)}</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {patient.date_of_birth && (
-                      <div className="text-xs" style={{ color: '#94a3b8' }}>{formatDate(patient.date_of_birth)}</div>
-                    )}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {patients.map(patient => (
+              <PatientCard key={patient.id} patient={patient} />
+            ))}
           </div>
         )}
       </div>
