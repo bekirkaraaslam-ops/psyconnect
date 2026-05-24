@@ -510,7 +510,7 @@ async function connectWhatsApp(psychologistId) {
         }
       }
 
-      if (text !== 'EVET' && text !== 'IPTAL' && text !== 'İPTAL') continue
+      if (text !== 'EVET' && text !== 'ONAYLA' && text !== 'IPTAL' && text !== 'İPTAL') continue
 
       const supabase = getSupabase()
 
@@ -537,7 +537,7 @@ async function connectWhatsApp(psychologistId) {
 
       if (!apt) continue
 
-      if (text === 'EVET') {
+      if (text === 'EVET' || text === 'ONAYLA') {
         await supabase
           .from('appointments')
           .update({ status: 'confirmed', patient_responded_at: now })
