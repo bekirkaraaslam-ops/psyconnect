@@ -8,12 +8,23 @@ function getSupabase() {
   )
 }
 
-async function sendReply(psychologistId: string, phone: string, message: string) {
-  await fetch(`${process.env.WA_SERVICE_URL}/send`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.WA_API_KEY! },
-    body: JSON.stringify({ psychologistId, phone, message }),
-  })
+async function sendReply(psychologistId: string, phone: string, message: string, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${process.env.WA_SERVICE_URL}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.WA_API_KEY! },
+        body: JSON.stringify({ psychologistId, phone, message }),
+        signal: AbortSignal.timeout(8000),
+      })
+      if (res.ok) return
+      console.warn(`[sendReply] attempt ${attempt + 1} failed: HTTP ${res.status}`)
+    } catch (e) {
+      console.warn(`[sendReply] attempt ${attempt + 1} error:`, e)
+    }
+    if (attempt < retries) await new Promise(r => setTimeout(r, 1500 * (attempt + 1)))
+  }
+  console.error(`[sendReply] all ${retries + 1} attempts failed for ${phone}`)
 }
 
 const DAY_JS: Record<string, number> = {

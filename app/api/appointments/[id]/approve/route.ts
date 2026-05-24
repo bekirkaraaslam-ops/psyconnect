@@ -7,6 +7,25 @@ interface Context {
   params: Promise<{ id: string }>
 }
 
+async function sendWithRetry(waUrl: string, waKey: string, psychologistId: string, phone: string, message: string, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${waUrl}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': waKey },
+        body: JSON.stringify({ psychologistId, phone, message }),
+        signal: AbortSignal.timeout(8000),
+      })
+      if (res.ok) return
+      console.warn(`[sendWithRetry] attempt ${attempt + 1} failed: HTTP ${res.status}`)
+    } catch (e) {
+      console.warn(`[sendWithRetry] attempt ${attempt + 1} error:`, e)
+    }
+    if (attempt < retries) await new Promise(r => setTimeout(r, 1500 * (attempt + 1)))
+  }
+  console.error(`[sendWithRetry] all attempts failed for ${phone}`)
+}
+
 function normalizePhone(phone: string): string {
   const digits = phone.replace(/\D/g, '')
   if (digits.startsWith('0')) return '90' + digits.slice(1)
@@ -113,16 +132,10 @@ export async function POST(_req: NextRequest, { params }: Context) {
       timeZone: 'Europe/Istanbul',
     })
 
-    // Onay mesajı gönder (fire-and-forget)
-    fetch(`${waUrl}/send`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': waKey },
-      body: JSON.stringify({
-        psychologistId: psychologist.id,
-        phone: normalizePhone(patientPhone),
-        message: `Merhaba, randevunuz klinik tarafından onaylanmıştır. ${aptDate} randevu tarihinde görüşmek üzere.`,
-      }),
-    }).catch(() => {})
+    // Onay mesajı gönder
+    await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
+      `Merhaba, randevunuz klinik tarafından onaylanmıştır. ${aptDate} randevu tarihinde görüşmek üzere.`
+    )
 
     // Booking page'den gelen yeni hastaya anamnez formu gönder
     if (apt.source === 'booking_page' && patientId) {
@@ -154,15 +167,9 @@ export async function POST(_req: NextRequest, { params }: Context) {
           const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
           const formUrl = `${baseUrl}/anamnez/${token}`
 
-          fetch(`${waUrl}/send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': waKey },
-            body: JSON.stringify({
-              psychologistId: psychologist.id,
-              phone: normalizePhone(patientPhone),
-              message: `Merhaba ${patientName ?? ''}, randevunuzdan önce aşağıdaki formu doldurmanızı rica ederiz:\n${formUrl}`,
-            }),
-          }).catch(() => {})
+          await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
+            `Merhaba ${patientName ?? ''}, randevunuzdan önce aşağıdaki formu doldurmanızı rica ederiz:\n${formUrl}`
+          )
 
           await serviceSupabase
             .from('patients')
