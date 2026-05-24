@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected')
+    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug')
     .eq('id', psychologistId)
     .single()
 
@@ -201,7 +201,10 @@ export async function POST(req: NextRequest) {
     if (textLower === 'randevu') {
       const days = getAvailableDays(workDays)
       if (days.length === 0) {
-        await sendReply(psychologistId, phone, 'Şu an müsait randevu günü bulunmamaktadır. Daha sonra tekrar deneyin.')
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
+        const waitSlug = psych.booking_slug ?? psychologistId
+        const waitUrl = `${appUrl}/bekle/${waitSlug}`
+        await sendReply(psychologistId, phone, `Şu an müsait randevu günü bulunmamaktadır.\n\nBekleme listesine eklenip boşalan randevulardan haberdar olmak ister misiniz? 👇\n${waitUrl}`)
         return NextResponse.json({ ok: true })
       }
       const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')

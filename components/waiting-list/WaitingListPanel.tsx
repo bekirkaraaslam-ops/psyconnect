@@ -22,6 +22,7 @@ interface WaitingEntry {
 interface Props {
   initialEntries: WaitingEntry[]
   psychologistId: string
+  bookingSlug?: string
 }
 
 const DAY_LABELS: Record<string, string> = {
@@ -29,15 +30,16 @@ const DAY_LABELS: Record<string, string> = {
   perşembe: 'Per', cuma: 'Cum', cumartesi: 'Cmt', pazar: 'Paz',
 }
 
-export default function WaitingListPanel({ initialEntries, psychologistId }: Props) {
+export default function WaitingListPanel({ initialEntries, psychologistId, bookingSlug }: Props) {
   const router = useRouter()
   const [entries, setEntries] = useState(initialEntries)
   const [removing, setRemoving] = useState<string | null>(null)
   const [copying, setCopying] = useState(false)
 
+  const slug = bookingSlug ?? psychologistId
   const waitingLink = typeof window !== 'undefined'
-    ? `${window.location.origin}/bekle/${psychologistId}`
-    : `/bekle/${psychologistId}`
+    ? `${window.location.origin}/bekle/${slug}`
+    : `/bekle/${slug}`
 
   async function handleRemove(id: string) {
     setRemoving(id)

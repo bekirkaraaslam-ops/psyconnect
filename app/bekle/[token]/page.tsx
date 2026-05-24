@@ -1,6 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import WaitingListForm from './WaitingListForm'
 import { notFound } from 'next/navigation'
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 interface Props {
   params: Promise<{ token: string }>
@@ -8,40 +15,39 @@ interface Props {
 
 export default async function BeklePage({ params }: Props) {
   const { token } = await params
-  const supabase = await createClient()
+  const supabase = getSupabase()
 
-  const { data: entry } = await supabase
-    .from('waiting_list')
-    .select('psychologist_id, psychologists(full_name)')
-    .eq('registration_token', token)
-    .single()
+  // booking_slug ile ara (kısa link desteği)
+  const { data: psychBySlug } = await supabase
+    .from('psychologists')
+    .select('id, full_name')
+    .eq('booking_slug', token)
+    .maybeSingle()
 
-  if (!entry) {
-    // Token yoksa doğrudan token ile psikolog ara (ilk kayıt için token psikolog id'si)
-    const { data: psych } = await supabase
-      .from('psychologists')
-      .select('id, full_name')
-      .eq('id', token)
-      .single()
-
-    if (!psych) return notFound()
-
+  if (psychBySlug) {
     return (
       <WaitingListForm
-        psychologistId={psych.id}
-        psychologistName={psych.full_name}
+        psychologistId={psychBySlug.id}
+        psychologistName={psychBySlug.full_name}
         registrationToken={null}
       />
     )
   }
 
-  const psych = entry.psychologists as unknown as { full_name: string } | null
+  // UUID ile ara
+  const { data: psych } = await supabase
+    .from('psychologists')
+    .select('id, full_name')
+    .eq('id', token)
+    .maybeSingle()
+
+  if (!psych) return notFound()
 
   return (
     <WaitingListForm
-      psychologistId={entry.psychologist_id}
-      psychologistName={psych?.full_name ?? 'Klinik'}
-      registrationToken={token}
+      psychologistId={psych.id}
+      psychologistName={psych.full_name}
+      registrationToken={null}
     />
   )
 }

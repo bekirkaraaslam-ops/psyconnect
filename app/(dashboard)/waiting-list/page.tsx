@@ -8,7 +8,7 @@ export default async function WaitingListPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, booking_slug')
     .eq('auth_user_id', user!.id)
     .single()
 
@@ -26,6 +26,7 @@ export default async function WaitingListPage() {
         <WaitingListPanel
           initialEntries={entries ?? []}
           psychologistId={psychologist!.id}
+          bookingSlug={psychologist!.booking_slug ?? undefined}
         />
       </div>
     </div>

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     .eq('patient_id', patient_id)
     .is('filled_at', null)
 
-  const token     = crypto.randomBytes(32).toString('hex')
+  const token     = crypto.randomBytes(8).toString('hex')
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const { error } = await service.from('anamnez_forms').insert({

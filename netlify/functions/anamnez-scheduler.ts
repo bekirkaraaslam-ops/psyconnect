@@ -61,7 +61,7 @@ export const handler = schedule('0 8 * * *', async () => {
     const scheduledAt = new Date(tomorrow.getTime() + randomMinutes * 60 * 1000)
 
     // Token ve form kaydı oluştur
-    const token     = crypto.randomBytes(32).toString('hex')
+    const token     = crypto.randomBytes(8).toString('hex')
     const expiresAt = new Date(scheduledAt.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 gün geçerli
 
     const { error: insertError } = await supabase.from('anamnez_forms').insert({

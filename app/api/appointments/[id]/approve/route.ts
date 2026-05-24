@@ -138,7 +138,7 @@ export async function POST(_req: NextRequest, { params }: Context) {
         .single()
 
       if (patient?.anamnez_enabled && !patient?.anamnez_sent_at) {
-        const token = crypto.randomBytes(32).toString('hex')
+        const token = crypto.randomBytes(8).toString('hex')
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
         const { error: formError } = await serviceSupabase
