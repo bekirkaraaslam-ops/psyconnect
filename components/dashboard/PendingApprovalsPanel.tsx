@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatDateTime } from '@/lib/utils'
 
 interface PendingAppointment {
@@ -14,6 +14,10 @@ interface PendingAppointment {
 export default function PendingApprovalsPanel({ initialItems }: { initialItems: PendingAppointment[] }) {
   const [items, setItems] = useState(initialItems)
   const [loading, setLoading] = useState<string | null>(null)
+
+  useEffect(() => {
+    setItems(initialItems)
+  }, [initialItems])
 
   async function handle(id: string, action: 'approve' | 'reject') {
     setLoading(id)
