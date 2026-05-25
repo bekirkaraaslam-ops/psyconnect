@@ -15,9 +15,9 @@ export async function middleware(request: NextRequest) {
     c => c.name.includes('-auth-token') && c.value.length > 10
   )
 
-  // Giriş yapmış kullanıcı auth sayfasına gelirse dashboard'a yönlendir
-  if (hasSession && isAuthRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  // Auth sayfalarında gerçek session doğrulaması yap (optimistic check loop'a neden olur)
+  if (isAuthRoute) {
+    return await updateSession(request)
   }
 
   // Giriş yapmamış kullanıcı korumalı sayfaya girerse login'e yönlendir
