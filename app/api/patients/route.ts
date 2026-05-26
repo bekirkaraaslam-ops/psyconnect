@@ -26,6 +26,17 @@ export async function POST(req: NextRequest) {
   const normalized = normalizePhone(phone_number)
   const notes_encrypted = notes ? encrypt(notes) : null
 
+  const { data: existing } = await supabase
+    .from('patients')
+    .select('id')
+    .eq('psychologist_id', psychologist.id)
+    .eq('phone_number', normalized)
+    .maybeSingle()
+
+  if (existing) {
+    return NextResponse.json({ error: 'Bu telefon numarası zaten kayıtlı.' }, { status: 409 })
+  }
+
   const { data, error } = await supabase
     .from('patients')
     .insert({

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { formatDateTime, formatTime } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { formatDateTime } from '@/lib/utils'
 
 interface PendingApt {
   id: string
@@ -21,19 +22,29 @@ function getInitials(name: string) {
 }
 
 export default function NotificationBell() {
+  const router = useRouter()
   const [pending, setPending] = useState<PendingApt[]>([])
   const [awaiting, setAwaiting] = useState<CompletionApt[]>([])
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState<string | null>(null)
+  const [varsayilanUcret, setVarsayilanUcret] = useState<number | null>(null)
+  // approving: { id } means we're showing the ücret input for that appointment
+  const [approving, setApproving] = useState<{ id: string; ucret: string } | null>(null)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    fetch('/api/pending-appointments')
-      .then(r => r.json())
-      .then(d => {
-        setPending(d.pending ?? [])
-        setAwaiting(d.awaitingCompletion ?? [])
-      })
+    function fetchData() {
+      fetch('/api/pending-appointments')
+        .then(r => r.json())
+        .then(d => {
+          setPending(d.pending ?? [])
+          setAwaiting(d.awaitingCompletion ?? [])
+          setVarsayilanUcret(d.varsayilanUcret ?? null)
+        })
+    }
+    fetchData()
+    const interval = setInterval(fetchData, 5 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -44,11 +55,31 @@ export default function NotificationBell() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  async function handlePending(id: string, action: 'approve' | 'reject') {
+  function startApprove(id: string) {
+    setApproving({ id, ucret: varsayilanUcret != null ? String(varsayilanUcret) : '' })
+  }
+
+  async function confirmApprove() {
+    if (!approving) return
+    setLoading(approving.id)
+    const ucretVal = approving.ucret.trim() !== '' ? Number(approving.ucret) : null
+    await fetch(`/api/appointments/${approving.id}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ucret: ucretVal }),
+    })
+    setPending(prev => prev.filter(i => i.id !== approving.id))
+    setApproving(null)
+    setLoading(null)
+    router.refresh()
+  }
+
+  async function handleReject(id: string) {
     setLoading(id)
-    await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
+    await fetch(`/api/appointments/${id}/reject`, { method: 'POST' })
     setPending(prev => prev.filter(i => i.id !== id))
     setLoading(null)
+    router.refresh()
   }
 
   async function handleCompletion(id: string, action: 'complete' | 'no-show') {
@@ -56,6 +87,7 @@ export default function NotificationBell() {
     await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
     setAwaiting(prev => prev.filter(i => i.id !== id))
     setLoading(null)
+    router.refresh()
   }
 
   const total = pending.length + awaiting.length
@@ -81,8 +113,8 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 w-84 rounded-2xl shadow-xl overflow-hidden z-50"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', width: '340px' }}>
+        <div className="absolute right-0 top-10 rounded-2xl shadow-xl overflow-hidden z-50"
+          style={{ background: 'var(--card)', border: '1px solid var(--border)', width: 'min(360px, calc(100vw - 16px))' }}>
 
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
@@ -94,7 +126,7 @@ export default function NotificationBell() {
             )}
           </div>
 
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-[480px] overflow-y-auto">
             {total === 0 && (
               <div className="px-4 py-8 text-center">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2">
@@ -173,6 +205,7 @@ export default function NotificationBell() {
                   {pending.map(apt => {
                     const initials = apt.patient?.name_surname
                       ?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) ?? '?'
+                    const isApproving = approving?.id === apt.id
                     return (
                       <div key={apt.id} className="px-4 py-3">
                         <div className="flex items-center gap-3 mb-2">
@@ -189,24 +222,62 @@ export default function NotificationBell() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex gap-2 pl-11">
-                          <button
-                            disabled={loading === apt.id}
-                            onClick={() => handlePending(apt.id, 'approve')}
-                            className="flex-1 text-xs font-semibold py-1.5 rounded-lg text-white transition-opacity disabled:opacity-50"
-                            style={{ background: '#4a7c6f' }}
-                          >
-                            Onayla
-                          </button>
-                          <button
-                            disabled={loading === apt.id}
-                            onClick={() => handlePending(apt.id, 'reject')}
-                            className="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-opacity disabled:opacity-50"
-                            style={{ background: 'rgba(239,68,68,0.12)', color: '#ef4444' }}
-                          >
-                            Reddet
-                          </button>
-                        </div>
+
+                        {isApproving ? (
+                          /* ─── Ücret giriş adımı ─── */
+                          <div className="pl-11 space-y-2">
+                            <label className="text-xs font-medium" style={{ color: 'var(--foreground)' }}>
+                              Seans ücreti (₺)
+                            </label>
+                            <input
+                              type="number"
+                              min="0"
+                              value={approving!.ucret}
+                              onChange={e => setApproving(prev => prev ? { ...prev, ucret: e.target.value } : prev)}
+                              placeholder="Ücret girin veya boş bırakın"
+                              className="w-full px-3 py-2 rounded-lg border text-sm outline-none"
+                              style={{ borderColor: 'var(--border)', color: 'var(--foreground)', background: 'var(--background)' }}
+                              autoFocus
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                disabled={loading === apt.id}
+                                onClick={confirmApprove}
+                                className="flex-1 text-xs font-semibold py-1.5 rounded-lg text-white disabled:opacity-50"
+                                style={{ background: '#4a7c6f' }}
+                              >
+                                {loading === apt.id ? 'Onaylanıyor...' : '✓ Onayla'}
+                              </button>
+                              <button
+                                onClick={() => setApproving(null)}
+                                className="text-xs px-3 py-1.5 rounded-lg"
+                                style={{ background: 'var(--muted)', color: 'var(--muted-foreground)' }}
+                              >
+                                İptal
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          /* ─── Normal butonlar ─── */
+                          <div className="flex gap-2 pl-11">
+                            <button
+                              disabled={loading === apt.id}
+                              onClick={() => startApprove(apt.id)}
+                              className="flex-1 text-xs font-semibold py-1.5 rounded-lg text-white transition-opacity disabled:opacity-50"
+                              style={{ background: '#4a7c6f' }}
+                            >
+                              Onayla
+                            </button>
+                            <button
+                              disabled={loading === apt.id}
+                              onClick={() => handleReject(apt.id)}
+                              className="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-opacity disabled:opacity-50"
+                              style={{ background: 'rgba(239,68,68,0.12)', color: '#ef4444' }}
+                            >
+                              Reddet
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )
                   })}

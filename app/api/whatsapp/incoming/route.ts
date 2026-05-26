@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { getAktifPaket, incrementPaket } from '@/lib/paket'
+import { normalizePhone } from '@/lib/utils'
 
 function getSupabase() {
   return createClient(
@@ -107,18 +109,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { psychologistId, phone, message } = await req.json()
-  if (!psychologistId || !phone || !message) {
+  const { psychologistId, phone: rawPhone, message } = await req.json()
+  if (!psychologistId || !rawPhone || !message) {
     return NextResponse.json({ error: 'Eksik alan' }, { status: 400 })
   }
 
   const supabase = getSupabase()
+  const phone = normalizePhone(rawPhone)
   const text = String(message).trim()
   const textLower = text.toLowerCase().replace('i̇', 'i')
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug')
+    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug, tatil_modu')
     .eq('id', psychologistId)
     .single()
 
@@ -210,6 +213,28 @@ export async function POST(req: NextRequest) {
 
   if (step === 'idle') {
     if (textLower === 'randevu') {
+      if (psych.tatil_modu) {
+        await sendReply(psychologistId, phone,
+          'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
+        )
+        return NextResponse.json({ ok: true })
+      }
+
+      // Mesai saatleri kontrolü (Istanbul saati)
+      const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
+      const currentHour = nowTR.getHours()
+      const currentDayNum = nowTR.getDay()
+      const currentDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === currentDayNum)
+      const isWorkDay = !!currentDayName && workDays.includes(currentDayName)
+      const isWorkHour = currentHour >= workStart && currentHour < workEnd
+
+      if (!isWorkDay || !isWorkHour) {
+        await sendReply(psychologistId, phone,
+          `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
+        )
+        return NextResponse.json({ ok: true })
+      }
+
       const days = getAvailableDays(workDays)
       if (days.length === 0) {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
@@ -271,6 +296,7 @@ export async function POST(req: NextRequest) {
       .maybeSingle()
 
     if (patient) {
+      const pkg = await getAktifPaket(supabase, patient.id)
       await supabase.from('appointments').insert({
         psychologist_id: psychologistId,
         patient_id: patient.id,
@@ -278,7 +304,10 @@ export async function POST(req: NextRequest) {
         duration_minutes: 50,
         status: 'seansify_pending',
         appointment_type: 'yuzyuze',
+        ucret: pkg?.birim_fiyat ?? null,
+        odeme_durumu: pkg ? 'bekliyor' : null,
       })
+      if (pkg) await incrementPaket(supabase, patient.id)
       await setSession(supabase, phone, psychologistId, 'idle', {})
       await sendReply(psychologistId, phone,
         `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
@@ -298,20 +327,36 @@ export async function POST(req: NextRequest) {
       await sendReply(psychologistId, phone, 'Lütfen adınızı ve soyadınızı tam olarak yazın. Örnek: *Ahmet Yılmaz*')
       return NextResponse.json({ ok: true })
     }
-    const { data: newPatient } = await supabase
-      .from('patients')
-      .insert({ psychologist_id: psychologistId, name_surname: text, phone_number: phone, is_active: true })
-      .select()
-      .single()
 
-    if (!newPatient) {
-      await sendReply(psychologistId, phone, 'Bir hata oluştu. Lütfen tekrar deneyin.')
-      return NextResponse.json({ ok: true })
+    // Önce mevcut hasta var mı kontrol et (duplicate key önleme)
+    const { data: existingPatient } = await supabase
+      .from('patients')
+      .select('id')
+      .eq('phone_number', phone)
+      .eq('psychologist_id', psychologistId)
+      .maybeSingle()
+
+    let patientId: string
+    if (existingPatient) {
+      await supabase.from('patients').update({ name_surname: text, is_active: true }).eq('id', existingPatient.id)
+      patientId = existingPatient.id
+    } else {
+      const { data: newPatient } = await supabase
+        .from('patients')
+        .insert({ psychologist_id: psychologistId, name_surname: text, phone_number: phone, is_active: true })
+        .select()
+        .single()
+
+      if (!newPatient) {
+        await sendReply(psychologistId, phone, 'Bir hata oluştu. Lütfen tekrar deneyin.')
+        return NextResponse.json({ ok: true })
+      }
+      patientId = newPatient.id
     }
 
     await supabase.from('appointments').insert({
       psychologist_id: psychologistId,
-      patient_id: newPatient.id,
+      patient_id: patientId,
       appointment_date: context.appointment_iso,
       duration_minutes: 50,
       status: 'seansify_pending',

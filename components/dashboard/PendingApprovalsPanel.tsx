@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { formatDateTime } from '@/lib/utils'
 
 interface PendingAppointment {
@@ -12,6 +13,7 @@ interface PendingAppointment {
 }
 
 export default function PendingApprovalsPanel({ initialItems }: { initialItems: PendingAppointment[] }) {
+  const router = useRouter()
   const [items, setItems] = useState(initialItems)
   const [loading, setLoading] = useState<string | null>(null)
 
@@ -25,6 +27,7 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
       const res = await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
       if (res.ok) {
         setItems(prev => prev.filter(i => i.id !== id))
+        router.refresh()
       }
     } finally {
       setLoading(null)

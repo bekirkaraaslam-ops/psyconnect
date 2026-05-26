@@ -98,15 +98,17 @@ export default function BookingPage() {
   const [slots, setSlots] = useState<Slot[]>([])
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [form, setForm] = useState({ name: '', phone: '', appointment_type: 'yuzyuze' as 'online' | 'yuzyuze' })
-  const [step, setStep] = useState<'slots' | 'form' | 'success' | 'error'>('slots')
+  const [step, setStep] = useState<'slots' | 'form' | 'success' | 'error' | 'tatil'>('slots')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    fetch(`/api/book/${slug}`)
-      .then(r => r.json())
-      .then(data => {
+    fetch(`/api/book/${slug}`, { cache: 'no-store' })
+      .then(async r => {
+        if (r.status === 423) { setStep('tatil'); setLoading(false); return }
+        const data = await r.json()
+        if (data.error === 'tatil_modu') { setStep('tatil'); setLoading(false); return }
         if (data.error) { setStep('error'); setErrorMsg(data.error); setLoading(false); return }
         setPsych(data.psychologist)
         setSlots(generateSlots(data.psychologist, data.bookedSlots ?? []))
@@ -136,6 +138,32 @@ export default function BookingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#f4faf8' }}>
         <div className="text-sm" style={{ color: '#4a7c6f' }}>Yükleniyor...</div>
+      </div>
+    )
+  }
+
+  if (step === 'tatil') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#f4faf8' }}>
+        <div className="bg-white rounded-2xl border p-8 max-w-sm w-full text-center" style={{ borderColor: '#dde5e2', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#fef3c7' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h2 className="text-base font-semibold mb-2" style={{ color: '#334155' }}>
+            Şu an randevu alınamıyor
+          </h2>
+          <p className="text-sm leading-relaxed" style={{ color: '#64748b' }}>
+            Psikolog şu an izinde ya da tatilde olduğundan yeni randevu talebi kabul edilmemektedir.
+          </p>
+          <p className="text-xs mt-3" style={{ color: '#94a3b8' }}>
+            Daha sonra tekrar deneyiniz veya doğrudan iletişime geçiniz.
+          </p>
+        </div>
       </div>
     )
   }
