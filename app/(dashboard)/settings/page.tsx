@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id, full_name, phone_number, subscription_status, subscription_ends_at, klinik_adresi, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji, work_start_hour, work_end_hour, work_days, session_duration_minutes, buffer_minutes, booking_slug')
+    .select('id, full_name, phone_number, subscription_status, subscription_ends_at, klinik_adresi, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji, work_start_hour, work_end_hour, work_days, session_duration_minutes, buffer_minutes, booking_slug, varsayilan_seans_ucreti, tatil_modu')
     .eq('auth_user_id', user!.id)
     .single()
 

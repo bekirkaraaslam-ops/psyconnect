@@ -64,6 +64,7 @@ const SOAP_CARDS = [
 ]
 
 export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
+  const [open, setOpen] = useState(false)
   const [notlar, setNotlar] = useState<NotOzet[]>([])
   const [secilenId, setSecilenId] = useState<string | null>(null)
   const [, setDetay] = useState<NotDetay | null>(null)
@@ -227,7 +228,11 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   return (
     <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#dde5e2' }}>
+      <div
+        className="flex items-center justify-between px-5 py-4 cursor-pointer select-none"
+        style={{ borderBottom: open ? '1px solid #dde5e2' : 'none' }}
+        onClick={() => setOpen(v => !v)}
+      >
         <div className="flex items-center gap-3">
           <h3 className="font-semibold" style={{ color: '#334155' }}>Seans Notları</h3>
           <div className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ background: '#f0f7f5' }}>
@@ -237,17 +242,29 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
             <span className="text-xs font-medium" style={{ color: '#4a7c6f', fontSize: '10px' }}>Uçtan uca şifreli</span>
           </div>
         </div>
-        <button
-          onClick={handleYeni}
-          className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg text-white"
-          style={{ background: '#4a7c6f' }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        <div className="flex items-center gap-2">
+          {open && (
+            <button
+              onClick={e => { e.stopPropagation(); handleYeni() }}
+              className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg text-white"
+              style={{ background: '#4a7c6f' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Yeni Seans
+            </button>
+          )}
+          <svg
+            width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+          >
+            <polyline points="6 9 12 15 18 9"/>
           </svg>
-          Yeni Seans
-        </button>
+        </div>
       </div>
+      {open && <>
 
       <div className="flex" style={{ minHeight: '420px' }}>
         {/* SOL — Seans Listesi */}
@@ -406,6 +423,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
           )}
         </div>
       </div>
+      </>}
     </div>
   )
 }

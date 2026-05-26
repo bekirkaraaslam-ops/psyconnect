@@ -2,10 +2,14 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
-import { formatDate, formatDateTime, formatPhoneDisplay, appointmentStatusColor, appointmentStatusLabel } from '@/lib/utils'
+import { formatDate, formatPhoneDisplay } from '@/lib/utils'
 import { decrypt as decryptNote } from '@/lib/crypto'
 import SeansNotlari from '@/components/patients/SeansNotlari'
 import AnamnezPanel from '@/components/patients/AnamnezPanel'
+import OdemelerPanel from '@/components/patients/OdemelerPanel'
+import OnamPanel from '@/components/patients/OnamPanel'
+import PaketPanel from '@/components/patients/PaketPanel'
+import RandevuGecmisiPanel from '@/components/patients/RandevuGecmisiPanel'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -39,12 +43,22 @@ export default async function PatientDetailPage({ params }: Props) {
     .eq('patient_id', id)
     .eq('psychologist_id', psychologist.id)
     .order('appointment_date', { ascending: false })
-    .limit(20)
+    .limit(50)
 
   // Anamnez formu (varsa)
   const { data: anamnezForm } = await supabase
     .from('anamnez_forms')
     .select('id, filled_at, expires_at, sikayet_encrypted, sure_encrypted, gecmis_tedavi_encrypted, ilac_kullanim_encrypted, aile_gecmis_encrypted, uyku_durum_encrypted, beslenme_durum_encrypted, acil_kisi_encrypted, ek_notlar_encrypted')
+    .eq('patient_id', id)
+    .eq('psychologist_id', psychologist.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  // Onam formu (varsa)
+  const { data: onamForm } = await supabase
+    .from('onam_formlar')
+    .select('id, filled_at, expires_at, imza_text')
     .eq('patient_id', id)
     .eq('psychologist_id', psychologist.id)
     .order('created_at', { ascending: false })
@@ -102,43 +116,17 @@ export default async function PatientDetailPage({ params }: Props) {
           )}
         </div>
 
-        {/* Appointment History */}
-        <div className="bg-white rounded-2xl border" style={{ borderColor: '#dde5e2' }}>
-          <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: '#dde5e2' }}>
-            <h3 className="font-semibold" style={{ color: '#334155' }}>Randevu Geçmişi</h3>
-            <Link
-              href={`/appointments/new?patient_id=${id}`}
-              className="text-sm font-medium"
-              style={{ color: '#4a7c6f' }}
-            >
-              + Randevu Ekle
-            </Link>
-          </div>
-
-          {!appointments || appointments.length === 0 ? (
-            <div className="p-8 text-center text-sm" style={{ color: '#94a3b8' }}>
-              Henüz randevu kaydı yok.
-            </div>
-          ) : (
-            <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
-              {appointments.map((apt: any) => (
-                <Link key={apt.id} href={`/appointments/${apt.id}`} className="flex items-center justify-between px-5 py-4 hover:bg-gray-50">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: '#334155' }}>{formatDateTime(apt.appointment_date)}</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>{apt.duration_minutes} dakika</p>
-                  </div>
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${appointmentStatusColor(apt.status)}`}>
-                    {appointmentStatusLabel(apt.status)}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        <RandevuGecmisiPanel hastaId={id} appointments={appointments ?? []} />
 
         {patient.anamnez_enabled && (
           <AnamnezPanel form={anamnezForm ?? null} />
         )}
+
+        <OnamPanel form={onamForm ?? null} />
+
+        <PaketPanel hastaId={id} />
+
+        <OdemelerPanel hastaId={id} />
 
         <SeansNotlari hastaId={id} hastaAdi={patient.name_surname} />
       </div>

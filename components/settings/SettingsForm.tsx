@@ -20,6 +20,8 @@ interface Props {
     session_duration_minutes: number | null
     buffer_minutes: number | null
     booking_slug: string | null
+    varsayilan_seans_ucreti: number | null
+    tatil_modu: boolean | null
   } | null
   email: string
   subscriptionStatus: string | null
@@ -54,9 +56,23 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
   )
   const [sessionDuration, setSessionDuration] = useState(psychologist?.session_duration_minutes ?? 50)
   const [bufferMinutes, setBufferMinutes] = useState(psychologist?.buffer_minutes ?? 10)
+  const [varsayilanUcret, setVarsayilanUcret] = useState(psychologist?.varsayilan_seans_ucreti != null ? String(psychologist.varsayilan_seans_ucreti) : '')
+  const [tatilModu, setTatilModu] = useState(psychologist?.tatil_modu ?? false)
+  const [tatilSaving, setTatilSaving] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+
+  async function handleTatilToggle(val: boolean) {
+    setTatilModu(val)
+    setTatilSaving(true)
+    const supabase = createClient()
+    await supabase
+      .from('psychologists')
+      .update({ tatil_modu: val })
+      .eq('id', psychologist!.id)
+    setTatilSaving(false)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -79,6 +95,8 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
         work_days: workDays,
         session_duration_minutes: sessionDuration,
         buffer_minutes: bufferMinutes,
+        varsayilan_seans_ucreti: varsayilanUcret !== '' ? Number(varsayilanUcret) : null,
+        tatil_modu: tatilModu,
       })
       .eq('id', psychologist!.id)
 
@@ -147,6 +165,22 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Varsayılan Seans Ücreti (₺)</label>
+            <input
+              type="number"
+              min="0"
+              value={varsayilanUcret}
+              onChange={e => setVarsayilanUcret(e.target.value)}
+              placeholder="Örn: 800"
+              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+              style={{ borderColor: '#dde5e2', color: '#334155' }}
+            />
+            <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
+              Randevu onaylarken otomatik olarak önerilir.
+            </p>
+          </div>
+
           <div className="flex items-center justify-between pt-1 border-t" style={{ borderColor: '#f1f5f9' }}>
             <div>
               <p className="text-xs font-medium" style={{ color: '#64748b' }}>Abonelik</p>
@@ -204,6 +238,37 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
               className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
               style={{ borderColor: '#dde5e2', color: '#334155' }}
             />
+          </div>
+
+          {/* Tatil Modu */}
+          <div className="pt-3 border-t" style={{ borderColor: '#f1f5f9' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium" style={{ color: '#334155' }}>Tatil Modu</p>
+                <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+                  Açıkken yeni randevu talebi alınmaz.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleTatilToggle(!tatilModu)}
+                disabled={tatilSaving}
+                className="relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 disabled:opacity-60"
+                style={{ background: tatilModu ? '#f59e0b' : '#e2e8f0' }}
+                role="switch"
+                aria-checked={tatilModu}
+              >
+                <span
+                  className="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200"
+                  style={{ transform: tatilModu ? 'translateX(20px)' : 'translateX(0px)' }}
+                />
+              </button>
+            </div>
+            {tatilModu && (
+              <div className="mt-2 px-3 py-2 rounded-lg text-xs" style={{ background: '#fef3c7', color: '#92400e' }}>
+                Tatil modu aktif — danışanlar randevu alamıyor.
+              </div>
+            )}
           </div>
         </div>
       </div>
