@@ -639,6 +639,31 @@ app.post('/send', async (req, res) => {
   }
 })
 
+// ── Makbuz PDF gönder ─────────────────────────────────────────
+app.post('/send-document', async (req, res) => {
+  const { psychologistId, phone, pdfBase64, fileName, caption } = req.body
+
+  const sock = sockets.get(psychologistId)
+  if (!sock || statuses.get(psychologistId) !== 'connected') {
+    return res.status(503).json({ error: 'WhatsApp bağlı değil' })
+  }
+
+  try {
+    const jid = `${normalizePhone(phone)}@s.whatsapp.net`
+    const buffer = Buffer.from(pdfBase64, 'base64')
+    await sock.sendMessage(jid, {
+      document: buffer,
+      mimetype: 'application/pdf',
+      fileName: fileName || 'seans-makbuz.pdf',
+      caption: caption || '',
+    })
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('[send-document] hata:', err.message)
+    res.status(500).json({ error: 'Makbuz gönderilemedi' })
+  }
+})
+
 // ── Cascade offer endpoint — Next.js'den çağrılır ────────────
 app.post('/cascade-offer', async (req, res) => {
   const { waitlistId, psychologistId, phone, slotDate, name } = req.body

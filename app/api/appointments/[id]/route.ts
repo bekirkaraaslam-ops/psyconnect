@@ -66,6 +66,19 @@ export async function PATCH(req: NextRequest, { params }: Context) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  // Ödendi işaretlendiyse makbuz gönder — fire and forget
+  if (odeme_durumu === 'odendi') {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+    if (appUrl) {
+      fetch(`${appUrl}/api/receipts/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Cookie: req.headers.get('cookie') ?? '' },
+        body: JSON.stringify({ appointmentId: id }),
+      }).catch(() => {})
+    }
+  }
+
   return NextResponse.json(data)
 }
 

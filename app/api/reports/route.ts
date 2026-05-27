@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
   const { data: appointments, error } = await supabase
     .from('appointments')
-    .select('id, appointment_date, status, appointment_type, ucret, odeme_durumu, odeme_tarihi, patient_id, booking_name, duration_minutes')
+    .select('id, appointment_date, status, appointment_type, ucret, odeme_durumu, odeme_tarihi, patient_id, booking_name, duration_minutes, makbuz_gonderildi_at')
     .eq('psychologist_id', psych.id)
     .gte('appointment_date', startDate)
     .lte('appointment_date', endDate)

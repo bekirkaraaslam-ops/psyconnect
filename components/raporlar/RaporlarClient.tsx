@@ -12,6 +12,7 @@ interface Appointment {
   odeme_tarihi: string | null
   patient_id: string | null
   patient_name: string | null
+  makbuz_gonderildi_at: string | null
 }
 
 interface Summary {
@@ -60,6 +61,9 @@ export default function RaporlarClient() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [makbuzSendingId, setMakbuzSendingId] = useState<string | null>(null)
+  const [makbuzResult, setMakbuzResult] = useState<Record<string, 'ok' | 'error' | 'no_phone'>>({})
+
 
   const fetchReport = useCallback(async () => {
     setLoading(true)
@@ -85,6 +89,28 @@ export default function RaporlarClient() {
   function nextMonth() {
     if (month === 12) { setMonth(1); setYear(y => y + 1) }
     else setMonth(m => m + 1)
+  }
+
+  async function sendMakbuz(aptId: string) {
+    setMakbuzSendingId(aptId)
+    try {
+      const res = await fetch('/api/receipts/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appointmentId: aptId }),
+      })
+      if (res.status === 422) {
+        setMakbuzResult(prev => ({ ...prev, [aptId]: 'no_phone' }))
+      } else if (res.ok) {
+        setMakbuzResult(prev => ({ ...prev, [aptId]: 'ok' }))
+        await fetchReport()
+      } else {
+        setMakbuzResult(prev => ({ ...prev, [aptId]: 'error' }))
+      }
+    } catch {
+      setMakbuzResult(prev => ({ ...prev, [aptId]: 'error' }))
+    }
+    setMakbuzSendingId(null)
   }
 
   async function updateOdemeDurumu(aptId: string, yeniDurum: string) {
@@ -236,6 +262,7 @@ export default function RaporlarClient() {
                   <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Seans Durumu</th>
                   <th className="text-right px-4 py-3 font-medium">Ücret</th>
                   <th className="text-left px-4 py-3 font-medium">Ödeme Durumu</th>
+                  <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Makbuz</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,6 +330,17 @@ export default function RaporlarClient() {
                           <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>—</span>
                         )}
                       </td>
+                      {/* Makbuz sütunu */}
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        {apt.odeme_durumu === 'odendi' && (
+                          <MakbuzCell
+                            apt={apt}
+                            isSending={makbuzSendingId === apt.id}
+                            result={makbuzResult[apt.id]}
+                            onSend={() => sendMakbuz(apt.id)}
+                          />
+                        )}
+                      </td>
                     </tr>
                   )
                 })}
@@ -312,6 +350,76 @@ export default function RaporlarClient() {
         )}
       </div>
     </div>
+  )
+}
+
+function MakbuzCell({
+  apt, isSending, result, onSend,
+}: {
+  apt: Appointment
+  isSending: boolean
+  result: 'ok' | 'error' | 'no_phone' | undefined
+  onSend: () => void
+}) {
+  // Makbuz başarıyla gönderildi (veya DB'den zaten gönderilmiş)
+  if (apt.makbuz_gonderildi_at || result === 'ok') {
+    const sentAt = apt.makbuz_gonderildi_at
+      ? new Date(apt.makbuz_gonderildi_at).toLocaleString('tr-TR', {
+          day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+          timeZone: 'Europe/Istanbul',
+        })
+      : null
+    return (
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>✓ Gönderildi</span>
+        {sentAt && (
+          <button
+            onClick={onSend}
+            disabled={isSending}
+            title="Tekrar gönder"
+            className="text-xs opacity-40 hover:opacity-70 transition-opacity disabled:cursor-not-allowed"
+            style={{ color: '#4a7c6f' }}
+          >
+            ↺
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  if (result === 'no_phone') {
+    return <span className="text-xs" style={{ color: '#94a3b8' }}>Telefon yok</span>
+  }
+
+  if (result === 'error') {
+    return (
+      <button
+        onClick={onSend}
+        disabled={isSending}
+        className="text-xs font-medium px-2.5 py-1 rounded-full transition-colors disabled:opacity-50"
+        style={{ background: '#fef2f2', color: '#ef4444' }}
+      >
+        Hata — Tekrar Dene
+      </button>
+    )
+  }
+
+  if (isSending) {
+    return (
+      <span className="text-xs font-medium" style={{ color: '#4a7c6f' }}>
+        Gönderiliyor...
+      </span>
+    )
+  }
+
+  return (
+    <button
+      onClick={onSend}
+      className="text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:opacity-80 active:scale-95"
+      style={{ background: '#e8f5f0', color: '#4a7c6f', border: '1px solid #c8e6de' }}
+    >
+      Makbuz Gönder
+    </button>
   )
 }
 
