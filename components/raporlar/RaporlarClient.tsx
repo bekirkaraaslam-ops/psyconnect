@@ -102,8 +102,9 @@ export default function RaporlarClient() {
       if (res.status === 422) {
         setMakbuzResult(prev => ({ ...prev, [aptId]: 'no_phone' }))
       } else if (res.ok) {
-        setMakbuzResult(prev => ({ ...prev, [aptId]: 'ok' }))
-        await fetchReport()
+        setAppointments(prev => prev.map(a =>
+          a.id === aptId ? { ...a, makbuz_gonderildi_at: new Date().toISOString() } : a
+        ))
       } else {
         setMakbuzResult(prev => ({ ...prev, [aptId]: 'error' }))
       }
