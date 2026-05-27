@@ -28,13 +28,30 @@ export async function POST(req: NextRequest) {
 
   const { data: existing } = await supabase
     .from('patients')
-    .select('id')
+    .select('id, is_active')
     .eq('psychologist_id', psychologist.id)
     .eq('phone_number', normalized)
     .maybeSingle()
 
   if (existing) {
-    return NextResponse.json({ error: 'Bu telefon numarası zaten kayıtlı.' }, { status: 409 })
+    if (existing.is_active) {
+      return NextResponse.json({ error: 'Bu telefon numarası zaten kayıtlı.' }, { status: 409 })
+    }
+    // Silinmiş hasta — bilgileri güncelle ve yeniden aktifleştir
+    const { data, error } = await supabase
+      .from('patients')
+      .update({
+        name_surname,
+        date_of_birth: date_of_birth || null,
+        notes_encrypted,
+        anamnez_enabled: anamnez_enabled === true,
+        is_active: true,
+      })
+      .eq('id', existing.id)
+      .select()
+      .single()
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+    return NextResponse.json(data, { status: 200 })
   }
 
   const { data, error } = await supabase

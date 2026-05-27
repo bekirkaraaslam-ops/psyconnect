@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest, { params }: Context) {
     .single()
 
   const body = await req.json()
-  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session } = body
+  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session, ucret, odeme_durumu } = body
 
   const update: Record<string, unknown> = {}
   if (patient_id !== undefined) update.patient_id = patient_id
@@ -54,6 +54,8 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   if (toplam_paket_seansi !== undefined) update.toplam_paket_seansi = toplam_paket_seansi ?? null
   if (mevcut_seans_no !== undefined) update.mevcut_seans_no = mevcut_seans_no ?? null
   if (is_first_session !== undefined) update.is_first_session = is_first_session
+  if (ucret !== undefined) update.ucret = ucret === '' || ucret === null ? null : Number(ucret)
+  if (odeme_durumu !== undefined) update.odeme_durumu = odeme_durumu
 
   const { data, error } = await supabase
     .from('appointments')

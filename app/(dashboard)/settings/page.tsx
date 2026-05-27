@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import SettingsForm from '@/components/settings/SettingsForm'
 import ReferralPanel from '@/components/settings/ReferralPanel'
+import PackagesPanel from '@/components/settings/PackagesPanel'
 
 export default async function SettingsPage() {
   const supabase = await createClient()

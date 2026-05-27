@@ -20,23 +20,23 @@ export default async function Topbar({ title }: TopbarProps) {
   const initials = getInitials(name)
 
   return (
-    <header className="h-16 border-b flex items-center justify-between px-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
-      <h1 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>{title}</h1>
+    <header className="h-16 border-b flex items-center justify-between px-4 md:px-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+      <h1 className="text-lg font-semibold truncate mr-3" style={{ color: 'var(--foreground)' }}>{title}</h1>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 md:gap-3 shrink-0">
         <NotificationBell />
         <DarkModeToggle />
-        {/* WhatsApp status indicator */}
-        <div className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style={{
+        {/* WhatsApp status indicator — masaüstünde metin, mobilde sadece nokta */}
+        <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full" style={{
           background: psychologist?.is_connected ? '#dcfce7' : '#f1f5f9',
           color: psychologist?.is_connected ? '#16a34a' : '#94a3b8'
         }}>
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: psychologist?.is_connected ? '#16a34a' : '#cbd5e1' }} />
-          {psychologist?.is_connected ? 'WA Bağlı' : 'WA Bağlı Değil'}
+          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: psychologist?.is_connected ? '#16a34a' : '#cbd5e1' }} />
+          <span className="hidden md:inline">{psychologist?.is_connected ? 'WA Bağlı' : 'WA Bağlı Değil'}</span>
         </div>
 
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white" style={{ background: '#4a7c6f' }}>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0" style={{ background: '#4a7c6f' }}>
           {initials}
         </div>
       </div>

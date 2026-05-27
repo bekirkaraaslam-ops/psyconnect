@@ -34,12 +34,19 @@ function normalizePhone(phone: string): string {
   return digits
 }
 
-export async function POST(_req: NextRequest, { params }: Context) {
+export async function POST(req: NextRequest, { params }: Context) {
   const { id } = await params
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Body'den ucret oku (opsiyonel)
+  let ucret: number | null = null
+  try {
+    const body = await req.json()
+    if (body?.ucret != null && !isNaN(Number(body.ucret))) ucret = Number(body.ucret)
+  } catch { /* body boş olabilir */ }
 
   const { data: psychologist } = await supabase
     .from('psychologists')
@@ -71,7 +78,6 @@ export async function POST(_req: NextRequest, { params }: Context) {
 
     const normalizedPhone = normalizePhone(apt.booking_phone)
 
-    // Hasta zaten var mı?
     const { data: existing } = await serviceSupabase
       .from('patients')
       .select('id')
@@ -82,7 +88,6 @@ export async function POST(_req: NextRequest, { params }: Context) {
     if (existing) {
       patientId = existing.id
     } else {
-      // Yeni hasta oluştur
       const { data: newPatient } = await serviceSupabase
         .from('patients')
         .insert({
@@ -98,7 +103,6 @@ export async function POST(_req: NextRequest, { params }: Context) {
       if (newPatient) patientId = newPatient.id
     }
 
-    // Randevuyu hasta id ile güncelle
     if (patientId) {
       await serviceSupabase
         .from('appointments')
@@ -114,10 +118,16 @@ export async function POST(_req: NextRequest, { params }: Context) {
     patientName = patient?.name_surname ?? null
   }
 
-  // Randevuyu onayla
+  // Randevuyu onayla + ücret kaydet
+  const updatePayload: Record<string, unknown> = { status: 'confirmed' }
+  if (ucret != null) {
+    updatePayload.ucret = ucret
+    updatePayload.odeme_durumu = 'bekliyor'
+  }
+
   const { error: updateError } = await supabase
     .from('appointments')
-    .update({ status: 'confirmed' })
+    .update(updatePayload)
     .eq('id', id)
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 400 })
@@ -132,12 +142,12 @@ export async function POST(_req: NextRequest, { params }: Context) {
       timeZone: 'Europe/Istanbul',
     })
 
-    // Onay mesajı gönder
+    // Onay mesajı
     await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
       `Merhaba, randevunuz klinik tarafından onaylanmıştır. ${aptDate} randevu tarihinde görüşmek üzere.`
     )
 
-    // Booking page'den gelen yeni hastaya anamnez formu gönder
+    // Booking page'den gelen yeni hastaya anamnez + onam formu gönder
     if (apt.source === 'booking_page' && patientId) {
       const serviceSupabase = createServiceClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -150,11 +160,15 @@ export async function POST(_req: NextRequest, { params }: Context) {
         .eq('id', patientId)
         .single()
 
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
+      const links: string[] = []
+
+      // Anamnez formu
       if (patient?.anamnez_enabled && !patient?.anamnez_sent_at) {
         const token = crypto.randomBytes(8).toString('hex')
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
-        const { error: formError } = await serviceSupabase
+        const { error: anamnezError } = await serviceSupabase
           .from('anamnez_forms')
           .insert({
             patient_id: patientId,
@@ -163,19 +177,44 @@ export async function POST(_req: NextRequest, { params }: Context) {
             expires_at: expiresAt.toISOString(),
           })
 
-        if (!formError) {
-          const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
-          const formUrl = `${baseUrl}/anamnez/${token}`
-
-          await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
-            `Merhaba ${patientName ?? ''}, randevunuzdan önce aşağıdaki formu doldurmanızı rica ederiz:\n${formUrl}`
-          )
-
+        if (!anamnezError) {
+          links.push(`📋 Anamnez Formu: ${baseUrl}/anamnez/${token}`)
           await serviceSupabase
             .from('patients')
             .update({ anamnez_sent_at: new Date().toISOString() })
             .eq('id', patientId)
         }
+      }
+
+      // Onam formu (her yeni hasta için oluştur)
+      const { data: existingOnam } = await serviceSupabase
+        .from('onam_formlar')
+        .select('id')
+        .eq('patient_id', patientId)
+        .maybeSingle()
+
+      if (!existingOnam) {
+        const onamToken = crypto.randomBytes(8).toString('hex')
+        const onamExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+        const { error: onamError } = await serviceSupabase
+          .from('onam_formlar')
+          .insert({
+            patient_id: patientId,
+            psychologist_id: psychologist.id,
+            token: onamToken,
+            expires_at: onamExpires.toISOString(),
+          })
+
+        if (!onamError) {
+          links.push(`✍️ Onam Formu: ${baseUrl}/onam/${onamToken}`)
+        }
+      }
+
+      if (links.length > 0) {
+        await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
+          `Merhaba ${patientName ?? ''}, ilk randevunuzdan önce aşağıdaki formları doldurmanızı rica ederiz. Formlar yalnızca bir kez doldurulmalıdır:\n\n${links.join('\n\n')}\n\nFormlar hakkında herhangi bir sorunuz olursa lütfen bize bildirin. Görüşmek üzere!`
+        )
       }
     }
   }

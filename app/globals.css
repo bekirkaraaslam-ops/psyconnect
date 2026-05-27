@@ -339,6 +339,52 @@ html.dark [style*="color: #0369a1"]   { color: #60a5fa !important; }
 /* Brand rengi metin → dark primary */
 html.dark [style*="color: #4a7c6f"]   { color: var(--primary) !important; }
 
+/* ── Dark mode: koyu amber/kahve metinler ── */
+html.dark [style*="color: #92400e"]   { color: #fbbf24 !important; }
+html.dark [style*="color: #b45309"]   { color: #fcd34d !important; }
+html.dark [style*="color: #a16207"]   { color: #fcd34d !important; }
+
+/* ── Dark mode: açık amber arka planlar ── */
+html.dark [style*="background: #fef3c7"],
+html.dark [style*="background:#fef3c7"] { background: #1c1408 !important; }
+html.dark [style*="border-color: #fef3c7"] { border-color: #78350f !important; }
+
+/* ── Dark mode: açık kırmızı arka planlar (Reddet / hata) ── */
+html.dark [style*="background: #fee2e2"],
+html.dark [style*="background:#fee2e2"] { background: #450a0a !important; }
+
+/* ── Dark mode: gri ince ayırıcı çizgiler ── */
+html.dark [style*="background: #e2e8f0"],
+html.dark [style*="background:#e2e8f0"] { background: var(--border) !important; }
+
+/* ── Dark mode: borderRight inline renk düzeltmesi ── */
+html.dark [style*="border-right: 1px solid #dde5e2"] { border-right-color: var(--border) !important; }
+
+/* ── Dark mode: kapsanmayan açık arka planlar ── */
+html.dark [style*="background: #fffbeb"],
+html.dark [style*="background:#fffbeb"] { background: #1c1408 !important; }
+
+html.dark [style*="background: #f0f9ff"],
+html.dark [style*="background:#f0f9ff"] { background: #0c1a2e !important; }
+
+html.dark [style*="background: #f8fafb"],
+html.dark [style*="background:#f8fafb"] { background: #1e293b !important; }
+
+html.dark [style*="background: #f0f7f5"],
+html.dark [style*="background:#f0f7f5"] { background: #0d2a24 !important; }
+
+html.dark [style*="background: #f0f9f6"],
+html.dark [style*="background:#f0f9f6"] { background: #0d2a24 !important; }
+
+/* ── Dark mode: metin renkleri (ek) ── */
+html.dark [style*="color: #94a3b8"] { color: #cbd5e1 !important; }
+html.dark [style*="color: #3b82f6"] { color: #60a5fa !important; }
+html.dark [style*="color: #ef4444"] { color: #f87171 !important; }
+html.dark [style*="color: #8b5cf6"] { color: #a78bfa !important; }
+
+/* ── Dark mode: border-color #fde68a (amber kenarlık) ── */
+html.dark [style*="border-color: #fde68a"] { border-color: #78350f !important; }
+
 /* ── Landing page: dark mode uygulanmaz ── */
 html.dark [data-page="landing"] .bg-white {
   background-color: white !important;

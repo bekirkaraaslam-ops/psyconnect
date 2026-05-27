@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, varsayilan_seans_ucreti')
     .eq('auth_user_id', user.id)
     .single()
 
@@ -43,5 +43,9 @@ export async function GET() {
     return endTime + 50 * 60 * 1000 < Date.now()
   })
 
-  return NextResponse.json({ pending: pending ?? [], awaitingCompletion })
+  return NextResponse.json({
+    pending: pending ?? [],
+    awaitingCompletion,
+    varsayilanUcret: psychologist?.varsayilan_seans_ucreti ?? null,
+  })
 }

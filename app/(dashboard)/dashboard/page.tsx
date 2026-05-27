@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import PendingApprovalsPanel from '@/components/dashboard/PendingApprovalsPanel'
+import MissingNotesAccordion from '@/components/dashboard/MissingNotesAccordion'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
 export default async function OverviewPage() {
@@ -61,6 +62,7 @@ export default async function OverviewPage() {
     { data: tomorrowTimeline },
     { data: pastApts },
     { data: recentNotes },
+    { data: bekleyenOdemeler },
   ] = await Promise.all([
     supabase.from('patients').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).eq('is_active', true),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd),
@@ -74,6 +76,7 @@ export default async function OverviewPage() {
     supabase.from('appointments').select('*, patient:patients(name_surname)').eq('psychologist_id', psychologistId).gte('appointment_date', tomorrowStart).lte('appointment_date', tomorrowEnd).in('status', ['waiting', 'confirmed']).order('appointment_date'),
     supabase.from('appointments').select('id, appointment_date, patient:patients(id, name_surname)').eq('psychologist_id', psychologistId).in('status', ['confirmed', 'completed', 'waiting']).gte('appointment_date', yesterdayStart).lt('appointment_date', now.toISOString()).order('appointment_date', { ascending: false }),
     supabase.from('hasta_notlari').select('hasta_id, seans_tarihi').eq('psychologist_id', psychologistId).gte('seans_tarihi', yesterdayStart).lte('seans_tarihi', now.toISOString()),
+    supabase.from('appointments').select('ucret').eq('psychologist_id', psychologistId).eq('odeme_durumu', 'bekliyor').not('ucret', 'is', null),
   ])
 
   const missingNoteApts = (pastApts ?? []).filter((apt: any) => {
@@ -87,10 +90,13 @@ export default async function OverviewPage() {
 
   const isPro = psychologist?.plan_type === 'pro'
 
+  const totalBekleyenOdeme = (bekleyenOdemeler ?? []).reduce((s: number, a: any) => s + (a.ucret ?? 0), 0)
+
   const stats = [
     { label: 'Toplam Hasta', value: totalPatients ?? 0, color: '#4a7c6f', icon: '👥' },
     { label: 'Bugünkü Randevular', value: todayCount ?? 0, color: '#3b82f6', icon: '📅' },
     { label: 'Bu Hafta', value: weekCount ?? 0, color: '#8b5cf6', icon: '🗓️' },
+    { label: 'Bekleyen Ödeme', value: totalBekleyenOdeme > 0 ? `₺${totalBekleyenOdeme.toLocaleString('tr-TR')}` : '₺0', color: '#f59e0b', icon: '💰' },
     ...(isPro ? [{ label: 'WA Durumu', value: psychologist?.is_connected ? 'Bağlı' : 'Bağlı Değil', color: psychologist?.is_connected ? '#16a34a' : '#dc2626', icon: '💬' }] : []),
   ]
 
@@ -139,7 +145,7 @@ export default async function OverviewPage() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {stats.map(stat => (
             <div key={stat.label} className="bg-white rounded-2xl p-5 flex items-center gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
               <div>
@@ -239,42 +245,7 @@ export default async function OverviewPage() {
         </div>
 
         {/* Eksik SOAP Notu Uyarısı */}
-        {missingNoteApts.length > 0 && (
-          <div className="bg-white rounded-2xl" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div className="flex items-center gap-3 p-5 border-b" style={{ borderColor: '#fef3c7' }}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#fef3c7' }}>
-                <span style={{ fontSize: 16 }}>📝</span>
-              </div>
-              <h2 className="font-semibold" style={{ color: '#334155' }}>Seans Notu Eklenmemiş</h2>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#b45309' }}>
-                {missingNoteApts.length}
-              </span>
-            </div>
-            <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
-              {missingNoteApts.map((apt: any) => {
-                const saat = new Date(apt.appointment_date).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
-                const gun = new Date(apt.appointment_date).toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Istanbul' })
-                const initials = (apt.patient?.name_surname ?? 'H').split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-                return (
-                  <Link key={apt.id} href={`/appointments/${apt.id}`} className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold text-white" style={{ background: '#f59e0b' }}>
-                        {initials}
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium" style={{ color: '#334155' }}>{apt.patient?.name_surname}</div>
-                        <div className="text-xs" style={{ color: '#64748b' }}>{gun} · {saat}</div>
-                      </div>
-                    </div>
-                    <span className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: '#fef3c7', color: '#b45309' }}>
-                      Not ekle →
-                    </span>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        )}
+        <MissingNotesAccordion appointments={missingNoteApts as any} />
 
         {/* Bugün / Yarın Timeline */}
         <DayTimeline todayApts={todayTimeline ?? []} tomorrowApts={tomorrowTimeline ?? []} />

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { getAktifPaket, incrementPaket } from '@/lib/paket'
 
 function getSupabase() {
   return createClient(
@@ -27,7 +28,7 @@ export async function GET(_req: NextRequest, { params }: Context) {
 
   const { data: psych, error } = await supabase
     .from('psychologists')
-    .select('id, full_name, session_duration_minutes, buffer_minutes, work_start_hour, work_end_hour, work_days, subscription_status')
+    .select('id, full_name, session_duration_minutes, buffer_minutes, work_start_hour, work_end_hour, work_days, subscription_status, tatil_modu')
     .eq('booking_slug', slug)
     .single()
 
@@ -37,6 +38,10 @@ export async function GET(_req: NextRequest, { params }: Context) {
 
   if (!['active', 'trial'].includes(psych.subscription_status)) {
     return NextResponse.json({ error: 'Bu psikolog şu an randevu kabul etmiyor.' }, { status: 403 })
+  }
+
+  if (psych.tatil_modu) {
+    return NextResponse.json({ error: 'tatil_modu' }, { status: 423 })
   }
 
   // Önümüzdeki 28 günün onaylı randevularını çek
@@ -74,7 +79,7 @@ export async function POST(req: NextRequest, { params }: Context) {
   const supabase = getSupabase()
 
   const body = await req.json()
-  const { slot, name, phone, appointment_type } = body
+  const { slot, name, phone, appointment_type, package_template_id } = body
 
   if (!slot || !name || !phone) {
     return NextResponse.json({ error: 'Eksik bilgi.' }, { status: 400 })
@@ -82,7 +87,7 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   const { data: psych, error: psychError } = await supabase
     .from('psychologists')
-    .select('id, full_name, session_duration_minutes, subscription_status')
+    .select('id, full_name, session_duration_minutes, subscription_status, tatil_modu')
     .eq('booking_slug', slug)
     .single()
 
@@ -92,6 +97,10 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   if (!['active', 'trial'].includes(psych.subscription_status)) {
     return NextResponse.json({ error: 'Bu psikolog şu an randevu kabul etmiyor.' }, { status: 403 })
+  }
+
+  if (psych.tatil_modu) {
+    return NextResponse.json({ error: 'tatil_modu' }, { status: 423 })
   }
 
   const normalizedPhone = normalizePhone(phone)
@@ -136,6 +145,31 @@ export async function POST(req: NextRequest, { params }: Context) {
     }
   }
 
+  // Seçilen paket şablonunu çek (varsa)
+  let paketSablon: { session_count: number; price_tl: number } | null = null
+  if (package_template_id) {
+    const { data: tmpl } = await supabase
+      .from('paket_sablonlari')
+      .select('session_count, price_tl')
+      .eq('id', package_template_id)
+      .eq('psychologist_id', psych.id)
+      .eq('is_active', true)
+      .maybeSingle()
+    paketSablon = tmpl ?? null
+  }
+
+  // Ücret: yeni paket seçildiyse seans başı fiyat, yoksa aktif mevcut paketten al
+  let paketUcret: number | null = null
+  let toplam_paket_seansi: number | null = null
+
+  if (paketSablon) {
+    paketUcret = Math.round(paketSablon.price_tl / paketSablon.session_count)
+    toplam_paket_seansi = paketSablon.session_count
+  } else if (existingPatient?.id) {
+    const pkg = await getAktifPaket(supabase, existingPatient.id)
+    paketUcret = pkg?.birim_fiyat ?? null
+  }
+
   // Hasta kaydı yok veya geçici placeholder — randevu oluştur (hasta approve'da eklenir)
   const { error: insertError } = await supabase
     .from('appointments')
@@ -149,10 +183,28 @@ export async function POST(req: NextRequest, { params }: Context) {
       booking_name: name,
       booking_phone: normalizedPhone,
       appointment_type: appointment_type === 'online' ? 'online' : 'yuzyuze',
+      ucret: paketUcret,
+      odeme_durumu: paketUcret != null ? 'bekliyor' : null,
+      toplam_paket_seansi,
+      mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
     })
 
   if (insertError) {
     return NextResponse.json({ error: insertError.message }, { status: 500 })
+  }
+
+  // Mevcut hasta + yeni paket şablonu seçildiyse seans_paketleri kaydı oluştur
+  if (existingPatient?.id && paketSablon) {
+    await supabase.from('seans_paketleri').insert({
+      patient_id: existingPatient.id,
+      birim_fiyat: paketUcret,
+      toplam_seans: paketSablon.session_count,
+      kullanilan_seans: 1,
+      aktif: paketSablon.session_count > 1,
+    })
+  } else if (existingPatient?.id && !paketSablon) {
+    // Mevcut paket varsa increment et
+    await incrementPaket(supabase, existingPatient.id)
   }
 
   // Danışana WhatsApp onay mesajı gönder

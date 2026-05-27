@@ -372,6 +372,7 @@ async function connectWhatsApp(psychologistId) {
         ''
       ).trim()
       const text = rawText.toUpperCase()
+      console.log(`[msg] ${phone} → "${rawText}"`)
 
       // ── Mesai dışı koruma ────────────────────────────────────
       const { data: psyData } = await getSupabase()
@@ -382,8 +383,8 @@ async function connectWhatsApp(psychologistId) {
 
       const workStart = psyData?.work_start_hour ?? 9
       const workEnd = psyData?.work_end_hour ?? 18
-      const nowHour = new Date().toLocaleString('tr-TR', { hour: 'numeric', hour12: false, timeZone: 'Europe/Istanbul' })
-      const currentHour = parseInt(nowHour)
+      const nowIST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
+      const currentHour = nowIST.getHours()
       const isOutsideWorkHours = currentHour < workStart || currentHour >= workEnd
 
       if (isOutsideWorkHours && text !== 'EVET' && text !== 'IPTAL' && text !== 'İPTAL' && !text.includes('RANDEVU')) {
@@ -670,6 +671,47 @@ app.post('/cascade-offer', async (req, res) => {
   })
 
   res.json({ ok: true })
+})
+
+// Signal key'leri sıfırla — bağlantıyı kesmeden Bad MAC sorununu çözer
+app.post('/reset-keys/:id', async (req, res) => {
+  const { id } = req.params
+
+  // Mevcut soketi kapat
+  const oldSock = sockets.get(id)
+  if (oldSock) {
+    try { oldSock.end(undefined) } catch {}
+    sockets.delete(id)
+  }
+  statuses.set(id, 'connecting')
+
+  // /tmp'deki session dosyalarından sadece signal key'lerini sil, creds.json'u koru
+  const dir = sessionDir(id)
+  try {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+      if (file === 'creds.json') continue
+      try { fs.unlinkSync(path.join(dir, file)) } catch {}
+    }
+  } catch {}
+
+  // Supabase'deki session'dan da sadece keys kısmını temizle
+  const { data: current } = await getSupabase()
+    .from('psychologists')
+    .select('whatsapp_session')
+    .eq('id', id)
+    .single()
+
+  if (current?.whatsapp_session?.creds) {
+    await getSupabase()
+      .from('psychologists')
+      .update({ whatsapp_session: { creds: current.whatsapp_session.creds, keys: {} } })
+      .eq('id', id)
+  }
+
+  // Yeniden bağlan
+  setTimeout(() => connectWhatsApp(id).catch(console.error), 1000)
+  res.json({ ok: true, message: 'Signal key\'ler sıfırlandı, yeniden bağlanılıyor' })
 })
 
 app.post('/disconnect/:id', async (req, res) => {

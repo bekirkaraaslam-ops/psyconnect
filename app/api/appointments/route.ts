@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { incrementPaket } from '@/lib/paket'
 
 const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık']
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const body = await req.json()
-  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session, recurring } = body
+  const { patient_id, appointment_date, duration_minutes, status, appointment_type, toplam_paket_seansi, mevcut_seans_no, is_first_session, ucret, recurring } = body
 
   if (!patient_id || !appointment_date) {
     return NextResponse.json({ error: 'Hasta ve tarih zorunludur.' }, { status: 400 })
@@ -45,6 +46,8 @@ export async function POST(req: NextRequest) {
     toplam_paket_seansi: toplam_paket_seansi ?? null,
     mevcut_seans_no: mevcut_seans_no ?? null,
     is_first_session: is_first_session ?? false,
+    ucret: ucret ?? null,
+    odeme_durumu: ucret != null ? 'bekliyor' : null,
   }
 
   // Tekrarlayan randevu
@@ -81,6 +84,9 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  // Aktif paketi increment et
+  if (patient_id) await incrementPaket(supabase, patient_id)
 
   // Hastaya WhatsApp bildirimi gönder
   if (psychologist.is_connected) {

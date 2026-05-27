@@ -287,6 +287,33 @@ export async function POST(req: NextRequest) {
     const aptIso = new Date(`${context.day_iso}T${selectedTime}:00+03:00`).toISOString()
     const aptLabel = `${context.day_label} — ${selectedTime}`
 
+    // Aktif paket şablonları var mı?
+    const { data: paketler } = await supabase
+      .from('paket_sablonlari')
+      .select('id, name, session_count, price_tl')
+      .eq('psychologist_id', psychologistId)
+      .eq('is_active', true)
+      .order('sort_order')
+      .order('created_at')
+
+    if (paketler && paketler.length > 0) {
+      const list = paketler.map((p: { id: string; name: string; session_count: number; price_tl: number }, i: number) => {
+        const perSeans = Math.round(p.price_tl / p.session_count)
+        return `${i + 1}️⃣ ${p.name} — ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')} (₺${perSeans}/seans)`
+      }).join('\n')
+      const tekSeansNum = paketler.length + 1
+      await setSession(supabase, phone, psychologistId, 'awaiting_package', {
+        appointment_iso: aptIso,
+        appointment_label: aptLabel,
+        paket_sablonlari: paketler,
+      })
+      await sendReply(psychologistId, phone,
+        `📦 Seans paketi seçmek ister misiniz?\n\n${list}\n${tekSeansNum}️⃣ Tek Seans\n\nNumarasını yazın.`
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    // Paket yok — doğrudan randevu oluştur
     const { data: patient } = await supabase
       .from('patients')
       .select('id, name_surname')
@@ -316,6 +343,84 @@ export async function POST(req: NextRequest) {
       await setSession(supabase, phone, psychologistId, 'awaiting_name', {
         appointment_iso: aptIso,
         appointment_label: aptLabel,
+        selected_paket: null,
+      })
+      await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
+    }
+    return NextResponse.json({ ok: true })
+  }
+
+  if (step === 'awaiting_package') {
+    const paketler = (context.paket_sablonlari ?? []) as { id: string; name: string; session_count: number; price_tl: number }[]
+    const tekSeansNum = paketler.length + 1
+    const n = parseInt(text)
+
+    if (isNaN(n) || n < 1 || n > tekSeansNum) {
+      const list = paketler.map((p, i) => {
+        const perSeans = Math.round(p.price_tl / p.session_count)
+        return `${i + 1}️⃣ ${p.name} — ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')} (₺${perSeans}/seans)`
+      }).join('\n')
+      await sendReply(psychologistId, phone,
+        `Lütfen 1-${tekSeansNum} arası bir numara girin:\n\n${list}\n${tekSeansNum}️⃣ Tek Seans`
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    const selectedPaket = n < tekSeansNum ? paketler[n - 1] : null
+
+    const { data: patient } = await supabase
+      .from('patients')
+      .select('id, name_surname')
+      .eq('phone_number', phone)
+      .eq('psychologist_id', psychologistId)
+      .eq('is_active', true)
+      .maybeSingle()
+
+    const aptIso = context.appointment_iso as string
+    const aptLabel = context.appointment_label as string
+
+    if (patient) {
+      let ucret: number | null = null
+      let toplam_paket_seansi: number | null = null
+
+      if (selectedPaket) {
+        ucret = Math.round(selectedPaket.price_tl / selectedPaket.session_count)
+        toplam_paket_seansi = selectedPaket.session_count
+        await supabase.from('seans_paketleri').insert({
+          patient_id: patient.id,
+          birim_fiyat: ucret,
+          toplam_seans: selectedPaket.session_count,
+          kullanilan_seans: 1,
+          aktif: selectedPaket.session_count > 1,
+        })
+      } else {
+        const pkg = await getAktifPaket(supabase, patient.id)
+        ucret = pkg?.birim_fiyat ?? null
+        if (pkg) await incrementPaket(supabase, patient.id)
+      }
+
+      await supabase.from('appointments').insert({
+        psychologist_id: psychologistId,
+        patient_id: patient.id,
+        appointment_date: aptIso,
+        duration_minutes: 50,
+        status: 'seansify_pending',
+        appointment_type: 'yuzyuze',
+        ucret,
+        odeme_durumu: ucret != null ? 'bekliyor' : null,
+        toplam_paket_seansi,
+        mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
+      })
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      const paketBilgi = selectedPaket ? `\n📦 ${selectedPaket.name}` : ''
+      await sendReply(psychologistId, phone,
+        `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+      )
+    } else {
+      await setSession(supabase, phone, psychologistId, 'awaiting_name', {
+        appointment_iso: aptIso,
+        appointment_label: aptLabel,
+        selected_paket: selectedPaket,
       })
       await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
     }
@@ -354,6 +459,22 @@ export async function POST(req: NextRequest) {
       patientId = newPatient.id
     }
 
+    const selectedPaket = (context.selected_paket ?? null) as { name: string; session_count: number; price_tl: number } | null
+    let ucret: number | null = null
+    let toplam_paket_seansi: number | null = null
+
+    if (selectedPaket) {
+      ucret = Math.round(selectedPaket.price_tl / selectedPaket.session_count)
+      toplam_paket_seansi = selectedPaket.session_count
+      await supabase.from('seans_paketleri').insert({
+        patient_id: patientId,
+        birim_fiyat: ucret,
+        toplam_seans: selectedPaket.session_count,
+        kullanilan_seans: 1,
+        aktif: selectedPaket.session_count > 1,
+      })
+    }
+
     await supabase.from('appointments').insert({
       psychologist_id: psychologistId,
       patient_id: patientId,
@@ -361,10 +482,15 @@ export async function POST(req: NextRequest) {
       duration_minutes: 50,
       status: 'seansify_pending',
       appointment_type: 'yuzyuze',
+      ucret,
+      odeme_durumu: ucret != null ? 'bekliyor' : null,
+      toplam_paket_seansi,
+      mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
     })
     await setSession(supabase, phone, psychologistId, 'idle', {})
+    const paketBilgi = selectedPaket ? `\n📦 ${selectedPaket.name}` : ''
     await sendReply(psychologistId, phone,
-      `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${text}\n📅 ${context.appointment_label}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+      `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${text}\n📅 ${context.appointment_label}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
     )
     return NextResponse.json({ ok: true })
   }

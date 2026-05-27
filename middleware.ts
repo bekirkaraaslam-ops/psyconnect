@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const protectedRoutes = ['/dashboard', '/appointments', '/patients', '/whatsapp', '/settings', '/calendar']
+const protectedRoutes = ['/dashboard', '/appointments', '/patients', '/whatsapp', '/settings', '/calendar', '/waiting-list', '/raporlar']
 const authRoutes = ['/login', '/register']
 
 export async function middleware(request: NextRequest) {
@@ -15,8 +15,9 @@ export async function middleware(request: NextRequest) {
     c => c.name.includes('-auth-token') && c.value.length > 10
   )
 
-  // Auth sayfalarında gerçek session doğrulaması yap (optimistic check loop'a neden olur)
-  if (isAuthRoute) {
+  // Auth sayfalarında ve landing page'de gerçek session doğrulaması yap
+  // (landing page: giriş yapmış kullanıcıyı dashboard'a yönlendirmek için)
+  if (isAuthRoute || pathname === '/') {
     return await updateSession(request)
   }
 

@@ -17,6 +17,13 @@ interface Slot {
   label: string
 }
 
+interface PaketSablon {
+  id: string
+  name: string
+  session_count: number
+  price_tl: number
+}
+
 const DAY_MAP: Record<string, number> = {
   pazar: 0, pazartesi: 1, salı: 2, çarşamba: 3,
   perşembe: 4, cuma: 5, cumartesi: 6,
@@ -87,15 +94,26 @@ interface Props {
   slug: string
   psych: Psychologist
   bookedSlots: string[]
+  paketSablonlari: PaketSablon[]
 }
 
-export default function BookingClient({ slug, psych, bookedSlots }: Props) {
+type Step = 'slots' | 'package' | 'form' | 'success' | 'error'
+
+export default function BookingClient({ slug, psych, bookedSlots, paketSablonlari }: Props) {
   const [slots] = useState<Slot[]>(() => generateSlots(psych, bookedSlots))
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null)
   const [form, setForm] = useState({ name: '', phone: '', appointment_type: 'yuzyuze' as 'online' | 'yuzyuze' })
-  const [step, setStep] = useState<'slots' | 'form' | 'success' | 'error'>('slots')
+  const [step, setStep] = useState<Step>('slots')
   const [submitting, setSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+
+  const hasPackages = paketSablonlari.length > 0
+
+  function goToNextAfterSlot() {
+    if (hasPackages) setStep('package')
+    else setStep('form')
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -103,7 +121,13 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
     const res = await fetch(`/api/book/${slug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slot: selectedSlot, name: form.name, phone: form.phone, appointment_type: form.appointment_type }),
+      body: JSON.stringify({
+        slot: selectedSlot,
+        name: form.name,
+        phone: form.phone,
+        appointment_type: form.appointment_type,
+        package_template_id: selectedPackageId,
+      }),
     })
     const data = await res.json()
     setSubmitting(false)
@@ -140,6 +164,7 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
           </p>
         </div>
 
+        {/* Adım 1: Zaman seçimi */}
         {step === 'slots' && (
           <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
             <h2 className="text-sm font-semibold" style={{ color: '#334155' }}>Müsait Zamanlar</h2>
@@ -169,7 +194,7 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
             <button
               type="button"
               disabled={!selectedSlot}
-              onClick={() => setStep('form')}
+              onClick={goToNextAfterSlot}
               className="w-full py-3 rounded-xl text-sm font-medium text-white disabled:opacity-40"
               style={{ background: '#4a7c6f' }}
             >
@@ -178,6 +203,93 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
           </div>
         )}
 
+        {/* Adım 2: Paket seçimi */}
+        {step === 'package' && (
+          <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
+            <div>
+              <p className="text-xs font-medium mb-1" style={{ color: '#4a7c6f' }}>Seçilen zaman</p>
+              <p className="text-sm font-semibold" style={{ color: '#334155' }}>
+                {slots.find(s => s.datetime === selectedSlot)?.label}
+              </p>
+            </div>
+            <h2 className="text-sm font-semibold" style={{ color: '#334155' }}>Seans Paketi Seçin</h2>
+            <div className="space-y-2">
+              {paketSablonlari.map(p => {
+                const perSeans = (p.price_tl / p.session_count).toFixed(0)
+                const isSelected = selectedPackageId === p.id
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setSelectedPackageId(p.id)}
+                    className="w-full text-left px-4 py-3 rounded-xl border transition-colors"
+                    style={{
+                      borderColor: isSelected ? '#4a7c6f' : '#dde5e2',
+                      background: isSelected ? '#f0fdf4' : '#fff',
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm font-medium" style={{ color: '#334155' }}>{p.name}</div>
+                        <div className="text-xs mt-0.5" style={{ color: '#64748b' }}>
+                          {p.session_count} seans · ₺{perSeans}/seans
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold" style={{ color: isSelected ? '#4a7c6f' : '#334155' }}>
+                          ₺{Number(p.price_tl).toLocaleString('tr-TR')}
+                        </div>
+                        {isSelected && (
+                          <div className="text-xs" style={{ color: '#4a7c6f' }}>✓ Seçildi</div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+              {/* Tek seans seçeneği */}
+              <button
+                type="button"
+                onClick={() => setSelectedPackageId(null)}
+                className="w-full text-left px-4 py-3 rounded-xl border transition-colors"
+                style={{
+                  borderColor: selectedPackageId === null ? '#4a7c6f' : '#dde5e2',
+                  background: selectedPackageId === null ? '#f0fdf4' : '#fff',
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium" style={{ color: '#334155' }}>Tek Seans</div>
+                    <div className="text-xs mt-0.5" style={{ color: '#64748b' }}>Paket almadan sadece bu seans</div>
+                  </div>
+                  {selectedPackageId === null && (
+                    <div className="text-xs" style={{ color: '#4a7c6f' }}>✓ Seçildi</div>
+                  )}
+                </div>
+              </button>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setStep('slots')}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium border"
+                style={{ borderColor: '#dde5e2', color: '#64748b' }}
+              >
+                Geri
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep('form')}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white"
+                style={{ background: '#4a7c6f' }}
+              >
+                Devam Et
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Adım 3: İletişim formu */}
         {step === 'form' && (
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
             <div>
@@ -185,6 +297,14 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
               <p className="text-sm font-semibold" style={{ color: '#334155' }}>
                 {slots.find(s => s.datetime === selectedSlot)?.label}
               </p>
+              {selectedPackageId && (() => {
+                const pkg = paketSablonlari.find(p => p.id === selectedPackageId)
+                return pkg ? (
+                  <p className="text-xs mt-1" style={{ color: '#4a7c6f' }}>
+                    Paket: {pkg.name} · ₺{Number(pkg.price_tl).toLocaleString('tr-TR')}
+                  </p>
+                ) : null
+              })()}
             </div>
 
             <div>
@@ -248,7 +368,7 @@ export default function BookingClient({ slug, psych, bookedSlots }: Props) {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => { setStep('slots'); setErrorMsg('') }}
+                onClick={() => { setStep(hasPackages ? 'package' : 'slots'); setErrorMsg('') }}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium border"
                 style={{ borderColor: '#dde5e2', color: '#64748b' }}
               >

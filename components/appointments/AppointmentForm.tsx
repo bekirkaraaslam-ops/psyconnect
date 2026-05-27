@@ -10,6 +10,13 @@ interface PatientOption {
   phone_number: string
 }
 
+interface PaketInfo {
+  id: string
+  birim_fiyat: number
+  kullanilan_seans: number
+  toplam_seans: number
+}
+
 interface Props {
   patients: PatientOption[]
   appointment?: {
@@ -39,7 +46,9 @@ export default function AppointmentForm({ patients, appointment }: Props) {
     toplam_paket_seansi: appointment?.toplam_paket_seansi ?? '' as number | '',
     mevcut_seans_no: appointment?.mevcut_seans_no ?? '' as number | '',
     is_first_session: appointment?.is_first_session ?? false,
+    ucret: '' as string,
   })
+  const [paketInfo, setPaketInfo] = useState<PaketInfo | null>(null)
   const [recurring, setRecurring] = useState(false)
   const [recurringFrequency, setRecurringFrequency] = useState<'weekly' | 'biweekly' | 'monthly'>('weekly')
   const [recurringEndDate, setRecurringEndDate] = useState('')
@@ -48,11 +57,30 @@ export default function AppointmentForm({ patients, appointment }: Props) {
   const [cancelCount, setCancelCount] = useState<number | null>(null)
 
   useEffect(() => {
-    if (!form.patient_id) { setCancelCount(null); return }
+    if (!form.patient_id) { setCancelCount(null); setPaketInfo(null); return }
     fetch(`/api/patients/${form.patient_id}/cancel-count`)
       .then(r => r.json())
       .then(d => setCancelCount(d.cancelCount ?? null))
       .catch(() => setCancelCount(null))
+
+    if (!isEdit) {
+      fetch(`/api/patients/${form.patient_id}/paket`)
+        .then(r => r.json())
+        .then(d => {
+          const pkg = d.paket ?? null
+          setPaketInfo(pkg)
+          const autoUcret = pkg?.birim_fiyat ?? d.varsayilanUcret
+          if (autoUcret != null) setForm(prev => ({ ...prev, ucret: String(autoUcret) }))
+          if (pkg) {
+            setForm(prev => ({
+              ...prev,
+              mevcut_seans_no: pkg.kullanilan_seans + 1,
+              toplam_paket_seansi: pkg.toplam_seans,
+            }))
+          }
+        })
+        .catch(() => setPaketInfo(null))
+    }
   }, [form.patient_id])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -82,6 +110,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
         toplam_paket_seansi: form.toplam_paket_seansi ? Number(form.toplam_paket_seansi) : null,
         mevcut_seans_no: form.mevcut_seans_no ? Number(form.mevcut_seans_no) : null,
         is_first_session: form.is_first_session,
+        ucret: form.ucret !== '' ? Number(form.ucret) : null,
         recurring: !isEdit && recurring ? { frequency: recurringFrequency, endDate: recurringEndDate } : null,
       }),
     })
@@ -130,6 +159,14 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             Bu hasta daha önce <strong className="mx-1">{cancelCount}</strong> randevuyu iptal etti.
           </div>
         )}
+        {paketInfo && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm mt-2" style={{ background: '#f0fdf4', color: '#15803d' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+            </svg>
+            Aktif paket: <strong className="mx-1">{paketInfo.kullanilan_seans}/{paketInfo.toplam_seans} seans</strong> · ₺{paketInfo.birim_fiyat}/seans
+          </div>
+        )}
       </div>
 
       <div>
@@ -164,6 +201,25 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             </label>
           ))}
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Seans Ücreti (₺)</label>
+        <input
+          type="number"
+          min="0"
+          name="ucret"
+          value={form.ucret}
+          onChange={handleChange}
+          placeholder="Örn: 800"
+          className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+          style={{ borderColor: '#dde5e2', color: '#334155' }}
+        />
+        {paketInfo && (
+          <p className="text-xs mt-1" style={{ color: '#4a7c6f' }}>
+            Aktif paketten otomatik dolduruldu. Randevu kaydedilince paket {paketInfo.kullanilan_seans + 1}/{paketInfo.toplam_seans} olarak güncellenecek.
+          </p>
+        )}
       </div>
 
       <div>

@@ -77,5 +77,13 @@ export default async function BookingPage({ params }: Props) {
 
   const bookedSlots = (booked ?? []).map((a: { appointment_date: string }) => a.appointment_date)
 
-  return <BookingClient slug={slug} psych={psych} bookedSlots={bookedSlots} />
+  const { data: paketSablonlari } = await supabase
+    .from('paket_sablonlari')
+    .select('id, name, session_count, price_tl')
+    .eq('psychologist_id', psych.id)
+    .eq('is_active', true)
+    .order('sort_order')
+    .order('created_at')
+
+  return <BookingClient slug={slug} psych={psych} bookedSlots={bookedSlots} paketSablonlari={paketSablonlari ?? []} />
 }
