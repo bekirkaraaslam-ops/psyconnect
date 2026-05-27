@@ -1,22 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import PDFDocument from 'pdfkit'
-import { writeFileSync, existsSync, readFileSync } from 'fs'
+import { readFileSync } from 'fs'
+import path from 'path'
 
 export const dynamic = 'force-dynamic'
-
-// Türkçe destekli font — ilk çağrıda /tmp'ye indirilir, sonraki çağrılarda cache'den okunur
-async function ensureFont(path: string, url: string): Promise<string | null> {
-  if (existsSync(path)) return path
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
-    if (!res.ok) return null
-    writeFileSync(path, Buffer.from(await res.arrayBuffer()))
-    return path
-  } catch {
-    return null
-  }
-}
 
 async function generatePDF(data: {
   psychName: string
@@ -28,24 +16,18 @@ async function generatePDF(data: {
   receiptNo: string
   issuedAt: string
 }): Promise<Buffer> {
-  const fontPath = await ensureFont(
-    '/tmp/seansify-noto.ttf',
-    'https://fonts.gstatic.com/s/notosans/v36/o-0IIpQlx3QUlC5A4PNb4j5Ba_2c7A.ttf',
-  )
-  const boldPath = await ensureFont(
-    '/tmp/seansify-noto-bold.ttf',
-    'https://fonts.gstatic.com/s/notosans/v36/o-0bIpQlx3QUlC5A4PNjXhFVadyBx2pqPIif.ttf',
-  )
+  const fontsDir = path.join(process.cwd(), 'lib', 'fonts')
+  const fontBuffer = readFileSync(path.join(fontsDir, 'NotoSans.ttf'))
+  const boldBuffer = readFileSync(path.join(fontsDir, 'NotoSans-Bold.ttf'))
 
   const doc = new PDFDocument({ size: 'A5', margin: 0 })
   const W = doc.page.width   // 419.53
   const M = 40               // iç margin
 
-  // Font seç — Türkçe font indirilemediyse Helvetica'ya düş
-  const regular = fontPath ? 'NotoSans' : 'Helvetica'
-  const bold = boldPath ? 'NotoSans-Bold' : 'Helvetica-Bold'
-  if (fontPath) doc.registerFont('NotoSans', readFileSync(fontPath))
-  if (boldPath) doc.registerFont('NotoSans-Bold', readFileSync(boldPath))
+  const regular = 'NotoSans'
+  const bold = 'NotoSans-Bold'
+  doc.registerFont('NotoSans', fontBuffer)
+  doc.registerFont('NotoSans-Bold', boldBuffer)
 
   // ── Üst koyu başlık ──────────────────────────────────────────
   doc.rect(0, 0, W, 65).fill('#0d1f18')
