@@ -110,7 +110,7 @@ export default async function LandingPage() {
             willChange: 'transform',
           }} />
         </div>
-        <div className="max-w-4xl mx-auto px-6 pt-24 pb-10 text-center" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="max-w-4xl mx-auto px-4 md:px-6 pt-14 md:pt-24 pb-10 text-center" style={{ position: 'relative', zIndex: 1 }}>
           <div className="animate-fade-in inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8 tracking-wide" style={{ background: 'rgba(255,255,255,0.12)', color: '#d4f0e8', border: '1px solid rgba(255,255,255,0.2)' }}>
             <span>✦</span>
             <span>Türkiye'nin Psikolog Platformu</span>
@@ -150,7 +150,7 @@ export default async function LandingPage() {
         </div>
 
         {/* ── Dashboard Mockup ── */}
-        <div className="max-w-4xl mx-auto px-6 animate-float" style={{ animationDelay: '0.5s', position: 'relative', zIndex: 1 }}>
+        <div className="max-w-4xl mx-auto px-3 md:px-6 animate-float" style={{ animationDelay: '0.5s', position: 'relative', zIndex: 1 }}>
           <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
             {/* Browser chrome */}
             <div className="flex items-center gap-2 px-4 py-3" style={{ background: '#0a1812', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -191,7 +191,7 @@ export default async function LandingPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 mb-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
                   {[
                     { val: '24', label: 'Bu Hafta', color: '#4a7c6f', bg: 'rgba(74,124,111,0.12)' },
                     { val: '3', label: 'Onay Bekliyor', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
@@ -205,7 +205,7 @@ export default async function LandingPage() {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="hidden sm:grid grid-cols-2 gap-2">
                   <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(74,124,111,0.2)' }}>
                     <div className="px-3 py-2 flex items-center justify-between" style={{ background: 'rgba(74,124,111,0.08)', borderBottom: '1px solid rgba(74,124,111,0.15)' }}>
                       <span className="text-xs font-semibold" style={{ color: '#6b8c84' }}>Bugün</span>
@@ -487,7 +487,7 @@ export default async function LandingPage() {
                 color: '#8b5cf6', bg: '#f3eeff',
               },
             ].map((item, i) => (
-              <div key={item.step} className="scroll-reveal flex flex-col md:flex-row gap-6 rounded-2xl p-6 bg-white" style={{ borderLeft: `4px solid ${item.color}`, boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
+              <div key={item.step} className="scroll-reveal flex flex-col md:flex-row gap-4 md:gap-6 rounded-2xl p-4 md:p-6 bg-white" style={{ borderLeft: `4px solid ${item.color}`, boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
                 <div className="flex items-start gap-4 md:w-52 flex-shrink-0">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: item.bg }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={item.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{item.icon}</svg>
@@ -523,7 +523,7 @@ export default async function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="rounded-2xl p-8 bg-white" style={{ border: '1px solid #c8e6dc' }}>
+            <div className="rounded-2xl p-5 md:p-8 bg-white" style={{ border: '1px solid #c8e6dc' }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#fef2f2' }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -550,7 +550,7 @@ export default async function LandingPage() {
               </ul>
             </div>
 
-            <div className="rounded-2xl p-8" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
+            <div className="rounded-2xl p-5 md:p-8" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)' }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -589,7 +589,7 @@ export default async function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mt-12">
-            <div className="bg-white rounded-2xl p-8" style={{ border: '1px solid #c8e6dc', boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
+            <div className="bg-white rounded-2xl p-5 md:p-8" style={{ border: '1px solid #c8e6dc', boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-1" style={{ color: '#0d1f18' }}>Başlangıç Paketi</h3>
                 <p className="text-xs mb-4" style={{ color: '#5a7a72' }}>Klinik yönetiminin temelleri</p>
@@ -622,7 +622,7 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <div className="pricing-pro rounded-2xl p-8 relative" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
+            <div className="pricing-pro rounded-2xl p-5 md:p-8 relative" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="px-4 py-1 rounded-full text-xs font-bold" style={{ background: '#2d5a51', color: 'white' }}>EN POPÜLER</span>
               </div>

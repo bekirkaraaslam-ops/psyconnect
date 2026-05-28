@@ -106,11 +106,11 @@ export default async function OverviewPage() {
     <div className="flex-1">
       <Topbar title="Genel Bakış" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
 
         {/* Başlarken kartı — yalnızca hiç hastası olmayan yeni kullanıcılara */}
         {isNew && (
-          <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#dde5e2', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div className="bg-white rounded-2xl border p-4 md:p-6" style={{ borderColor: '#dde5e2', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: '#e8f5f1' }}>🚀</div>
               <div>
@@ -147,10 +147,10 @@ export default async function OverviewPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {stats.map(stat => (
-            <div key={stat.label} className="bg-white rounded-2xl p-5 flex items-center gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
+            <div key={stat.label} className="bg-white rounded-2xl p-3 md:p-5 flex items-center gap-3 md:gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
               <div>
-                <div className="text-2xl font-bold leading-none mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-xs" style={{ color: '#64748b' }}>{stat.label}</div>
+                <div className="text-xl md:text-2xl font-bold leading-none mb-1" style={{ color: stat.color }}>{stat.value}</div>
+                <div className="text-xs leading-tight" style={{ color: '#64748b' }}>{stat.label}</div>
               </div>
             </div>
           ))}
@@ -163,7 +163,7 @@ export default async function OverviewPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
 
           {/* Bekleme Listesi */}
-          <Link href="/waiting-list" className="bg-white rounded-2xl p-5 hover:shadow-md transition-shadow block" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <Link href="/waiting-list" className="bg-white rounded-2xl p-4 md:p-5 hover:shadow-md transition-shadow block" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#eff6ff' }}>
                 <span style={{ fontSize: 18 }}>🕐</span>
@@ -180,7 +180,7 @@ export default async function OverviewPage() {
           </Link>
 
           {/* Doldurulmamış Anamnez Formları */}
-          <div className="bg-white rounded-2xl p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div className="bg-white rounded-2xl p-4 md:p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#faf5ff' }}>
                 <span style={{ fontSize: 18 }}>📋</span>
@@ -211,7 +211,7 @@ export default async function OverviewPage() {
           </div>
 
           {/* Bu Haftaki İptaller */}
-          <div className="bg-white rounded-2xl p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div className="bg-white rounded-2xl p-4 md:p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fff1f2' }}>
                 <span style={{ fontSize: 18 }}>📊</span>
@@ -259,14 +259,14 @@ function DayTimeline({ todayApts, tomorrowApts }: { todayApts: any[]; tomorrowAp
   return (
     <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
       <div className="flex border-b" style={{ borderColor: '#dde5e2' }}>
-        <div className="flex-1 px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155', borderRight: '1px solid #dde5e2' }}>
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155', borderRight: '1px solid #dde5e2' }}>
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#4a7c6f' }} />
           Bugün
           <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
             {todayApts.length} seans
           </span>
         </div>
-        <div className="flex-1 px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155' }}>
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155' }}>
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#3b82f6' }} />
           Yarın
           <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#3b82f6' }}>
@@ -313,7 +313,7 @@ function TimelineRow({ apt }: { apt: any }) {
   const isConfirmed = apt.status === 'confirmed'
 
   return (
-    <Link href={`/appointments/${apt.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
+    <Link href={`/appointments/${apt.id}`} className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 hover:bg-gray-50 transition-colors">
       <div className="text-xs font-mono font-semibold w-11 shrink-0 text-right" style={{ color: '#4a7c6f' }}>{saat}</div>
       <div className="w-px h-8 shrink-0" style={{ background: '#e2e8f0' }} />
       <div className="flex-1 min-w-0">

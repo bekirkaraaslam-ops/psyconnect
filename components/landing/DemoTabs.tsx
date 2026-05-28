@@ -11,7 +11,7 @@ const tabs = [
 
 function DashboardMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 440, padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
         {[
           { label: 'Bugün', value: '3 Randevu', color: '#4a7c6f', bg: '#e8f5f1' },
@@ -70,7 +70,7 @@ function TakvimMockup() {
   const slots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 440, padding: 16 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#334155' }}>26–30 Mayıs 2026</div>
         <div style={{ display: 'flex', gap: 4 }}>
@@ -141,7 +141,7 @@ function TakvimMockup() {
 
 function RandevularMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 440, padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#334155' }}>Randevular</div>
         <div style={{ background: '#4a7c6f', color: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 600 }}>+ Yeni Randevu</div>
@@ -173,7 +173,7 @@ function RandevularMockup() {
 
 function RaporlarMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 440, padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
         <div style={{ background: '#fff', border: '1px solid #dde5e2', borderRadius: 8, padding: '5px 8px', fontSize: 11, color: '#64748b' }}>◀</div>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#334155' }}>Mayıs 2026</div>
@@ -233,20 +233,20 @@ export default function DemoTabs() {
   const [active, setActive] = useState('dashboard')
 
   return (
-    <section className="py-20" style={{ background: '#f8fffe' }}>
-      <div className="max-w-4xl mx-auto px-6">
+    <section className="py-12 md:py-20" style={{ background: '#f8fffe' }}>
+      <div className="max-w-4xl mx-auto px-4 md:px-6">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-extrabold mb-3 scroll-reveal" style={{ color: '#0d1f18' }}>Sistemi Keşfedin</h2>
           <p className="text-sm md:text-base scroll-reveal" style={{ color: '#4a7c6f' }}>Klinik yönetiminizi Seansify ile nasıl dönüştüreceğinizi görün</p>
         </div>
 
         {/* Tab buttons */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-1.5 md:gap-2 mb-6 flex-wrap">
           {tabs.map(tab => (
             <button
               key={tab.key}
               onClick={() => setActive(tab.key)}
-              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+              className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold transition-all"
               style={{
                 background: active === tab.key ? '#4a7c6f' : '#fff',
                 color: active === tab.key ? '#fff' : '#4a7c6f',
@@ -271,7 +271,7 @@ export default function DemoTabs() {
           </div>
 
           {/* App chrome (sidebar + content) */}
-          <div style={{ display: 'flex', background: '#fff', minHeight: 440 }}>
+          <div style={{ display: 'flex', background: '#fff', minHeight: 'clamp(300px, 55vw, 440px)' }}>
             {/* Mini sidebar */}
             <div style={{ width: 44, background: '#fff', borderRight: '1px solid #dde5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 16, gap: 4 }}>
               <div style={{ width: 24, height: 24, borderRadius: 6, background: '#4a7c6f', marginBottom: 12 }} />

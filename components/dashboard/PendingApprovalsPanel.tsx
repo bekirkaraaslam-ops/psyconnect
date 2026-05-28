@@ -62,17 +62,17 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
             .slice(0, 2)
           const isBookingPage = !apt.patient && apt.booking_name
           return (
-            <div key={apt.id} className="flex items-center justify-between px-5 py-4">
-              <div className="flex items-center gap-3">
+            <div key={apt.id} className="flex items-center justify-between px-4 md:px-5 py-3 md:py-4 gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold text-white"
                   style={{ background: '#f59e0b' }}
                 >
                   {initials}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium" style={{ color: '#334155' }}>
+                    <span className="text-sm font-medium truncate" style={{ color: '#334155' }}>
                       {displayName}
                     </span>
                     {isBookingPage && (
@@ -86,7 +86,7 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 md:gap-2 shrink-0">
                 <button
                   disabled={loading === apt.id}
                   onClick={() => handle(apt.id, 'approve')}
