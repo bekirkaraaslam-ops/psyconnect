@@ -134,7 +134,12 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
               </div>
 
               {/* Detay paneli */}
-              {isExpanded && (
+              <div style={{
+                display: 'grid',
+                gridTemplateRows: isExpanded ? '1fr' : '0fr',
+                transition: 'grid-template-rows 0.28s cubic-bezier(0.4,0,0.2,1)',
+              }}>
+              <div style={{ minHeight: 0, overflow: 'hidden' }}>
                 <div className="px-4 pb-4 pt-1" style={{ background: '#f8fafc', borderTop: '1px solid #f1f5f9' }}>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <div>
@@ -244,7 +249,8 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
                     Detay sayfası →
                   </Link>
                 </div>
-              )}
+              </div>
+              </div>
             </div>
           )
         })}

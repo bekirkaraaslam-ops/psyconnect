@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import DemoTabs from '@/components/landing/DemoTabs'
+import ScrollRevealInit from '@/components/landing/ScrollRevealInit'
 
 export const metadata: Metadata = {
   title: 'Seansify — Psikologlar için Klinik Yönetim Platformu',
@@ -78,8 +80,37 @@ export default async function LandingPage() {
       </header>
 
       {/* ── Hero ── */}
-      <section style={{ background: 'linear-gradient(135deg, #1a3a2e 0%, #2d5a51 40%, #4a7c6f 100%)', paddingBottom: '80px' }}>
-        <div className="max-w-4xl mx-auto px-6 pt-24 pb-10 text-center">
+      <section style={{ background: 'linear-gradient(135deg, #1a3a2e 0%, #2d5a51 40%, #4a7c6f 100%)', paddingBottom: '80px', position: 'relative', overflow: 'hidden' }}>
+        {/* Aurora blobs + rotating gradient */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+          {/* Dönen conic gradient — renk geçişi */}
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%',
+            width: '220%', height: '220%',
+            background: 'conic-gradient(from 0deg at 50% 50%, rgba(110,231,183,0.0) 0deg, rgba(110,231,183,0.14) 60deg, rgba(74,124,111,0.18) 120deg, rgba(26,58,46,0.05) 180deg, rgba(45,90,81,0.16) 240deg, rgba(110,231,183,0.09) 300deg, rgba(110,231,183,0.0) 360deg)',
+            animation: 'gradientRotate 28s linear infinite',
+            willChange: 'transform',
+          }} />
+          {/* Blob 1 */}
+          <div style={{
+            position: 'absolute', top: '-10%', right: '-5%',
+            width: '55%', height: '70%',
+            borderRadius: '50%',
+            background: 'radial-gradient(ellipse, rgba(110,231,183,0.16) 0%, transparent 70%)',
+            animation: 'blobFloat1 14s ease-in-out infinite',
+            willChange: 'transform',
+          }} />
+          {/* Blob 2 */}
+          <div style={{
+            position: 'absolute', bottom: '5%', left: '-8%',
+            width: '50%', height: '60%',
+            borderRadius: '50%',
+            background: 'radial-gradient(ellipse, rgba(74,124,111,0.26) 0%, transparent 70%)',
+            animation: 'blobFloat2 18s ease-in-out infinite',
+            willChange: 'transform',
+          }} />
+        </div>
+        <div className="max-w-4xl mx-auto px-6 pt-24 pb-10 text-center" style={{ position: 'relative', zIndex: 1 }}>
           <div className="animate-fade-in inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8 tracking-wide" style={{ background: 'rgba(255,255,255,0.12)', color: '#d4f0e8', border: '1px solid rgba(255,255,255,0.2)' }}>
             <span>✦</span>
             <span>Türkiye'nin Psikolog Platformu</span>
@@ -119,7 +150,7 @@ export default async function LandingPage() {
         </div>
 
         {/* ── Dashboard Mockup ── */}
-        <div className="max-w-4xl mx-auto px-6 animate-float" style={{ animationDelay: '0.5s' }}>
+        <div className="max-w-4xl mx-auto px-6 animate-float" style={{ animationDelay: '0.5s', position: 'relative', zIndex: 1 }}>
           <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
             {/* Browser chrome */}
             <div className="flex items-center gap-2 px-4 py-3" style={{ background: '#0a1812', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -246,7 +277,7 @@ export default async function LandingPage() {
               label: 'Haftalık Kazanılan Zaman',
             },
           ].map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-2">
+            <div key={s.label} className="flex flex-col items-center gap-2 scroll-reveal">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-1" style={{ background: 'rgba(74,124,111,0.15)' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
               </div>
@@ -257,16 +288,18 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      <DemoTabs />
+
       {/* ── Özellikler ── */}
       <section id="ozellikler" className="py-24" style={{ background: 'linear-gradient(180deg, #2d5a51 0%, #4a7c6f 100%)' }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white">Her Şey Tek Platformda</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white scroll-reveal">Her Şey Tek Platformda</h2>
             <p className="text-base max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>Klinik yönetiminiz için ihtiyacınız olan tüm araçlar, tek çatı altında.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
+          {(() => {
+            const features = [
               {
                 title: 'Akıllı Randevu Yönetimi',
                 desc: 'Takvim entegrasyonu, çakışma önleme ve tek tıkla randevu oluşturma. Haftalık görünümde tüm planınızı yönetin.',
@@ -303,11 +336,31 @@ export default async function LandingPage() {
                 bg: '#fff0f6', iconColor: '#ec4899',
                 icon: <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>,
               },
-            ].map((feature, i) => (
+              {
+                title: 'Dijital Anamnez Formu',
+                desc: 'Hasta seans öncesinde QR linkle kendi cihazından anamnez formunu doldurur. Kağıt yok, kayıt kaybı yok, tüm bilgiler sistemde.',
+                bg: '#f0fdf4', iconColor: '#16a34a',
+                icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></>,
+              },
+              {
+                title: 'SOAP Seans Notu',
+                desc: 'Yapılandırılmış seans notu şablonu: Subjective, Objective, Assessment, Plan. Her seans sonrası sistematik kayıt tutun.',
+                bg: '#fefce8', iconColor: '#ca8a04',
+                icon: <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></>,
+              },
+              {
+                title: 'Ücret ve Ödeme Takibi',
+                desc: 'Her seans için ücret girin, ödeme durumunu takip edin. Bekleyen tahsilatları anında görün, hiçbir ödeme atlamayın.',
+                bg: '#f0f9ff', iconColor: '#0284c7',
+                icon: <><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>,
+              },
+            ]
+
+            const card = (feature: typeof features[0], _i: number) => (
               <div
                 key={feature.title}
-                className="animate-fade-up bg-white rounded-2xl p-6 transition-all hover:shadow-lg"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)', animationDelay: `${i * 0.08}s` }}
+                className="feature-card scroll-reveal bg-white rounded-2xl p-6"
+                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
               >
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{ background: feature.bg }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={feature.iconColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -317,8 +370,80 @@ export default async function LandingPage() {
                 <h3 className="font-bold text-sm mb-2" style={{ color: '#0d1f18' }}>{feature.title}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: '#5a7a72' }}>{feature.desc}</p>
               </div>
-            ))}
-          </div>
+            )
+
+            const pages = [features.slice(0, 3), features.slice(3, 6), features.slice(6, 9)]
+
+            return (
+              <>
+                {/* Mobil: yatay scroll-snap carousel */}
+                <div
+                  className="flex md:hidden scrollbar-none"
+                  style={{
+                    overflowX: 'scroll',
+                    scrollSnapType: 'x mandatory',
+                    WebkitOverflowScrolling: 'touch' as never,
+                    scrollbarWidth: 'none' as never,
+                    msOverflowStyle: 'none' as never,
+                    gap: 0,
+                    marginLeft: '-24px',
+                    marginRight: '-24px',
+                    paddingLeft: '24px',
+                    paddingRight: '24px',
+                  }}
+                >
+                  {pages.map((page, pageIdx) => (
+                    <div
+                      key={pageIdx}
+                      style={{
+                        minWidth: '100%',
+                        flexShrink: 0,
+                        scrollSnapAlign: 'start',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                        paddingRight: pageIdx < 2 ? '24px' : '0',
+                      }}
+                    >
+                      {page.map((f, i) => card(f, pageIdx * 3 + i))}
+
+                      {/* Sayfa indikatörü */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', paddingTop: '8px', paddingBottom: '4px' }}>
+                        {pages.map((_, di) => (
+                          <span
+                            key={di}
+                            style={{
+                              width: di === pageIdx ? 20 : 6,
+                              height: 6,
+                              borderRadius: 3,
+                              background: di === pageIdx ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                              transition: 'width 0.3s',
+                              display: 'inline-block',
+                            }}
+                          />
+                        ))}
+                        {pageIdx < 2 && (
+                          <svg
+                            width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="rgba(255,255,255,0.6)" strokeWidth="2.5"
+                            strokeLinecap="round" strokeLinejoin="round"
+                            style={{ animation: 'arrowBounce 1.4s ease-in-out infinite', marginLeft: 4 }}
+                          >
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Masaüstü: normal grid */}
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {features.map((f, i) => card(f, i))}
+                </div>
+              </>
+            )
+          })()}
         </div>
       </section>
 
@@ -326,7 +451,7 @@ export default async function LandingPage() {
       <section id="nasil-calisir" className="py-24" style={{ background: '#f0f9f6' }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Nasıl Çalışır?</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Nasıl Çalışır?</h2>
             <p className="text-base max-w-lg mx-auto" style={{ color: '#5a7a72' }}>
               Seansify, psikologların klinik yönetimini uçtan uca otomatikleştiren bulut tabanlı bir platformdur.
             </p>
@@ -362,7 +487,7 @@ export default async function LandingPage() {
                 color: '#8b5cf6', bg: '#f3eeff',
               },
             ].map((item, i) => (
-              <div key={item.step} className="animate-slide-right flex flex-col md:flex-row gap-6 rounded-2xl p-6 bg-white" style={{ borderLeft: `4px solid ${item.color}`, boxShadow: '0 1px 6px rgba(74,124,111,0.08)', animationDelay: `${i * 0.12}s` }}>
+              <div key={item.step} className="scroll-reveal flex flex-col md:flex-row gap-6 rounded-2xl p-6 bg-white" style={{ borderLeft: `4px solid ${item.color}`, boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
                 <div className="flex items-start gap-4 md:w-52 flex-shrink-0">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: item.bg }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={item.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{item.icon}</svg>
@@ -393,7 +518,7 @@ export default async function LandingPage() {
       <section className="py-24" style={{ background: '#e8f5f1' }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Kliniğinizde Ne Değişir?</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Kliniğinizde Ne Değişir?</h2>
             <p className="text-base max-w-md mx-auto" style={{ color: '#5a7a72' }}>Seansify öncesi ve sonrası — farkı kendiniz görün.</p>
           </div>
 
@@ -459,7 +584,7 @@ export default async function LandingPage() {
       <section id="fiyatlandirma" className="py-24" style={{ background: '#f0f9f6' }}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-5">
-            <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Şeffaf Fiyatlandırma</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Şeffaf Fiyatlandırma</h2>
             <p className="text-base" style={{ color: '#5a7a72' }}>İstediğin zaman iptal et, taahhüt yok.</p>
           </div>
 
@@ -497,7 +622,7 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <div className="rounded-2xl p-8 relative" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e', boxShadow: '0 4px 20px rgba(74,124,111,0.35)' }}>
+            <div className="pricing-pro rounded-2xl p-8 relative" style={{ background: '#4a7c6f', border: '2px solid #3a6b5e' }}>
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="px-4 py-1 rounded-full text-xs font-bold" style={{ background: '#2d5a51', color: 'white' }}>EN POPÜLER</span>
               </div>
@@ -542,7 +667,7 @@ export default async function LandingPage() {
       <section id="sss" className="py-24" style={{ background: '#e8f5f1' }}>
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Sık Sorulan Sorular</h2>
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Sık Sorulan Sorular</h2>
           </div>
           <div className="space-y-3">
             {[
@@ -665,6 +790,7 @@ export default async function LandingPage() {
         </div>
       </footer>
 
+      <ScrollRevealInit />
     </div>
   )
 }

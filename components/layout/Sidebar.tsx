@@ -136,18 +136,18 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
   const planInfo = planLabels[planType] || planLabels.free
 
   return (
-    <aside className="hidden md:flex flex-col w-60 min-h-screen border-r py-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+    <aside className="hidden md:flex flex-col w-16 lg:w-60 min-h-screen border-r py-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
       {/* Logo */}
-      <div className="px-6 mb-8">
+      <div className="px-2 lg:px-6 mb-8 flex flex-col items-center lg:items-start">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#4a7c6f' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#4a7c6f' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 1-2 2H3" />
             </svg>
           </div>
-          <span className="font-semibold text-base" style={{ color: 'var(--foreground)' }}>Seansify</span>
+          <span className="hidden lg:inline font-semibold text-base" style={{ color: 'var(--foreground)' }}>Seansify</span>
         </div>
-        <div className="mt-2">
+        <div className="mt-2 hidden lg:block">
           <span
             className="text-xs font-medium px-2 py-0.5 rounded-full"
             style={{ background: planInfo.bg, color: planInfo.color }}
@@ -158,7 +158,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav className="flex-1 px-1.5 lg:px-3 space-y-0.5">
         {navItems.map(item => {
           const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
           const showLock = item.whatsappLocked && !isWhatsappUnlocked
@@ -167,18 +167,28 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
+              title={item.label}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
+                'relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
                 isActive
                   ? 'text-white'
                   : 'hover:bg-gray-100 dark:hover:bg-slate-700'
               )}
               style={isActive ? { background: '#4a7c6f', color: 'white' } : { color: showLock ? '#94a3b8' : '#64748b' }}
             >
+              {isActive && (
+                <span style={{
+                  position: 'absolute', left: 0, top: 6, bottom: 6,
+                  width: 3, borderRadius: '0 3px 3px 0',
+                  background: 'rgba(255,255,255,0.75)',
+                  transformOrigin: 'top',
+                  animation: 'indicatorSlideIn 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards',
+                }} />
+              )}
               {item.icon}
-              <span className="flex-1">{item.label}</span>
+              <span className="hidden lg:inline flex-1">{item.label}</span>
               {showLock && (
-                <span style={{ color: '#94a3b8' }}>
+                <span className="hidden lg:inline" style={{ color: '#94a3b8' }}>
                   <LockIcon />
                 </span>
               )}
@@ -189,7 +199,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
 
       {/* Upgrade butonu (free veya baslangic planında) */}
       {planType !== 'pro' && (
-        <div className="px-3 mb-3">
+        <div className="px-1.5 lg:px-3 mb-3">
           <Link
             href="/upgrade"
             className="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-xs font-semibold transition-opacity hover:opacity-90"
@@ -198,16 +208,17 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="17 11 12 6 7 11" /><line x1="12" y1="18" x2="12" y2="6" />
             </svg>
-            {planType === 'free' ? 'Plan Satın Al' : "Pro'ya Geç"}
+            <span className="hidden lg:inline">{planType === 'free' ? 'Plan Satın Al' : "Pro'ya Geç"}</span>
           </Link>
         </div>
       )}
 
       {/* Logout */}
-      <div className="px-3 mt-2">
+      <div className="px-1.5 lg:px-3 mt-2">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full transition-colors hover:bg-red-50"
+          title="Çıkış Yap"
+          className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium w-full transition-colors hover:bg-red-50"
           style={{ color: '#94a3b8' }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -215,7 +226,7 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
             <polyline points="16 17 21 12 16 7" />
             <line x1="21" y1="12" x2="9" y2="12" />
           </svg>
-          Çıkış Yap
+          <span className="hidden lg:inline">Çıkış Yap</span>
         </button>
       </div>
     </aside>

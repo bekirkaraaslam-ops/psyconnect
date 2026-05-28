@@ -119,15 +119,18 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
 
   if (appointments.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border p-8 flex flex-col items-center text-center" style={{ borderColor: '#dde5e2' }}>
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-2">
-          <rect x="3" y="4" width="18" height="18" rx="2" />
-          <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-        </svg>
-        <p className="text-sm font-medium mb-1" style={{ color: '#475569' }}>Yaklaşan randevu yok</p>
-        <Link href="/appointments/new" className="text-xs font-medium mt-2 underline" style={{ color: '#4a7c6f' }}>
-          Yeni randevu ekle →
+      <div className="bg-white rounded-2xl border p-8 flex flex-col items-center text-center" style={{ borderColor: '#dde5e2', animation: 'fadeInUp 0.3s ease forwards' }}>
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3" style={{ background: '#f0fdf4' }}>
+          <span style={{ fontSize: 26 }}>🌿</span>
+        </div>
+        <p className="text-sm font-semibold mb-1" style={{ color: '#334155' }}>Takvim temiz</p>
+        <p className="text-xs mb-3" style={{ color: '#94a3b8' }}>Yaklaşan randevu yok. İyi dinlenmeler.</p>
+        <Link
+          href="/appointments/new"
+          className="text-xs font-semibold px-4 py-2 rounded-xl transition-opacity hover:opacity-80"
+          style={{ background: '#e8f5f1', color: '#4a7c6f' }}
+        >
+          + Yeni randevu ekle
         </Link>
       </div>
     )
@@ -193,7 +196,12 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                 </div>
 
                 {/* Detay paneli */}
-                {isExpanded && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateRows: isExpanded ? '1fr' : '0fr',
+                  transition: 'grid-template-rows 0.28s cubic-bezier(0.4,0,0.2,1)',
+                }}>
+                <div style={{ minHeight: 0, overflow: 'hidden' }}>
                   <div className="px-4 pb-4 pt-1" style={{ background: '#f8fafc', borderTop: '1px solid #f1f5f9' }}>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <div>
@@ -317,7 +325,8 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                       </Link>
                     </div>
                   </div>
-                )}
+                </div>
+                </div>
               </div>
             )
           })}
