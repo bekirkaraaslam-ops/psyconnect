@@ -99,6 +99,67 @@ interface Props {
 
 type Step = 'slots' | 'package' | 'form' | 'success' | 'error'
 
+function StepIndicator({ step, hasPackages }: { step: Step; hasPackages: boolean }) {
+  if (step === 'success' || step === 'error') return null
+
+  const steps = hasPackages
+    ? [
+        { key: 'slots',   label: 'Zaman' },
+        { key: 'package', label: 'Paket' },
+        { key: 'form',    label: 'Bilgiler' },
+      ]
+    : [
+        { key: 'slots', label: 'Zaman' },
+        { key: 'form',  label: 'Bilgiler' },
+      ]
+
+  const currentIndex = steps.findIndex(s => s.key === step)
+
+  return (
+    <div className="flex items-center justify-center gap-0">
+      {steps.map((s, i) => {
+        const done    = i < currentIndex
+        const active  = i === currentIndex
+        const last    = i === steps.length - 1
+
+        return (
+          <div key={s.key} className="flex items-center">
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+                style={{
+                  background: done ? '#4a7c6f' : active ? '#4a7c6f' : '#e2e8f0',
+                  color: done || active ? '#fff' : '#94a3b8',
+                }}
+              >
+                {done ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  i + 1
+                )}
+              </div>
+              <span
+                className="text-xs font-medium"
+                style={{ color: active ? '#4a7c6f' : done ? '#64748b' : '#94a3b8' }}
+              >
+                {s.label}
+              </span>
+            </div>
+            {!last && (
+              <div
+                className="w-12 h-0.5 mb-5 mx-1 transition-all"
+                style={{ background: i < currentIndex ? '#4a7c6f' : '#e2e8f0' }}
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function BookingClient({ slug, psych, bookedSlots, paketSablonlari }: Props) {
   const [slots] = useState<Slot[]>(() => generateSlots(psych, bookedSlots))
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
@@ -164,6 +225,8 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
             Randevu talebi — {psych.session_duration_minutes} dakika
           </p>
         </div>
+
+        <StepIndicator step={step} hasPackages={hasPackages} />
 
         {/* Adım 1: Zaman seçimi */}
         {step === 'slots' && (
