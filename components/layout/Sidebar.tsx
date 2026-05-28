@@ -91,6 +91,38 @@ const navItems = [
     ),
   },
   {
+    href: '/profil',
+    label: 'Profilim',
+    whatsappLocked: false,
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
+      </svg>
+    ),
+  },
+  {
+    href: '/bloglar',
+    label: 'Bloglarım',
+    whatsappLocked: false,
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+      </svg>
+    ),
+  },
+  {
+    href: '/yorumlar',
+    label: 'Yorumlar',
+    whatsappLocked: false,
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        <line x1="9" y1="10" x2="9" y2="10" /><line x1="12" y1="10" x2="12" y2="10" /><line x1="15" y1="10" x2="15" y2="10" />
+      </svg>
+    ),
+  },
+  {
     href: '/settings',
     label: 'Ayarlar',
     whatsappLocked: false,

@@ -7,7 +7,7 @@ export interface Psychologist {
   auth_user_id: string
   full_name: string
   phone_number: string | null
-  klinik_adresi: string | null
+  klinik_adres: string | null
   harita_linki: string | null
   online_gorusme_linki: string | null
   hosgeldiniz_mesaji: string | null

@@ -11,7 +11,7 @@ interface Props {
     id: string
     full_name: string
     phone_number: string | null
-    klinik_adresi: string | null
+    klinik_adres: string | null
     harita_linki: string | null
     online_gorusme_linki: string | null
     hosgeldiniz_mesaji: string | null
@@ -43,8 +43,7 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
   const router = useRouter()
   const [fullName, setFullName] = useState(psychologist?.full_name ?? '')
   const [phone, setPhone] = useState(psychologist?.phone_number ?? '')
-  const [klinikAdresi, setKlinikAdresi] = useState(psychologist?.klinik_adresi ?? '')
-  const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
+const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
   const [onlineGorusmeLinki, setOnlineGorusmeLinki] = useState(psychologist?.online_gorusme_linki ?? '')
   const [hosgeldinizMesaji, setHosgeldinizMesaji] = useState(
     psychologist?.hosgeldiniz_mesaji ??
@@ -87,8 +86,8 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
       .update({
         full_name: fullName,
         phone_number: phone ? normalizePhone(phone) : null,
-        klinik_adresi: klinikAdresi || null,
-        harita_linki: haritaLinki || null,
+        klinik_tel: phone ? normalizePhone(phone) : null,
+harita_linki: haritaLinki || null,
         online_gorusme_linki: onlineGorusmeLinki || null,
         hosgeldiniz_mesaji: hosgeldinizMesaji || null,
         work_start_hour: workStartHour,
@@ -155,7 +154,7 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Telefon</label>
+            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Klinik Numarası</label>
             <input
               type="tel"
               value={phone}
@@ -164,6 +163,9 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
               style={{ borderColor: '#dde5e2', color: '#334155' }}
               placeholder="0532 123 45 67"
             />
+            <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
+              WhatsApp hatırlatıcıları bu numaraya gönderilir ve profil sayfanızda görünür.
+            </p>
           </div>
 
           <div>
@@ -204,17 +206,9 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
 
         {/* Klinik Bilgileri */}
         <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
-          <h3 className="text-sm font-semibold" style={{ color: '#334155' }}>Klinik Bilgileri</h3>
-
           <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Klinik Adresi</label>
-            <textarea
-              rows={3}
-              value={klinikAdresi}
-              onChange={e => setKlinikAdresi(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none resize-none"
-              style={{ borderColor: '#dde5e2', color: '#334155' }}
-            />
+            <h3 className="text-sm font-semibold" style={{ color: '#334155' }}>Klinik Bilgileri</h3>
+            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>Klinik adı ve adresi için <a href="/profil" className="underline" style={{ color: '#4a7c6f' }}>Profilim</a> sekmesine gidin.</p>
           </div>
 
           <div>
@@ -376,27 +370,6 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
             Booking sayfasındaki müsait slotlar bu ayarlara göre hesaplanır.
           </p>
 
-          {psychologist?.booking_slug && (
-            <div className="rounded-xl border p-3.5 space-y-2" style={{ borderColor: '#dde5e2', background: '#f8fafc' }}>
-              <p className="text-xs font-semibold" style={{ color: '#334155' }}>Randevu Linkin</p>
-              <div className="flex items-center gap-2">
-                <span className="text-xs flex-1 truncate font-mono" style={{ color: '#4a7c6f' }}>
-                  /book/{psychologist.booking_slug}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(`${window.location.origin}/book/${psychologist.booking_slug}`)}
-                  className="text-xs px-2.5 py-1 rounded-lg font-medium shrink-0"
-                  style={{ background: '#4a7c6f', color: '#fff' }}
-                >
-                  Kopyala
-                </button>
-              </div>
-              <p className="text-xs" style={{ color: '#94a3b8' }}>
-                Danışanlarınız bu linkten WhatsApp olmadan randevu alabilir.
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
