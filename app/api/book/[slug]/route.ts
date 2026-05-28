@@ -79,7 +79,7 @@ export async function POST(req: NextRequest, { params }: Context) {
   const supabase = getSupabase()
 
   const body = await req.json()
-  const { slot, name, phone, appointment_type, package_template_id } = body
+  const { slot, name, phone, appointment_type, package_template_id, kvkk_consented } = body
 
   if (!slot || !name || !phone) {
     return NextResponse.json({ error: 'Eksik bilgi.' }, { status: 400 })
@@ -183,6 +183,7 @@ export async function POST(req: NextRequest, { params }: Context) {
       booking_name: name,
       booking_phone: normalizedPhone,
       appointment_type: appointment_type === 'online' ? 'online' : 'yuzyuze',
+      kvkk_consented_at: kvkk_consented ? new Date().toISOString() : null,
       ucret: paketUcret,
       odeme_durumu: paketUcret != null ? 'bekliyor' : null,
       toplam_paket_seansi,

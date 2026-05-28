@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import CookieBanner from '@/components/CookieBanner'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -26,7 +27,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark')}}catch(e){}` }} />
       </head>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <CookieBanner />
+      </body>
     </html>
   )
 }

@@ -69,6 +69,7 @@ export default function AnamnezFormClient({ token, patientName }: Props) {
   const [form, setForm] = useState<Record<string, string>>(
     Object.fromEntries(FIELDS.map(f => [f.key, '']))
   )
+  const [acikRiza, setAcikRiza] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -83,7 +84,7 @@ export default function AnamnezFormClient({ token, patientName }: Props) {
     const res = await fetch('/api/anamnez/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, ...form }),
+      body: JSON.stringify({ token, ...form, acik_riza: acikRiza }),
     })
 
     if (res.ok) {
@@ -152,9 +153,26 @@ export default function AnamnezFormClient({ token, patientName }: Props) {
             </div>
           ))}
 
+          <div className="bg-white rounded-xl border p-4" style={{ borderColor: '#dde5e2' }}>
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={acikRiza}
+                onChange={e => setAcikRiza(e.target.checked)}
+                className="mt-0.5 shrink-0"
+                style={{ accentColor: '#4a7c6f', width: 16, height: 16 }}
+              />
+              <span className="text-xs leading-relaxed" style={{ color: '#64748b' }}>
+                KVKK kapsamında kişisel ve sağlık verilerimin psikolojik danışmanlık hizmeti sunulması amacıyla işlenmesine{' '}
+                <strong style={{ color: '#334155' }}>açık rıza</strong> veriyorum.
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={status === 'loading'}
+            disabled={status === 'loading' || !acikRiza}
             className="w-full py-3 rounded-xl text-sm font-medium text-white disabled:opacity-60"
             style={{ background: '#4a7c6f' }}
           >

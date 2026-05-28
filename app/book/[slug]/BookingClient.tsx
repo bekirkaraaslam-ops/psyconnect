@@ -103,7 +103,7 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
   const [slots] = useState<Slot[]>(() => generateSlots(psych, bookedSlots))
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null)
-  const [form, setForm] = useState({ name: '', phone: '', appointment_type: 'yuzyuze' as 'online' | 'yuzyuze' })
+  const [form, setForm] = useState({ name: '', phone: '', appointment_type: 'yuzyuze' as 'online' | 'yuzyuze', kvkk_consent: false })
   const [step, setStep] = useState<Step>('slots')
   const [submitting, setSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -127,6 +127,7 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
         phone: form.phone,
         appointment_type: form.appointment_type,
         package_template_id: selectedPackageId,
+        kvkk_consented: form.kvkk_consent,
       }),
     })
     const data = await res.json()
@@ -355,9 +356,28 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
               />
             </div>
 
-            <p className="text-xs" style={{ color: '#94a3b8' }}>
-              Kişisel verileriniz KVKK kapsamında yalnızca randevu yönetimi amacıyla işlenecektir.
-            </p>
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={form.kvkk_consent}
+                onChange={e => setForm(p => ({ ...p, kvkk_consent: e.target.checked }))}
+                className="mt-0.5 shrink-0"
+                style={{ accentColor: '#4a7c6f', width: 16, height: 16 }}
+              />
+              <span className="text-xs leading-relaxed" style={{ color: '#64748b' }}>
+                <a
+                  href="/kvkk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#4a7c6f' }}
+                  className="underline"
+                >
+                  KVKK Aydınlatma Metni
+                </a>
+                &apos;ni okudum; kişisel verilerimin randevu yönetimi amacıyla işlenmesine onay veriyorum.
+              </span>
+            </label>
 
             {errorMsg && (
               <p className="text-sm px-3 py-2 rounded-lg" style={{ background: '#fee2e2', color: '#dc2626' }}>
@@ -376,7 +396,7 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
               </button>
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !form.kvkk_consent}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white disabled:opacity-60"
                 style={{ background: '#4a7c6f' }}
               >
