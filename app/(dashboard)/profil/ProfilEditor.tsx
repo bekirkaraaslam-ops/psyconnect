@@ -181,7 +181,12 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
       tpd_uye_no: tpdUyeNo || null,
     }).eq('id', psych.id)
     setSaving(false)
-    if (!error) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
+    if (!error) {
+      setSaved(true)
+      setTimeout(() => window.location.reload(), 1500)
+    } else {
+      alert('Kayıt hatası: ' + error.message)
+    }
   }
 
   const currentSlug = buildSlug(unvan, psych.full_name) || psych.booking_slug
@@ -220,9 +225,17 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--foreground)', lineHeight: 1.2 }}>Profilim</div>
-            <a href={profilUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#4a7c6f', textDecoration: 'none', fontWeight: 500 }}>
-              {profilUrl} ↗
-            </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <a href={currentSlug === psych.booking_slug ? profilUrl : undefined}
+                 onClick={currentSlug !== psych.booking_slug ? (e) => { e.preventDefault(); alert('Önce kaydet butonuna bas, sonra link aktif olur.') } : undefined}
+                 target="_blank" rel="noopener noreferrer"
+                 style={{ fontSize: 11, color: currentSlug !== psych.booking_slug ? '#94a3b8' : '#4a7c6f', textDecoration: 'none', fontWeight: 500 }}>
+                {profilUrl} ↗
+              </a>
+              {currentSlug !== psych.booking_slug && (
+                <span style={{ fontSize: 10, color: '#f59e0b', fontWeight: 600 }}>kaydet</span>
+              )}
+            </div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
