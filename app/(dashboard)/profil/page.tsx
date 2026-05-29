@@ -14,7 +14,7 @@ export default async function ProfilPage() {
       uzmanlik_alanlari, egitim, foto_url, klinik_adi, klinik_adres,
       klinik_tel, calisma_saatleri, profil_alinti, deneyim_yil, dil,
       work_start_hour, work_end_hour, work_days, session_duration_minutes,
-      subscription_status, profil_gorunum
+      subscription_status, profil_gorunum, ilk_seans_metni
     `)
     .eq('auth_user_id', user.id)
     .single()
