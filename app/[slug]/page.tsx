@@ -2,6 +2,10 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import type { Metadata } from 'next'
 import ProfilClient from './ProfilClient'
+import TemaBlancClient from './TemaBlancClient'
+import TemaSicakClient from './TemaSicakClient'
+import TemaGuvenClient from './TemaGuvenClient'
+import TemaDogaClient from './TemaDogaClient'
 
 function getSupabase() {
   return createClient(
@@ -43,7 +47,7 @@ export default async function PsikologProfilPage({ params }: Context) {
       uzmanlik_alanlari, egitim, foto_url, klinik_adi, klinik_adres,
       klinik_tel, calisma_saatleri, profil_alinti, deneyim_yil, dil,
       session_duration_minutes, subscription_status, profil_gorunum,
-      ilk_seans_metni
+      ilk_seans_metni, tema, yaklasim, tpd_uye_no
     `)
     .eq('booking_slug', slug)
     .single()
@@ -85,13 +89,19 @@ export default async function PsikologProfilPage({ params }: Context) {
     .eq('psychologist_id', psych.id)
     .eq('status', 'completed')
 
-  return (
-    <ProfilClient
-      psych={psych}
-      bloglar={bloglar ?? []}
-      yorumlar={yorumlar ?? []}
-      paketler={paketler ?? []}
-      tamamlananSeans={tamamlananSeans ?? 0}
-    />
-  )
+  const sharedProps = {
+    psych,
+    bloglar: bloglar ?? [],
+    yorumlar: yorumlar ?? [],
+    paketler: paketler ?? [],
+    tamamlananSeans: tamamlananSeans ?? 0,
+  }
+
+  switch (psych.tema) {
+    case 'blanc': return <TemaBlancClient {...sharedProps} />
+    case 'sicak': return <TemaSicakClient {...sharedProps} />
+    case 'guven': return <TemaGuvenClient {...sharedProps} />
+    case 'doga':  return <TemaDogaClient  {...sharedProps} />
+    default:      return <ProfilClient    {...sharedProps} />
+  }
 }

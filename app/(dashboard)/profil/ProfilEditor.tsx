@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
 interface Egitim { baslik: string; kurum: string; yil: string }
+interface Yaklasim { ikon: string; baslik: string; aciklama: string }
 
 interface ProfilGorunum {
   show_uzmanlik: boolean
@@ -33,6 +34,7 @@ interface Psych {
   work_start_hour: number | null; work_end_hour: number | null
   work_days: string[] | null; session_duration_minutes: number | null
   subscription_status: string | null; profil_gorunum: ProfilGorunum | null
+  tema: string | null; yaklasim: Yaklasim[] | null; tpd_uye_no: string | null
 }
 
 interface Paket { id: string; name: string; session_count: number; price_tl: number; is_active: boolean }
@@ -60,7 +62,21 @@ const TABS = [
   { id: 'uzmanlik',  label: 'Uzmanlık' },
   { id: 'klinik',    label: 'Klinik' },
   { id: 'paketler',  label: 'Paketler' },
+  { id: 'website',   label: 'Website' },
   { id: 'gorunum',   label: 'Görünüm' },
+]
+
+const TEMA_SECENEKLERI = [
+  { id: 'blanc',  label: 'Blanc',  aciklama: 'Modern & Minimalist',     renk: '#3d6b5e', bg: '#fff',     border: '#e8f2ef' },
+  { id: 'sicak',  label: 'Sıcak',  aciklama: 'Sıcak & İnsancıl',       renk: '#c17b5e', bg: '#faf6f1', border: '#f5e8d8' },
+  { id: 'guven',  label: 'Güven',  aciklama: 'Uzman & Kurumsal',        renk: '#5fbfb0', bg: '#1b2d4f', border: '#2a4b7c' },
+  { id: 'doga',   label: 'Doğa',   aciklama: 'Sakin & Organik',         renk: '#5a6b3c', bg: '#f5f0e8', border: '#d8cebc' },
+]
+
+const DEFAULT_YAKLASIM: Yaklasim[] = [
+  { ikon: '🧠', baslik: 'Bilişsel Davranışçı Terapi', aciklama: 'Düşünce kalıplarının duygu ve davranışlar üzerindeki etkisini birlikte keşfediyoruz.' },
+  { ikon: '🌱', baslik: 'Şema Terapi', aciklama: 'Erken dönem yaşantılardan gelen örüntülerin bugünkü ilişkilere yansımalarını ele alıyoruz.' },
+  { ikon: '🤝', baslik: 'Kişiye Özel Yaklaşım', aciklama: 'Her danışanın hikâyesi farklıdır; süreci birlikte şekillendiriyoruz.' },
 ]
 
 const inp: React.CSSProperties = {
@@ -93,6 +109,9 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
   const [workDays, setWorkDays] = useState<string[]>(psych.work_days ?? ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma'])
   const [sessionDuration, setSessionDuration] = useState(psych.session_duration_minutes ?? 50)
   const [gorunum, setGorunum] = useState<ProfilGorunum>({ ...DEFAULT_GORUNUM, ...(psych.profil_gorunum ?? {}) })
+  const [tema, setTema] = useState(psych.tema ?? 'modern')
+  const [yaklasimlar, setYaklasimlar] = useState<Yaklasim[]>(psych.yaklasim ?? DEFAULT_YAKLASIM)
+  const [tpdUyeNo, setTpdUyeNo] = useState(psych.tpd_uye_no ?? '')
   const [fotoUrl, setFotoUrl] = useState(psych.foto_url ?? '')
   const [uploadingFoto, setUploadingFoto] = useState(false)
   const fotoInputRef = useRef<HTMLInputElement>(null)
@@ -109,6 +128,12 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
   function removeEgitim(i: number) { setEgitimler(prev => prev.filter((_, idx) => idx !== i)) }
   function updateEgitim(i: number, field: keyof Egitim, val: string) {
     setEgitimler(prev => prev.map((e, idx) => idx === i ? { ...e, [field]: val } : e))
+  }
+
+  function addYaklasim() { setYaklasimlar(prev => [...prev, { ikon: '💡', baslik: '', aciklama: '' }]) }
+  function removeYaklasim(i: number) { setYaklasimlar(prev => prev.filter((_, idx) => idx !== i)) }
+  function updateYaklasim(i: number, field: keyof Yaklasim, val: string) {
+    setYaklasimlar(prev => prev.map((y, idx) => idx === i ? { ...y, [field]: val } : y))
   }
 
   async function handleFotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -141,6 +166,9 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
       work_days: workDays, session_duration_minutes: sessionDuration,
       ilk_seans_metni: ilkSeansMetni || null,
       profil_gorunum: isPro ? gorunum : DEFAULT_GORUNUM,
+      tema: tema || 'modern',
+      yaklasim: yaklasimlar.filter(y => y.baslik).length > 0 ? yaklasimlar.filter(y => y.baslik) : null,
+      tpd_uye_no: tpdUyeNo || null,
     }).eq('id', psych.id)
     setSaving(false)
     if (!error) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
@@ -414,6 +442,101 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── WEBSİTE ── */}
+        {tab === 'website' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Tema Seçici */}
+            <div style={{ background: 'var(--card)', borderRadius: 16, padding: 20, border: '1px solid var(--border)' }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--foreground)', marginBottom: 6 }}>Website Teması</p>
+              <p style={{ fontSize: 11, color: '#94a3b8', marginBottom: 14 }}>
+                Seçtiğiniz tema <strong>slug.seansify.com</strong> adresinizdeki kişisel websitesinde görünür.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {TEMA_SECENEKLERI.map(t => {
+                  const sec = tema === t.id
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => setTema(t.id)}
+                      style={{
+                        borderRadius: 12, border: `2px solid ${sec ? t.renk : '#e2e8f0'}`,
+                        padding: '14px 12px', cursor: 'pointer', textAlign: 'left',
+                        background: sec ? t.bg : '#fafafa',
+                        boxShadow: sec ? `0 0 0 1px ${t.renk}30` : 'none',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      <div style={{ width: 28, height: 28, borderRadius: 8, background: t.renk, marginBottom: 8 }} />
+                      <div style={{ fontSize: 13, fontWeight: 700, color: sec ? t.renk : '#334155', marginBottom: 2 }}>{t.label}</div>
+                      <div style={{ fontSize: 11, color: '#64748b' }}>{t.aciklama}</div>
+                      {sec && <div style={{ marginTop: 6, fontSize: 10, fontWeight: 700, color: t.renk }}>✓ Seçili</div>}
+                    </button>
+                  )
+                })}
+                {/* Modern (default / eski görünüm) */}
+                <button
+                  onClick={() => setTema('modern')}
+                  style={{
+                    borderRadius: 12, border: `2px solid ${tema === 'modern' ? '#4a7c6f' : '#e2e8f0'}`,
+                    padding: '14px 12px', cursor: 'pointer', textAlign: 'left',
+                    background: tema === 'modern' ? '#f0fdf4' : '#fafafa',
+                    gridColumn: 'span 2',
+                  }}
+                >
+                  <div style={{ fontSize: 13, fontWeight: 700, color: tema === 'modern' ? '#4a7c6f' : '#334155', marginBottom: 2 }}>
+                    Klasik (Mevcut) {tema === 'modern' && '✓'}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#64748b' }}>Mevcut mobil profil sayfası — website teması uygulanmaz</div>
+                </button>
+              </div>
+            </div>
+
+            {/* Yaklaşımım */}
+            <div style={{ background: 'var(--card)', borderRadius: 16, padding: 20, border: '1px solid var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--foreground)', margin: 0 }}>Yaklaşımım</p>
+                <button onClick={addYaklasim} style={{ fontSize: 12, fontWeight: 700, color: '#4a7c6f', background: '#f0fdf4', border: 'none', borderRadius: 8, padding: '5px 12px', cursor: 'pointer' }}>+ Ekle</button>
+              </div>
+              <p style={{ fontSize: 11, color: '#94a3b8', marginBottom: 14 }}>
+                Terapi yaklaşımlarınızı ve çalışma felsefenizi anlatın. Website temasında ayrı bir bölüm olarak görünür.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {yaklasimlar.map((y, i) => (
+                  <div key={i} style={{ background: '#f8fafc', borderRadius: 12, padding: 14, border: '1px solid #e8edf2' }}>
+                    <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                      <div>
+                        <label style={{ ...lbl, marginBottom: 4 }}>İkon</label>
+                        <input style={{ ...inp, width: 54 }} value={y.ikon} onChange={ev => updateYaklasim(i, 'ikon', ev.target.value)} placeholder="🧠" />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ ...lbl, marginBottom: 4 }}>Başlık</label>
+                        <input style={inp} value={y.baslik} onChange={ev => updateYaklasim(i, 'baslik', ev.target.value)} placeholder="Bilişsel Davranışçı Terapi" />
+                      </div>
+                      <button onClick={() => removeYaklasim(i)} style={{ alignSelf: 'flex-end', padding: '9px 10px', borderRadius: 8, border: '1px solid #fecaca', background: '#fef2f2', color: '#dc2626', cursor: 'pointer', fontSize: 13, marginBottom: 0 }}>✕</button>
+                    </div>
+                    <div>
+                      <label style={{ ...lbl, marginBottom: 4 }}>Açıklama</label>
+                      <textarea style={{ ...inp, resize: 'none', height: 62, lineHeight: 1.6 }} value={y.aciklama} onChange={ev => updateYaklasim(i, 'aciklama', ev.target.value)} placeholder="Bu yaklaşımı nasıl uyguladığınızı kısaca açıklayın…" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mesleki Kimlik */}
+            <div style={{ background: 'var(--card)', borderRadius: 16, padding: 20, border: '1px solid var(--border)' }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--foreground)', marginBottom: 14 }}>Mesleki Kimlik</p>
+              <div>
+                <label style={lbl}>Meslek Birliği Üye No <span style={{ fontWeight: 400, color: '#94a3b8' }}>(opsiyonel)</span></label>
+                <input style={inp} value={tpdUyeNo} onChange={e => setTpdUyeNo(e.target.value)} placeholder="TPD-12345" />
+                <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>TPD, TSPD veya başka bir birlik numarası. Websitede güven unsuru olarak görünür.</p>
+              </div>
+            </div>
+
           </div>
         )}
 

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Uzm. Psk. Ayşe Kaya — Klinik Psikolog, İstanbul</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #faf6f1;
+  --bg-warm: #fdf0e8;
+  --bg-card: #fff;
+  --border: #ede5da;
+  --ink: #2d1f14;
+  --ink-2: #5a3d2b;
+  --ink-3: #9e7c68;
+  --ink-4: #c4a898;
+  --accent: #c17b5e;
+  --accent-2: #e8a98a;
+  --accent-light: rgba(193,123,94,0.1);
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  padding-bottom: 80px;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(250,246,241,0.97); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  height: 62px; padding: 0 36px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.4px; text-decoration: none; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--ink-3); text-decoration: none; font-weight: 500; }
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  font-size: 12px; font-weight: 700; color: #fff;
+  background: var(--accent); padding: 9px 22px; border-radius: 24px;
+  text-decoration: none; box-shadow: 0 2px 14px rgba(193,123,94,0.35);
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(180deg, #fdf0e8 0%, var(--bg) 100%);
+  padding: 64px 36px 0;
+  overflow: hidden; position: relative;
+}
+.hero-decor {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(193,123,94,0.07), transparent 65%);
+  top: -200px; right: -100px; pointer-events: none;
+}
+.hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 420px; gap: 56px; align-items: end;
+}
+.hero-text { padding-bottom: 52px; }
+.hero-available {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; border: 1.5px solid rgba(74,222,128,0.4);
+  border-radius: 20px; padding: 6px 14px; margin-bottom: 28px;
+}
+.avail-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; }
+.avail-text { font-size: 12px; font-weight: 700; color: #16a34a; }
+.hero-name { font-size: 54px; font-weight: 900; color: var(--ink); letter-spacing: -2.5px; line-height: 1.02; margin-bottom: 14px; }
+.hero-sub { font-size: 16px; color: var(--ink-3); margin-bottom: 28px; }
+.hero-lead { font-size: 17px; color: var(--ink-2); line-height: 1.85; margin-bottom: 36px; max-width: 500px; }
+.hero-actions { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
+.btn-main {
+  font-size: 14px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  padding: 14px 32px; border-radius: 28px; text-decoration: none;
+  box-shadow: 0 4px 20px rgba(193,123,94,0.4);
+}
+.btn-ghost {
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+}
+.hero-trust { display: flex; gap: 20px; flex-wrap: wrap; }
+.trust-pill {
+  background: #fff; border: 1px solid var(--border); border-radius: 20px;
+  padding: 7px 14px; font-size: 12px; color: var(--ink-2); font-weight: 600;
+}
+
+.hero-photo-col { align-self: end; }
+.hero-photo-frame {
+  width: 380px; height: 480px;
+  border-radius: 24px 24px 12px 12px;
+  background: linear-gradient(160deg, #e8c9b5, #c89070);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.2);
+  overflow: hidden; position: relative;
+}
+.hero-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+.photo-badge {
+  position: absolute; bottom: 20px; left: 20px; right: 20px;
+  background: rgba(255,255,255,0.95); border-radius: 14px; padding: 14px 16px;
+  backdrop-filter: blur(8px);
+}
+.pb-name { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.pb-meta { font-size: 12px; color: var(--ink-3); }
+
+/* ── STATS ── */
+.stats {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; padding: 28px 36px;
+}
+.stat-card {
+  background: var(--bg-card); border-radius: 18px; padding: 20px;
+  text-align: center; border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(193,123,94,0.06);
+}
+.stat-val { font-size: 30px; font-weight: 900; color: var(--ink); letter-spacing: -1px; line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--ink-4); margin-top: 6px; font-weight: 500; }
+
+/* ── CONTENT ── */
+.content { max-width: 1100px; margin: 0 auto; padding: 0 36px; }
+
+.section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; margin-bottom: 10px;
+}
+.heading {
+  font-size: 30px; font-weight: 900; color: var(--ink);
+  letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 32px;
+}
+
+/* ── HAKKIMDA ── */
+.about-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: start; }
+.about-text { font-size: 16px; color: var(--ink-2); line-height: 1.9; }
+.about-text p + p { margin-top: 18px; }
+.about-cards { display: flex; flex-direction: column; gap: 12px; }
+.about-info-card {
+  background: var(--bg-card); border-radius: 16px; padding: 18px 20px;
+  border: 1px solid var(--border);
+}
+.aic-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+.aic-val { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+/* ── YAKLAŞIM ── */
+.approach-list { display: flex; flex-direction: column; gap: 0; }
+.approach-item {
+  display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+  padding: 28px 0; border-bottom: 1px solid var(--border); align-items: start;
+}
+.approach-item:last-child { border-bottom: none; }
+.approach-icon-wrap {
+  width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+  background: var(--accent-light); border: 1.5px solid rgba(193,123,94,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.approach-name { font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.3px; }
+.approach-desc { font-size: 14px; color: var(--ink-2); line-height: 1.8; }
+
+/* ── UZMANLIK ── */
+.uz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.uz-card {
+  background: var(--bg-card); border-radius: 16px; padding: 20px;
+  border: 1px solid var(--border); text-align: center;
+}
+.uz-icon { font-size: 28px; margin-bottom: 10px; }
+.uz-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+
+/* ── EĞİTİM ── */
+.egitim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; }
+.timeline-warm { display: flex; flex-direction: column; gap: 0; }
+.tl-item {
+  display: flex; gap: 18px; padding: 22px 0; border-bottom: 1px solid var(--border);
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-dot-col { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+.tl-dot {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  background: var(--accent); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--accent);
+}
+.tl-year { font-size: 11px; font-weight: 800; color: var(--accent); margin-top: 5px; }
+.tl-info {}
+.tl-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.tl-sub { font-size: 12px; color: var(--ink-3); }
+.sert-list { display: flex; flex-direction: column; gap: 10px; }
+.sert-card {
+  background: var(--bg-card); border-radius: 14px; padding: 16px 18px;
+  border: 1px solid var(--border); display: flex; gap: 14px; align-items: center;
+}
+.sert-icon { font-size: 22px; }
+.sert-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.sert-ver { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+/* ── BLOG ── */
+.blog-layout { display: flex; flex-direction: column; gap: 0; }
+.blog-featured {
+  display: grid; grid-template-columns: 320px 1fr; gap: 32px;
+  padding: 0 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+  align-items: center;
+}
+.blog-feat-img {
+  height: 240px; border-radius: 20px;
+  background: linear-gradient(135deg, #fdf0e8, #f5d5bc);
+  display: flex; align-items: center; justify-content: center; font-size: 56px;
+}
+.blog-feat-cat {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 12px;
+}
+.blog-feat-title { font-size: 22px; font-weight: 900; color: var(--ink); letter-spacing: -0.5px; line-height: 1.3; margin-bottom: 12px; }
+.blog-feat-excerpt { font-size: 14px; color: var(--ink-2); line-height: 1.8; margin-bottom: 18px; }
+.blog-feat-read {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: #fff;
+  background: var(--accent); padding: 10px 22px; border-radius: 24px;
+  text-decoration: none;
+}
+.blog-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.blog-card-w {
+  background: var(--bg-card); border-radius: 18px; padding: 22px;
+  border: 1px solid var(--border); text-decoration: none; color: inherit; display: block;
+}
+.blog-cat-w { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.blog-title-w { font-size: 15px; font-weight: 800; color: var(--ink); line-height: 1.4; margin-bottom: 8px; }
+.blog-date-w { font-size: 11px; color: var(--ink-4); }
+.blog-all { text-align: center; margin-top: 28px; }
+.blog-all a {
+  font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none;
+  border: 1.5px solid rgba(193,123,94,0.3); padding: 10px 24px; border-radius: 24px;
+  display: inline-block;
+}
+
+/* ── RANDEVU ── */
+.randevu-layout { display: grid; grid-template-columns: 1fr 380px; gap: 52px; align-items: start; }
+.randevu-intro { font-size: 16px; color: var(--ink-2); line-height: 1.85; margin-bottom: 28px; }
+.paket-list { display: flex; flex-direction: column; gap: 10px; }
+.paket-row {
+  background: var(--bg-card); border-radius: 16px; padding: 18px 20px;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.paket-row.top { background: var(--accent); border-color: var(--accent); }
+.paket-row.top .pk-name { color: #fff; }
+.paket-row.top .pk-meta { color: rgba(255,255,255,0.65); }
+.paket-row.top .pk-price { color: #fff; }
+.pk-name { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.pk-meta { font-size: 12px; color: var(--ink-3); }
+.pk-price { font-size: 22px; font-weight: 900; color: var(--ink); }
+.randevu-cta-card {
+  background: linear-gradient(160deg, #fdf0e8, #f5d5bc);
+  border-radius: 24px; padding: 32px 28px;
+  border: 1px solid rgba(193,123,94,0.2); text-align: center;
+}
+.rc-icon { font-size: 40px; margin-bottom: 16px; }
+.rc-title { font-size: 20px; font-weight: 900; color: var(--ink); letter-spacing: -0.4px; margin-bottom: 10px; }
+.rc-text { font-size: 13px; color: var(--ink-2); line-height: 1.75; margin-bottom: 22px; }
+.rc-btn {
+  display: block; background: var(--accent); color: #fff;
+  text-decoration: none; padding: 14px; border-radius: 16px;
+  font-size: 14px; font-weight: 700; margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(193,123,94,0.4);
+}
+.rc-note { font-size: 11px; color: var(--ink-3); }
+
+/* ── YORUMLAR ── */
+.yorumlar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.yorum-card {
+  background: var(--bg-card); border-radius: 20px; padding: 24px;
+  border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(193,123,94,0.05);
+}
+.y-stars { color: #f59e0b; font-size: 14px; margin-bottom: 12px; }
+.y-text { font-size: 14px; color: var(--ink-2); line-height: 1.75; font-style: italic; margin-bottom: 18px; }
+.y-author { display: flex; align-items: center; gap: 10px; }
+.y-init {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff;
+}
+.y-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.y-date { font-size: 11px; color: var(--ink-4); margin-top: 1px; }
+
+/* ── İLETİŞİM ── */
+.iletisim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; }
+.ilt-block { margin-bottom: 24px; }
+.ilt-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+.ilt-val { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
+.ilk-seans-warm {
+  background: var(--bg-card); border-radius: 20px; padding: 28px;
+  border: 1px solid var(--border);
+}
+.is-title { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 20px; }
+.is-steps { display: flex; flex-direction: column; gap: 14px; }
+.is-step { display: flex; gap: 14px; align-items: flex-start; }
+.is-num {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff;
+}
+.is-text { font-size: 13px; color: var(--ink-2); line-height: 1.75; padding-top: 4px; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink); padding: 28px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ft-name { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+.ft-domain { font-size: 12px; color: rgba(255,255,255,0.35); }
+.ft-powered { font-size: 11px; color: rgba(255,255,255,0.35); text-align: right; }
+.ft-powered a { color: rgba(193,123,94,0.8); text-decoration: none; font-weight: 600; }
+
+/* ── FLOATING ── */
+.floating-cta {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  padding: 10px 28px 14px;
+  background: rgba(250,246,241,0.98); border-top: 1px solid var(--border);
+  display: none; backdrop-filter: blur(12px);
+}
+.floating-btn {
+  display: block; max-width: 640px; margin: 0 auto;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; text-align: center; padding: 14px;
+  font-size: 14px; font-weight: 700; border-radius: 20px; text-decoration: none;
+  box-shadow: 0 4px 18px rgba(193,123,94,0.4);
+}
+@media (max-width: 768px) {
+  .floating-cta { display: block; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-photo-col { display: none; }
+  .hero-name { font-size: 38px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .about-layout, .randevu-layout, .iletisim-layout, .egitim-layout { grid-template-columns: 1fr; }
+  .uz-grid, .yorumlar-grid { grid-template-columns: repeat(2, 1fr); }
+  .blog-featured { grid-template-columns: 1fr; }
+  .blog-list { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+  .content { padding: 0 20px; }
+}
+
+.tema-badge {
+  position: fixed; top: 74px; right: 16px; z-index: 999;
+  background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="tema-badge">Tema 2 — Sıcak</div>
+
+<nav>
+  <a href="#" class="nav-brand">Uzm. Psk. Ayşe Kaya</a>
+  <ul class="nav-links">
+    <li><a href="#hakkimda">Hakkımda</a></li>
+    <li><a href="#yaklasim">Yaklaşımım</a></li>
+    <li><a href="#uzmanlik">Uzmanlık</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
+  </ul>
+  <a href="#randevu" class="nav-cta">Randevu Al</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-decor"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-available">
+        <div class="avail-dot"></div>
+        <div class="avail-text">Randevu Müsait</div>
+      </div>
+      <div class="hero-name">Ayşe<br>Kaya</div>
+      <div class="hero-sub">Uzman Klinik Psikolog · İstanbul, Kadıköy</div>
+      <div class="hero-lead">
+        Hayatınızda bir şeylerin farklı olmasını istiyorsanız, başlamak için doğru zaman şimdi. Birlikte, güvenli bir alanda çalışıyoruz.
+      </div>
+      <div class="hero-actions">
+        <a href="#randevu" class="btn-main">Randevu Al →</a>
+        <a href="#hakkimda" class="btn-ghost">Beni tanıyın</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-pill">✓ 9 yıl deneyim</div>
+        <div class="trust-pill">✓ Online & Yüz yüze</div>
+        <div class="trust-pill">✓ İlk görüşme ücretsiz</div>
+      </div>
+    </div>
+    <div class="hero-photo-col">
+      <div class="hero-photo-frame">AK
+        <div class="photo-badge">
+          <div class="pb-name">Uzm. Psk. Ayşe Kaya</div>
+          <div class="pb-meta">Klinik Psikolog · BDT & Şema Terapi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-card"><div class="stat-val">9</div><div class="stat-lbl">Yıl Deneyim</div></div>
+  <div class="stat-card"><div class="stat-val">4.9★</div><div class="stat-lbl">Danışan Puanı</div></div>
+  <div class="stat-card"><div class="stat-val">340+</div><div class="stat-lbl">Tamamlanan Seans</div></div>
+  <div class="stat-card"><div class="stat-val">50 dk</div><div class="stat-lbl">Seans Süresi</div></div>
+</div>
+
+<div class="content">
+
+  <!-- HAKKIMDA -->
+  <div class="section" id="hakkimda">
+    <div class="eyebrow">Hakkımda</div>
+    <div class="heading">Sizi gerçekten dinleyen biri</div>
+    <div class="about-layout">
+      <div class="about-text">
+        <p>Boğaziçi Üniversitesi Psikoloji Bölümü'nü bitirdikten sonra İstanbul Üniversitesi'nde Klinik Psikoloji yüksek lisansımı tamamladım. 2015'ten bu yana Kadıköy'deki özel pratiğimde çalışıyorum.</p>
+        <p>Danışanlarımla kurduğum ilişkinin temeli sıcaklık ve şeffaflık. Seanslarımda yargılamadan, gerçek bir merakla dinliyorum. Terapi süreci bazen kıvrımlı — ama doğru yolda yürümek mümkün.</p>
+        <p>Eğitimimin yanı sıra süpervizyon almaya ve kendi terapiye gitmeye devam ediyorum. Çünkü danışanlarıma gerçek anlamda eşlik edebilmek için kendimde de çalışmam gerektiğini biliyorum.</p>
+      </div>
+      <div class="about-cards">
+        <div class="about-info-card">
+          <div class="aic-label">Kimlerle çalışıyorum</div>
+          <div class="aic-val">18 yaş üstü yetişkinler. Anksiyete, depresyon, ilişki sorunları, öz güven, yas ve kimlik konularında destek veriyorum.</div>
+        </div>
+        <div class="about-info-card">
+          <div class="aic-label">Seans formatı</div>
+          <div class="aic-val">Online (Zoom) veya yüz yüze. Haftada bir 50 dakika. İlk görüşme 30 dakika, ücretsiz.</div>
+        </div>
+        <div class="about-info-card">
+          <div class="aic-label">Diller</div>
+          <div class="aic-val">Türkçe ve İngilizce</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YAKLAŞIMIM -->
+  <div class="section" id="yaklasim">
+    <div class="eyebrow">Yaklaşımım</div>
+    <div class="heading">Nasıl çalışıyorum?</div>
+    <div class="approach-list">
+      <div class="approach-item">
+        <div class="approach-icon-wrap">🧠</div>
+        <div>
+          <div class="approach-name">Bilişsel Davranışçı Terapi</div>
+          <div class="approach-desc">Düşüncelerimiz, duygularımızı ve davranışlarımızı etkiler. BDT ile otomatik düşünce kalıplarını fark etmeyi, sorgulamayı ve dönüştürmeyi birlikte öğreniyoruz. Pratik ve hedefe yönelik bir yaklaşım.</div>
+        </div>
+      </div>
+      <div class="approach-item">
+        <div class="approach-icon-wrap">🌱</div>
+        <div>
+          <div class="approach-name">Şema Terapi</div>
+          <div class="approach-desc">Erken yaşamda öğrendiğimiz örüntüler, yetişkinlikte ilişkilerimizi, kararlarımızı ve duygularımızı şekillendirir. Şema terapi bu kökleri anlamlandırmamızı sağlar — ve değişimi mümkün kılar.</div>
+        </div>
+      </div>
+      <div class="approach-item">
+        <div class="approach-icon-wrap">💛</div>
+        <div>
+          <div class="approach-name">Size Özel Yaklaşım</div>
+          <div class="approach-desc">Hiç kimsenin hikayesi aynı değil. Teknik seçimlerimi her danışanın ihtiyacına göre yapıyorum. Sizinle olmak — sizi bir tanıya indirgemeden çalışmak — en önemli önceliğim.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UZMANLIK -->
+  <div class="section" id="uzmanlik">
+    <div class="eyebrow">Uzmanlık Alanları</div>
+    <div class="heading">Size yardımcı olabileceğim konular</div>
+    <div class="uz-grid">
+      <div class="uz-card"><div class="uz-icon">😰</div><div class="uz-name">Anksiyete & Kaygı</div></div>
+      <div class="uz-card"><div class="uz-icon">🌧️</div><div class="uz-name">Depresyon</div></div>
+      <div class="uz-card"><div class="uz-icon">💔</div><div class="uz-name">İlişki Sorunları</div></div>
+      <div class="uz-card"><div class="uz-icon">🛡️</div><div class="uz-name">Öz Güven</div></div>
+      <div class="uz-card"><div class="uz-icon">🌀</div><div class="uz-name">Panik Bozukluğu</div></div>
+      <div class="uz-card"><div class="uz-icon">🕊️</div><div class="uz-name">Yas Süreci</div></div>
+      <div class="uz-card"><div class="uz-icon">⚡</div><div class="uz-name">Travma (EMDR)</div></div>
+      <div class="uz-card"><div class="uz-icon">🔗</div><div class="uz-name">Bağlanma</div></div>
+    </div>
+  </div>
+
+  <!-- EĞİTİM -->
+  <div class="section">
+    <div class="eyebrow">Eğitim & Sertifikalar</div>
+    <div class="heading">Akademik geçmişim</div>
+    <div class="egitim-layout">
+      <div>
+        <div class="timeline-warm">
+          <div class="tl-item">
+            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-year">2018</div></div>
+            <div class="tl-info"><div class="tl-title">Klinik Psikoloji Yüksek Lisans</div><div class="tl-sub">İstanbul Üniversitesi</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-year">2015</div></div>
+            <div class="tl-info"><div class="tl-title">Psikoloji Lisans</div><div class="tl-sub">Boğaziçi Üniversitesi</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sert-list">
+          <div class="sert-card"><div class="sert-icon">📜</div><div><div class="sert-name">EMDR Terapi Sertifikası</div><div class="sert-ver">EMDR Türkiye Derneği · 2020</div></div></div>
+          <div class="sert-card"><div class="sert-icon">📜</div><div><div class="sert-name">Şema Terapi Eğitimi</div><div class="sert-ver">İstanbul Şema Terapi Enstitüsü · 2021</div></div></div>
+          <div class="sert-card"><div class="sert-icon">🏛️</div><div><div class="sert-name">Türk Psikologlar Derneği Üyesi</div><div class="sert-ver">Üye No: TPD-12345</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="section" id="blog">
+    <div class="eyebrow">Blog</div>
+    <div class="heading">Yazdıklarım</div>
+    <div class="blog-layout">
+      <div class="blog-featured">
+        <div class="blog-feat-img">🧠</div>
+        <div>
+          <div class="blog-feat-cat">✦ Öne Çıkan · Baş Etme · 15 Mayıs 2026</div>
+          <div class="blog-feat-title">Anksiyete ile Yaşamak: Günlük Hayatı Kolaylaştıran 5 Teknik</div>
+          <div class="blog-feat-excerpt">Anksiyete her zaman bir hastalık değil, bazen sadece öğrenilmemiş bir baş etme becerisi eksikliğidir. Klinik pratiğimde işe yarayan teknikleri paylaşıyorum.</div>
+          <a href="#" class="blog-feat-read">Okumaya Devam →</a>
+        </div>
+      </div>
+      <div class="blog-list">
+        <a href="#" class="blog-card-w">
+          <div class="blog-cat-w">İlişkiler · 2 Mayıs 2026</div>
+          <div class="blog-title-w">İlişkilerde Sınır Koymak Neden Bu Kadar Zor?</div>
+          <div class="blog-date-w">5 dakika okuma</div>
+        </a>
+        <a href="#" class="blog-card-w">
+          <div class="blog-cat-w">Başlarken · 18 Nisan 2026</div>
+          <div class="blog-title-w">Terapiye Başlamadan Önce Bilmeniz Gereken 3 Şey</div>
+          <div class="blog-date-w">4 dakika okuma</div>
+        </a>
+      </div>
+    </div>
+    <div class="blog-all"><a href="#">Tüm yazıları gör →</a></div>
+  </div>
+
+  <!-- RANDEVU -->
+  <div class="section" id="randevu">
+    <div class="eyebrow">Randevu</div>
+    <div class="heading">Birlikte başlayalım</div>
+    <div class="randevu-layout">
+      <div>
+        <div class="randevu-intro">İlk adımı atmak bazen en zor olanı. Ama doğru yerdeyseniz — bu sayfayı okuyor ve kendinizi dinliyorsunuz. İlk görüşme 30 dakika ve tamamen ücretsiz.</div>
+        <div class="paket-list">
+          <div class="paket-row"><div><div class="pk-name">İlk Görüşme</div><div class="pk-meta">30 dk · Tanışma seansı</div></div><div class="pk-price" style="color:var(--accent);font-size:18px">Ücretsiz</div></div>
+          <div class="paket-row"><div><div class="pk-name">Tekil Seans</div><div class="pk-meta">50 dk · Online veya yüz yüze</div></div><div class="pk-price">₺800</div></div>
+          <div class="paket-row top"><div><div class="pk-name">Aylık Paket ✦ Popüler</div><div class="pk-meta">4 seans · ₺700/seans</div></div><div class="pk-price">₺2.800</div></div>
+          <div class="paket-row"><div><div class="pk-name">3 Aylık Paket</div><div class="pk-meta">12 seans · ₺650/seans</div></div><div class="pk-price">₺7.800</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="randevu-cta-card">
+          <div class="rc-icon">📅</div>
+          <div class="rc-title">Randevu Talebi Oluştur</div>
+          <div class="rc-text">Uygun gün ve saati seçin. 48 saat içinde size geri döneceğim. Acil durumlarda telefon veya WhatsApp üzerinden ulaşabilirsiniz.</div>
+          <a href="#" class="rc-btn">Takvimi Görüntüle</a>
+          <div class="rc-note">İlk görüşme ücretsiz · Online veya yüz yüze</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YORUMLAR -->
+  <div class="section">
+    <div class="eyebrow">Danışan Yorumları</div>
+    <div class="heading">Benden duymak yerine, onlardan okuyun</div>
+    <div class="yorumlar-grid">
+      <div class="yorum-card">
+        <div class="y-stars">★★★★★</div>
+        <div class="y-text">"Ayşe Hanım'la çalışmak hayatıma gerçekten farklı bir bakış açısı kattı. İlk seanstan itibaren kendimi güvende hissettim."</div>
+        <div class="y-author"><div class="y-init">MY</div><div><div class="y-name">M.Y.</div><div class="y-date">Şubat 2026</div></div></div>
+      </div>
+      <div class="yorum-card">
+        <div class="y-stars">★★★★★</div>
+        <div class="y-text">"Anksiyete sorunlarımla başa çıkmayı öğrendim. Sabırlı ve anlayışlı yaklaşımı için çok teşekkür ederim."</div>
+        <div class="y-author"><div class="y-init">EK</div><div><div class="y-name">E.K.</div><div class="y-date">Mart 2026</div></div></div>
+      </div>
+      <div class="yorum-card">
+        <div class="y-stars">★★★★★</div>
+        <div class="y-text">"İlişkilerimde sürekli aynı döngüye giriyordum. Şema terapi sürecinde bunların neden olduğunu anladım. Bu farkındalık her şeyi değiştirdi."</div>
+        <div class="y-author"><div class="y-init">ZA</div><div><div class="y-name">Z.A.</div><div class="y-date">Ocak 2026</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- İLETİŞİM -->
+  <div class="section" id="iletisim">
+    <div class="eyebrow">İletişim</div>
+    <div class="heading">Ulaşın</div>
+    <div class="iletisim-layout">
+      <div>
+        <div class="ilt-block"><div class="ilt-label">Klinik Adresi</div><div class="ilt-val">Moda Psikoloji Kliniği<br>Moda Caddesi No:42, Kat:3<br>Kadıköy / İstanbul</div></div>
+        <div class="ilt-block"><div class="ilt-label">Çalışma Saatleri</div><div class="ilt-val">Pazartesi — Cuma · 09:00–19:00<br>Cumartesi · 10:00–15:00 (online)</div></div>
+        <div class="ilt-block"><div class="ilt-label">Telefon & E-posta</div><div class="ilt-val">+90 532 000 00 00<br>ayse@aysekaya.com</div></div>
+      </div>
+      <div>
+        <div class="ilk-seans-warm">
+          <div class="is-title">İlk Seans Nasıl Geçer?</div>
+          <div class="is-steps">
+            <div class="is-step"><div class="is-num">1</div><div class="is-text">Birbirimizi tanımak için zaman ayırıyoruz. Hazırlıklı gelmenize gerek yok.</div></div>
+            <div class="is-step"><div class="is-num">2</div><div class="is-text">Şu an neler yaşadığınızı ve terapi sürecinden beklentilerinizi dinliyorum.</div></div>
+            <div class="is-step"><div class="is-num">3</div><div class="is-text">Seans sonunda nasıl ilerleyebileceğimizi birlikte değerlendiriyoruz — hiçbir baskı yok.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <div class="ft-name">Uzm. Psk. Ayşe Kaya</div>
+    <div class="ft-domain">ayse.seansify.com</div>
+  </div>
+  <div class="ft-powered">Randevu sistemi <a href="#">Seansify</a> tarafından sağlanmaktadır</div>
+</footer>
+
+<div class="floating-cta">
+  <a href="#randevu" class="floating-btn">Randevu Al</a>
+</div>
+
+</body>
+</html>
