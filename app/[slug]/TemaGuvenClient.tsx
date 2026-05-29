@@ -316,12 +316,6 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
               {psych.calisma_saatleri && <div style={{ fontSize: 14, color: C.inkLight }}>🕐 {psych.calisma_saatleri}</div>}
             </div>
           </div>
-          <div style={{ background: C.bgLight, borderRadius: 20, padding: 32, border: `1px solid ${C.border}`, boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: C.navy, margin: '0 0 12px' }}>İlk adımı atın</h3>
-            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.teal, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
-              Randevu Al →
-            </Link>
-          </div>
         </div>
       </section>
 
