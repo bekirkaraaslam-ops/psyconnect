@@ -55,7 +55,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           ].map(l => (
             <li key={l.href}><a href={l.href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', textDecoration: 'none', padding: '6px 10px', borderRadius: 6 }}>{l.label}</a></li>
           ))}
-          <li><Link href={`/book/${psych.booking_slug}`} style={{ background: C.tealBright, color: '#fff', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
+          <li><Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ background: C.tealBright, color: '#fff', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
         </ul>
         <button onClick={() => setMenuOpen(o => !o)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#fff' }} className="guven-hamburger">{menuOpen ? '✕' : '☰'}</button>
       </nav>
@@ -65,7 +65,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           {[{ href: '#hakkimda', label: 'Hakkımda' }, { href: '#yaklasim', label: 'Yaklaşımım' }, { href: '#uzmanlik', label: 'Uzmanlık' }, { href: '#iletisim', label: 'İletişim' }].map(l => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} style={{ fontSize: 15, color: 'rgba(255,255,255,0.85)', textDecoration: 'none', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{l.label}</a>
           ))}
-          <Link href={`/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.tealBright, color: '#fff', borderRadius: 10, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
+          <Link href={`https://seansify.com/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.tealBright, color: '#fff', borderRadius: 10, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
         </div>
       )}
 
@@ -102,7 +102,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
               </p>
             )}
             <div style={{ display: 'flex', gap: 12 }}>
-              <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
+              <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
                 Randevu Al →
               </Link>
               <a href="#hakkimda" style={{ display: 'inline-flex', alignItems: 'center', fontSize: 14, color: 'rgba(255,255,255,0.6)', textDecoration: 'none', padding: '13px 0' }}>
@@ -235,11 +235,11 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           <SecNum n="05" label="Blog" />
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28 }}>
             <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: 0 }}>Yazılarım</h2>
-            <Link href={`/${psych.booking_slug}/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.teal, textDecoration: 'none' }}>Tümünü gör →</Link>
+            <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.teal, textDecoration: 'none' }}>Tümünü gör →</Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {bloglar.slice(0, 1).map(b => (
-              <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'block', background: C.bgLight, borderRadius: 16, padding: '28px 32px', border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.tealBright}`, boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+              <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'block', background: C.bgLight, borderRadius: 16, padding: '28px 32px', border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.tealBright}`, boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
                 {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.teal, textTransform: 'uppercase', letterSpacing: '1px' }}>{b.kategori}</span>}
                 <h3 style={{ fontSize: 22, fontWeight: 800, color: C.navy, lineHeight: 1.3, margin: '8px 0' }}>{b.baslik}</h3>
                 <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: 0 }}>{blogOzet(b.icerik, 160)}</p>
@@ -248,7 +248,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
             ))}
             <div className="guven-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12 }}>
               {bloglar.slice(1, 3).map(b => (
-                <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.bgLight, borderRadius: 14, padding: '22px 24px', border: `1px solid ${C.border}`, display: 'block' }}>
+                <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.bgLight, borderRadius: 14, padding: '22px 24px', border: `1px solid ${C.border}`, display: 'block' }}>
                   {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.teal, textTransform: 'uppercase', letterSpacing: '1px' }}>{b.kategori}</span>}
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: C.navy, lineHeight: 1.4, margin: '6px 0' }}>{b.baslik}</h3>
                   <p style={{ fontSize: 13, color: C.inkLight, lineHeight: 1.6, margin: 0 }}>{blogOzet(b.icerik)}</p>
@@ -266,7 +266,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
             <SecNum n="06" label="Randevu" />
             <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', letterSpacing: '-1px', lineHeight: 1.15, margin: '0 0 16px' }}>Profesyonel destek almaya hazır mısınız?</h2>
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, margin: '0 0 32px' }}>İlk görüşme ücretsizdir. Sorularınızı yanıtlamaktan ve size uygun yaklaşımı birlikte değerlendirmekten memnuniyet duyarım.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '14px 30px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '14px 30px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
               Randevu Talebi Oluştur →
             </Link>
           </div>
@@ -322,7 +322,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ background: C.bgLight, borderRadius: 20, padding: 32, border: `1px solid ${C.border}`, boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: C.navy, margin: '0 0 12px' }}>İlk adımı atın</h3>
             <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 20px' }}>İlk görüşme ücretsiz ve bağlayıcı değildir. Süreç hakkında her türlü sorunuzu yanıtlamaktan memnuniyet duyarım.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.teal, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.teal, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               Randevu Al →
             </Link>
           </div>
@@ -339,7 +339,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
       {/* Floating CTA - Mobil */}
       <style>{`.guven-floating { display: none !important; } @media (max-width: 768px) { .guven-floating { display: block !important; } }`}</style>
       <div className="guven-floating" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, padding: '10px 16px 16px', background: `rgba(27,45,79,0.97)`, backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <Link href={`/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.tealBright, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+        <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.tealBright, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
           Randevu Talebi Oluştur
         </Link>
       </div>

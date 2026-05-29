@@ -46,7 +46,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           ].map(l => (
             <li key={l.href}><a href={l.href} style={{ fontSize: 13, color: C.inkLight, textDecoration: 'none', padding: '6px 10px', borderRadius: 8 }}>{l.label}</a></li>
           ))}
-          <li><Link href={`/book/${psych.booking_slug}`} style={{ background: C.olive, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
+          <li><Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ background: C.olive, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
         </ul>
         <button onClick={() => setMenuOpen(o => !o)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: C.ink }} className="doga-hamburger">{menuOpen ? '✕' : '☰'}</button>
       </nav>
@@ -56,7 +56,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           {[{ href: '#hakkimda', label: 'Hakkımda' }, { href: '#yaklasim', label: 'Yaklaşımım' }, { href: '#uzmanlik', label: 'Uzmanlık' }, { href: '#iletisim', label: 'İletişim' }].map(l => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} style={{ fontSize: 15, color: C.ink, textDecoration: 'none', padding: '10px 0', borderBottom: `1px solid ${C.border}` }}>{l.label}</a>
           ))}
-          <Link href={`/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
+          <Link href={`https://seansify.com/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
         </div>
       )}
 
@@ -97,7 +97,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
               {psych.dil && psych.dil.length > 0 && <span style={{ fontSize: 12, color: C.inkLight, background: 'rgba(255,255,255,0.7)', border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px' }}>🌐 {psych.dil.join(', ')}</span>}
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.olive, color: '#fff', borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 14px ${C.olive}40` }}>
+              <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.olive, color: '#fff', borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 14px ${C.olive}40` }}>
                 🌱 Randevu Al
               </Link>
               <a href="#hakkimda" style={{ display: 'inline-flex', alignItems: 'center', fontSize: 14, fontWeight: 600, color: C.olive, textDecoration: 'none', padding: '13px 0' }}>
@@ -234,11 +234,11 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
               </div>
               <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: 0 }}>Yazılarım</h2>
             </div>
-            <Link href={`/${psych.booking_slug}/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.olive, textDecoration: 'none' }}>Tümünü gör →</Link>
+            <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.olive, textDecoration: 'none' }}>Tümünü gör →</Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {bloglar.slice(0, 1).map(b => (
-              <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(44,36,22,0.06)' }}>
+              <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(44,36,22,0.06)' }}>
                 <div style={{ background: `linear-gradient(135deg,${C.oliveLight},${C.olive}40)`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, fontSize: 64 }}>📖</div>
                 <div style={{ padding: 28 }}>
                   {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.olive, textTransform: 'uppercase', letterSpacing: '1px' }}>{b.kategori}</span>}
@@ -250,7 +250,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
             ))}
             <div className="doga-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14 }}>
               {bloglar.slice(1, 3).map(b => (
-                <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.sage}`, display: 'block' }}>
+                <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, borderLeft: `4px solid ${C.sage}`, display: 'block' }}>
                   {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.olive, textTransform: 'uppercase', letterSpacing: '1px' }}>{b.kategori}</span>}
                   <h3 style={{ fontSize: 16, fontWeight: 700, color: C.ink, lineHeight: 1.4, margin: '8px 0' }}>{b.baslik}</h3>
                   <p style={{ fontSize: 13, color: C.inkLight, lineHeight: 1.6, margin: 0 }}>{blogOzet(b.icerik)}</p>
@@ -268,7 +268,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
             <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Randevu</div>
             <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-1px', margin: '0 0 16px' }}>Doğal bir süreçle başlayalım.</h2>
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, margin: '0 0 28px' }}>İlk görüşme ücretsizdir. Herhangi bir bağlayıcılık yaratmaz — sadece tanışalım.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.olive, borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.olive, borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
               🌱 Randevu Al
             </Link>
           </div>
@@ -328,7 +328,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           <div style={{ background: C.oliveLight, borderRadius: 24, padding: 32, border: `1px solid ${C.olive}25` }}>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, margin: '0 0 12px' }}>Doğal bir başlangıç</h3>
             <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 22px' }}>İlk adımı atmak yeterli. İlk görüşmede sadece konuşuyoruz — herhangi bir zorunluluk yok.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               🌱 Randevu Al
             </Link>
           </div>
@@ -345,7 +345,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
       {/* Floating CTA - Mobil */}
       <style>{`.doga-floating { display: none !important; } @media (max-width: 768px) { .doga-floating { display: block !important; } }`}</style>
       <div className="doga-floating" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, padding: '10px 16px 16px', background: 'rgba(245,240,232,0.97)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${C.border}` }}>
-        <Link href={`/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+        <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
           🌱 Randevu Talebi Oluştur
         </Link>
       </div>

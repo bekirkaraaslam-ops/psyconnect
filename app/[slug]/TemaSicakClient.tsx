@@ -47,7 +47,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           ].map(l => (
             <li key={l.href}><a href={l.href} style={{ fontSize: 14, color: C.inkLight, textDecoration: 'none', padding: '6px 10px' }}>{l.label}</a></li>
           ))}
-          <li><Link href={`/book/${psych.booking_slug}`} style={{ background: C.accent, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
+          <li><Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ background: C.accent, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
         </ul>
         <button onClick={() => setMenuOpen(o => !o)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: C.ink }} className="sicak-hamburger">{menuOpen ? '✕' : '☰'}</button>
       </nav>
@@ -57,7 +57,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           {[{ href: '#hakkimda', label: 'Hakkımda' }, { href: '#yaklasim', label: 'Yaklaşımım' }, { href: '#uzmanlik', label: 'Uzmanlık' }, { href: '#iletisim', label: 'İletişim' }].map(l => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} style={{ fontSize: 15, color: C.ink, textDecoration: 'none', padding: '10px 0', borderBottom: `1px solid ${C.border}` }}>{l.label}</a>
           ))}
-          <Link href={`/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
+          <Link href={`https://seansify.com/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>Randevu Al</Link>
         </div>
       )}
 
@@ -90,7 +90,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
               {psych.sehir && <span style={{ fontSize: 12, color: C.inkLight, background: 'rgba(255,255,255,0.7)', border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px', fontFamily: 'system-ui' }}>📍 {psych.sehir}</span>}
               {psych.tpd_uye_no && <span style={{ fontSize: 12, color: C.inkLight, background: 'rgba(255,255,255,0.7)', border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px', fontFamily: 'system-ui' }}>{psych.tpd_uye_no}</span>}
             </div>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 30px', fontSize: 16, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 30px', fontSize: 16, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
               Randevu Al
             </Link>
           </div>
@@ -218,11 +218,11 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Blog</div>
               <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Yazılarım</h2>
             </div>
-            <Link href={`/${psych.booking_slug}/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none', fontFamily: 'system-ui' }}>Tümünü gör →</Link>
+            <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none', fontFamily: 'system-ui' }}>Tümünü gör →</Link>
           </div>
           <div style={{ display: 'grid', gap: 24 }}>
             {bloglar.slice(0, 1).map(b => (
-              <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(45,31,20,0.06)' }}>
+              <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(45,31,20,0.06)' }}>
                 <div style={{ background: `linear-gradient(135deg,${C.accent2},${C.accent})`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220, fontSize: 64 }}>📖</div>
                 <div style={{ padding: 28 }}>
                   {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
@@ -234,7 +234,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
             ))}
             <div className="sicak-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
               {bloglar.slice(1, 3).map(b => (
-                <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, display: 'block' }}>
+                <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, display: 'block' }}>
                   {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
                   <h3 style={{ fontSize: 16, fontWeight: 700, color: C.ink, lineHeight: 1.4, margin: '8px 0' }}>{b.baslik}</h3>
                   <p style={{ fontSize: 13, color: C.inkLight, lineHeight: 1.6, margin: 0, fontFamily: 'system-ui' }}>{blogOzet(b.icerik)}</p>
@@ -252,7 +252,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Randevu</div>
             <h2 style={{ fontSize: 40, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', lineHeight: 1.2, margin: '0 0 16px' }}>Birlikte yola çıkalım.</h2>
             <p style={{ fontSize: 15, color: C.inkLight, lineHeight: 1.8, margin: '0 0 28px', fontFamily: 'system-ui' }}>İlk görüşme ücretsizdir, zorunluluk yaratmaz. Sadece tanışmak için gelin.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
               Ücretsiz İlk Görüşme
             </Link>
           </div>
@@ -307,7 +307,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ background: C.white, borderRadius: 20, padding: 32, border: `1px solid ${C.border}`, boxShadow: '0 4px 20px rgba(45,31,20,0.07)' }}>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: '0 0 12px' }}>Kapımız açık</h3>
             <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 22px' }}>Sormak istediğiniz her şey için buradayım. İlk adım zor — ama zorunlu değil.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               Randevu Al →
             </Link>
           </div>
@@ -324,7 +324,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* Floating CTA - Mobil */}
       <style>{`.sicak-floating { display: none !important; } @media (max-width: 768px) { .sicak-floating { display: block !important; } }`}</style>
       <div className="sicak-floating" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, padding: '10px 16px 16px', background: 'rgba(250,246,241,0.97)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${C.border}` }}>
-        <Link href={`/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+        <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
           Randevu Talebi Oluştur
         </Link>
       </div>

@@ -56,7 +56,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
             </li>
           ))}
           <li>
-            <Link href={`/book/${psych.booking_slug}`} style={{ background: C.accent, color: '#fff', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ background: C.accent, color: '#fff', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>
               Randevu Al
             </Link>
           </li>
@@ -75,7 +75,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
               {l.label}
             </a>
           ))}
-          <Link href={`/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 10, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+          <Link href={`https://seansify.com/book/${psych.booking_slug}`} onClick={() => setMenuOpen(false)} style={{ marginTop: 12, display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 10, padding: '12px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
             Randevu Al
           </Link>
         </div>
@@ -116,7 +116,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
               {psych.tpd_uye_no && <span style={{ fontSize: 12, color: C.inkLight, background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px' }}>TPD {psych.tpd_uye_no}</span>}
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 10, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 14px ${C.accent}40` }}>
+              <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 10, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 14px ${C.accent}40` }}>
                 Randevu Al →
               </Link>
               <a href="#hakkimda" style={{ display: 'inline-flex', alignItems: 'center', fontSize: 14, fontWeight: 600, color: C.accent, textDecoration: 'none', padding: '13px 0' }}>
@@ -248,11 +248,11 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Blog</div>
               <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-1px', margin: 0 }}>Yazılarım</h2>
             </div>
-            <Link href={`/${psych.booking_slug}/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none' }}>Tümünü gör →</Link>
+            <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none' }}>Tümünü gör →</Link>
           </div>
           <div className="blanc-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
             {bloglar.slice(0, 3).map(b => (
-              <Link key={b.id} href={`/${psych.booking_slug}/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'block', background: C.white, borderRadius: 16, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', transition: 'box-shadow 0.2s' }}>
+              <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'block', background: C.white, borderRadius: 16, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', transition: 'box-shadow 0.2s' }}>
                 <div style={{ height: 180, background: `linear-gradient(135deg,${C.accentLight},${C.accent}20)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>
                   {b.kategori === 'Anksiyete' ? '💭' : b.kategori === 'Depresyon' ? '🌧' : b.kategori === 'İlişkiler' ? '💛' : '📝'}
                 </div>
@@ -279,7 +279,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent === '#3d6b5e' ? '#6ee7b7' : C.accentLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Randevu</div>
               <h2 style={{ fontSize: 40, fontWeight: 800, lineHeight: 1.15, letterSpacing: '-1.5px', margin: '0 0 16px' }}>Birlikte çalışmaya hazır mısınız?</h2>
               <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 32px' }}>İlk görüşme ücretsizdir. Sizi dinlemekten memnuniyet duyarım.</p>
-              <Link href={`/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.ink, borderRadius: 10, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+              <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.ink, borderRadius: 10, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
                 Randevu Al →
               </Link>
             </div>
@@ -337,7 +337,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ background: C.accentLight, borderRadius: 20, padding: 32, border: `1px solid ${C.accent}20` }}>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: C.ink, margin: '0 0 12px' }}>İlk adımı atın</h3>
             <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 20px' }}>İlk görüşme ücretsizdir. Süreç hakkında sorularınızı yanıtlamaktan memnuniyet duyarım.</p>
-            <Link href={`/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               Randevu Al →
             </Link>
           </div>
@@ -353,7 +353,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* Floating CTA - Mobil */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, padding: '10px 16px 16px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(16px)', borderTop: `1px solid ${C.border}`, display: 'none' }} className="blanc-floating-cta">
-        <Link href={`/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(61,107,94,0.4)' }}>
+        <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(61,107,94,0.4)' }}>
           Randevu Talebi Oluştur
         </Link>
       </div>
