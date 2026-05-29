@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seansify — Tanıtım</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f4f9f7;
+    color: #0d1f18;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 16px;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  @media print {
+    body { background: #fff; margin: 0; }
+    .page { margin: 0; page-break-after: always; box-shadow: none; }
+    .no-print { display: none !important; }
+  }
+
+  @media screen {
+    body { padding: 24px 0; }
+    .page { box-shadow: 0 4px 32px rgba(0,0,0,0.12); }
+  }
+
+  /* ── DARK FULL PAGE ── */
+  .dark-full {
+    background: linear-gradient(150deg, #0b1c14 0%, #1e4535 55%, #2d6b52 100%);
+    min-height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── LIGHT FULL PAGE ── */
+  .light-full {
+    background: #f4f9f7;
+    min-height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  /* ── LOGO ── */
+  .logo { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
+  .logo .g { color: #4a7c6f; }
+  .logo .b { color: #0d1f18; }
+  .logo-light .g { color: #6ee7b7; }
+  .logo-light .b { color: rgba(255,255,255,0.6); }
+
+  /* ── PAGE FOOTER ── */
+  .pf {
+    position: absolute;
+    bottom: 20px; left: 48px; right: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pf-brand { font-size: 10px; color: #94a3b8; font-weight: 600; }
+  .pf-brand .g { color: #4a7c6f; }
+  .pf-num { font-size: 10px; color: #94a3b8; }
+
+  .pf-light { color: rgba(255,255,255,0.3); }
+  .pf-light .g { color: rgba(110,231,183,0.5); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ KAPAK ═══════════ -->
+<div class="page">
+  <div class="dark-full" style="justify-content:space-between;padding:52px 48px">
+
+    <!-- Dekor halkalar -->
+    <div style="position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;border:1px solid rgba(110,231,183,0.08);pointer-events:none"></div>
+    <div style="position:absolute;top:-40px;right:-40px;width:280px;height:280px;border-radius:50%;border:1px solid rgba(110,231,183,0.10);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-120px;left:-60px;width:350px;height:350px;border-radius:50%;border:1px solid rgba(110,231,183,0.06);pointer-events:none"></div>
+
+    <!-- Header -->
+    <div class="logo logo-light"><span class="g">sean</span><span class="b">sify</span></div>
+
+    <!-- Center -->
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(110,231,183,0.6);margin-bottom:20px">Psikologlar için klinik yönetim platformu</div>
+      <div style="font-size:62px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;margin-bottom:24px">Kliniğinizi<br><span style="color:#6ee7b7">otomatize</span><br>edin.</div>
+      <div style="font-size:17px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:420px;margin-bottom:40px">
+        Randevu yönetimi, WhatsApp otomasyonu, hasta takibi ve profil sayfanız —
+        hepsi tek platformda, Türkiye'deki psikologlar için tasarlandı.
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="background:linear-gradient(135deg,#4a7c6f,#3d6b5e);color:#fff;border-radius:12px;padding:13px 28px;font-size:14px;font-weight:700;box-shadow:0 4px 20px rgba(74,124,111,0.5)">
+          Ücretsiz Başla
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4)">14 günlük ücretsiz deneme</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:rgba(255,255,255,0.3)">seansify.com</div>
+      <div style="background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.25);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;color:#6ee7b7">Mayıs 2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PROBLEM ═══════════ -->
+<div class="page">
+  <div style="min-height:297mm;padding:52px 48px;display:flex;flex-direction:column">
+
+    <div style="flex:1">
+      <div class="logo" style="margin-bottom:28px"><span class="g">sean</span><span class="b">sify</span></div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a7c6f;margin-bottom:16px">Tanıdık geliyor mu?</div>
+      <div style="font-size:40px;font-weight:900;color:#0d1f18;line-height:1.1;letter-spacing:-1px;margin-bottom:32px">
+        Bir psikologun<br>haftası böyle geçiyor.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+        <div style="background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #dc2626;border-radius:12px;padding:20px">
+          <div style="font-size:24px;margin-bottom:10px">😤</div>
+          <div style="font-size:14px;font-weight:700;color:#0d1f18;margin-bottom:6px">Pazartesi sabahı</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.65">WhatsApp'tan gelen "bu hafta gelemeyeceğim" mesajını gördünüz. Yerine başka birini bulmak için tel­efona sarıldınız. Saat 08:30.</div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:12px;padding:20px">
+          <div style="font-size:24px;margin-bottom:10px">📋</div>
+          <div style="font-size:14px;font-weight:700;color:#0d1f18;margin-bottom:6px">Perşembe öğleden sonra</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.65">İki saatlik not yazma maratonu. Elinizdeki kağıt notları bilgisayara aktarıyorsunuz. KVKK uyumlu mu? Şifreli mi?</div>
+        </div>
+        <div style="background:#faf5ff;border:1px solid #ede9fe;border-left:4px solid #8b5cf6;border-radius:12px;padding:20px">
+          <div style="font-size:24px;margin-bottom:10px">😬</div>
+          <div style="font-size:14px;font-weight:700;color:#0d1f18;margin-bottom:6px">Cuma akşamı</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.65">Yeni danışan "randevu almak istiyorum" dedi. Ona takvimi açıklamak için 10 mesaj attınız. Hâlâ netleşmedi.</div>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #dbeafe;border-left:4px solid #3b82f6;border-radius:12px;padding:20px">
+          <div style="font-size:24px;margin-bottom:10px">🤦</div>
+          <div style="font-size:14px;font-weight:700;color:#0d1f18;margin-bottom:6px">Hafta sonu</div>
+          <div style="font-size:12px;color:#64548b;line-height:1.65">Bir danışanınız anamnez formunu ya doldurdu ya doldurmadı. Bir dahaki seansa kadar bilemeyeceksiniz.</div>
+        </div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#0b1c14,#1e4535);border-radius:16px;padding:28px;text-align:center">
+        <div style="font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:8px">Türkiye'deki psikologların</div>
+        <div style="font-size:42px;font-weight:900;color:#6ee7b7;letter-spacing:-1px">%73'ü</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.6);margin-top:8px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6">
+          yönetimsel işler için haftada <strong style="color:#fff">6+ saat</strong> harcıyor.<br>Bu sürenin büyük çoğunluğu otomatize edilebilir.
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand"><span class="g">sean</span>sify · Tanıtım</div>
+      <div class="pf-num">2</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ÇÖZÜM ═══════════ -->
+<div class="page">
+  <div class="dark-full" style="padding:52px 48px">
+
+    <div style="flex:1">
+      <div class="logo logo-light" style="margin-bottom:28px"><span class="g">sean</span><span class="b">sify</span></div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(110,231,183,0.6);margin-bottom:16px">Seansify nedir?</div>
+      <div style="font-size:38px;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:20px">
+        Kliniğinizi yöneten<br>bir asistan gibi çalışır.
+      </div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:440px;margin-bottom:40px">
+        Seansify, özel pratik yapan psikologlar için randevu yönetimini, hasta iletişimini
+        ve klinik dokümantasyonu tek bir çatı altında toplar. Siz seanslara odaklanırsınız,
+        geri kalanı sistem halleder.
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:16px;padding:24px">
+          <div style="font-size:32px;margin-bottom:14px">⏰</div>
+          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px">Zaman kazanın</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6">Hatırlatıcılar, onaylar ve form gönderimleri artık otomatik. Haftada 6 saat geri kazanın.</div>
+        </div>
+        <div style="background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.15);border-radius:16px;padding:24px">
+          <div style="font-size:32px;margin-bottom:14px">📉</div>
+          <div style="font-size:15px;font-weight:800;color:#6ee7b7;margin-bottom:8px">No-show'u azaltın</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6">24 saat ve 2 saat öncesi WhatsApp hatırlatıcıları ile randevuya gelmeme oranı dramatik düşer.</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:16px;padding:24px">
+          <div style="font-size:32px;margin-bottom:14px">🌱</div>
+          <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px">Büyüyün</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6">Kişisel profil sayfanız ve blog sistemiyle yeni danışanlar sizi organik olarak keşfeder.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="pf pf-light">
+      <div><span class="g">sean</span>sify · Tanıtım</div>
+      <div>3</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ÖZELLİKLER 1/2 ═══════════ -->
+<div class="page">
+  <div style="min-height:297mm;padding:52px 48px;display:flex;flex-direction:column;justify-content:space-between">
+
+    <div>
+      <div class="logo"><span class="g">sean</span><span class="b">sify</span></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a7c6f;margin-top:28px;margin-bottom:8px">Özellikler · 1 / 2</div>
+      <div style="font-size:32px;font-weight:900;color:#0d1f18;letter-spacing:-0.8px;margin-bottom:28px">Kliniğinizin ihtiyacı olan her şey</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1">
+
+      <div style="background:#e8f5f1;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Akıllı Randevu</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Çakışma önleme, tek tıkla oluşturma. Haftalık takvim görünümü ile günü planlayın.</div>
+      </div>
+
+      <div style="background:#e8f8ee;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#25D366;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">WhatsApp Otomasyonu</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">24 saat ve 2 saat öncesi otomatik hatırlatıcı. Hasta gelme oranını %40 artırın.</div>
+      </div>
+
+      <div style="background:#f3eeff;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#8b5cf6;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Hasta Takibi</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Detaylı profil, seans notları, ödev takibi. Tüm bilgiler tek yerde, KVKK uyumlu.</div>
+      </div>
+
+      <div style="background:#eff6ff;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#3b82f6;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Klinik Dashboard</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Gerçek zamanlı istatistikler, bugün/yarın timeline, bekleyen ödemeler anlık görünür.</div>
+      </div>
+
+      <div style="background:#fff7ed;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#f59e0b;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Yapay Zeka Asistan</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">WhatsApp üzerinden 7/24 otomatik randevu alma. Hasta mesaj atar, sistem oluşturur.</div>
+      </div>
+
+      <div style="background:#fff0f6;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#ec4899;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Bekleme Listesi</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">İptal olan randevularda listedeki hastaya otomatik teklif. Boş saat kalmaz.</div>
+      </div>
+
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand"><span class="g">sean</span>sify · Tanıtım</div>
+      <div class="pf-num">4</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ÖZELLİKLER 2/2 ═══════════ -->
+<div class="page">
+  <div style="min-height:297mm;padding:52px 48px;display:flex;flex-direction:column;justify-content:space-between">
+
+    <div>
+      <div class="logo"><span class="g">sean</span><span class="b">sify</span></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a7c6f;margin-top:28px;margin-bottom:8px">Özellikler · 2 / 2</div>
+      <div style="font-size:32px;font-weight:900;color:#0d1f18;letter-spacing:-0.8px;margin-bottom:28px">Klinik dışında da büyüyün</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1">
+
+      <div style="background:#f0fdf4;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#16a34a;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Dijital Anamnez</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">QR linkle hasta kendi cihazından doldurur. Kağıt yok, kayıp yok, KVKK uyumlu.</div>
+      </div>
+
+      <div style="background:#fefce8;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#ca8a04;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">SOAP Notu</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Yapılandırılmış Subjective, Objective, Assessment, Plan şablonu. Her seansta sistematik kayıt.</div>
+      </div>
+
+      <div style="background:#f0f9ff;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#0284c7;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Ödeme Takibi</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Her seans için ücret girin, bekleyen tahsilatları anlık görün. Hiçbir ödeme atlamayın.</div>
+      </div>
+
+      <div style="background:#f0fdf4;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Profil Sayfası</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">seansify.com/adınız adresinde fotoğrafınız, uzmanlıklarınız ve doğrudan randevu butonu.</div>
+      </div>
+
+      <div style="background:#fefce8;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#ca8a04;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Blog Sistemi</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Profil sayfanızda blog yazıları yayınlayın. Organik keşfedilmeyi artırın, uzman kimliği oluşturun.</div>
+      </div>
+
+      <div style="background:#fff7ed;border-radius:16px;padding:22px">
+        <div style="width:40px;height:40px;border-radius:12px;background:#f59e0b;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:#0d1f18;margin-bottom:6px">Danışan Yorumları</div>
+        <div style="font-size:11px;color:#5a7a72;line-height:1.6">Seans sonrası otomatik değerlendirme linki. Onayladıklarınız profilde görünür, güven inşa eder.</div>
+      </div>
+
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand"><span class="g">sean</span>sify · Tanıtım</div>
+      <div class="pf-num">5</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ NASIL ÇALIŞIR ═══════════ -->
+<div class="page">
+  <div class="dark-full" style="padding:52px 48px">
+
+    <div style="flex:1">
+      <div class="logo logo-light" style="margin-bottom:28px"><span class="g">sean</span><span class="b">sify</span></div>
+
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(110,231,183,0.6);margin-bottom:14px">Nasıl çalışır?</div>
+      <div style="font-size:36px;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:36px">
+        3 adımda başlayın,<br>ilk günden fayda görün.
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:24px;max-width:500px">
+
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4a7c6f,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0">1</div>
+          <div>
+            <div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px">Hesap açın, ayarlarınızı yapın</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7">E-posta ile kaydolun. Çalışma saatlerinizi, seans sürenizi ve WhatsApp numaranızı girin. 10 dakika yeterli.</div>
+          </div>
+        </div>
+
+        <div style="width:1px;height:24px;background:rgba(255,255,255,0.1);margin-left:24px"></div>
+
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4a7c6f,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0">2</div>
+          <div>
+            <div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px">Hastalarınızı ve randevularınızı ekleyin</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7">Mevcut hastalarınızı sistemize aktarın ve ilk randevuları oluşturun. WhatsApp bağlantınızı QR kod ile kurun.</div>
+          </div>
+        </div>
+
+        <div style="width:1px;height:24px;background:rgba(255,255,255,0.1);margin-left:24px"></div>
+
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4a7c6f,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0">3</div>
+          <div>
+            <div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px">Sistemi çalışırken izleyin</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7">Hatırlatıcılar gönderilir, onaylar alınır, formlar doldurulur. Siz sadece dashboard'u kontrol edin.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:48px;background:rgba(110,231,183,0.08);border:1px solid rgba(110,231,183,0.18);border-radius:16px;padding:24px;display:flex;gap:16px;align-items:center">
+        <div style="font-size:36px;flex-shrink:0">⚡</div>
+        <div>
+          <div style="font-size:14px;font-weight:800;color:#6ee7b7;margin-bottom:4px">14 günlük ücretsiz deneme</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.6">Deneme süresi bittiğinde ücretlendirilmezsiniz; kendiniz seçip abonelik başlatırsınız.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="pf pf-light">
+      <div><span class="g">sean</span>sify · Tanıtım</div>
+      <div>6</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FİYATLANDIRMA ═══════════ -->
+<div class="page">
+  <div style="min-height:297mm;padding:52px 48px;display:flex;flex-direction:column;justify-content:space-between">
+
+    <div>
+      <div class="logo"><span class="g">sean</span><span class="b">sify</span></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a7c6f;margin-top:28px;margin-bottom:8px">Planlar</div>
+      <div style="font-size:32px;font-weight:900;color:#0d1f18;letter-spacing:-0.8px;margin-bottom:32px">İhtiyacınıza göre seçin</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;align-items:start">
+
+      <!-- Başlangıç -->
+      <div style="background:#f8fafc;border-radius:20px;padding:32px;border:1px solid #e2e8f0;display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Başlangıç</div>
+        <div style="font-size:42px;font-weight:900;color:#0d1f18;letter-spacing:-1px;margin-bottom:2px">₺950</div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:24px">/ ay</div>
+        <div style="display:flex;flex-direction:column;gap:10px;flex:1">
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#334155"><span style="color:#4a7c6f;font-weight:700;flex-shrink:0">✓</span>Sınırsız hasta kaydı</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#334155"><span style="color:#4a7c6f;font-weight:700;flex-shrink:0">✓</span>Randevu takvimi</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#334155"><span style="color:#4a7c6f;font-weight:700;flex-shrink:0">✓</span>Seans notları</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#94a3b8;margin-top:4px"><span style="flex-shrink:0">—</span><em>WhatsApp özellikleri Pro'ya dahildir</em></div>
+        </div>
+        <button style="width:100%;margin-top:24px;padding:14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;color:#334155;font-size:14px;font-weight:600;cursor:pointer">Başlangıç Seç</button>
+      </div>
+
+      <!-- Seansify Pro -->
+      <div style="background:linear-gradient(150deg,#0b1c14,#1e4535);border-radius:20px;padding:32px;position:relative;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(74,124,111,0.3)">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#6ee7b7;color:#0d1f18;border-radius:20px;padding:4px 14px;font-size:10px;font-weight:800;white-space:nowrap">En Popüler</div>
+        <div style="font-size:11px;font-weight:700;color:rgba(110,231,183,0.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Seansify Pro</div>
+        <div style="font-size:42px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:2px">₺1.850</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:24px">/ ay</div>
+        <div style="display:flex;flex-direction:column;gap:10px;flex:1">
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>Sınırsız hasta kaydı</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>Randevu takvimi</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>Seans notları</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>WhatsApp hatırlatıcı</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>Otomatik randevu asistanı</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.8)"><span style="color:#6ee7b7;font-weight:700;flex-shrink:0">✓</span>Öncelikli destek</div>
+        </div>
+        <button style="width:100%;margin-top:24px;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,#4a7c6f,#3d6b5e);color:#fff;font-size:14px;font-weight:700;cursor:pointer">Seansify Pro Seç</button>
+      </div>
+
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 20px;text-align:center;font-size:12px;color:#166534">
+      Tüm planlarda <strong>14 günlük ücretsiz deneme</strong> · Dilediğiniz zaman iptal edebilirsiniz
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand"><span class="g">sean</span>sify · Tanıtım</div>
+      <div class="pf-num">7</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CTA KAPANIŞ ═══════════ -->
+<div class="page">
+  <div class="dark-full" style="justify-content:center;align-items:center;text-align:center;padding:52px 48px">
+
+    <!-- Dekor -->
+    <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,0.06) 0%,transparent 70%);pointer-events:none"></div>
+
+    <div style="position:relative;z-index:1">
+      <div style="font-size:56px;margin-bottom:24px">✨</div>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(110,231,183,0.6);margin-bottom:16px">Hemen başlayın</div>
+
+      <div style="font-size:46px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px">
+        İlk seansınızı<br>bugün planlayın.
+      </div>
+
+      <div style="font-size:15px;color:rgba(255,255,255,0.45);line-height:1.7;max-width:400px;margin:0 auto 40px">
+        14 gün boyunca tüm özellikleri ücretsiz kullanın.
+        Kliniğinizin nasıl değiştiğini kendiniz görün.
+      </div>
+
+      <div style="display:inline-flex;align-items:center;gap:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:20px 32px;margin-bottom:40px">
+        <div style="font-size:28px;font-weight:900;letter-spacing:-0.8px;color:#fff">seansify.com</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:420px;margin:0 auto">
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#6ee7b7">14</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35)">gün ücretsiz</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#6ee7b7">12</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35)">özellik</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:28px;font-weight:900;color:#6ee7b7">7/24</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.35)">destek</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT -->
+<div class="no-print" style="position:fixed;bottom:24px;right:24px">
+  <button onclick="window.print()" style="background:#4a7c6f;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(74,124,111,0.4)">
+    🖨️ PDF Olarak Kaydet
+  </button>
+</div>
+
+</body>
+</html>
