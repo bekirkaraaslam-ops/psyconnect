@@ -125,12 +125,11 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
 
       {/* STATS */}
       <section style={{ background: C.white, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
-        <div className="doga-stats-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+        <div className="doga-stats-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)' }}>
           {[
             psych.deneyim_yil ? { v: `${psych.deneyim_yil}+`, l: 'Yıl Deneyim' } : null,
             ortalamaPuan ? { v: `${ortalamaPuan}★`, l: 'Değerlendirme' } : null,
             { v: `${psych.session_duration_minutes ?? 50} dk`, l: 'Seans Süresi' },
-            { v: 'Ücretsiz', l: 'İlk Görüşme' },
           ].filter(Boolean).map((s, i, arr) => s && (
             <div key={i} style={{ padding: '24px 16px', textAlign: 'center', borderRight: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
               <div style={{ fontSize: 28, fontWeight: 800, color: C.olive, lineHeight: 1 }}>{s.v}</div>
@@ -267,7 +266,6 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Randevu</div>
             <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-1px', margin: '0 0 16px' }}>Doğal bir süreçle başlayalım.</h2>
-            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, margin: '0 0 28px' }}>İlk görüşme ücretsizdir. Herhangi bir bağlayıcılık yaratmaz — sadece tanışalım.</p>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.olive, borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
               🌱 Randevu Al
             </Link>
@@ -327,7 +325,6 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           </div>
           <div style={{ background: C.oliveLight, borderRadius: 24, padding: 32, border: `1px solid ${C.olive}25` }}>
             <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, margin: '0 0 12px' }}>Doğal bir başlangıç</h3>
-            <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 22px' }}>İlk adımı atmak yeterli. İlk görüşmede sadece konuşuyoruz — herhangi bir zorunluluk yok.</p>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               🌱 Randevu Al
             </Link>

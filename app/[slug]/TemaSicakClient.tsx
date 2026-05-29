@@ -114,12 +114,11 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* STATS */}
       <section style={{ background: C.white, borderBottom: `1px solid ${C.border}` }}>
-        <div className="sicak-stats-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', fontFamily: 'system-ui' }}>
+        <div className="sicak-stats-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', fontFamily: 'system-ui' }}>
           {[
             psych.deneyim_yil ? { v: `${psych.deneyim_yil}+`, l: 'Yıl Deneyim' } : null,
             ortalamaPuan ? { v: `${ortalamaPuan}★`, l: 'Değerlendirme' } : null,
             { v: `${psych.session_duration_minutes ?? 50} dk`, l: 'Seans Süresi' },
-            { v: 'Ücretsiz', l: 'İlk Görüşme' },
           ].filter(Boolean).map((s, i, arr) => s && (
             <div key={i} style={{ padding: '24px 16px', textAlign: 'center', borderRight: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
               <div style={{ fontSize: 28, fontWeight: 700, color: C.accent, lineHeight: 1 }}>{s.v}</div>
@@ -251,9 +250,8 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Randevu</div>
             <h2 style={{ fontSize: 40, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', lineHeight: 1.2, margin: '0 0 16px' }}>Birlikte yola çıkalım.</h2>
-            <p style={{ fontSize: 15, color: C.inkLight, lineHeight: 1.8, margin: '0 0 28px', fontFamily: 'system-ui' }}>İlk görüşme ücretsizdir, zorunluluk yaratmaz. Sadece tanışmak için gelin.</p>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
-              Ücretsiz İlk Görüşme
+              Randevu Al →
             </Link>
           </div>
           {paketler.length > 0 && (

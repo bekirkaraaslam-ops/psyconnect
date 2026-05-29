@@ -278,10 +278,6 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 16px', borderRight: '1px solid #f0f7f4', flexShrink: 0, whiteSpace: 'nowrap' }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span style={{ fontSize: 12, color: '#64748b' }}>İlk görüşme <strong style={{ color: '#1e293b' }}>ücretsiz</strong></span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 16px', borderRight: '1px solid #f0f7f4', flexShrink: 0, whiteSpace: 'nowrap' }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             <span style={{ fontSize: 12, color: '#64748b' }}><strong style={{ color: '#1e293b' }}>48 saat</strong> içinde yanıt</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 16px', flexShrink: 0, whiteSpace: 'nowrap' }}>

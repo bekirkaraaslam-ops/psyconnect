@@ -129,7 +129,6 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
             psych.deneyim_yil ? `${psych.deneyim_yil} Yıl Deneyim` : null,
             psych.calisma_saatleri,
             ortalamaPuan ? `${ortalamaPuan}★ Değerlendirme` : null,
-            'İlk Görüşme Ücretsiz',
             psych.dil ? psych.dil.join(', ') : null,
           ].filter(Boolean).map((t, i) => (
             <div key={i} style={{ padding: '14px 20px', borderRight: `1px solid ${C.tealBright}30`, fontSize: 13, fontWeight: 600, color: C.teal, whiteSpace: 'nowrap', flexShrink: 0 }}>{t}</div>
@@ -139,12 +138,11 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* STATS */}
       <section style={{ background: C.bgLight, borderBottom: `1px solid ${C.border}` }}>
-        <div className="guven-stats-grid" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+        <div className="guven-stats-grid" style={{ maxWidth: 1200, margin: '0 auto', padding: '0 48px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)' }}>
           {[
             psych.deneyim_yil ? { v: `${psych.deneyim_yil}+`, l: 'Yıl Deneyim' } : null,
             ortalamaPuan ? { v: `${ortalamaPuan}★`, l: 'Değerlendirme' } : null,
             { v: `${psych.session_duration_minutes ?? 50} dk`, l: 'Seans Süresi' },
-            { v: 'Ücretsiz', l: 'İlk Görüşme' },
           ].filter(Boolean).map((s, i, arr) => s && (
             <div key={i} style={{ padding: '24px 16px', textAlign: 'center', borderRight: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
               <div style={{ fontSize: 28, fontWeight: 900, color: C.navy, lineHeight: 1 }}>{s.v}</div>
@@ -265,7 +263,6 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           <div>
             <SecNum n="06" label="Randevu" />
             <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', letterSpacing: '-1px', lineHeight: 1.15, margin: '0 0 16px' }}>Profesyonel destek almaya hazır mısınız?</h2>
-            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, margin: '0 0 32px' }}>İlk görüşme ücretsizdir. Sorularınızı yanıtlamaktan ve size uygun yaklaşımı birlikte değerlendirmekten memnuniyet duyarım.</p>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '14px 30px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
               Randevu Talebi Oluştur →
             </Link>
@@ -321,7 +318,6 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           </div>
           <div style={{ background: C.bgLight, borderRadius: 20, padding: 32, border: `1px solid ${C.border}`, boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
             <h3 style={{ fontSize: 20, fontWeight: 700, color: C.navy, margin: '0 0 12px' }}>İlk adımı atın</h3>
-            <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 20px' }}>İlk görüşme ücretsiz ve bağlayıcı değildir. Süreç hakkında her türlü sorunuzu yanıtlamaktan memnuniyet duyarım.</p>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.teal, color: '#fff', borderRadius: 10, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
               Randevu Al →
             </Link>
