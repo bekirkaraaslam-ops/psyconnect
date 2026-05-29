@@ -24,8 +24,16 @@ const DEFAULT_GORUNUM: ProfilGorunum = {
   show_seans_sayisi: false, show_ilk_seans: true,
 }
 
+function buildSlug(unvan: string, fullName: string): string {
+  const toAscii = (s: string) => s.toLowerCase()
+    .replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/i̇/g, 'i')
+    .replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u')
+    .replace(/[^a-z0-9]/g, '')
+  return toAscii(unvan) + toAscii(fullName)
+}
+
 interface Psych {
-  id: string; booking_slug: string; unvan: string | null; sehir: string | null
+  id: string; full_name: string; booking_slug: string; unvan: string | null; sehir: string | null
   bio_text: string | null; uzmanlik_alanlari: string[] | null; egitim: Egitim[] | null
   ilk_seans_metni: string | null
   foto_url: string | null; klinik_adi: string | null; klinik_adres: string | null
@@ -153,8 +161,10 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
 
   async function handleSave() {
     setSaving(true)
+    const newSlug = buildSlug(unvan, psych.full_name)
     const { error } = await supabase.from('psychologists').update({
-      unvan: unvan || null, sehir: sehir || null, bio_text: bioText || null,
+      unvan: unvan || null, booking_slug: newSlug || psych.booking_slug,
+      sehir: sehir || null, bio_text: bioText || null,
       profil_alinti: profilAlinti || null,
       deneyim_yil: deneyimYil ? parseInt(deneyimYil) : null,
       dil: dil ? dil.split(',').map(d => d.trim()).filter(Boolean) : null,
@@ -174,8 +184,9 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
     if (!error) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
   }
 
-  const profilUrl = `https://${psych.booking_slug}.seansify.com`
-  const initials = psych.booking_slug.slice(0, 2).toUpperCase()
+  const currentSlug = buildSlug(unvan, psych.full_name) || psych.booking_slug
+  const profilUrl = `https://${currentSlug}.seansify.com`
+  const initials = currentSlug.slice(0, 2).toUpperCase()
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
