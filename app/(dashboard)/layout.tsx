@@ -1,6 +1,5 @@
 import Script from 'next/script'
-import Sidebar from '@/components/layout/Sidebar'
-import MobileNav from '@/components/layout/MobileNav'
+import DashboardShell from '@/components/layout/DashboardShell'
 import RealtimeRefresher from '@/components/RealtimeRefresher'
 import { createClient } from '@/lib/supabase/server'
 import { PlanType } from '@/types'
@@ -25,11 +24,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <>
       <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="afterInteractive" />
       <div className="flex min-h-screen" style={{ background: 'var(--background)' }}>
-        <Sidebar planType={planType} />
+        <DashboardShell planType={planType} />
         <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-0">
           {children}
         </div>
-        <MobileNav />
       </div>
       {psychologistId && <RealtimeRefresher psychologistId={psychologistId} />}
     </>

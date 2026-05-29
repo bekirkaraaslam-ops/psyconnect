@@ -91,17 +91,6 @@ const navItems = [
     ),
   },
   {
-    href: '/profil',
-    label: 'Profilim',
-    whatsappLocked: false,
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
-      </svg>
-    ),
-  },
-  {
     href: '/bloglar',
     label: 'Bloglarım',
     whatsappLocked: false,
@@ -150,9 +139,10 @@ const planLabels: Record<string, { label: string; color: string; bg: string }> =
 
 interface SidebarProps {
   planType?: PlanType
+  onAyarlarClick?: () => void
 }
 
-export default function Sidebar({ planType = 'free' }: SidebarProps) {
+export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -194,6 +184,21 @@ export default function Sidebar({ planType = 'free' }: SidebarProps) {
         {navItems.map(item => {
           const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
           const showLock = item.whatsappLocked && !isWhatsappUnlocked
+
+          if (item.href === '/settings') {
+            return (
+              <button
+                key={item.href}
+                onClick={onAyarlarClick}
+                title={item.label}
+                className="relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors w-full hover:bg-gray-100 dark:hover:bg-slate-700"
+                style={{ color: '#64748b', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                {item.icon}
+                <span className="hidden lg:inline flex-1">{item.label}</span>
+              </button>
+            )
+          }
 
           return (
             <Link
