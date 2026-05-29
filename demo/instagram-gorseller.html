@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Seansify — Instagram Görselleri</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',system-ui,sans-serif; background:#1a1a2e; color:#fff; padding:32px; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  h1 { font-size:22px; font-weight:800; color:#6ee7b7; margin-bottom:4px; }
+  .subtitle { font-size:13px; color:rgba(255,255,255,0.45); margin-bottom:40px; }
+
+  .section { margin-bottom:56px; }
+  .section-title { font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; }
+
+  .row { display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; }
+
+  .item { display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .item-label { font-size:12px; color:rgba(255,255,255,0.5); text-align:center; }
+
+  .dl-btn {
+    padding:10px 22px; border-radius:10px; border:none;
+    background:#4a7c6f; color:#fff; font-size:12px; font-weight:700;
+    cursor:pointer; font-family:inherit; transition:opacity .2s;
+  }
+  .dl-btn:hover { opacity:.85; }
+  .dl-btn:disabled { opacity:.5; cursor:wait; }
+
+  /* ─── HIGHLIGHT COVER: 540×540 → 1080×1080 ─── */
+  .highlight-wrap {
+    width:540px; height:540px;
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+    flex-shrink:0;
+  }
+
+  /* ─── STORY: 405×720 → 1080×1920 (scale 2.67) ─── */
+  .story-wrap {
+    width:405px; height:720px;
+    border-radius:16px;
+    overflow:hidden;
+    position:relative;
+    flex-shrink:0;
+  }
+
+  /* ── Shared text helpers ── */
+  .logo-text { font-weight:900; letter-spacing:-0.5px; }
+  .logo-text span { opacity:.45; }
+</style>
+</head>
+<body>
+
+<h1>Seansify Instagram Görselleri</h1>
+<p class="subtitle">Öne çıkan kapakları (1080×1080) ve story görselleri (1080×1920). Her biri için ayrı indirme butonu.</p>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SECTION 1: HIGHLIGHT COVERS                    -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Öne Çıkan Kapakları (1080×1080)</div>
+  <div class="row">
+
+    <!-- HIGHLIGHT 1: Kullanım Kılavuzu -->
+    <div class="item">
+      <div class="highlight-wrap" id="hl1">
+        <div style="width:100%;height:100%;background:radial-gradient(ellipse at 60% 30%, #1a3d2b, #0b1c14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative">
+          <!-- Dekor daire -->
+          <div style="position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,0.1),transparent 70%)"></div>
+          <div style="position:absolute;bottom:-80px;left:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(74,124,111,0.12),transparent 70%)"></div>
+
+          <!-- İkon kutusu -->
+          <div style="width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,rgba(110,231,183,0.15),rgba(74,124,111,0.08));border:1.5px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;">
+            <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+
+          <!-- Yazı -->
+          <div style="text-align:center">
+            <div style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.1">Kullanım</div>
+            <div style="font-size:32px;font-weight:900;color:#6ee7b7;letter-spacing:-1px;line-height:1.1">Kılavuzu</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:10px;letter-spacing:0.5px">10 Bölüm · Adım Adım</div>
+          </div>
+
+          <!-- Logo alt -->
+          <div style="position:absolute;bottom:24px;font-size:14px;font-weight:900;letter-spacing:-0.5px;color:#6ee7b7">seans<span style="color:rgba(255,255,255,0.35)">ify</span></div>
+        </div>
+      </div>
+      <div class="item-label">Kılavuz Kapağı</div>
+      <button class="dl-btn" onclick="download('hl1','kilavuz-highlight')">⬇ İndir (1080×1080)</button>
+    </div>
+
+    <!-- HIGHLIGHT 2: Tanıtım E-Kitap -->
+    <div class="item">
+      <div class="highlight-wrap" id="hl2">
+        <div style="width:100%;height:100%;background:radial-gradient(ellipse at 40% 70%, #163324, #0b1c14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative">
+          <div style="position:absolute;top:-60px;left:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,0.08),transparent 70%)"></div>
+          <div style="position:absolute;bottom:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(74,124,111,0.1),transparent 70%)"></div>
+
+          <!-- İkon kutusu -->
+          <div style="width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,rgba(110,231,183,0.15),rgba(74,124,111,0.08));border:1.5px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;">
+            <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+
+          <!-- Yazı -->
+          <div style="text-align:center">
+            <div style="font-size:32px;font-weight:900;color:#6ee7b7;letter-spacing:-1px;line-height:1.1">Tanıtım</div>
+            <div style="font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.1">E-Kitabı</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:10px;letter-spacing:0.5px">Seansify Nedir?</div>
+          </div>
+
+          <!-- Logo alt -->
+          <div style="position:absolute;bottom:24px;font-size:14px;font-weight:900;letter-spacing:-0.5px;color:#6ee7b7">seans<span style="color:rgba(255,255,255,0.35)">ify</span></div>
+        </div>
+      </div>
+      <div class="item-label">Tanıtım Kapağı</div>
+      <button class="dl-btn" onclick="download('hl2','tanitim-highlight')">⬇ İndir (1080×1080)</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- SECTION 2: STORY GÖRSELLERİ                   -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Story Görselleri (1080×1920)</div>
+  <div class="row">
+
+    <!-- STORY 1: Kullanım Kılavuzu -->
+    <div class="item">
+      <div class="story-wrap" id="st1">
+        <div style="width:100%;height:100%;background:linear-gradient(160deg,#0b1c14 0%,#1a3d2b 50%,#163324 100%);display:flex;flex-direction:column;padding:44px 36px 52px;position:relative;overflow:hidden">
+
+          <!-- Dekor daireler -->
+          <div style="position:absolute;top:-100px;right:-100px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,0.1),transparent 70%)"></div>
+          <div style="position:absolute;bottom:-120px;left:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(74,124,111,0.12),transparent 70%)"></div>
+
+          <!-- Üst logo -->
+          <div style="font-size:18px;font-weight:900;letter-spacing:-0.5px;color:#6ee7b7;margin-bottom:auto">seans<span style="color:rgba(255,255,255,0.35)">ify</span></div>
+
+          <!-- Orta içerik -->
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px">
+
+            <!-- Rozet -->
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.25);border-radius:20px;padding:6px 16px;width:fit-content">
+              <div style="width:6px;height:6px;border-radius:50%;background:#6ee7b7"></div>
+              <span style="font-size:11px;font-weight:700;color:#6ee7b7;letter-spacing:1.5px;text-transform:uppercase">Ücretsiz E-Kitap</span>
+            </div>
+
+            <!-- Başlık -->
+            <div>
+              <div style="font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:0.95">Kullanım</div>
+              <div style="font-size:52px;font-weight:900;color:#6ee7b7;letter-spacing:-2px;line-height:0.95">Kılavuzu</div>
+              <div style="font-size:15px;color:rgba(255,255,255,0.45);margin-top:14px;line-height:1.6">Seansify'ın tüm özelliklerini<br>adım adım öğrenin.</div>
+            </div>
+
+            <!-- Bölüm listesi -->
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:24px;height:24px;border-radius:7px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#6ee7b7;flex-shrink:0">1</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.7)">İlk Giriş & Dashboard</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:24px;height:24px;border-radius:7px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#6ee7b7;flex-shrink:0">2</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.7)">WhatsApp Bağlantısı & Otomasyonu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:24px;height:24px;border-radius:7px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#6ee7b7;flex-shrink:0">3</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.7)">Hasta Ekleme & Randevu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:24px;height:24px;border-radius:7px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#6ee7b7;flex-shrink:0">4</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.7)">SOAP Notu & Anamnez Formu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:24px;height:24px;border-radius:7px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#6ee7b7;flex-shrink:0">+</div>
+                <span style="font-size:13px;color:rgba(255,255,255,0.45)">6 bölüm daha...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alt CTA -->
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="height:1px;background:rgba(255,255,255,0.08)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:3px">Okumak için</div>
+                <div style="font-size:14px;font-weight:700;color:#6ee7b7">Bağlantıya git 👆</div>
+              </div>
+              <div style="width:48px;height:48px;border-radius:14px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.25);display:flex;align-items:center;justify-content:center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="item-label">Kılavuz Story</div>
+      <button class="dl-btn" onclick="downloadStory('st1','kilavuz-story')">⬇ İndir (1080×1920)</button>
+    </div>
+
+    <!-- STORY 2: Tanıtım E-Kitap -->
+    <div class="item">
+      <div class="story-wrap" id="st2">
+        <div style="width:100%;height:100%;background:linear-gradient(160deg,#0b1c14 0%,#163324 45%,#1a3d2b 100%);display:flex;flex-direction:column;padding:44px 36px 52px;position:relative;overflow:hidden">
+
+          <!-- Dekor daireler -->
+          <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,0.1),transparent 70%)"></div>
+          <div style="position:absolute;bottom:-100px;right:-100px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(74,124,111,0.12),transparent 70%)"></div>
+
+          <!-- Üst logo -->
+          <div style="font-size:18px;font-weight:900;letter-spacing:-0.5px;color:#6ee7b7;margin-bottom:auto">seans<span style="color:rgba(255,255,255,0.35)">ify</span></div>
+
+          <!-- Orta içerik -->
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px">
+
+            <!-- Rozet -->
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.25);border-radius:20px;padding:6px 16px;width:fit-content">
+              <div style="width:6px;height:6px;border-radius:50%;background:#6ee7b7"></div>
+              <span style="font-size:11px;font-weight:700;color:#6ee7b7;letter-spacing:1.5px;text-transform:uppercase">Ücretsiz E-Kitap</span>
+            </div>
+
+            <!-- Başlık -->
+            <div>
+              <div style="font-size:52px;font-weight:900;color:#6ee7b7;letter-spacing:-2px;line-height:0.95">Seansify</div>
+              <div style="font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;line-height:0.95">Nedir?</div>
+              <div style="font-size:15px;color:rgba(255,255,255,0.45);margin-top:14px;line-height:1.6">Psikologlar için tasarlanmış<br>klinik yönetim platformu.</div>
+            </div>
+
+            <!-- Özellikler -->
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Akıllı randevu takvimi</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">WhatsApp otomasyonu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Dijital anamnez formu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Kişisel profil & SOAP notu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Sınırsız hasta kaydı</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Aylık gelir & ödeme raporu</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Yapay zeka seans asistanı</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:32px;height:32px;border-radius:9px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <span style="font-size:14px;color:rgba(255,255,255,0.75)">Otomatik hatırlatıcı & bekleme listesi</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alt CTA -->
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="height:1px;background:rgba(255,255,255,0.08)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:3px">Okumak için</div>
+                <div style="font-size:14px;font-weight:700;color:#6ee7b7">Bağlantıya git 👆</div>
+              </div>
+              <div style="width:48px;height:48px;border-radius:14px;background:rgba(110,231,183,0.12);border:1px solid rgba(110,231,183,0.25);display:flex;align-items:center;justify-content:center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="item-label">Tanıtım Story</div>
+      <button class="dl-btn" onclick="downloadStory('st2','tanitim-story')">⬇ İndir (1080×1920)</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+async function download(id, filename) {
+  const el = document.getElementById(id);
+  const btn = el.parentElement.querySelector('.dl-btn');
+  btn.disabled = true;
+  btn.textContent = 'Oluşturuluyor...';
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#0b1c14',
+      logging: false
+    });
+    const link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬇ İndir (1080×1080)';
+  }
+}
+
+async function downloadStory(id, filename) {
+  const el = document.getElementById(id);
+  const btn = el.parentElement.querySelector('.dl-btn');
+  btn.disabled = true;
+  btn.textContent = 'Oluşturuluyor...';
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2.667,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#0b1c14',
+      logging: false
+    });
+    const link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬇ İndir (1080×1920)';
+  }
+}
+</script>
+</body>
+</html>
+

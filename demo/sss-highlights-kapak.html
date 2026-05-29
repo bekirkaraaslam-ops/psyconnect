@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Seansify SSS – Instagram Öne Çıkanlar Kapağı</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #111827;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    min-height: 100vh;
+  }
+  h1 { color: #6ee7b7; font-size: 20px; letter-spacing: -0.5px; }
+  .subtitle { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 4px; }
+
+  /* Önizleme: Instagram'da daire içinde görünür */
+  .preview-label {
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .circle-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .circle-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(110,231,183,0.4);
+    position: relative;
+  }
+  .circle-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .circle-label {
+    color: rgba(255,255,255,0.6);
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Variants grid */
+  .variants-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    justify-content: center;
+    max-width: 1200px;
+  }
+
+  .variant-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .variant-title {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Story canvas: 270×480 on screen (1080×1920 at 4x) */
+  .cover {
+    width: 270px;
+    height: 480px;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .deco { position: absolute; border-radius: 50%; pointer-events: none; }
+
+  /* Variant A — Koyu yeşil + soru işareti */
+  .cover-a { background: radial-gradient(ellipse at 40% 30%, #1a4a35 0%, #0d1f18 60%, #050f0b 100%); }
+
+  /* Variant B — Açık + minimal */
+  .cover-b { background: linear-gradient(145deg, #e8f5f1 0%, #d1ede6 40%, #c0e6da 100%); }
+
+  /* Variant C — Gradient mor-yeşil */
+  .cover-c { background: linear-gradient(150deg, #0f1628 0%, #1a1a3a 35%, #0d2a1e 70%, #0d1f18 100%); }
+
+  .btn-download {
+    background: #4a7c6f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-download:hover { background: #3d6a5e; }
+  .btn-download:disabled { opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<div style="text-align:center;">
+  <h1>Seansify — SSS Öne Çıkanlar Kapağı</h1>
+  <p class="subtitle">3 varyant · 1080×1920px · Daire içinde görünüm önizlemesi</p>
+</div>
+
+<div class="variants-grid">
+
+  <!-- ══════ VARIANT A — Koyu Yeşil ══════ -->
+  <div class="variant-card">
+    <span class="variant-title">Varyant A — Koyu</span>
+
+    <div class="cover cover-a" id="cover-a">
+      <!-- Dekoratif daireler -->
+      <div class="deco" style="width:200px;height:200px;top:-60px;right:-50px;background:radial-gradient(circle,rgba(110,231,183,0.14),transparent 70%);"></div>
+      <div class="deco" style="width:160px;height:160px;bottom:-50px;left:-40px;background:radial-gradient(circle,rgba(74,124,111,0.18),transparent 70%);"></div>
+      <div class="deco" style="width:90px;height:90px;top:45%;left:15px;background:radial-gradient(circle,rgba(110,231,183,0.07),transparent 70%);"></div>
+
+      <!-- Merkez içerik -->
+      <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <!-- İkon -->
+        <div style="width:72px;height:72px;border-radius:20px;background:rgba(74,124,111,0.3);border:1.5px solid rgba(110,231,183,0.3);display:flex;align-items:center;justify-content:center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <circle cx="12" cy="17" r=".5" fill="#6ee7b7"/>
+          </svg>
+        </div>
+        <!-- Metin -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <span style="font-size:19px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;line-height:1;">SSS</span>
+          <span style="font-size:9.5px;font-weight:600;color:rgba(110,231,183,0.7);letter-spacing:2px;text-transform:uppercase;">Sık Sorulan Sorular</span>
+        </div>
+      </div>
+
+      <!-- Logo alt -->
+      <div style="position:absolute;bottom:22px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:2;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:18px;height:18px;border-radius:5px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 40 40" fill="none">
+              <rect x="6" y="11" width="28" height="24" rx="3" fill="white"/>
+              <rect x="13" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <rect x="24" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <circle cx="20" cy="25" r="4" fill="#4a7c6f"/>
+            </svg>
+          </div>
+          <span style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.3px;">Seansify</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daire önizleme -->
+    <div class="circle-preview-wrapper">
+      <span class="preview-label">Instagram'da görünüm</span>
+      <div class="circle-preview" id="preview-a"></div>
+      <span class="circle-label">SSS</span>
+    </div>
+
+    <button class="btn-download" onclick="downloadCover('cover-a', 'sss-kapak-koyu', 'preview-a')">↓ İndir</button>
+  </div>
+
+  <!-- ══════ VARIANT B — Açık / Minimal ══════ -->
+  <div class="variant-card">
+    <span class="variant-title">Varyant B — Açık</span>
+
+    <div class="cover cover-b" id="cover-b">
+      <div class="deco" style="width:180px;height:180px;top:-50px;left:-40px;background:radial-gradient(circle,rgba(74,124,111,0.15),transparent 70%);"></div>
+      <div class="deco" style="width:140px;height:140px;bottom:-40px;right:-30px;background:radial-gradient(circle,rgba(74,124,111,0.12),transparent 70%);"></div>
+
+      <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div style="width:72px;height:72px;border-radius:20px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(74,124,111,0.35);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <circle cx="12" cy="17" r=".5" fill="white"/>
+          </svg>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <span style="font-size:19px;font-weight:900;color:#0d1f18;letter-spacing:-0.5px;line-height:1;">SSS</span>
+          <span style="font-size:9.5px;font-weight:600;color:#4a7c6f;letter-spacing:2px;text-transform:uppercase;">Sık Sorulan Sorular</span>
+        </div>
+      </div>
+
+      <div style="position:absolute;bottom:22px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:2;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:18px;height:18px;border-radius:5px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 40 40" fill="none">
+              <rect x="6" y="11" width="28" height="24" rx="3" fill="white"/>
+              <rect x="13" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <rect x="24" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <circle cx="20" cy="25" r="4" fill="#4a7c6f"/>
+            </svg>
+          </div>
+          <span style="font-size:10px;font-weight:800;color:#4a7c6f;letter-spacing:0.3px;">Seansify</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="circle-preview-wrapper">
+      <span class="preview-label">Instagram'da görünüm</span>
+      <div class="circle-preview" id="preview-b"></div>
+      <span class="circle-label">SSS</span>
+    </div>
+
+    <button class="btn-download" onclick="downloadCover('cover-b', 'sss-kapak-acik', 'preview-b')">↓ İndir</button>
+  </div>
+
+  <!-- ══════ VARIANT C — Mor-Yeşil Gradient ══════ -->
+  <div class="variant-card">
+    <span class="variant-title">Varyant C — Gradient</span>
+
+    <div class="cover cover-c" id="cover-c">
+      <div class="deco" style="width:220px;height:220px;top:-70px;right:-60px;background:radial-gradient(circle,rgba(139,92,246,0.15),transparent 70%);"></div>
+      <div class="deco" style="width:180px;height:180px;bottom:-50px;left:-50px;background:radial-gradient(circle,rgba(74,124,111,0.2),transparent 70%);"></div>
+      <div class="deco" style="width:100px;height:100px;top:38%;left:10px;background:radial-gradient(circle,rgba(110,231,183,0.06),transparent 70%);"></div>
+
+      <!-- Soru işareti büyük arka plan -->
+      <div style="position:absolute;font-size:160px;font-weight:900;color:rgba(255,255,255,0.03);line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;user-select:none;">?</div>
+
+      <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <!-- Halka + ikon -->
+        <div style="width:76px;height:76px;border-radius:50%;border:2px solid rgba(110,231,183,0.4);display:flex;align-items:center;justify-content:center;background:rgba(110,231,183,0.08);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <circle cx="12" cy="17" r=".5" fill="#6ee7b7"/>
+          </svg>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <span style="font-size:19px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;line-height:1;">SSS</span>
+          <span style="font-size:9.5px;font-weight:600;color:rgba(110,231,183,0.65);letter-spacing:2px;text-transform:uppercase;">Sık Sorulan Sorular</span>
+        </div>
+      </div>
+
+      <div style="position:absolute;bottom:22px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:2;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:18px;height:18px;border-radius:5px;background:#4a7c6f;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 40 40" fill="none">
+              <rect x="6" y="11" width="28" height="24" rx="3" fill="white"/>
+              <rect x="13" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <rect x="24" y="7" width="3" height="8" rx="1.5" fill="white"/>
+              <circle cx="20" cy="25" r="4" fill="#4a7c6f"/>
+            </svg>
+          </div>
+          <span style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.65);letter-spacing:0.3px;">Seansify</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="circle-preview-wrapper">
+      <span class="preview-label">Instagram'da görünüm</span>
+      <div class="circle-preview" id="preview-c"></div>
+      <span class="circle-label">SSS</span>
+    </div>
+
+    <button class="btn-download" onclick="downloadCover('cover-c', 'sss-kapak-gradient', 'preview-c')">↓ İndir</button>
+  </div>
+
+</div>
+
+<script>
+const bgMap = {
+  'cover-a': '#0d1f18',
+  'cover-b': '#d1ede6',
+  'cover-c': '#0f1628',
+}
+
+async function downloadCover(id, filename, previewId) {
+  const el = document.getElementById(id)
+  const btn = el.closest('.variant-card').querySelector('.btn-download')
+  btn.textContent = '⏳ Hazırlanıyor...'
+  btn.disabled = true
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 4,        // 270×4=1080, 480×4=1920
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: bgMap[id] || '#0d1f18',
+      logging: false,
+      width: 270,
+      height: 480,
+    })
+
+    // Daire önizlemeyi güncelle
+    const previewEl = document.getElementById(previewId)
+    previewEl.innerHTML = ''
+    const img = document.createElement('img')
+    img.src = canvas.toDataURL('image/png')
+    previewEl.appendChild(img)
+
+    const link = document.createElement('a')
+    link.download = `seansify-${filename}.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  } catch(e) {
+    alert('Hata: ' + e.message)
+  }
+
+  btn.textContent = '↓ İndir'
+  btn.disabled = false
+}
+
+// Sayfa yüklenince önizlemeleri otomatik oluştur
+window.addEventListener('load', async () => {
+  for (const [id, , previewId] of [
+    ['cover-a', 'sss-kapak-koyu', 'preview-a'],
+    ['cover-b', 'sss-kapak-acik', 'preview-b'],
+    ['cover-c', 'sss-kapak-gradient', 'preview-c'],
+  ]) {
+    const el = document.getElementById(id)
+    const previewEl = document.getElementById(previewId)
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: bgMap[id],
+        logging: false,
+        width: 270,
+        height: 480,
+      })
+      const img = document.createElement('img')
+      img.src = canvas.toDataURL('image/png')
+      previewEl.appendChild(img)
+    } catch(_) {}
+  }
+})
+</script>
+</body>
+</html>
+

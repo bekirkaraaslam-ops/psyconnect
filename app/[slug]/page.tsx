@@ -42,7 +42,8 @@ export default async function PsikologProfilPage({ params }: Context) {
       id, full_name, booking_slug, unvan, sehir, bio_text,
       uzmanlik_alanlari, egitim, foto_url, klinik_adi, klinik_adres,
       klinik_tel, calisma_saatleri, profil_alinti, deneyim_yil, dil,
-      session_duration_minutes, subscription_status, profil_gorunum
+      session_duration_minutes, subscription_status, profil_gorunum,
+      ilk_seans_metni
     `)
     .eq('booking_slug', slug)
     .single()
@@ -77,12 +78,20 @@ export default async function PsikologProfilPage({ params }: Context) {
     .order('dolduruldu_at', { ascending: false })
     .limit(5)
 
+  // Tamamlanan seans sayısı
+  const { count: tamamlananSeans } = await supabase
+    .from('appointments')
+    .select('id', { count: 'exact', head: true })
+    .eq('psychologist_id', psych.id)
+    .eq('status', 'completed')
+
   return (
     <ProfilClient
       psych={psych}
       bloglar={bloglar ?? []}
       yorumlar={yorumlar ?? []}
       paketler={paketler ?? []}
+      tamamlananSeans={tamamlananSeans ?? 0}
     />
   )
 }

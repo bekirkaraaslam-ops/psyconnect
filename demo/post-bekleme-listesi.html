@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Seansify — Bekleme Listesi Post</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f0f4f3;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  h1 {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    align-self: flex-start;
+  }
+
+  h1 span { color: #4a7c6f; font-weight: 600; }
+
+  /* === SLIDE === */
+  .slide {
+    width: 540px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 40%, #d8f0eb 0%, #eaf6f3 35%, #f4faf8 65%, #f8fcfb 100%);
+  }
+
+  /* Subtle dot grid — inline divs */
+  .dot-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Large circle outline */
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Inner content */
+  .inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    gap: 0;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: #4a7c6f;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 22px;
+    opacity: 0.75;
+  }
+
+  .big-number {
+    font-size: 118px;
+    font-weight: 900;
+    color: #0d1f18;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  .unit {
+    font-size: 28px;
+    font-weight: 600;
+    color: #4a7c6f;
+    letter-spacing: 0.02em;
+    margin-top: 8px;
+    margin-bottom: 26px;
+  }
+
+  .divider {
+    width: 36px;
+    height: 2px;
+    background: #a7d4c8;
+    margin-bottom: 26px;
+    border-radius: 2px;
+  }
+
+  .body-text {
+    font-size: 15px;
+    color: #1e3a30;
+    line-height: 1.65;
+    max-width: 360px;
+    font-weight: 400;
+  }
+
+  .body-text strong {
+    font-weight: 700;
+    color: #0d1f18;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 26px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: #4a7c6f;
+    font-weight: 600;
+    opacity: 0.6;
+  }
+
+  /* Download button */
+  .dl-btn {
+    background: #4a7c6f;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: opacity 0.15s;
+  }
+  .dl-btn:hover { opacity: 0.85; }
+  .dl-btn:disabled { opacity: 0.5; cursor: default; }
+</style>
+</head>
+<body>
+
+<h1><span>seansify</span> — post görseli</h1>
+
+<div class="slide" id="slide">
+
+  <!-- Dot grid: 8×8 array of small circles -->
+  <div class="dot-grid" id="dotGrid"></div>
+
+  <!-- Outer ring -->
+  <div class="ring" style="width:430px;height:430px;border:1px solid rgba(74,124,111,0.13);top:55px;left:55px;"></div>
+  <!-- Inner ring hint -->
+  <div class="ring" style="width:310px;height:310px;border:1px solid rgba(74,124,111,0.07);top:115px;left:115px;"></div>
+
+  <div class="inner">
+    <div class="eyebrow">Düşündürücü bir rakam</div>
+    <div class="big-number">%68</div>
+    <div class="unit">geri dönmüyor</div>
+    <div class="divider"></div>
+    <div class="body-text">
+      "Yer yok" dedikten sonra takip sistemi olmayan psikologlara
+      ulaşan danışan adaylarının büyük çoğunluğu
+      <strong>başka birine gidiyor</strong> — ve bir daha haber vermiyor.
+    </div>
+  </div>
+
+  <div class="footer">• SEANSIFY •</div>
+</div>
+
+<button class="dl-btn" id="dlBtn" onclick="dl()">PNG İndir (1080×1080)</button>
+
+<script>
+  // Dot grid oluştur
+  const grid = document.getElementById('dotGrid')
+  const cols = 10, rows = 10
+  const stepX = 540 / cols, stepY = 540 / rows
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const dot = document.createElement('div')
+      dot.style.cssText = `
+        position:absolute;
+        width:2px;height:2px;
+        border-radius:50%;
+        background:rgba(74,124,111,0.18);
+        left:${stepX * c + stepX * 0.5 - 1}px;
+        top:${stepY * r + stepY * 0.5 - 1}px;
+      `
+      grid.appendChild(dot)
+    }
+  }
+
+  async function dl() {
+    const btn = document.getElementById('dlBtn')
+    btn.textContent = 'Hazırlanıyor...'
+    btn.disabled = true
+
+    try {
+      const el = document.getElementById('slide')
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#eaf6f3',
+        logging: false,
+      })
+      const link = document.createElement('a')
+      link.download = 'seansify-post-bekleme-listesi.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    } catch(e) {
+      alert('Hata: ' + e.message)
+    }
+
+    btn.textContent = 'PNG İndir (1080×1080)'
+    btn.disabled = false
+  }
+</script>
+</body>
+</html>

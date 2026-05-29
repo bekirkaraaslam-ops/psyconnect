@@ -1,0 +1,655 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Seansify — Psikolog Profil Carousel</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; font-family: 'Segoe UI', system-ui, sans-serif; padding: 40px 20px; }
+  h1 { color: #f8fafc; font-size: 18px; margin-bottom: 32px; font-weight: 400; letter-spacing: 0.05em; }
+  h1 span { color: #6ee7b7; font-weight: 700; }
+
+  .slides-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: flex-start;
+  }
+
+  .slide-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .slide-label {
+    color: #64748b;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+
+  .slide {
+    width: 540px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* === SLIDE BACKGROUNDS === */
+  .s1 { background: linear-gradient(135deg, #0d1f18 0%, #1a3d2b 60%, #163324 100%); }
+  .s2 { background: radial-gradient(ellipse at 80% 20%, #1a3d2b 0%, #0d1f18 60%); }
+  .s3 { background: linear-gradient(160deg, #1a3d2b 0%, #163324 50%, #0d1f18 100%); }
+  .s4 { background: radial-gradient(ellipse at 20% 80%, #163324 0%, #0d1f18 65%); }
+  .s5 { background: linear-gradient(135deg, #163324 0%, #0d1f18 50%, #1a3d2b 100%); }
+  .s6 { background: radial-gradient(ellipse at 50% 30%, #1a3d2b 0%, #0d1f18 70%); }
+
+  /* === DECORATIVE CIRCLES === */
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* === INNER CONTENT === */
+  .inner {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 52px 48px;
+    text-align: center;
+  }
+
+  .brand {
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: #6ee7b7;
+    text-transform: lowercase;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .slide-num {
+    position: absolute;
+    bottom: 22px;
+    right: 28px;
+    font-size: 11px;
+    color: #4a7c6f;
+    letter-spacing: 0.05em;
+  }
+
+  /* === SLIDE 1 — HOOK === */
+  .quote-mark {
+    position: absolute;
+    top: 30px;
+    right: 28px;
+    font-size: 120px;
+    color: #6ee7b7;
+    opacity: 0.12;
+    font-family: Georgia, serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .s1-eyebrow {
+    font-size: 11px;
+    color: #6ee7b7;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .s1-line1 {
+    font-size: 64px;
+    font-weight: 900;
+    color: #f8fafc;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+
+  .s1-line2 {
+    font-size: 64px;
+    font-weight: 900;
+    color: #6ee7b7;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .s1-sub {
+    font-size: 13px;
+    color: rgba(248,250,252,0.45);
+    letter-spacing: 0.06em;
+    font-weight: 400;
+  }
+
+  /* === SLIDE 2 — STATS === */
+  .s2-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 32px;
+    line-height: 1.3;
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .stat-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .stat-text {
+    font-size: 15px;
+    color: #e2e8f0;
+    line-height: 1.45;
+  }
+
+  .stat-text strong {
+    color: #6ee7b7;
+    font-weight: 700;
+  }
+
+  .stat-source {
+    font-size: 10px;
+    color: #4a7c6f;
+    margin-top: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  /* === SLIDE 3 — CHECKLIST === */
+  .s3-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .s3-sub {
+    font-size: 12px;
+    color: #6ee7b7;
+    margin-bottom: 28px;
+    opacity: 0.8;
+  }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 15px;
+    text-align: left;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .check-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .check-yes { background: #6ee7b7; color: #0d1f18; font-weight: 700; }
+  .check-no  { background: #374151; color: #9ca3af; font-weight: 700; }
+
+  .check-text {
+    font-size: 14px;
+    color: #e2e8f0;
+    line-height: 1.35;
+  }
+
+  .check-text.muted { color: #6b7280; text-decoration: line-through; }
+
+  .s3-footer {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #4a7c6f;
+    font-style: italic;
+  }
+
+  /* === SLIDE 4 — MOCKUP === */
+  .s4-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6ee7b7;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .profile-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(110,231,183,0.2);
+    border-radius: 16px;
+    padding: 22px 28px;
+    width: 340px;
+    text-align: left;
+  }
+
+  .profile-row-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .avatar-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a7c6f, #6ee7b7);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #0d1f18;
+    font-weight: 700;
+  }
+
+  .profile-name { font-size: 15px; color: #f8fafc; font-weight: 600; }
+  .profile-title { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .tag {
+    background: rgba(74,124,111,0.25);
+    border: 1px solid rgba(74,124,111,0.5);
+    color: #6ee7b7;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .badge-online { background: rgba(110,231,183,0.15); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.3); }
+  .badge-face { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); }
+
+  .randevu-btn {
+    width: 100%;
+    background: #6ee7b7;
+    color: #0d1f18;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  .s4-caption {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #6b7280;
+    font-style: italic;
+  }
+
+  /* === SLIDE 5 — FEATURES === */
+  .s5-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+
+  .feat-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    text-align: left;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .feat-icon-box {
+    width: 40px;
+    height: 40px;
+    background: rgba(110,231,183,0.1);
+    border: 1px solid rgba(110,231,183,0.25);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .feat-text-wrap { display: flex; flex-direction: column; gap: 2px; }
+  .feat-title { font-size: 14px; color: #f8fafc; font-weight: 600; }
+  .feat-desc { font-size: 11px; color: #6b7280; line-height: 1.4; }
+
+  /* === SLIDE 6 — CTA === */
+  .cta-headline {
+    font-size: 38px;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .cta-sub {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 30px;
+  }
+
+  .cta-pill {
+    display: inline-block;
+    background: #6ee7b7;
+    color: #0d1f18;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 36px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+
+  .cta-free {
+    margin-top: 16px;
+    font-size: 11px;
+    color: #4a7c6f;
+    letter-spacing: 0.06em;
+  }
+
+  /* === DOWNLOAD BUTTON === */
+  .dl-btn {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .dl-btn:hover { background: #4a7c6f; color: #fff; border-color: #4a7c6f; }
+  .dl-btn:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<h1><span>seansify</span> — Profil & Online Görünürlük Carousel</h1>
+
+<div class="slides-grid">
+
+  <!-- SLIDE 1 — HOOK (IZGARA OPTİMİZE) -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 1 — Kapak (ızgara optimize)</div>
+    <div class="slide s1" id="sl1">
+      <!-- Büyük dekoratif daire — sağ alt -->
+      <div class="deco" style="width:380px;height:380px;border:1px solid rgba(110,231,183,0.07);bottom:-140px;right:-140px;"></div>
+      <div class="deco" style="width:260px;height:260px;border:1px solid rgba(110,231,183,0.1);bottom:-80px;right:-80px;"></div>
+      <!-- Mint parlama — sol üst -->
+      <div class="deco" style="width:260px;height:260px;background:radial-gradient(circle,rgba(110,231,183,0.09),transparent 70%);top:-80px;left:-80px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="s1-eyebrow">online görünürlük</div>
+        <div class="s1-line1">Seni</div>
+        <div class="s1-line1">buluyor</div>
+        <div class="s1-line2">mu?</div>
+        <div class="s1-sub">Psikologlar için rehber</div>
+        <div class="slide-num">1 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl1','seansify-profil-01-kapak')">İndir</button>
+  </div>
+
+  <!-- SLIDE 2 — STATS -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 2 — İstatistikler</div>
+    <div class="slide s2" id="sl2">
+      <div class="deco" style="width:250px;height:250px;background:radial-gradient(circle,rgba(110,231,183,0.05),transparent 70%);top:-60px;left:-60px;"></div>
+      <div class="deco" style="width:160px;height:160px;border:1px solid rgba(110,231,183,0.07);border-radius:50%;bottom:-30px;right:-30px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="s2-title">Yeni danışanlar seni<br>nasıl buluyor?</div>
+        <div class="stat-row">
+          <div class="stat-icon">🔍</div>
+          <div class="stat-text"><strong>%68</strong>'i terapist ararken internetten başlıyor</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-icon">📱</div>
+          <div class="stat-text"><strong>%52</strong>'si sosyal medya profiline bakıyor</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-icon">📋</div>
+          <div class="stat-text">Telefon rehberinde arıyor: <strong>%4</strong></div>
+        </div>
+        <div class="stat-source">Kaynak: Türkiye Mental Sağlık Araştırması, 2023</div>
+        <div class="slide-num">2 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl2','seansify-profil-02-istatistik')">İndir</button>
+  </div>
+
+  <!-- SLIDE 3 — CHECKLIST -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 3 — Danışan ne arıyor?</div>
+    <div class="slide s3" id="sl3">
+      <div class="deco" style="width:200px;height:200px;background:radial-gradient(circle,rgba(110,231,183,0.07),transparent 70%);top:-50px;right:-50px;"></div>
+      <div class="deco" style="width:280px;height:280px;border:1px solid rgba(110,231,183,0.06);border-radius:50%;bottom:-100px;left:-100px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="s3-title">Danışan seni bulduktan sonra<br>ne arıyor?</div>
+        <div class="s3-sub">İlk 8 saniyede karar veriyor.</div>
+        <div class="check-row">
+          <div class="check-icon check-yes">✓</div>
+          <div class="check-text">Uzmanlık alanın</div>
+        </div>
+        <div class="check-row">
+          <div class="check-icon check-yes">✓</div>
+          <div class="check-text">Online mı, yüz yüze mi?</div>
+        </div>
+        <div class="check-row">
+          <div class="check-icon check-yes">✓</div>
+          <div class="check-text">Seans ücreti</div>
+        </div>
+        <div class="check-row">
+          <div class="check-icon check-yes">✓</div>
+          <div class="check-text">Randevu alabilme kolaylığı</div>
+        </div>
+        <div class="check-row">
+          <div class="check-icon check-no">✗</div>
+          <div class="check-text muted">Akademik CV</div>
+        </div>
+        <div class="slide-num">3 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl3','seansify-profil-03-checklist')">İndir</button>
+  </div>
+
+  <!-- SLIDE 4 — PROFILE MOCKUP -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 4 — Profil Sayfası</div>
+    <div class="slide s4" id="sl4">
+      <div class="deco" style="width:240px;height:240px;background:radial-gradient(circle,rgba(74,124,111,0.1),transparent 70%);top:-60px;left:-60px;"></div>
+      <div class="deco" style="width:180px;height:180px;border:1px solid rgba(110,231,183,0.08);border-radius:50%;bottom:-50px;right:-50px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="s4-title">Seansify Profil Sayfası</div>
+        <div class="profile-card">
+          <div class="profile-row-top">
+            <div class="avatar-box">P</div>
+            <div>
+              <div class="profile-name">Psk. Ayşe Demir</div>
+              <div class="profile-title">Klinik Psikolog · İstanbul</div>
+            </div>
+          </div>
+          <div class="tags">
+            <div class="tag">Anksiyete</div>
+            <div class="tag">Depresyon</div>
+            <div class="tag">İlişki</div>
+            <div class="tag">Travma</div>
+          </div>
+          <div class="badges">
+            <div class="badge badge-online">● Online</div>
+            <div class="badge badge-face">Yüz yüze</div>
+          </div>
+          <div class="randevu-btn">Randevu Al</div>
+        </div>
+        <div class="s4-caption">Linkin hazır. Paylaşman yeterli.</div>
+        <div class="slide-num">4 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl4','seansify-profil-04-mockup')">İndir</button>
+  </div>
+
+  <!-- SLIDE 5 — FEATURES -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 5 — Özellikler</div>
+    <div class="slide s5" id="sl5">
+      <div class="deco" style="width:220px;height:220px;background:radial-gradient(circle,rgba(110,231,183,0.06),transparent 70%);top:-50px;right:-50px;"></div>
+      <div class="deco" style="width:260px;height:260px;border:1px solid rgba(74,124,111,0.1);border-radius:50%;bottom:-80px;left:-80px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="s5-title">Profil sayfanda neler var?</div>
+        <div class="feat-row">
+          <div class="feat-icon-box">📅</div>
+          <div class="feat-text-wrap">
+            <div class="feat-title">Gerçek zamanlı müsait saatler</div>
+            <div class="feat-desc">Takviminden otomatik çekiyor</div>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-icon-box">💬</div>
+          <div class="feat-text-wrap">
+            <div class="feat-title">WhatsApp ile iletişim</div>
+            <div class="feat-desc">Tek tıkla mesaj atabiliyorlar</div>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-icon-box">🔗</div>
+          <div class="feat-text-wrap">
+            <div class="feat-title">Paylaşılabilir link</div>
+            <div class="feat-desc">Bio'ya ekle, bitti</div>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-icon-box">⭐</div>
+          <div class="feat-text-wrap">
+            <div class="feat-title">Danışan değerlendirmeleri</div>
+            <div class="feat-desc">Sosyal kanıt, senin sayfanda</div>
+          </div>
+        </div>
+        <div class="slide-num">5 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl5','seansify-profil-05-ozellikler')">İndir</button>
+  </div>
+
+  <!-- SLIDE 6 — CTA -->
+  <div class="slide-wrapper">
+    <div class="slide-label">Slayt 6 — CTA</div>
+    <div class="slide s6" id="sl6">
+      <div class="deco" style="width:320px;height:320px;background:radial-gradient(circle,rgba(110,231,183,0.07),transparent 70%);top:-80px;right:-80px;"></div>
+      <div class="deco" style="width:200px;height:200px;border:1px solid rgba(110,231,183,0.08);border-radius:50%;top:-50px;right:-50px;"></div>
+      <div class="deco" style="width:240px;height:240px;background:radial-gradient(circle,rgba(74,124,111,0.06),transparent 70%);bottom:-60px;left:-60px;"></div>
+      <div class="inner">
+        <div class="brand">seansify</div>
+        <div class="cta-headline">Profilini<br>5 dakikada<br>kur.</div>
+        <div class="cta-sub">Danışanların seni bulsun.</div>
+        <div class="cta-pill">seansify.com →</div>
+        <div class="cta-free">14 gün ücretsiz</div>
+        <div class="slide-num">6 / 6</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="dl('sl6','seansify-profil-06-cta')">İndir</button>
+  </div>
+
+</div>
+
+<script>
+const bgMap = {
+  sl1: '#0d1f18',
+  sl2: '#0d1f18',
+  sl3: '#163324',
+  sl4: '#0d1f18',
+  sl5: '#163324',
+  sl6: '#0d1f18',
+}
+
+async function dl(id, filename) {
+  const el = document.getElementById(id)
+  const btn = el.closest('.slide-wrapper').querySelector('.dl-btn')
+  const orig = btn.textContent
+  btn.textContent = 'Hazırlanıyor...'
+  btn.disabled = true
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: bgMap[id] || '#0d1f18',
+      logging: false,
+    })
+
+    const link = document.createElement('a')
+    link.download = filename + '.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  } catch(e) {
+    alert('Hata: ' + e.message)
+  }
+
+  btn.textContent = orig
+  btn.disabled = false
+}
+</script>
+</body>
+</html>
+

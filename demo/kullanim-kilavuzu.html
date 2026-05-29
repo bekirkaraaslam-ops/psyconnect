@@ -1,0 +1,2303 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seansify — Kullanım Kılavuzu</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f4f9f7;
+    color: #0d1f18;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── PAGE SETUP ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 16px;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  @media print {
+    body { background: #fff; margin: 0; }
+    .page { margin: 0; page-break-after: always; box-shadow: none; }
+    .no-print { display: none !important; }
+  }
+
+  @media screen {
+    body { padding: 24px 0; }
+    .page { box-shadow: 0 4px 32px rgba(0,0,0,0.12); }
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(150deg, #0b1c14 0%, #1e4535 55%, #2d6b52 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 52px 48px;
+    min-height: 297mm;
+  }
+
+  .cover-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #6ee7b7;
+  }
+  .cover-logo span { color: rgba(255,255,255,0.6); }
+
+  .cover-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+  .cover-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(110,231,183,0.7);
+    margin-bottom: 18px;
+  }
+
+  .cover-title {
+    font-size: 52px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+
+  .cover-subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+    max-width: 380px;
+  }
+
+  .cover-decor {
+    position: absolute;
+    top: 60px; right: 48px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(110,231,183,0.12) 0%, transparent 70%);
+  }
+
+  .cover-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cover-footer-left { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .cover-badge {
+    background: rgba(110,231,183,0.15);
+    border: 1px solid rgba(110,231,183,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6ee7b7;
+  }
+
+  /* ── TOC ── */
+  .toc-page {
+    padding: 52px 48px;
+    min-height: 297mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+  .section-kicker {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #4a7c6f;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0d1f18;
+    letter-spacing: -0.5px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 16px;
+  }
+
+  .toc-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #f0fdf4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #4a7c6f;
+    flex-shrink: 0;
+  }
+
+  .toc-text { flex: 1; }
+  .toc-main { font-size: 14px; font-weight: 600; color: #0d1f18; }
+  .toc-sub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+  .toc-dots { flex: 1; border-bottom: 1px dotted #dde5e2; height: 1px; }
+  .toc-page-num { font-size: 12px; color: #94a3b8; font-weight: 600; }
+
+  /* ── CONTENT PAGE ── */
+  .content-page {
+    padding: 44px 48px 72px;
+    min-height: 297mm;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .chapter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a7c6f;
+    width: fit-content;
+  }
+
+  .chapter-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0d1f18;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .chapter-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.7;
+  }
+
+  /* ── MOCKUP BROWSER ── */
+  .mockup {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .browser-bar {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot-r { background: #fc8181; }
+  .dot-y { background: #f6c90e; }
+  .dot-g { background: #68d391; }
+
+  .browser-url {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 10px;
+    color: #94a3b8;
+    font-family: monospace;
+  }
+
+  .app-frame {
+    display: flex;
+    flex: 1;
+    min-height: 280px;
+    background: #f8fafc;
+  }
+
+  .app-frame-tall {
+    display: flex;
+    flex: 1;
+    min-height: 350px;
+    background: #f8fafc;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 180px;
+    background: linear-gradient(180deg, #0d1f18 0%, #1a3d2b 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 10px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    font-size: 14px;
+    font-weight: 800;
+    color: #6ee7b7;
+    letter-spacing: -0.5px;
+    padding: 4px 8px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 10px;
+  }
+  .sidebar-logo span { color: rgba(255,255,255,0.5); }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 1px;
+    cursor: pointer;
+  }
+
+  .nav-item.active {
+    background: rgba(110,231,183,0.12);
+    color: #6ee7b7;
+    font-weight: 600;
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0d1f18;
+  }
+
+  .page-content {
+    flex: 1;
+    padding: 14px 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--c, #4a7c6f);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .stat-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c, #4a7c6f);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    color: #64748b;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    flex: 1;
+  }
+
+  .timeline-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .timeline-col-head {
+    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .timeline-col-head:first-child {
+    border-right: 1px solid #f1f5f9;
+  }
+
+  .timeline-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .timeline-badge {
+    margin-left: auto;
+    font-size: 9px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .tl-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-bottom: 1px solid #f8fafc;
+  }
+
+  .tl-time {
+    font-size: 9px;
+    font-weight: 700;
+    color: #4a7c6f;
+    width: 34px;
+    text-align: right;
+    font-family: monospace;
+    flex-shrink: 0;
+  }
+
+  .tl-sep {
+    width: 1px;
+    height: 24px;
+    background: #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  .tl-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: #334155;
+    flex: 1;
+  }
+
+  .tl-badge {
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-blue  { background: #dbeafe; color: #1d4ed8; }
+
+  /* ── FORM ── */
+  .form-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #dde5e2;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .form-group { margin-bottom: 10px; }
+  .form-label { font-size: 10px; font-weight: 600; color: #334155; margin-bottom: 4px; display: block; }
+  .form-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #dde5e2;
+    border-radius: 7px;
+    font-size: 10px;
+    color: #475569;
+    background: #fff;
+    font-family: inherit;
+  }
+
+  .form-hint { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    margin-bottom: 10px;
+  }
+
+  .toggle-text { font-size: 10px; font-weight: 600; color: #334155; }
+  .toggle-sub { font-size: 9px; color: #94a3b8; margin-top: 1px; }
+  .toggle-pill {
+    width: 30px; height: 17px;
+    background: #22c55e;
+    border-radius: 9px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .toggle-pill::after {
+    content: '';
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 13px; height: 13px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-primary { background: #4a7c6f; color: #fff; }
+  .btn-ghost { background: #f1f5f9; color: #64748b; }
+  .btn-row { display: flex; gap: 8px; }
+
+  /* ── PATIENT GRID ── */
+  .patient-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .patient-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #dde5e2;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .patient-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a7c6f, #6ee7b7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .patient-name { font-size: 11px; font-weight: 700; color: #0d1f18; }
+  .patient-phone { font-size: 9px; color: #94a3b8; margin-top: 1px; }
+  .patient-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .ptag {
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-weight: 600;
+  }
+
+  /* ── APT LIST ── */
+  .apt-list { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+
+  .apt-row {
+    display: flex;
+    align-items: center;
+    padding: 9px 14px;
+    border-bottom: 1px solid #f8fafc;
+    gap: 10px;
+  }
+
+  .apt-time {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4a7c6f;
+    width: 40px;
+    flex-shrink: 0;
+    font-family: monospace;
+  }
+
+  .apt-name { font-size: 11px; font-weight: 600; color: #334155; flex: 1; }
+  .apt-type { font-size: 9px; color: #94a3b8; }
+  .apt-status { font-size: 8px; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+
+  /* ── WA PAGE ── */
+  .wa-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #dde5e2;
+    padding: 20px;
+    text-align: center;
+    max-width: 260px;
+    margin: 0 auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .qr-box {
+    width: 120px; height: 120px;
+    background: #fff;
+    border: 2px solid #dde5e2;
+    border-radius: 10px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .qr-inner {
+    width: 100px; height: 100px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 1px;
+  }
+
+  .qr-cell {
+    border-radius: 1px;
+  }
+
+  .wa-steps { text-align: left; margin-top: 14px; }
+  .wa-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 9px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+  .wa-step-icon { font-size: 12px; flex-shrink: 0; }
+
+  /* ── SETTINGS PAGE ── */
+  .settings-section {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #dde5e2;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+
+  .settings-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #0d1f18;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .day-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .day-pill {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .day-pill.on { background: #4a7c6f; color: #fff; }
+  .day-pill.off { background: #f1f5f9; color: #94a3b8; }
+
+  .hour-row { display: flex; gap: 8px; align-items: center; }
+  .hour-input {
+    padding: 5px 8px;
+    border: 1px solid #dde5e2;
+    border-radius: 6px;
+    font-size: 10px;
+    color: #334155;
+    width: 60px;
+    font-family: inherit;
+  }
+  .hour-sep { font-size: 10px; color: #94a3b8; }
+
+  /* ── PROFILE PAGE (PUBLIC) ── */
+  .profile-hero {
+    background: linear-gradient(150deg, #0b1c14 0%, #1e4535 60%, #2d6b52 100%);
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .profile-avatar-big {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a7c6f, #6ee7b7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 auto 8px;
+    border: 2px solid rgba(110,231,183,0.4);
+  }
+
+  .profile-name { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+  .profile-title-text { font-size: 10px; color: rgba(110,231,183,0.8); margin-bottom: 10px; }
+
+  .profile-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .profile-tab {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+  }
+  .profile-tab.active {
+    background: rgba(110,231,183,0.2);
+    color: #6ee7b7;
+  }
+
+  .profile-body {
+    background: #f4f9f7;
+    padding: 12px 14px;
+    flex: 1;
+  }
+
+  .review-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e4eeea;
+    margin-bottom: 6px;
+  }
+
+  .star-row { display: flex; gap: 1px; margin-bottom: 4px; }
+  .star { font-size: 10px; }
+  .star.on { color: #f59e0b; }
+  .star.off { color: #e2e8f0; }
+
+  .review-text { font-size: 10px; color: #475569; line-height: 1.5; }
+  .review-init { font-size: 9px; color: #94a3b8; margin-top: 4px; font-weight: 600; }
+
+  /* ── BLOG ── */
+  .blog-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #e4eeea;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 4px rgba(74,124,111,0.06);
+  }
+
+  .blog-cat {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+
+  .blog-title { font-size: 12px; font-weight: 800; color: #0d1f18; margin-bottom: 4px; line-height: 1.3; }
+  .blog-excerpt { font-size: 10px; color: #64748b; line-height: 1.5; }
+  .blog-meta { font-size: 9px; color: #94a3b8; margin-top: 5px; }
+
+  /* ── SOAP NOTE ── */
+  .soap-section {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #dde5e2;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+
+  .soap-label {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .soap-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .soap-text { font-size: 10px; color: #475569; line-height: 1.5; }
+
+  /* ── CALLOUT / TIP ── */
+  .tip {
+    display: flex;
+    gap: 10px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 3px solid #4a7c6f;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .tip-icon { font-size: 14px; flex-shrink: 0; }
+  .tip-content {}
+  .tip-title { font-size: 11px; font-weight: 700; color: #15803d; margin-bottom: 2px; }
+  .tip-body { font-size: 11px; color: #166534; line-height: 1.5; }
+
+  .warn {
+    display: flex;
+    gap: 10px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .warn-title { font-size: 11px; font-weight: 700; color: #92400e; margin-bottom: 2px; }
+  .warn-body { font-size: 11px; color: #78350f; line-height: 1.5; }
+
+  /* ── STEP FLOW ── */
+  .step-flow { display: flex; flex-direction: column; gap: 10px; }
+
+  .step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #4a7c6f;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content {}
+  .step-title { font-size: 13px; font-weight: 700; color: #0d1f18; margin-bottom: 2px; }
+  .step-body { font-size: 11px; color: #64748b; line-height: 1.5; }
+
+  /* ── BOTTOM PAGER ── */
+  .page-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 48px;
+    right: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand { font-size: 10px; color: #94a3b8; font-weight: 600; }
+  .footer-brand span { color: #4a7c6f; }
+  .footer-page { font-size: 10px; color: #94a3b8; }
+
+  /* anamnez mockup */
+  .anamnez-public {
+    background: #f4f9f7;
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .anamnez-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e4eeea;
+    padding: 14px;
+  }
+
+  .anamnez-title { font-size: 13px; font-weight: 800; color: #0d1f18; margin-bottom: 4px; }
+  .anamnez-sub { font-size: 10px; color: #64748b; margin-bottom: 12px; }
+
+  /* ── WAITING LIST ── */
+  .wl-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-bottom: 1px solid #f8fafc;
+  }
+
+  .wl-badge {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ COVER ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-decor"></div>
+
+    <div class="cover-logo">sean<span>sify</span></div>
+
+    <div class="cover-center">
+      <div class="cover-label">Resmi Belgeler · 2025</div>
+      <div class="cover-title">Kullanım<br>Kılavuzu</div>
+      <div class="cover-subtitle">
+        Seansify'ın tüm özelliklerini adım adım öğrenin.
+        Hesap kurulumundan hasta takibine, WhatsApp otomasyonundan
+        profil sayfanıza kadar eksiksiz rehber.
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <div class="cover-footer-left">seansify.com · Psikologlar için klinik yönetim platformu</div>
+      <div class="cover-badge">v1.0 · Mayıs 2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ TOC ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="toc-page">
+    <div class="section-header">
+      <div class="section-kicker">İçindekiler</div>
+      <div class="section-title">Bu kılavuzda neler var?</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">1</div>
+      <div class="toc-text">
+        <div class="toc-main">İlk Giriş & Dashboard</div>
+        <div class="toc-sub">Hesabınıza giriş, genel bakış ve başlarken adımları</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">3</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">2</div>
+      <div class="toc-text">
+        <div class="toc-main">Ayarlar & Klinik Bilgileri</div>
+        <div class="toc-sub">Çalışma saatleri, seans süresi, hoşgeldiniz mesajı</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">4</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">3</div>
+      <div class="toc-text">
+        <div class="toc-main">Hasta Ekleme</div>
+        <div class="toc-sub">Yeni hasta kaydı ve hasta listesi</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">5</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">4</div>
+      <div class="toc-text">
+        <div class="toc-main">Randevu Oluşturma</div>
+        <div class="toc-sub">Manuel randevu, onay süreci ve durum yönetimi</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">6</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">5</div>
+      <div class="toc-text">
+        <div class="toc-main">WhatsApp Bağlantısı</div>
+        <div class="toc-sub">QR kod ile bağlanma ve otomatik hatırlatıcılar</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">7</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">6</div>
+      <div class="toc-text">
+        <div class="toc-main">Anamnez Formu</div>
+        <div class="toc-sub">Hasta öncesi dijital form gönderme ve takibi</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">8</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">7</div>
+      <div class="toc-text">
+        <div class="toc-main">SOAP Seans Notu</div>
+        <div class="toc-sub">Yapılandırılmış seans notu oluşturma</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">9</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">8</div>
+      <div class="toc-text">
+        <div class="toc-main">Bekleme Listesi</div>
+        <div class="toc-sub">İptal dolduğunda otomatik teklif sistemi</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">10</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">9</div>
+      <div class="toc-text">
+        <div class="toc-main">Profil Sayfası</div>
+        <div class="toc-sub">seansify.com/adınız sayfasını düzenleme</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">11</div>
+    </div>
+
+    <div class="toc-item">
+      <div class="toc-num">10</div>
+      <div class="toc-text">
+        <div class="toc-main">Blog & Yorumlar</div>
+        <div class="toc-sub">İçerik yayınlama ve danışan değerlendirmeleri</div>
+      </div>
+      <div class="toc-dots"></div>
+      <div class="toc-page-num">12</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">2</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 1: DASHBOARD ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 1</div>
+      <div class="chapter-title" style="margin-top:8px">İlk Giriş & Dashboard</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        seansify.com adresine gittiğinizde e-posta ve şifrenizle giriş yapabilirsiniz.
+        İlk girişte sizi üç adımlı başlangıç kartı karşılar. Bu adımları tamamladıktan
+        sonra günlük iş akışınızı dashboard üzerinden yönetirsiniz.
+      </div>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/dashboard</div>
+      </div>
+      <div class="app-frame">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item active">
+            <div class="nav-icon">🏠</div> Dashboard
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📅</div> Randevular
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">👥</div> Hastalar
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">💬</div> WhatsApp
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">🗓️</div> Takvim
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">🕐</div> Bekleme Listesi
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📊</div> Raporlar
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">👤</div> Profilim
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">⭐</div> Yorumlar
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">⚙️</div> Ayarlar
+          </div>
+        </div>
+        <!-- Main -->
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Genel Bakış</div>
+          </div>
+          <div class="page-content">
+            <!-- Welcome card -->
+            <div style="background:#fff;border-radius:10px;border:1px solid #dde5e2;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <div style="width:28px;height:28px;border-radius:8px;background:#e8f5f1;display:flex;align-items:center;justify-content:center;font-size:14px">🚀</div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#334155">Seansify'a Hoş Geldin</div>
+                  <div style="font-size:9px;color:#94a3b8">Başlamak için şu 3 adımı tamamla</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+                <div style="display:flex;align-items:center;gap:6px;border:1px solid #dde5e2;border-radius:8px;padding:8px">
+                  <div style="width:20px;height:20px;border-radius:5px;background:#4a7c6f;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+                  <div style="font-size:9px;color:#334155;font-weight:500">İlk hastanı ekle</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;border:1px solid #dde5e2;border-radius:8px;padding:8px">
+                  <div style="width:20px;height:20px;border-radius:5px;background:#4a7c6f;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+                  <div style="font-size:9px;color:#334155;font-weight:500">WhatsApp'ı bağla</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;border:1px solid #dde5e2;border-radius:8px;padding:8px">
+                  <div style="width:20px;height:20px;border-radius:5px;background:#4a7c6f;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+                  <div style="font-size:9px;color:#334155;font-weight:500">Randevu oluştur</div>
+                </div>
+              </div>
+            </div>
+            <!-- Stats -->
+            <div class="stat-grid">
+              <div class="stat-card" style="--c:#4a7c6f"><div class="stat-val">24</div><div class="stat-label">Toplam Hasta</div></div>
+              <div class="stat-card" style="--c:#3b82f6"><div class="stat-val">3</div><div class="stat-label">Bugünkü Randevular</div></div>
+              <div class="stat-card" style="--c:#8b5cf6"><div class="stat-val">12</div><div class="stat-label">Bu Hafta</div></div>
+              <div class="stat-card" style="--c:#f59e0b"><div class="stat-val">₺1.200</div><div class="stat-label">Bekleyen Ödeme</div></div>
+            </div>
+            <!-- Timeline -->
+            <div class="timeline">
+              <div class="timeline-header">
+                <div class="timeline-col-head" style="border-right:1px solid #f1f5f9">
+                  <div class="timeline-dot" style="background:#4a7c6f"></div>
+                  Bugün
+                  <div class="timeline-badge badge-green" style="margin-left:auto">3 seans</div>
+                </div>
+                <div class="timeline-col-head">
+                  <div class="timeline-dot" style="background:#3b82f6"></div>
+                  Yarın
+                  <div class="timeline-badge badge-blue" style="margin-left:auto">2 seans</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr">
+                <div style="border-right:1px solid #f1f5f9">
+                  <div class="tl-row"><div class="tl-time">09:00</div><div class="tl-sep"></div><div class="tl-name">Ayşe Kaya</div><div class="tl-badge badge-green">Onaylı</div></div>
+                  <div class="tl-row"><div class="tl-time">10:00</div><div class="tl-sep"></div><div class="tl-name">Mehmet Demir</div><div class="tl-badge badge-amber">Bekliyor</div></div>
+                  <div class="tl-row"><div class="tl-time">14:00</div><div class="tl-sep"></div><div class="tl-name">Zeynep Arslan</div><div class="tl-badge badge-green">Onaylı</div></div>
+                </div>
+                <div>
+                  <div class="tl-row"><div class="tl-time">10:00</div><div class="tl-sep"></div><div class="tl-name">Ali Yıldız</div><div class="tl-badge badge-amber">Bekliyor</div></div>
+                  <div class="tl-row"><div class="tl-time">15:30</div><div class="tl-sep"></div><div class="tl-name">Fatma Çelik</div><div class="tl-badge badge-green">Onaylı</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <div class="tip-title">Dashboard her zaman güncel</div>
+        <div class="tip-body">Bugün ve yarının randevuları gerçek zamanlı güncellenir. Sayfayı yenilemeden anlık değişiklikleri görebilirsiniz. Bekleyen ödemeler de aynı sayfada izlenir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">3</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 2: AYARLAR ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 2</div>
+      <div class="chapter-title" style="margin-top:8px">Ayarlar & Klinik Bilgileri</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Sistemi kullanmaya başlamadan önce çalışma saatlerinizi, gün tercihlerinizi ve
+        seans sürelerinizi ayarlayın. Bu bilgiler online randevu sisteminin temelini oluşturur.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/settings</div>
+      </div>
+      <div class="app-frame-tall">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item"><div class="nav-icon">👥</div> Hastalar</div>
+          <div class="nav-item"><div class="nav-icon">💬</div> WhatsApp</div>
+          <div class="nav-item"><div class="nav-icon">⚙️</div> Ayarlar</div>
+        </div>
+        <div class="main">
+          <div class="topbar"><div class="topbar-title">Ayarlar</div></div>
+          <div class="page-content">
+
+            <div class="settings-section">
+              <div class="settings-section-title">👤 Kişisel Bilgiler</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div class="form-group">
+                  <div class="form-label">Ad Soyad</div>
+                  <input class="form-input" value="Dr. Elif Şahin" readonly>
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Telefon</div>
+                  <input class="form-input" value="0532 123 45 67" readonly>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <div class="settings-section-title">🕐 Çalışma Saatleri</div>
+              <div class="hour-row" style="margin-bottom:8px">
+                <input class="hour-input" value="09:00" readonly>
+                <div class="hour-sep">—</div>
+                <input class="hour-input" value="18:00" readonly>
+                <span style="font-size:9px;color:#64748b;margin-left:4px">arası</span>
+              </div>
+              <div class="day-pills">
+                <div class="day-pill on">Pzt</div>
+                <div class="day-pill on">Sal</div>
+                <div class="day-pill on">Çar</div>
+                <div class="day-pill on">Per</div>
+                <div class="day-pill on">Cum</div>
+                <div class="day-pill off">Cmt</div>
+                <div class="day-pill off">Paz</div>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <div class="settings-section-title">⏱️ Seans Ayarları</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div class="form-group">
+                  <div class="form-label">Seans Süresi</div>
+                  <input class="form-input" value="50 dakika" readonly>
+                </div>
+                <div class="form-group">
+                  <div class="form-label">Aralar</div>
+                  <input class="form-input" value="10 dakika" readonly>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <div class="settings-section-title">💬 Hoşgeldiniz Mesajı</div>
+              <div class="form-group">
+                <textarea class="form-input" rows="3" readonly style="resize:none">Merhaba! Randevunuz başarıyla oluşturuldu. Sizi karşılamaktan gerçekten memnuniyet duyacağım...</textarea>
+                <div class="form-hint">Bu mesaj randevu oluşturulduğunda WhatsApp ile hastaya iletilir</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <div class="tip-title">Tatil Modu</div>
+        <div class="tip-body">İzne çıktığınızda Ayarlar sayfasındaki "Tatil Modu" anahtarını açın. Online randevu sayfanız otomatik olarak kapanır; döndüğünüzde tekrar açın.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">4</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 3: HASTA EKLEME ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 3</div>
+      <div class="chapter-title" style="margin-top:8px">Hasta Ekleme</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Sol menüden <strong>Hastalar</strong> sekmesine girin, sağ üstteki <strong>+ Yeni Hasta</strong> butonuna tıklayın.
+        Hastanın adı ve WhatsApp numarası zorunludur. Anamnez formunu ilk randevudan önce
+        göndermek istiyorsanız formdaki anahtarı açık bırakın.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/patients/new</div>
+      </div>
+      <div class="app-frame-tall">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item active"><div class="nav-icon">👥</div> Hastalar</div>
+          <div class="nav-item"><div class="nav-icon">💬</div> WhatsApp</div>
+          <div class="nav-item"><div class="nav-icon">⚙️</div> Ayarlar</div>
+        </div>
+        <div class="main">
+          <div class="topbar"><div class="topbar-title">Yeni Hasta</div></div>
+          <div class="page-content">
+            <div class="form-card">
+              <div class="form-group">
+                <div class="form-label">Ad Soyad *</div>
+                <input class="form-input" placeholder="Mehmet Yılmaz" value="Ayşe Kaya" readonly>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Telefon *</div>
+                <input class="form-input" placeholder="0532 123 45 67" value="0535 987 65 43" readonly>
+                <div class="form-hint">WhatsApp için kullanılacak numara</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Doğum Tarihi</div>
+                <input class="form-input" value="1990-05-14" readonly>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Notlar</div>
+                <textarea class="form-input" rows="2" readonly style="resize:none">İlk seans — anksiyete şikayeti...</textarea>
+                <div class="form-hint">Şifreli saklanır, sadece siz görebilirsiniz</div>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-text">Anamnez Formu Gönderilsin mi?</div>
+                  <div class="toggle-sub">İlk randevudan 1 gün önce WhatsApp ile form linki gönderilir</div>
+                </div>
+                <div class="toggle-pill"></div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-ghost" style="flex:1">İptal</button>
+                <button class="btn btn-primary" style="flex:1">Kaydet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="tip">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <div class="tip-title">Numara formatı</div>
+          <div class="tip-body">0532 ile başlayan veya +90 ile başlayan her formatı kabul eder. Sistem otomatik normalize eder.</div>
+        </div>
+      </div>
+      <div class="warn">
+        <div class="tip-icon">⚠️</div>
+        <div class="tip-content">
+          <div class="warn-title">Anamnez anahtarı</div>
+          <div class="warn-body">Form gönderimi sadece hasta eklenirken açılabilir. Sonradan hasta profili üzerinden de gönderilebilir.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">5</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 4: RANDEVU ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 4</div>
+      <div class="chapter-title" style="margin-top:8px">Randevu Oluşturma</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Randevu sayfasından <strong>+ Yeni Randevu</strong> butonuna tıklayın. Hasta seçin, tarih ve saat
+        belirleyin. Randevu "Bekliyor" durumuyla oluşturulur; WhatsApp üzerinden onaylama mesajı gönderilir.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/appointments</div>
+      </div>
+      <div class="app-frame-tall">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item active"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item"><div class="nav-icon">👥</div> Hastalar</div>
+          <div class="nav-item"><div class="nav-icon">💬</div> WhatsApp</div>
+          <div class="nav-item"><div class="nav-icon">⚙️</div> Ayarlar</div>
+        </div>
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Randevular</div>
+            <button class="btn btn-primary" style="font-size:9px;padding:5px 10px">+ Yeni Randevu</button>
+          </div>
+          <div class="page-content">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+              <div style="background:#eff6ff;border-radius:8px;padding:8px 10px">
+                <div style="font-size:8px;font-weight:700;color:#1e40af;text-transform:uppercase;margin-bottom:4px">Bu Hafta</div>
+                <div style="font-size:20px;font-weight:800;color:#2563eb">8</div>
+                <div style="font-size:8px;color:#1e40af;opacity:0.7">toplam randevu</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:8px;padding:8px 10px">
+                <div style="font-size:8px;font-weight:700;color:#166534;text-transform:uppercase;margin-bottom:4px">Onaylandı</div>
+                <div style="font-size:20px;font-weight:800;color:#16a34a">5</div>
+                <div style="font-size:8px;color:#166534;opacity:0.7">bu hafta</div>
+              </div>
+              <div style="background:#f8fafc;border-radius:8px;padding:8px 10px">
+                <div style="font-size:8px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:4px">Tamamlandı</div>
+                <div style="font-size:20px;font-weight:800;color:#475569">2</div>
+                <div style="font-size:8px;color:#64748b;opacity:0.7">bu hafta</div>
+              </div>
+              <div style="background:#fef2f2;border-radius:8px;padding:8px 10px">
+                <div style="font-size:8px;font-weight:700;color:#991b1b;text-transform:uppercase;margin-bottom:4px">İptal</div>
+                <div style="font-size:20px;font-weight:800;color:#dc2626">1</div>
+                <div style="font-size:8px;color:#991b1b;opacity:0.7">bu hafta</div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
+              <div>
+                <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Yaklaşan <span style="background:#4a7c6f;color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px">4</span></div>
+                <div class="apt-list">
+                  <div class="apt-row"><div class="apt-time">09:00</div><div><div class="apt-name">Ayşe Kaya</div><div class="apt-type">💻 Online</div></div><div class="apt-status badge-green">Onaylı</div></div>
+                  <div class="apt-row"><div class="apt-time">10:00</div><div><div class="apt-name">Mehmet Demir</div><div class="apt-type">🏢 Yüz yüze</div></div><div class="apt-status badge-amber">Bekliyor</div></div>
+                  <div class="apt-row"><div class="apt-time">14:00</div><div><div class="apt-name">Zeynep Arslan</div><div class="apt-type">💻 Online</div></div><div class="apt-status badge-green">Onaylı</div></div>
+                  <div class="apt-row"><div class="apt-time">15:30</div><div><div class="apt-name">Ali Yıldız</div><div class="apt-type">🏢 Yüz yüze</div></div><div class="apt-status badge-amber">Bekliyor</div></div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Geçmiş <span style="background:#e2e8f0;color:#64748b;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:8px">3</span></div>
+                <div class="apt-list">
+                  <div class="apt-row"><div class="apt-time">09:00</div><div><div class="apt-name">Fatma Çelik</div><div class="apt-type">💻 Online</div></div><div class="apt-status" style="background:#f0fdf4;color:#4a7c6f;font-size:8px;padding:2px 7px;border-radius:8px;font-weight:700">Tamamlandı</div></div>
+                  <div class="apt-row"><div class="apt-time">11:00</div><div><div class="apt-name">Emre Koç</div><div class="apt-type">🏢 Yüz yüze</div></div><div class="apt-status" style="background:#f0fdf4;color:#4a7c6f;font-size:8px;padding:2px 7px;border-radius:8px;font-weight:700">Tamamlandı</div></div>
+                  <div class="apt-row"><div class="apt-time">13:00</div><div><div class="apt-name">Selin Yıldız</div><div class="apt-type">💻 Online</div></div><div class="apt-status" style="background:#fef2f2;color:#dc2626;font-size:8px;padding:2px 7px;border-radius:8px;font-weight:700">İptal</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <div class="tip-title">Randevu durumları</div>
+        <div class="tip-body"><strong>Bekliyor</strong> → hasta henüz yanıt vermedi. <strong>Onaylı</strong> → hasta WhatsApp üzerinden onayladı. <strong>Tamamlandı</strong> → seans gerçekleşti. Randevu kartına tıklayarak SOAP notu ekleyebilirsiniz.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">6</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 5: WHATSAPP ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 5</div>
+      <div class="chapter-title" style="margin-top:8px">WhatsApp Bağlantısı</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        WhatsApp hatırlatıcılarının çalışması için kendi telefon numaranızı sisteme bağlamanız gerekir.
+        Bu bağlantı bir kez yapılır ve kalıcıdır. Otomatik hatırlatıcılar randevudan 24 saat ve
+        2 saat önce gönderilir.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/whatsapp</div>
+      </div>
+      <div class="app-frame">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item"><div class="nav-icon">👥</div> Hastalar</div>
+          <div class="nav-item active"><div class="nav-icon">💬</div> WhatsApp</div>
+          <div class="nav-item"><div class="nav-icon">⚙️</div> Ayarlar</div>
+        </div>
+        <div class="main">
+          <div class="topbar"><div class="topbar-title">WhatsApp Bağlantısı</div></div>
+          <div class="page-content" style="align-items:center">
+            <div class="wa-card">
+              <div style="font-size:10px;font-weight:700;color:#334155;margin-bottom:12px">QR Kodu Okutun</div>
+              <div class="qr-box">
+                <!-- Fake QR pattern -->
+                <svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="90" height="90" fill="white"/>
+                  <!-- Corner squares -->
+                  <rect x="5" y="5" width="25" height="25" fill="none" stroke="#0d1f18" stroke-width="3"/>
+                  <rect x="10" y="10" width="15" height="15" fill="#0d1f18"/>
+                  <rect x="60" y="5" width="25" height="25" fill="none" stroke="#0d1f18" stroke-width="3"/>
+                  <rect x="65" y="10" width="15" height="15" fill="#0d1f18"/>
+                  <rect x="5" y="60" width="25" height="25" fill="none" stroke="#0d1f18" stroke-width="3"/>
+                  <rect x="10" y="65" width="15" height="15" fill="#0d1f18"/>
+                  <!-- Data dots -->
+                  <rect x="35" y="5" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="45" y="5" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="35" y="15" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="45" y="25" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="35" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="45" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="55" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="5" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="15" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="5" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="25" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="35" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="55" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="65" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="75" y="35" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="65" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="75" y="45" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="65" y="55" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="35" y="55" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="45" y="55" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="55" y="55" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="35" y="65" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="55" y="65" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="75" y="65" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="45" y="75" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="65" y="75" width="5" height="5" fill="#0d1f18"/>
+                  <rect x="75" y="75" width="5" height="5" fill="#0d1f18"/>
+                </svg>
+              </div>
+              <div style="font-size:9px;color:#94a3b8;margin-bottom:10px">QR 5 dakikada bir yenilenir</div>
+              <div class="wa-steps">
+                <div class="wa-step"><div class="wa-step-icon">📱</div><div>WhatsApp'ı açın ve <strong>Bağlı Cihazlar</strong>'a gidin</div></div>
+                <div class="wa-step"><div class="wa-step-icon">🔗</div><div><strong>"Cihaz Bağla"</strong> butonuna basın</div></div>
+                <div class="wa-step"><div class="wa-step-icon">📷</div><div>Yukarıdaki QR kodu kameranıza gösterin</div></div>
+                <div class="wa-step"><div class="wa-step-icon">✅</div><div>Bağlantı kurulur, tekrar gerekmez</div></div>
+              </div>
+            </div>
+
+            <div style="background:#fff;border-radius:10px;border:1px solid #dde5e2;padding:10px 12px;width:100%;max-width:360px;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+              <div style="font-size:10px;font-weight:700;color:#334155;margin-bottom:8px">Son Hatırlatıcılar</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f8fafc">
+                <div><div style="font-size:10px;font-weight:600;color:#334155">Ayşe Kaya</div><div style="font-size:9px;color:#94a3b8">29 May 09:00</div></div>
+                <span class="badge-green tl-badge">Gönderildi</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f8fafc">
+                <div><div style="font-size:10px;font-weight:600;color:#334155">Mehmet Demir</div><div style="font-size:9px;color:#94a3b8">29 May 10:00</div></div>
+                <span class="badge-green tl-badge">Gönderildi</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0">
+                <div><div style="font-size:10px;font-weight:600;color:#334155">Zeynep Arslan</div><div style="font-size:9px;color:#94a3b8">28 May 14:00</div></div>
+                <span class="tl-badge" style="background:#fef2f2;color:#dc2626">Hata</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <div class="tip-title">Bağlantı kalıcıdır</div>
+        <div class="tip-body">Bir kez bağlandıktan sonra telefonu yeniden okutmanıza gerek yoktur. Telefonu yeniden başlatmak veya uygulama güncellemesi bağlantıyı kesmez. Sadece "Bağlı Cihazlar" menüsünden manuel çıkış yaparsanız yeniden bağlanmanız gerekir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">7</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 6: ANAMNEz ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 6</div>
+      <div class="chapter-title" style="margin-top:8px">Dijital Anamnez Formu</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Anamnez formu hastaya WhatsApp üzerinden bir link olarak gönderilir.
+        Hasta kendi telefonundan formu doldurur; veriler sisteme otomatik işlenir.
+        Kağıt form, kalem ve tarayıcıya gerek kalmaz.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1">
+      <!-- Hasta eklenirken -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:#4a7c6f;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">1</div>
+          Hasta eklenirken anahtarı açın
+        </div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/patients/new</div>
+          </div>
+          <div style="background:#f8fafc;padding:14px;flex:1">
+            <div class="form-group">
+              <div class="form-label">Ad Soyad *</div>
+              <input class="form-input" value="Mehmet Demir" readonly>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Telefon *</div>
+              <input class="form-input" value="0532 445 67 89" readonly>
+              <div class="form-hint">WhatsApp için kullanılacak numara</div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-text">Anamnez Formu Gönderilsin mi?</div>
+                <div class="toggle-sub">İlk randevudan 1 gün önce WhatsApp ile gönderilir</div>
+              </div>
+              <div class="toggle-pill"></div>
+            </div>
+            <div style="font-size:9px;color:#94a3b8;padding:0 4px">
+              Açık olduğunda, hastanın ilk randevusundan 24 saat önce WhatsApp'tan form linki gönderilir.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hasta tarafında -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <div style="width:20px;height:20px;border-radius:50%;background:#4a7c6f;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">2</div>
+          Hasta linki açar ve formu doldurur
+        </div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/anamnez/abc123</div>
+          </div>
+          <div class="anamnez-public">
+            <div class="anamnez-card">
+              <div class="anamnez-title">Anamnez Formu</div>
+              <div class="anamnez-sub">Dr. Elif Şahin — bilgileriniz güvenle saklanır</div>
+              <div class="form-group">
+                <div class="form-label">Şikayetinizi anlatın</div>
+                <textarea class="form-input" rows="2" readonly style="resize:none">Son dönemde yoğun kaygı ve uyku sorunları...</textarea>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Daha önce psikolojik destek aldınız mı?</div>
+                <div style="display:flex;gap:8px;margin-top:4px">
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#334155">
+                    <div style="width:12px;height:12px;border-radius:50%;border:2px solid #4a7c6f;background:#4a7c6f;position:relative">
+                      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:#fff;border-radius:50%"></div>
+                    </div> Evet
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#94a3b8">
+                    <div style="width:12px;height:12px;border-radius:50%;border:2px solid #dde5e2"></div> Hayır
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Şu an kullandığınız ilaç var mı?</div>
+                <div style="display:flex;gap:8px;margin-top:4px">
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#334155">
+                    <div style="width:12px;height:12px;border-radius:50%;border:2px solid #dde5e2"></div> Evet
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#334155">
+                    <div style="width:12px;height:12px;border-radius:50%;border:2px solid #4a7c6f;background:#4a7c6f;position:relative">
+                      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;background:#fff;border-radius:50%"></div>
+                    </div> Hayır
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Acil iletişim kişisi</div>
+                <input class="form-input" placeholder="Ad Soyad, telefon" value="Ahmet Demir, 0533 123 00 00" readonly>
+              </div>
+              <button class="btn btn-primary" style="width:100%;margin-top:4px">Formu Gönder</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bekleyen Anamnez mockup -->
+    <div class="mockup" style="flex:none">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/dashboard — Bekleyen Anamnez</div>
+      </div>
+      <div style="background:#fff;padding:12px 16px">
+        <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:8px">Bekleyen Anamnez <span style="background:#f59e0b;color:#fff;border-radius:10px;padding:1px 8px;font-size:9px;margin-left:4px">2</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid #f1f5f9;border-radius:8px;margin-bottom:6px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#334155">Mehmet Demir</div>
+            <div style="font-size:9px;color:#94a3b8">Randevu: 16 Mayıs, 09:00</div>
+          </div>
+          <button class="btn btn-primary" style="font-size:8px;padding:4px 10px">Hatırlatıcı Gönder</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid #f1f5f9;border-radius:8px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:#334155">Zeynep Arslan</div>
+            <div style="font-size:9px;color:#94a3b8">Randevu: 16 Mayıs, 14:00</div>
+          </div>
+          <button class="btn btn-primary" style="font-size:8px;padding:4px 10px">Hatırlatıcı Gönder</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <div class="tip-title">Dashboard'dan takip edin</div>
+        <div class="tip-body">Dashboard'un "Bekleyen Anamnez" kartı, henüz doldurulmamış formları listeler. Hastanın formu doldurup doldurmadığını buradan anlık takip edebilirsiniz.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">8</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 7: SOAP ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 7</div>
+      <div class="chapter-title" style="margin-top:8px">SOAP Seans Notu</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Her seans sonrası yapılandırılmış SOAP notu oluşturun.
+        Randevu kartına girip <strong>"Seans Notu Ekle"</strong> butonuna tıklayın.
+        Notlar şifreli saklanır ve sadece siz erişebilirsiniz.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/appointments/123/note</div>
+      </div>
+      <div class="app-frame-tall">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item active"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item"><div class="nav-icon">👥</div> Hastalar</div>
+        </div>
+        <div class="main">
+          <div class="topbar"><div class="topbar-title">Seans Notu — Ayşe Kaya</div></div>
+          <div class="page-content">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="soap-section">
+                <div class="soap-label" style="color:#3b82f6">
+                  <div class="soap-dot" style="background:#3b82f6"></div>
+                  S — Subjective
+                </div>
+                <textarea class="form-input" rows="4" readonly style="resize:none;background:#f8fbff;border-color:#dbeafe">Danışan bu hafta iş yerinde yaşadığı yoğun stres ortamından söz etti. Geceleri uyumakta güçlük çektiğini ve sabah yorgun kalktığını belirtti...</textarea>
+              </div>
+              <div class="soap-section">
+                <div class="soap-label" style="color:#8b5cf6">
+                  <div class="soap-dot" style="background:#8b5cf6"></div>
+                  O — Objective
+                </div>
+                <textarea class="form-input" rows="4" readonly style="resize:none;background:#faf5ff;border-color:#ede9fe">Görüşme boyunca kaygılı bir beden dili gözlemlendi. Göz teması azalmış. Konuşma hızı artmış...</textarea>
+              </div>
+              <div class="soap-section">
+                <div class="soap-label" style="color:#f59e0b">
+                  <div class="soap-dot" style="background:#f59e0b"></div>
+                  A — Assessment
+                </div>
+                <textarea class="form-input" rows="4" readonly style="resize:none;background:#fffbeb;border-color:#fde68a">Genel anksiyete belirtileri devam ediyor. Bilişsel çarpıtmalar (felaketleştirme) belirgin. İş-yaşam dengesi üzerine çalışmak gerekiyor...</textarea>
+              </div>
+              <div class="soap-section">
+                <div class="soap-label" style="color:#4a7c6f">
+                  <div class="soap-dot" style="background:#4a7c6f"></div>
+                  P — Plan
+                </div>
+                <textarea class="form-input" rows="4" readonly style="resize:none;background:#f0fdf4;border-color:#bbf7d0">Sonraki seans için: nefes egzersizleri pratiği, düşünce günlüğü tutma. Ev ödevi: günde 5 dk mindfulness. 1 hafta sonra görüşme...</textarea>
+              </div>
+            </div>
+            <div class="btn-row" style="justify-content:flex-end">
+              <button class="btn btn-ghost">İptal</button>
+              <button class="btn btn-primary">Notu Kaydet</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:8px">Ne yazılır?</div>
+        <div style="font-size:10px;color:#334155;line-height:1.7">
+          <div style="margin-bottom:4px"><strong style="color:#3b82f6">S (Subjective):</strong> Hastanın bugünkü şikayeti</div>
+          <div style="margin-bottom:4px"><strong style="color:#8b5cf6">O (Objective):</strong> Gözlemleriniz, beden dili, iletişim tarzı</div>
+          <div style="margin-bottom:4px"><strong style="color:#f59e0b">A (Assessment):</strong> Değerlendirme ve tanı notları</div>
+          <div><strong style="color:#4a7c6f">P (Plan):</strong> Sonraki adımlar, ev ödevi, bir sonraki seans hedefi</div>
+        </div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:6px">AI Asistan</div>
+        <div style="font-size:10px;color:#166534;line-height:1.6">"Bugünün notunu yapay zeka ile özetle" butonuna tıklayarak sesli notlarınızı veya kısa anahtar kelimeleri otomatik SOAP formatına dönüştürebilirsiniz. Taslak oluşturulur, siz onaylarsınız.</div>
+        <div style="margin-top:8px">
+          <button class="btn btn-primary" style="font-size:8px;padding:4px 10px;background:#15803d">✦ AI ile Özetle</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="tip">
+        <div class="tip-icon">📝</div>
+        <div class="tip-content">
+          <div class="tip-title">Tüm geçmiş notlar</div>
+          <div class="tip-body">Hasta profiline girdiğinizde o hastanın tüm SOAP notları kronolojik sırayla listelenir.</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">⚠️</div>
+        <div class="tip-content">
+          <div class="tip-title">Eksik not uyarısı</div>
+          <div class="tip-body">Dashboard'da "Eksik SOAP Notu" bölümü not yazılmadan geçen randevuları hatırlatır.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">9</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 8: BEKLEME LİSTESİ ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 8</div>
+      <div class="chapter-title" style="margin-top:8px">Bekleme Listesi</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Randevu alamayan veya uygun saat bulamayan hastalar bekleme listesine alınabilir.
+        Bir randevu iptal edildiğinde sistem otomatik olarak listeden bir hastaya
+        WhatsApp üzerinden teklif gönderir.
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="browser-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <div class="browser-url">seansify.com/waiting-list</div>
+      </div>
+      <div class="app-frame">
+        <div class="sidebar">
+          <div class="sidebar-logo">sean<span>sify</span></div>
+          <div class="nav-item"><div class="nav-icon">🏠</div> Dashboard</div>
+          <div class="nav-item"><div class="nav-icon">📅</div> Randevular</div>
+          <div class="nav-item"><div class="nav-icon">👥</div> Hastalar</div>
+          <div class="nav-item active"><div class="nav-icon">🕐</div> Bekleme Listesi</div>
+        </div>
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Bekleme Listesi</div>
+            <button class="btn btn-primary" style="font-size:9px;padding:5px 10px">+ Ekle</button>
+          </div>
+          <div class="page-content">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <div style="background:#eff6ff;border-radius:8px;padding:10px 12px">
+                <div style="font-size:18px;font-weight:800;color:#2563eb">5</div>
+                <div style="font-size:9px;color:#1e40af">Bekleyen</div>
+              </div>
+              <div style="background:#fffbeb;border-radius:8px;padding:10px 12px">
+                <div style="font-size:18px;font-weight:800;color:#f59e0b">2</div>
+                <div style="font-size:9px;color:#92400e">Teklif Gönderildi</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:8px;padding:10px 12px">
+                <div style="font-size:18px;font-weight:800;color:#16a34a">8</div>
+                <div style="font-size:9px;color:#15803d">Bu Ay Yerleşti</div>
+              </div>
+            </div>
+
+            <div style="background:#fff;border-radius:10px;border:1px solid #dde5e2;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+              <div style="padding:8px 14px;background:#f8fafc;border-bottom:1px solid #f1f5f9;display:flex;gap:16px">
+                <div style="font-size:9px;font-weight:700;color:#334155;flex:2">Hasta</div>
+                <div style="font-size:9px;font-weight:700;color:#334155;flex:2">Tercih</div>
+                <div style="font-size:9px;font-weight:700;color:#334155;flex:1">Durum</div>
+                <div style="font-size:9px;font-weight:700;color:#334155;flex:1">Bekliyor</div>
+              </div>
+              <div class="wl-row">
+                <div style="flex:2;font-size:10px;font-weight:600;color:#334155">Emre Koç</div>
+                <div style="flex:2;font-size:9px;color:#64748b">Sal-Per, sabah</div>
+                <div style="flex:1"><span class="wl-badge badge-amber">Bekliyor</span></div>
+                <div style="flex:1;font-size:9px;color:#94a3b8">12 gün</div>
+              </div>
+              <div class="wl-row">
+                <div style="flex:2;font-size:10px;font-weight:600;color:#334155">Selin Yıldız</div>
+                <div style="flex:2;font-size:9px;color:#64748b">Pzt-Çar, öğleden sonra</div>
+                <div style="flex:1"><span class="wl-badge" style="background:#dbeafe;color:#1d4ed8;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px">Teklif</span></div>
+                <div style="flex:1;font-size:9px;color:#94a3b8">3 gün</div>
+              </div>
+              <div class="wl-row">
+                <div style="flex:2;font-size:10px;font-weight:600;color:#334155">Can Özdemir</div>
+                <div style="flex:2;font-size:9px;color:#64748b">Esnek</div>
+                <div style="flex:1"><span class="wl-badge badge-amber">Bekliyor</span></div>
+                <div style="flex:1;font-size:9px;color:#94a3b8">5 gün</div>
+              </div>
+              <div class="wl-row">
+                <div style="flex:2;font-size:10px;font-weight:600;color:#334155">Dilara Şen</div>
+                <div style="flex:2;font-size:9px;color:#64748b">Cum, akşam</div>
+                <div style="flex:1"><span class="wl-badge badge-amber">Bekliyor</span></div>
+                <div style="flex:1;font-size:9px;color:#94a3b8">1 gün</div>
+              </div>
+              <div class="wl-row">
+                <div style="flex:2;font-size:10px;font-weight:600;color:#334155">Hande Kılıç</div>
+                <div style="flex:2;font-size:9px;color:#64748b">Pzt, sabah</div>
+                <div style="flex:1"><span class="wl-badge" style="background:#dbeafe;color:#1d4ed8;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px">Teklif</span></div>
+                <div style="flex:1;font-size:9px;color:#94a3b8">Bugün</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;margin-bottom:2px">
+      <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:8px">Bekleme listesi nasıl çalışır?</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">📋</div>
+          <div style="font-size:9px;font-weight:700;color:#334155">Hasta Eklenir</div>
+          <div style="font-size:8px;color:#94a3b8;margin-top:2px">Gün/saat tercihi ile listeye alınır</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">❌</div>
+          <div style="font-size:9px;font-weight:700;color:#334155">Randevu İptal</div>
+          <div style="font-size:8px;color:#94a3b8;margin-top:2px">Bir hasta randevusunu iptal eder</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">💬</div>
+          <div style="font-size:9px;font-weight:700;color:#334155">WA Teklifi</div>
+          <div style="font-size:8px;color:#94a3b8;margin-top:2px">Uygun hastaya otomatik mesaj gönderilir</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✅</div>
+          <div style="font-size:9px;font-weight:700;color:#334155">Randevu Oluşur</div>
+          <div style="font-size:8px;color:#94a3b8;margin-top:2px">Hasta kabul edince otomatik kaydedilir</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">🔄</div>
+      <div class="tip-content">
+        <div class="tip-title">Otomatik dolum nasıl çalışır?</div>
+        <div class="tip-body">Bir randevu iptal edildiğinde sistem listedeki ilk uygun hastaya "Bu saat açıldı, almak ister misiniz?" mesajı gönderir. Hasta "Evet" yanıtlarsa randevu otomatik oluşturulur ve size bildirim gelir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">10</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 9: PROFİL ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 9</div>
+      <div class="chapter-title" style="margin-top:8px">Profil Sayfası</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        seansify.com/<strong>adınız</strong> adresinde kişisel profiliniz yayınlanır.
+        Danışan adayları burada fotoğrafınızı, uzmanlıklarınızı ve yorumlarınızı görür;
+        doğrudan randevu alabilir.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1">
+      <!-- Editor -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px">Profil Düzenle (Dashboard)</div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/profil</div>
+          </div>
+          <div style="background:#f8fafc;padding:12px;display:flex;flex-direction:column;gap:8px;flex:1">
+            <div class="form-card" style="padding:10px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a7c6f,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff">EŞ</div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#334155">Fotoğraf Yükle</div>
+                  <div style="font-size:9px;color:#94a3b8">JPG veya PNG, maks. 5 MB</div>
+                  <button class="btn btn-ghost" style="font-size:8px;padding:3px 8px;margin-top:4px">Değiştir</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Unvan</div>
+                <input class="form-input" value="Klinik Psikolog" readonly>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Bio (kısa tanıtım)</div>
+                <textarea class="form-input" rows="2" readonly style="resize:none">Kaygı bozuklukları ve travma alanında 8 yıllık klinik deneyime sahibim...</textarea>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Uzmanlıklar</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+                  <span style="background:#f0fdf4;color:#15803d;font-size:8px;font-weight:700;padding:2px 8px;border-radius:5px">Kaygı</span>
+                  <span style="background:#f0fdf4;color:#15803d;font-size:8px;font-weight:700;padding:2px 8px;border-radius:5px">Travma</span>
+                  <span style="background:#f0fdf4;color:#15803d;font-size:8px;font-weight:700;padding:2px 8px;border-radius:5px">Depresyon</span>
+                  <span style="background:#f8fafc;color:#94a3b8;font-size:8px;font-weight:600;padding:2px 8px;border-radius:5px;border:1px dashed #dde5e2">+ Ekle</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Seans Ücreti</div>
+                <input class="form-input" value="800 ₺" readonly>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Bağlantı (booking slug)</div>
+                <input class="form-input" value="elif-sahin" readonly>
+                <div class="form-hint">seansify.com/elif-sahin adresinde yayınlanır</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Klinik Adres</div>
+                <input class="form-input" value="Bağcılar Mah. İstiklal Cad. No:12, İstanbul" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public profile -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px">Yayınlanan Profil (seansify.com/elif)</div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/elif</div>
+          </div>
+          <div style="display:flex;flex-direction:column;flex:1">
+            <div class="profile-hero">
+              <div class="profile-avatar-big">EŞ</div>
+              <div class="profile-name">Klinik Psikolog Elif Şahin</div>
+              <div class="profile-title-text">Kaygı · Travma · Depresyon</div>
+              <div style="margin-top:8px">
+                <button style="background:linear-gradient(135deg,#4a7c6f,#3d6b5e);color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:10px;font-weight:700;cursor:pointer">Randevu Al</button>
+              </div>
+              <div class="profile-tabs">
+                <div class="profile-tab active">Hakkımda</div>
+                <div class="profile-tab">Blog</div>
+                <div class="profile-tab">Yorumlar</div>
+              </div>
+            </div>
+            <div class="profile-body" style="overflow:hidden">
+              <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e4eeea;margin-bottom:6px">
+                <div style="font-size:10px;font-weight:700;color:#0d1f18;margin-bottom:4px">Hakkımda</div>
+                <div style="font-size:9px;color:#64748b;line-height:1.5">Kaygı bozuklukları ve travma alanında 8 yıllık klinik deneyime sahibim. BDT odaklı çalışıyorum...</div>
+              </div>
+              <div class="review-card">
+                <div class="star-row">
+                  <div class="star on">★</div><div class="star on">★</div><div class="star on">★</div><div class="star on">★</div><div class="star on">★</div>
+                </div>
+                <div class="review-text">"Çok anlayışlı ve güven veren bir terapist. Teşekkürler."</div>
+                <div class="review-init">A.K. · 2 hafta önce</div>
+              </div>
+              <div class="review-card">
+                <div class="star-row">
+                  <div class="star on">★</div><div class="star on">★</div><div class="star on">★</div><div class="star on">★</div><div class="star off">★</div>
+                </div>
+                <div class="review-text">"Çok profesyonel, herkese tavsiye ederim."</div>
+                <div class="review-init">B.K. · 1 ay önce</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nasıl paylaşırsınız? -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+      <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:12px">Profilinizi nasıl paylaşırsınız?</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div style="background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px">
+          <div style="font-size:16px;margin-bottom:6px">📸</div>
+          <div style="font-size:10px;font-weight:700;color:#0d1f18;margin-bottom:4px">Instagram Bio</div>
+          <div style="font-size:9px;color:#64748b;line-height:1.5">seansify.com/adınız linkini Instagram biyografinize yapıştırın. Takipçileriniz direkt randevu alabilir.</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px">
+          <div style="font-size:16px;margin-bottom:6px">💼</div>
+          <div style="font-size:10px;font-weight:700;color:#0d1f18;margin-bottom:4px">LinkedIn</div>
+          <div style="font-size:9px;color:#64748b;line-height:1.5">LinkedIn profilinizin iletişim bölümüne web siteniz olarak ekleyin. Profesyonel görünürlüğünüzü artırır.</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px">
+          <div style="font-size:16px;margin-bottom:6px">✉️</div>
+          <div style="font-size:10px;font-weight:700;color:#0d1f18;margin-bottom:4px">E-posta İmzası</div>
+          <div style="font-size:9px;color:#64748b;line-height:1.5">Her e-postanızın altına otomatik ekleme yapın. Potansiyel danışanlar bağlantıya tek tıkla ulaşır.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">🔗</div>
+      <div class="tip-content">
+        <div class="tip-title">Profilinizi paylaşın</div>
+        <div class="tip-body">seansify.com/adınız linkini Instagram biyografinize, LinkedIn profilinize ve e-posta imzanıza ekleyin. Danışan adayları direkt bu sayfadan randevu alabilir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">11</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ BÖLÜM 10: BLOG & YORUMLAR ═══════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div>
+      <div class="chapter-badge">Bölüm 10</div>
+      <div class="chapter-title" style="margin-top:8px">Blog & Danışan Yorumları</div>
+      <div class="chapter-desc" style="margin-top:6px">
+        Blog yazıları profil sayfanızda yayınlanır ve organik keşfedilmenizi artırır.
+        Danışan yorumları ise seans tamamlandıktan sonra otomatik WhatsApp linki ile toplanır,
+        siz onayladıktan sonra profilinizde görünür.
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1">
+      <!-- Blog -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px">Blog Yönetimi</div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/bloglar</div>
+          </div>
+          <div style="background:#f8fafc;padding:10px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:10px;font-weight:700;color:#334155">Bloglarım <span style="background:#4a7c6f;color:#fff;border-radius:10px;padding:1px 7px;font-size:8px;margin-left:4px">3</span></div>
+              <button class="btn btn-primary" style="font-size:8px;padding:4px 8px">+ Yeni Yazı</button>
+            </div>
+            <div class="blog-card">
+              <div class="blog-cat" style="background:#fef3c7;color:#92400e">Kaygı</div>
+              <div class="blog-title">Sınav kaygısıyla başa çıkmanın 5 yolu</div>
+              <div class="blog-excerpt">Sınavlar yaklaştığında ortaya çıkan yoğun stres ve kaygı duygusu çok sayıda öğrenciyi...</div>
+              <div class="blog-meta">14 Mayıs 2025 · 4 dk okuma · <span style="color:#16a34a;font-weight:600">Yayında</span></div>
+            </div>
+            <div class="blog-card">
+              <div class="blog-cat" style="background:#e0e7ff;color:#3730a3">Depresyon</div>
+              <div class="blog-title">Depresyon ve uyku bozukluğu ilişkisi</div>
+              <div class="blog-excerpt">Uyku düzensizliği ile depresyon arasındaki döngüsel ilişki nasıl kırılır?...</div>
+              <div class="blog-meta">2 Mayıs 2025 · 6 dk okuma · <span style="color:#16a34a;font-weight:600">Yayında</span></div>
+            </div>
+            <div class="blog-card">
+              <div class="blog-cat" style="background:#fef9c3;color:#a16207">Stres</div>
+              <div class="blog-title">Kronik stres belirtileri ve baş etme yolları</div>
+              <div class="blog-excerpt">Sürekli gerginlik, uyku bozukluğu ve yorgunluk kronik stresin habercisi olabilir...</div>
+              <div class="blog-meta">25 Nisan 2025 · 5 dk okuma · <span style="color:#16a34a;font-weight:600">Yayında</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yorumlar -->
+      <div style="display:flex;flex-direction:column">
+        <div style="font-size:11px;font-weight:700;color:#334155;margin-bottom:8px">Yorum Yönetimi</div>
+        <div class="mockup">
+          <div class="browser-bar">
+            <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            <div class="browser-url">seansify.com/yorumlar</div>
+          </div>
+          <div style="background:#f8fafc;padding:10px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:4px">
+              <div style="background:#fffbeb;border-radius:8px;padding:8px;border:1px solid #fde68a22">
+                <div style="font-size:18px;font-weight:800;color:#f59e0b">4.8</div>
+                <div style="font-size:8px;color:#94a3b8">Ortalama</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:8px;padding:8px;border:1px solid #4a7c6f22">
+                <div style="font-size:18px;font-weight:800;color:#4a7c6f">12</div>
+                <div style="font-size:8px;color:#94a3b8">Yayında</div>
+              </div>
+              <div style="background:#fffbeb;border-radius:8px;padding:8px;border:1px solid #f59e0b22">
+                <div style="font-size:18px;font-weight:800;color:#f59e0b">2</div>
+                <div style="font-size:8px;color:#94a3b8">Bekleyen</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <button style="padding:5px 12px;border-radius:8px;font-size:9px;font-weight:600;border:1.5px solid #4a7c6f;background:#f0fdf4;color:#15803d;cursor:pointer">Bekleyen (2)</button>
+              <button style="padding:5px 12px;border-radius:8px;font-size:9px;font-weight:600;border:1.5px solid #dde5e2;background:#fff;color:#64748b;cursor:pointer">Yayında (12)</button>
+            </div>
+
+            <div style="background:#fff;border-radius:10px;border:1px solid #fde68a;border-left:3px solid #f59e0b;padding:10px;margin-bottom:4px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4a7c6f,#6ee7b7);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">MK</div>
+                <div style="flex:1">
+                  <div class="star-row"><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div></div>
+                  <div style="font-size:9px;color:#475569;margin-top:2px">"Çok anlayışlı, her seans fark yaratıyor."</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:8px">
+                <button class="btn btn-primary" style="font-size:8px;padding:3px 10px">✓ Onayla</button>
+                <button style="padding:3px 10px;border-radius:6px;font-size:8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;cursor:pointer">Sil</button>
+              </div>
+            </div>
+            <div style="background:#fff;border-radius:10px;border:1px solid #fde68a;border-left:3px solid #f59e0b;padding:10px;margin-bottom:4px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#93c5fd);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">AY</div>
+                <div style="flex:1">
+                  <div class="star-row"><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div><div class="star on" style="font-size:9px">★</div></div>
+                  <div style="font-size:9px;color:#475569;margin-top:2px">"İlk seansta çok rahat hissettim, teşekkürler."</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:8px">
+                <button class="btn btn-primary" style="font-size:8px;padding:3px 10px">✓ Onayla</button>
+                <button style="padding:3px 10px;border-radius:6px;font-size:8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;cursor:pointer">Sil</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yorum toplama akışı -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px">
+      <div style="font-size:11px;font-weight:700;color:#0d1f18;margin-bottom:12px">Yorum toplama süreci nasıl işler?</div>
+      <div style="display:flex;align-items:center;gap:0">
+        <div style="flex:1;background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:16px;margin-bottom:4px">📅</div>
+          <div style="font-size:9px;font-weight:700;color:#0d1f18">Randevu<br>Tamamlandı</div>
+        </div>
+        <div style="font-size:14px;color:#94a3b8;padding:0 6px;flex-shrink:0">→</div>
+        <div style="flex:1;background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:16px;margin-bottom:4px">💬</div>
+          <div style="font-size:9px;font-weight:700;color:#0d1f18">WhatsApp<br>Linki Gönderilir</div>
+        </div>
+        <div style="font-size:14px;color:#94a3b8;padding:0 6px;flex-shrink:0">→</div>
+        <div style="flex:1;background:#fff;border:1px solid #e4eeea;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:16px;margin-bottom:4px">📝</div>
+          <div style="font-size:9px;font-weight:700;color:#0d1f18">Hasta Formu<br>Doldurur</div>
+        </div>
+        <div style="font-size:14px;color:#94a3b8;padding:0 6px;flex-shrink:0">→</div>
+        <div style="flex:1;background:#fff;border:1px solid #bbf7d0;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:16px;margin-bottom:4px">✅</div>
+          <div style="font-size:9px;font-weight:700;color:#15803d">Sen Onaylarsın<br>→ Profilde Yayın</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <div class="tip-icon">⭐</div>
+      <div class="tip-content">
+        <div class="tip-title">Yorum nasıl toplanır?</div>
+        <div class="tip-body">Randevu "Tamamlandı" olarak işaretlendiğinde sistem otomatik olarak hastaya WhatsApp üzerinden değerlendirme linki gönderir. Hasta formu doldurur, yorum size gelir; onayladıktan sonra profilinizde yayınlanır.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-brand"><span>sean</span>sify · Kullanım Kılavuzu</div>
+    <div class="footer-page">12</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ KAPANIŞ ═══════════════════════════════════════ -->
+<div class="page">
+  <div style="background:linear-gradient(150deg,#0b1c14 0%,#1e4535 55%,#2d6b52 100%);min-height:297mm;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:52px 48px;text-align:center">
+    <div style="font-size:48px;margin-bottom:24px">🚀</div>
+    <div style="font-size: 36px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:16px;line-height:1.1">Başlamaya hazırsınız!</div>
+    <div style="font-size:15px;color:rgba(255,255,255,0.55);max-width:400px;line-height:1.7;margin-bottom:40px">
+      Bu kılavuzdaki adımları takip ederek Seansify'ı tam kapasiteyle kullanmaya başlayabilirsiniz.
+      Sorunuz olursa destek ekibimiz her zaman yanınızda.
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:480px;margin-bottom:48px">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">💬</div>
+        <div style="font-size:11px;font-weight:700;color:#6ee7b7;margin-bottom:4px">Destek</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">WhatsApp veya e-posta ile ulaşın</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">📚</div>
+        <div style="font-size:11px;font-weight:700;color:#6ee7b7;margin-bottom:4px">Yardım Merkezi</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Sık sorulan sorular ve videolar</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">🔄</div>
+        <div style="font-size:11px;font-weight:700;color:#6ee7b7;margin-bottom:4px">Güncellemeler</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4)">Yeni özellikler düzenli eklenir</div>
+      </div>
+    </div>
+
+    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#6ee7b7">seans<span style="color:rgba(255,255,255,0.5)">ify.com</span></div>
+  </div>
+</div>
+
+<!-- PRINT BUTTON -->
+<div class="no-print" style="position:fixed;bottom:24px;right:24px;display:flex;gap:10px">
+  <button onclick="window.print()" style="background:#4a7c6f;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(74,124,111,0.4)">
+    🖨️ PDF Olarak Kaydet
+  </button>
+</div>
+
+</body>
+</html>
+

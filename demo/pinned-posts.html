@@ -1,0 +1,511 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+<title>Seansify — 3 Pinned Post</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f1923; font-family:'Segoe UI',system-ui,sans-serif; padding:32px; }
+h1 { color:#6ee7b7; font-size:13px; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
+.post-label { color:#475569; font-size:12px; margin-bottom:20px; }
+.post-section { margin-bottom:60px; }
+.slides-row { display:flex; gap:14px; flex-wrap:wrap; }
+.slide-wrap { display:flex; flex-direction:column; gap:8px; }
+.slide-tag { color:#64748b; font-size:10px; text-align:center; letter-spacing:1px; text-transform:uppercase; }
+.slide {
+  width:540px; height:540px;
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.btn {
+  padding:8px 0; background:#4a7c6f; color:white;
+  border:none; border-radius:8px; font-size:11px;
+  cursor:pointer; font-weight:700; letter-spacing:0.5px;
+  transition:opacity .15s;
+}
+.btn:hover { opacity:.8; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     POST 1 — ZAMANINI KAZAN
+══════════════════════════════════════════════════════════ -->
+<div class="post-section">
+<h1>Post 1 — Zamanını Kazan</h1>
+<p class="post-label">WhatsApp hatırlatıcı · Randevu linki · Bekleme listesi · Tatil modu</p>
+<div class="slides-row">
+
+  <!-- KAPAK -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Kapak (grid)</div>
+    <div class="slide" id="p1c">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 18% 22%, #1f4d3a 0%, #0d1f18 55%, #060e0a 100%);"></div>
+      <!-- decorative rings top-right -->
+      <div style="position:absolute;top:-100px;right:-100px;width:380px;height:380px;border-radius:50%;border:1px solid rgba(110,231,183,0.1);"></div>
+      <div style="position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(110,231,183,0.15);"></div>
+      <div style="position:absolute;top:-20px;right:-20px;width:150px;height:150px;border-radius:50%;background:rgba(74,124,111,0.08);"></div>
+      <!-- bottom-left dot cluster -->
+      <div style="position:absolute;bottom:80px;left:30px;width:5px;height:5px;border-radius:50%;background:rgba(110,231,183,0.4);"></div>
+      <div style="position:absolute;bottom:95px;left:50px;width:3px;height:3px;border-radius:50%;background:rgba(110,231,183,0.25);"></div>
+      <div style="position:absolute;bottom:68px;left:52px;width:4px;height:4px;border-radius:50%;background:rgba(110,231,183,0.3);"></div>
+      <!-- phone mockup -->
+      <div style="position:absolute;right:48px;bottom:64px;width:120px;height:210px;border-radius:18px;border:1.5px solid rgba(110,231,183,0.25);background:rgba(9,21,16,0.9);overflow:hidden;box-shadow:0 0 40px rgba(110,231,183,0.06);">
+        <div style="height:22px;background:rgba(74,124,111,0.35);display:flex;align-items:center;padding:0 8px;gap:4px;">
+          <div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;opacity:0.6;"></div>
+          <div style="flex:1;height:3px;border-radius:2px;background:rgba(110,231,183,0.2);"></div>
+        </div>
+        <div style="margin:8px 6px 0;background:rgba(74,124,111,0.2);border-radius:7px;padding:6px 7px;border-left:2px solid #6ee7b7;">
+          <div style="font-size:6.5px;color:#6ee7b7;font-weight:700;margin-bottom:2px;">WhatsApp · Seansify</div>
+          <div style="font-size:5.5px;color:rgba(255,255,255,0.65);line-height:1.5;">Yarın 14:00 randevunuz var 🗓️</div>
+        </div>
+        <div style="margin:6px 6px 0;display:flex;flex-direction:column;gap:5px;">
+          <div style="height:9px;background:rgba(74,124,111,0.2);border-radius:4px;"></div>
+          <div style="height:9px;background:rgba(74,124,111,0.15);border-radius:4px;width:75%;"></div>
+          <div style="height:9px;background:rgba(110,231,183,0.15);border-radius:4px;"></div>
+          <div style="height:9px;background:rgba(74,124,111,0.1);border-radius:4px;width:85%;"></div>
+        </div>
+      </div>
+      <!-- text -->
+      <div style="position:relative;z-index:2;padding:44px 36px;width:100%;text-align:left;">
+        <div style="font-size:10px;letter-spacing:3.5px;color:#6ee7b7;font-weight:700;margin-bottom:18px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:54px;font-weight:900;line-height:1.0;color:white;margin-bottom:22px;">Zamanını<br>Kazan</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">WhatsApp hatırlatıcı</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Kişisel randevu linki</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Bekleme listesi</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Tatil modu</span></div>
+        </div>
+        <div style="margin-top:30px;font-size:11px;color:rgba(255,255,255,0.2);">1 / 3</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p1c','seansify-post1-kapak')">Kapak İndir</button>
+  </div>
+
+  <!-- SLIDE 2 — WhatsApp -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 2</div>
+    <div class="slide" id="p1s2">
+      <div style="position:absolute;inset:0;background:linear-gradient(150deg,#0d1f18 0%,#1a3d2b 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">WhatsApp<br>Hatırlatıcı</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 28px;">Randevudan önce danışanlarına otomatik mesaj gider. No-show oranı düşer, telefon trafiği sıfırlanır.</div>
+        <div style="background:rgba(74,124,111,0.18);border-radius:14px;padding:16px 20px;text-align:left;border:1px solid rgba(110,231,183,0.18);">
+          <div style="font-size:10.5px;color:#6ee7b7;font-weight:700;margin-bottom:5px;letter-spacing:0.5px;">Seansify · Otomatik mesaj</div>
+          <div style="font-size:13.5px;color:rgba(255,255,255,0.72);line-height:1.55;">Merhaba Ayşe Hanım, yarın saat 14:00'te randevunuz var. İyi günler 🗓️</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p1s2','seansify-post1-whatsapp')">İndir</button>
+  </div>
+
+  <!-- SLIDE 3 — Randevu linki -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 3</div>
+    <div class="slide" id="p1s3">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 75% 20%, #1f4d3a 0%, #0d1f18 65%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">Kişisel<br>Randevu Linki</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 28px;">Linki bio'na koy, danışanların takviminde uygun saati seçip randevu alsın. Hiç telefon açmadan.</div>
+        <div style="background:rgba(0,0,0,0.35);border-radius:12px;padding:12px 20px;display:inline-block;border:1px solid rgba(110,231,183,0.2);">
+          <span style="font-size:14px;color:#6ee7b7;font-family:monospace;letter-spacing:0.3px;">seansify.com/<strong>adiniz</strong></span>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p1s3','seansify-post1-link')">İndir</button>
+  </div>
+
+  <!-- SLIDE 4 — Bekleme + Tatil -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 4</div>
+    <div class="slide" id="p1s4">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#060e0a 0%,#1a3d2b 55%,#0d1f18 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;width:100%;">
+        <div style="margin-bottom:28px;">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Bekleme Listesi</div>
+              <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">Dolu saate gelen danışan sıraya girer. Boşluk açılınca WhatsApp'tan bildirim alır.</div>
+            </div>
+          </div>
+          <div style="height:1px;background:rgba(110,231,183,0.1);margin-bottom:24px;"></div>
+          <div style="display:flex;align-items:flex-start;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14" stroke-width="3"/><line x1="12" y1="14" x2="12" y2="14" stroke-width="3"/></svg>
+            </div>
+            <div>
+              <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Tatil Modu</div>
+              <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">İzne çıkıyorsun? Tek tuşla yeni randevu almayı durdur, döndüğünde aç.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p1s4','seansify-post1-bekleme-tatil')">İndir</button>
+  </div>
+
+  <!-- SLIDE 5 — CTA -->
+  <div class="slide-wrap">
+    <div class="slide-tag">CTA</div>
+    <div class="slide" id="p1s5">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, #1f4d3a 0%, #0d1f18 65%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#6ee7b7,transparent);"></div>
+      <div style="position:relative;z-index:2;text-align:center;padding:52px 44px;">
+        <div style="font-size:11px;letter-spacing:4px;color:#6ee7b7;font-weight:700;margin-bottom:28px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:42px;font-weight:900;color:white;line-height:1.1;margin-bottom:14px;">14 gün<br>ücretsiz<br>dene</div>
+        <div style="display:inline-block;background:linear-gradient(135deg,#4a7c6f,#3a6a5f);color:white;font-size:16px;font-weight:700;padding:15px 40px;border-radius:50px;letter-spacing:0.3px;">seansify.com →</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p1s5','seansify-post1-cta')">İndir</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     POST 2 — DANIŞANINI TANI
+══════════════════════════════════════════════════════════ -->
+<div class="post-section">
+<h1>Post 2 — Danışanını Tanı</h1>
+<p class="post-label">Anamnez formu · SOAP notu · Danışan profili · Yorum & değerlendirme</p>
+<div class="slides-row">
+
+  <!-- KAPAK -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Kapak (grid)</div>
+    <div class="slide" id="p2c">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%, #163324 0%, #0d1f18 55%, #060e0a 100%);"></div>
+      <!-- rings centered -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:460px;height:460px;border-radius:50%;border:1px solid rgba(110,231,183,0.07);"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;border:1px solid rgba(110,231,183,0.1);"></div>
+      <!-- phone mockup center-right -->
+      <div style="position:absolute;right:44px;top:50%;transform:translateY(-50%);width:118px;height:200px;border-radius:16px;border:1.5px solid rgba(110,231,183,0.25);background:rgba(9,21,16,0.92);overflow:hidden;box-shadow:0 0 40px rgba(110,231,183,0.05);">
+        <div style="height:20px;background:rgba(74,124,111,0.35);display:flex;align-items:center;padding:0 7px;gap:3px;">
+          <div style="font-size:5.5px;color:rgba(255,255,255,0.5);flex:1;">Anamnez Formu</div>
+        </div>
+        <div style="padding:6px;">
+          <div style="font-size:5px;color:rgba(110,231,183,0.7);margin-bottom:3px;">Ad Soyad</div>
+          <div style="height:8px;background:rgba(74,124,111,0.2);border-radius:3px;margin-bottom:6px;border:0.5px solid rgba(110,231,183,0.15);"></div>
+          <div style="font-size:5px;color:rgba(110,231,183,0.7);margin-bottom:3px;">Başvuru nedeni</div>
+          <div style="height:18px;background:rgba(74,124,111,0.2);border-radius:3px;margin-bottom:6px;border:0.5px solid rgba(110,231,183,0.15);"></div>
+          <div style="font-size:5px;color:rgba(110,231,183,0.7);margin-bottom:3px;">İlaç kullanıyor mu?</div>
+          <div style="display:flex;gap:4px;">
+            <div style="flex:1;height:8px;background:rgba(74,124,111,0.3);border-radius:3px;"></div>
+            <div style="flex:1;height:8px;background:rgba(74,124,111,0.15);border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- text -->
+      <div style="position:relative;z-index:2;padding:44px 36px;width:100%;text-align:left;">
+        <div style="font-size:10px;letter-spacing:3.5px;color:#6ee7b7;font-weight:700;margin-bottom:18px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:54px;font-weight:900;line-height:1.0;color:white;margin-bottom:22px;">Danışanını<br>Tanı</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Dijital anamnez formu</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">SOAP seans notu</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Danışan profili & geçmiş</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Değerlendirme & yorum</span></div>
+        </div>
+        <div style="margin-top:30px;font-size:11px;color:rgba(255,255,255,0.2);">2 / 3</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p2c','seansify-post2-kapak')">Kapak İndir</button>
+  </div>
+
+  <!-- SLIDE 2 — Anamnez -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 2</div>
+    <div class="slide" id="p2s2">
+      <div style="position:absolute;inset:0;background:linear-gradient(150deg,#060e0a 0%,#163324 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">Dijital<br>Anamnez Formu</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 28px;">Danışan ilk seans öncesi formu kendi telefonundan doldurur. Seans başlamadan hikâyeyi bilirsin.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(74,124,111,0.15);border-radius:10px;padding:10px 14px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="width:8px;height:8px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div>
+            <span style="font-size:13px;color:rgba(255,255,255,0.7);">KVKK onayı dahil, yasal uyumlu</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(74,124,111,0.15);border-radius:10px;padding:10px 14px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="width:8px;height:8px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div>
+            <span style="font-size:13px;color:rgba(255,255,255,0.7);">Kâğıt form yok, arşiv yok</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p2s2','seansify-post2-anamnez')">İndir</button>
+  </div>
+
+  <!-- SLIDE 3 — SOAP -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 3</div>
+    <div class="slide" id="p2s3">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%, #163324 0%, #0d1f18 65%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">SOAP<br>Seans Notu</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 24px;">Subjektif, Objektif, Değerlendirme, Plan. Her seans sonrası yapılandırılmış not, bir tıklamayla.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left;">
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:10px 12px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:#6ee7b7;font-weight:700;margin-bottom:3px;">S — Subjektif</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);">Danışan anlatımı</div>
+          </div>
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:10px 12px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:#6ee7b7;font-weight:700;margin-bottom:3px;">O — Objektif</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);">Gözlemler</div>
+          </div>
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:10px 12px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:#6ee7b7;font-weight:700;margin-bottom:3px;">A — Değerlendirme</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);">Klinik yorum</div>
+          </div>
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:10px 12px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:#6ee7b7;font-weight:700;margin-bottom:3px;">P — Plan</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);">Sonraki adımlar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p2s3','seansify-post2-soap')">İndir</button>
+  </div>
+
+  <!-- SLIDE 4 — Profil + Yorum -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 4</div>
+    <div class="slide" id="p2s4">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#060e0a 0%,#163324 60%,#0d1f18 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;width:100%;">
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;">
+          <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Danışan Profili</div>
+            <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">Tüm seans geçmişi, notlar, ödevler ve iletişim tek bir sayfada.</div>
+          </div>
+        </div>
+        <div style="height:1px;background:rgba(110,231,183,0.1);margin-bottom:24px;"></div>
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+          <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Danışan Yorumu</div>
+            <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">Seans sonrası danışana değerlendirme linki gönder. Yorumlar profil sayfanda görünür.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p2s4','seansify-post2-profil-yorum')">İndir</button>
+  </div>
+
+  <!-- SLIDE 5 — CTA -->
+  <div class="slide-wrap">
+    <div class="slide-tag">CTA</div>
+    <div class="slide" id="p2s5">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, #163324 0%, #0d1f18 65%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#6ee7b7,transparent);"></div>
+      <div style="position:relative;z-index:2;text-align:center;padding:52px 44px;">
+        <div style="font-size:11px;letter-spacing:4px;color:#6ee7b7;font-weight:700;margin-bottom:28px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:42px;font-weight:900;color:white;line-height:1.1;margin-bottom:14px;">14 gün<br>ücretsiz<br>dene</div>
+        <div style="display:inline-block;background:linear-gradient(135deg,#4a7c6f,#3a6a5f);color:white;font-size:16px;font-weight:700;padding:15px 40px;border-radius:50px;">seansify.com →</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p2s5','seansify-post2-cta')">İndir</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     POST 3 — İŞİNİ BÜYÜT
+══════════════════════════════════════════════════════════ -->
+<div class="post-section">
+<h1>Post 3 — İşini Büyüt</h1>
+<p class="post-label">Seans paketleri · Ödeme raporu · Otomatik makbuz · Profil sayfası</p>
+<div class="slides-row">
+
+  <!-- KAPAK -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Kapak (grid)</div>
+    <div class="slide" id="p3c">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 75%, #1f4d3a 0%, #0d1f18 55%, #060e0a 100%);"></div>
+      <!-- rings bottom-right -->
+      <div style="position:absolute;bottom:-100px;left:-100px;width:380px;height:380px;border-radius:50%;border:1px solid rgba(110,231,183,0.08);"></div>
+      <div style="position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(110,231,183,0.13);"></div>
+      <!-- phone mockup with chart -->
+      <div style="position:absolute;right:44px;bottom:56px;width:118px;height:200px;border-radius:16px;border:1.5px solid rgba(110,231,183,0.25);background:rgba(9,21,16,0.92);overflow:hidden;box-shadow:0 0 40px rgba(110,231,183,0.06);">
+        <div style="height:20px;background:rgba(74,124,111,0.35);display:flex;align-items:center;padding:0 7px;">
+          <div style="font-size:5.5px;color:rgba(255,255,255,0.5);flex:1;">Aylık Rapor</div>
+        </div>
+        <div style="padding:6px;">
+          <div style="font-size:5px;color:rgba(110,231,183,0.7);margin-bottom:2px;">Mayıs 2025</div>
+          <div style="font-size:9px;color:white;font-weight:700;margin-bottom:6px;">₺18.400</div>
+          <!-- mini bar chart -->
+          <div style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-bottom:6px;">
+            <div style="flex:1;background:rgba(74,124,111,0.4);border-radius:2px 2px 0 0;height:55%;"></div>
+            <div style="flex:1;background:rgba(74,124,111,0.4);border-radius:2px 2px 0 0;height:70%;"></div>
+            <div style="flex:1;background:rgba(110,231,183,0.6);border-radius:2px 2px 0 0;height:100%;"></div>
+            <div style="flex:1;background:rgba(74,124,111,0.4);border-radius:2px 2px 0 0;height:80%;"></div>
+            <div style="flex:1;background:rgba(74,124,111,0.35);border-radius:2px 2px 0 0;height:60%;"></div>
+          </div>
+          <div style="height:1px;background:rgba(110,231,183,0.15);margin-bottom:5px;"></div>
+          <div style="font-size:5px;color:rgba(110,231,183,0.6);">12 seans tamamlandı</div>
+        </div>
+      </div>
+      <!-- text -->
+      <div style="position:relative;z-index:2;padding:44px 36px;width:100%;text-align:left;">
+        <div style="font-size:10px;letter-spacing:3.5px;color:#6ee7b7;font-weight:700;margin-bottom:18px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:54px;font-weight:900;line-height:1.0;color:white;margin-bottom:22px;">İşini<br>Büyüt</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Seans paketleri</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Gelir & ödeme raporu</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Otomatik makbuz</span></div>
+          <div style="display:flex;align-items:center;gap:9px;"><div style="width:5px;height:5px;border-radius:50%;background:#6ee7b7;flex-shrink:0;"></div><span style="font-size:12.5px;color:rgba(255,255,255,0.7);">Profil sayfası & SEO</span></div>
+        </div>
+        <div style="margin-top:30px;font-size:11px;color:rgba(255,255,255,0.2);">3 / 3</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p3c','seansify-post3-kapak')">Kapak İndir</button>
+  </div>
+
+  <!-- SLIDE 2 — Paketler -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 2</div>
+    <div class="slide" id="p3s2">
+      <div style="position:absolute;inset:0;background:linear-gradient(150deg,#060e0a 0%,#1f4d3a 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">Seans<br>Paketleri</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 24px;">Danışan randevu alırken paketi de seçsin. 5 seans, 10 seans — fiyat ve seans sayısını sen belirle.</div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <div style="background:rgba(74,124,111,0.2);border-radius:12px;padding:14px 18px;border:1px solid rgba(110,231,183,0.2);text-align:center;flex:1;">
+            <div style="font-size:11px;color:#6ee7b7;font-weight:700;margin-bottom:4px;">5 Seans</div>
+            <div style="font-size:18px;color:white;font-weight:800;">₺4.750</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">₺950/seans</div>
+          </div>
+          <div style="background:rgba(110,231,183,0.12);border-radius:12px;padding:14px 18px;border:1.5px solid rgba(110,231,183,0.35);text-align:center;flex:1;">
+            <div style="font-size:11px;color:#6ee7b7;font-weight:700;margin-bottom:4px;">10 Seans</div>
+            <div style="font-size:18px;color:white;font-weight:800;">₺8.500</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">₺850/seans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p3s2','seansify-post3-paketler')">İndir</button>
+  </div>
+
+  <!-- SLIDE 3 — Rapor -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 3</div>
+    <div class="slide" id="p3s3">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 25% 75%, #1f4d3a 0%, #0d1f18 65%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;text-align:center;width:100%;">
+        <div style="width:76px;height:76px;border-radius:22px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:14px;line-height:1.15;">Aylık Gelir<br>& Ödeme Raporu</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;max-width:360px;margin:0 auto 24px;">Kaç seans tamamlandı, ne kadar tahsil edildi, ne kadar bekliyor — aylık özetin hazır.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left;">
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:12px 14px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:3px;">Tahsil Edilen</div>
+            <div style="font-size:18px;color:#6ee7b7;font-weight:800;">₺18.400</div>
+          </div>
+          <div style="background:rgba(74,124,111,0.18);border-radius:10px;padding:12px 14px;border:1px solid rgba(110,231,183,0.15);">
+            <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:3px;">Tamamlanan</div>
+            <div style="font-size:18px;color:white;font-weight:800;">12 seans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p3s3','seansify-post3-rapor')">İndir</button>
+  </div>
+
+  <!-- SLIDE 4 — Makbuz + Profil -->
+  <div class="slide-wrap">
+    <div class="slide-tag">Slayt 4</div>
+    <div class="slide" id="p3s4">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#060e0a 0%,#1f4d3a 60%,#0d1f18 100%);"></div>
+      <div style="position:relative;z-index:2;padding:52px 44px;width:100%;">
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;">
+          <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+          </div>
+          <div>
+            <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Otomatik Makbuz</div>
+            <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">Ödeme alındı mı? Tek tıkla WhatsApp'tan makbuz gönder. Danışan alındı onayını hemen görür.</div>
+          </div>
+        </div>
+        <div style="height:1px;background:rgba(110,231,183,0.1);margin-bottom:24px;"></div>
+        <div style="display:flex;align-items:flex-start;gap:16px;">
+          <div style="width:56px;height:56px;border-radius:16px;background:rgba(110,231,183,0.12);border:1.5px solid rgba(110,231,183,0.28);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/></svg>
+          </div>
+          <div>
+            <div style="font-size:22px;font-weight:700;color:white;margin-bottom:6px;">Profil Sayfası</div>
+            <div style="font-size:13.5px;color:rgba(255,255,255,0.52);line-height:1.6;">seansify.com/adiniz — uzmanlıkların, yorumların, blog yazıların ve randevu formun tek bir yerde.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p3s4','seansify-post3-makbuz-profil')">İndir</button>
+  </div>
+
+  <!-- SLIDE 5 — CTA -->
+  <div class="slide-wrap">
+    <div class="slide-tag">CTA</div>
+    <div class="slide" id="p3s5">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, #1f4d3a 0%, #0d1f18 65%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#6ee7b7,transparent);"></div>
+      <div style="position:relative;z-index:2;text-align:center;padding:52px 44px;">
+        <div style="font-size:11px;letter-spacing:4px;color:#6ee7b7;font-weight:700;margin-bottom:28px;text-transform:uppercase;">seansify</div>
+        <div style="font-size:42px;font-weight:900;color:white;line-height:1.1;margin-bottom:14px;">14 gün<br>ücretsiz<br>dene</div>
+        <div style="display:inline-block;background:linear-gradient(135deg,#4a7c6f,#3a6a5f);color:white;font-size:16px;font-weight:700;padding:15px 40px;border-radius:50px;">seansify.com →</div>
+      </div>
+    </div>
+    <button class="btn" onclick="dl('p3s5','seansify-post3-cta')">İndir</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+async function dl(id, filename) {
+  const el = document.getElementById(id)
+  const bgMap = {
+    p1c:'#060e0a', p1s2:'#0d1f18', p1s3:'#0d1f18', p1s4:'#060e0a', p1s5:'#0d1f18',
+    p2c:'#060e0a', p2s2:'#060e0a', p2s3:'#0d1f18', p2s4:'#060e0a', p2s5:'#0d1f18',
+    p3c:'#060e0a', p3s2:'#060e0a', p3s3:'#0d1f18', p3s4:'#060e0a', p3s5:'#0d1f18',
+  }
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: bgMap[id] || '#0d1f18',
+    logging: false,
+  })
+  const a = document.createElement('a')
+  a.href = canvas.toDataURL('image/png')
+  a.download = filename + '.png'
+  a.click()
+}
+</script>
+</body>
+</html>
+

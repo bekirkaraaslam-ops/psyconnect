@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+    <link rel="icon" href="../app/icon.svg" type="image/svg+xml">
+  <title>Seansify · Seanslar Arasındaki 10 Dakika — Carousel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: 40px 32px;
+      min-height: 100vh;
+    }
+    .page-title {
+      color: #6ee7b7;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 540px);
+      gap: 32px;
+    }
+    .slide-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .slide {
+      width: 540px;
+      height: 540px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 44px;
+    }
+    .slide-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+    .slide-main {
+      position: relative;
+      z-index: 2;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+    }
+    .slide-sub {
+      position: relative;
+      z-index: 2;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+    .brand {
+      position: absolute;
+      bottom: 26px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .btn {
+      width: 540px;
+      padding: 11px;
+      background: #4a7c6f;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn:hover { background: #3a6a5e; }
+    .btn:active { transform: scale(.98); }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Seansify · Seanslar Arasındaki 10 Dakika — 5 Slayt Carousel</p>
+
+<div class="grid">
+
+  <!-- ─── SLAYT 1 — HOOK (blog görseli stili) ─── -->
+  <div class="slide-wrap">
+    <div class="slide" id="s1" style="background: radial-gradient(ellipse at 40% 55%, #daf0ea 0%, #eaf6f2 45%, #f4faf8 100%);">
+
+      <!-- Merkez büyük daire -->
+      <div class="dot" style="width:320px;height:320px;background:rgba(255,255,255,0.55);border:1px solid rgba(74,124,111,0.15);box-shadow:inset 0 0 40px rgba(255,255,255,0.6);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <!-- Dağınık küçük noktalar -->
+      <div class="dot" style="width:5px;height:5px;background:#4a7c6f;opacity:.18;top:95px;left:78px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#4a7c6f;opacity:.18;top:148px;left:52px;"></div>
+      <div class="dot" style="width:6px;height:6px;background:#4a7c6f;opacity:.15;top:72px;right:95px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#4a7c6f;opacity:.18;top:200px;right:65px;"></div>
+      <div class="dot" style="width:5px;height:5px;background:#4a7c6f;opacity:.15;bottom:100px;left:70px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#4a7c6f;opacity:.18;bottom:130px;right:85px;"></div>
+
+      <!-- Tag -->
+      <div class="slide-label" style="color:#4a7c6f;letter-spacing:3.5px;">SEANSIFY</div>
+
+      <!-- Focal element — büyük sayı/değer -->
+      <div class="slide-main" style="font-size:92px;font-weight:900;color:#0d1f18;line-height:1;letter-spacing:-2px;">
+        10 dk
+      </div>
+
+      <!-- İnce divider -->
+      <div style="width:48px;height:1.5px;background:#4a7c6f;opacity:0.35;margin:16px auto 0;position:relative;z-index:2;"></div>
+
+      <!-- Alt metin -->
+      <div class="slide-sub" style="font-size:17px;color:#1a3d2b;font-weight:700;max-width:340px;margin-top:14px;">
+        Seans bitti. Sıradaki başlamadan<br/>o 10 dakikada ne oluyor?
+      </div>
+
+      <div class="brand" style="color:#4a7c6f;opacity:0.5;">· SEANSIFY ·</div>
+    </div>
+    <button class="btn" onclick="dl('s1','slayt-1-hook.png','#f4faf8')">↓ İndir — Slayt 1</button>
+  </div>
+
+  <!-- ─── SLAYT 2 — SORUN ─── -->
+  <div class="slide-wrap">
+    <div class="slide" id="s2" style="background: linear-gradient(145deg, #0d1f18 0%, #1a2e22 50%, #0d1f18 100%);">
+      <div class="dot" style="width:200px;height:200px;background:rgba(245,158,11,0.05);top:-50px;left:-50px;"></div>
+      <div class="dot" style="width:110px;height:110px;background:rgba(110,231,183,0.04);bottom:50px;right:-20px;"></div>
+      <div class="dot" style="width:5px;height:5px;background:#f59e0b;opacity:.3;top:100px;right:90px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#6ee7b7;opacity:.2;bottom:150px;left:80px;"></div>
+
+      <div class="slide-label" style="color:rgba(245,158,11,0.75);">O 10 dakikada neler olur?</div>
+
+      <div class="slide-main" style="font-size:28px;font-weight:800;color:#ffffff;line-height:1.45;max-width:400px;">
+        Mesajlara bakılır.<br/>
+        Sonraki danışan hatırlanmaya çalışılır.<br/>
+        Not hangi defterde, aranır.
+      </div>
+
+      <div class="slide-sub" style="font-size:16px;color:rgba(110,231,183,0.7);font-weight:500;max-width:380px;">
+        Küçük sorular gibi görünür.<br/>Ama zihin seans odasından çıkmış,<br/>büro yönetimine girmiştir.
+      </div>
+
+      <div class="brand" style="color:rgba(110,231,183,0.3);">· SEANSIFY ·</div>
+    </div>
+    <button class="btn" onclick="dl('s2','slayt-2-sorun.png','#0d1f18')">↓ İndir — Slayt 2</button>
+  </div>
+
+  <!-- ─── SLAYT 3 — GERÇEK YORUM ─── -->
+  <div class="slide-wrap">
+    <div class="slide" id="s3" style="background: radial-gradient(ellipse at 65% 35%, #daf5ec 0%, #f0fdf8 50%, #f8fafc 100%);">
+      <div class="dot" style="width:260px;height:260px;background:rgba(74,124,111,0.06);top:-90px;left:-90px;"></div>
+      <div class="dot" style="width:130px;height:130px;background:rgba(74,124,111,0.05);bottom:-30px;right:-30px;"></div>
+      <div class="dot" style="width:6px;height:6px;background:#4a7c6f;opacity:.2;top:130px;right:110px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#4a7c6f;opacity:.15;bottom:130px;left:90px;"></div>
+
+      <div class="slide-label" style="color:#4a7c6f;">Sessiz enerji tüketimi</div>
+
+      <div class="slide-main" style="font-size:38px;font-weight:900;color:#0d1f18;max-width:400px;">
+        Bu geçiş küçük<br/>ama gerçek.
+      </div>
+
+      <div class="slide-sub" style="font-size:17px;color:#4a7c6f;font-weight:500;max-width:380px;">
+        Klinik odaklanma için gereken<br/>"sıfırlama" zamanı,<br/>idari karmaşaya gidiyor.
+      </div>
+
+      <div class="brand" style="color:rgba(74,124,111,0.35);">· SEANSIFY ·</div>
+    </div>
+    <button class="btn" onclick="dl('s3','slayt-3-gercek.png','#f8fafc')">↓ İndir — Slayt 3</button>
+  </div>
+
+  <!-- ─── SLAYT 4 — ÇÖZÜM ─── -->
+  <div class="slide-wrap">
+    <div class="slide" id="s4" style="background: radial-gradient(ellipse at 70% 30%, #1a3d2b 0%, #0d1f18 65%);">
+      <div class="dot" style="width:210px;height:210px;background:rgba(110,231,183,0.05);bottom:-60px;left:-60px;"></div>
+      <div class="dot" style="width:90px;height:90px;background:rgba(110,231,183,0.07);top:40px;right:40px;"></div>
+      <div class="dot" style="width:5px;height:5px;background:#6ee7b7;opacity:.3;top:120px;left:100px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:#6ee7b7;opacity:.2;bottom:140px;right:80px;"></div>
+
+      <div class="slide-label" style="color:#6ee7b7;">Sistemi olanlar ne yapıyor?</div>
+
+      <div class="slide-main" style="font-size:32px;font-weight:900;color:#ffffff;max-width:420px;">
+        O 10 dakikayı gerçekten<br/>ara olarak kullanıyorlar.
+      </div>
+
+      <div class="slide-sub" style="font-size:16px;color:rgba(110,231,183,0.8);font-weight:500;max-width:380px;">
+        Sonraki danışanı zaten biliyorlar.<br/>
+        Notlara bir bakışta ulaşıyorlar.<br/>
+        Telefon trafiği ayrı bir kanalda akıyor.
+      </div>
+
+      <div class="brand" style="color:rgba(110,231,183,0.3);">· SEANSIFY ·</div>
+    </div>
+    <button class="btn" onclick="dl('s4','slayt-4-cozum.png','#0d1f18')">↓ İndir — Slayt 4</button>
+  </div>
+
+  <!-- ─── SLAYT 5 — CTA ─── -->
+  <div class="slide-wrap">
+    <div class="slide" id="s5" style="background: #4a7c6f;">
+      <div class="dot" style="width:300px;height:300px;background:rgba(255,255,255,0.06);top:-110px;right:-110px;"></div>
+      <div class="dot" style="width:170px;height:170px;background:rgba(255,255,255,0.05);bottom:-70px;left:-70px;"></div>
+      <div class="dot" style="width:6px;height:6px;background:rgba(255,255,255,0.3);top:130px;left:90px;"></div>
+      <div class="dot" style="width:4px;height:4px;background:rgba(255,255,255,0.2);bottom:140px;right:80px;"></div>
+      <div class="dot" style="width:5px;height:5px;background:rgba(110,231,183,0.45);top:290px;right:120px;"></div>
+
+      <div class="slide-label" style="color:rgba(255,255,255,0.7);">Günün sonunda daha az yorgun dön</div>
+
+      <div class="slide-main" style="font-size:50px;font-weight:900;color:#ffffff;letter-spacing:-1px;">
+        seansify.com
+      </div>
+
+      <div class="slide-sub" style="font-size:18px;color:rgba(255,255,255,0.85);font-weight:500;">
+        14 gün boyunca<br/>tüm özellikler açık.
+      </div>
+
+      <div class="brand" style="color:rgba(255,255,255,0.3);">· SEANSIFY ·</div>
+    </div>
+    <button class="btn" style="background:#163324;" onclick="dl('s5','slayt-5-cta.png','#4a7c6f')">↓ İndir — Slayt 5</button>
+  </div>
+
+</div>
+
+<script>
+  function dl(id, filename, bg) {
+    const el = document.getElementById(id)
+    html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: bg,
+      logging: false
+    }).then(canvas => {
+      const a = document.createElement('a')
+      a.download = filename
+      a.href = canvas.toDataURL('image/png')
+      a.click()
+    })
+  }
+</script>
+
+</body>
+</html>
+

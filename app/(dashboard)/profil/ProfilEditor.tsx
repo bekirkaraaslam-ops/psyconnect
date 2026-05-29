@@ -13,16 +13,20 @@ interface ProfilGorunum {
   show_blog: boolean
   show_egitim: boolean
   show_klinik: boolean
+  show_seans_sayisi: boolean
+  show_ilk_seans: boolean
 }
 
 const DEFAULT_GORUNUM: ProfilGorunum = {
   show_uzmanlik: true, show_paketler: true, show_yorumlar: true,
   show_blog: true, show_egitim: true, show_klinik: true,
+  show_seans_sayisi: false, show_ilk_seans: true,
 }
 
 interface Psych {
   id: string; booking_slug: string; unvan: string | null; sehir: string | null
   bio_text: string | null; uzmanlik_alanlari: string[] | null; egitim: Egitim[] | null
+  ilk_seans_metni: string | null
   foto_url: string | null; klinik_adi: string | null; klinik_adres: string | null
   klinik_tel: string | null; calisma_saatleri: string | null; profil_alinti: string | null
   deneyim_yil: number | null; dil: string[] | null
@@ -74,6 +78,7 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
   const [unvan, setUnvan] = useState(psych.unvan ?? '')
   const [sehir, setSehir] = useState(psych.sehir ?? '')
   const [bioText, setBioText] = useState(psych.bio_text ?? '')
+  const [ilkSeansMetni, setIlkSeansMetni] = useState(psych.ilk_seans_metni ?? '')
   const [profilAlinti, setProfilAlinti] = useState(psych.profil_alinti ?? '')
   const [deneyimYil, setDeneyimYil] = useState(psych.deneyim_yil?.toString() ?? '')
   const [dil, setDil] = useState(psych.dil?.join(', ') ?? '')
@@ -134,6 +139,7 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
       klinik_tel: klinikTel || null, calisma_saatleri: calismaSaatleri || null,
       work_start_hour: workStartHour, work_end_hour: workEndHour,
       work_days: workDays, session_duration_minutes: sessionDuration,
+      ilk_seans_metni: ilkSeansMetni || null,
       profil_gorunum: isPro ? gorunum : DEFAULT_GORUNUM,
     }).eq('id', psych.id)
     setSaving(false)
@@ -289,6 +295,19 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
                 <textarea style={{ ...inp, resize: 'vertical', minHeight: 110, lineHeight: 1.7 }} value={bioText} onChange={e => setBioText(e.target.value)} placeholder="Kendinizi ve çalışma yaklaşımınızı anlatın…" />
               </div>
             </div>
+
+            <div style={{ background: 'var(--card)', borderRadius: 16, padding: 20, border: '1px solid var(--border)' }}>
+              <label style={{ ...lbl, fontSize: 13, fontWeight: 700, color: 'var(--foreground)' }}>İlk Seans Nasıl Geçer?</label>
+              <p style={{ fontSize: 11, color: '#94a3b8', marginBottom: 12 }}>
+                Her paragraf (boş satırla ayrılmış) numaralı adım olarak gösterilir. Danışan adayının kafasındaki soru işaretlerini giderin.
+              </p>
+              <textarea
+                style={{ ...inp, resize: 'vertical', minHeight: 130, lineHeight: 1.7 }}
+                value={ilkSeansMetni}
+                onChange={e => setIlkSeansMetni(e.target.value)}
+                placeholder={"İlk seansımızda birbirimizi tanımak için zaman ayırıyoruz.\n\nBana ne için geldiğinizi ve şu an neler yaşadığınızı anlatırsınız — hiçbir şeyi hazır getirmenize gerek yok.\n\nSeans sonunda nasıl devam edebileceğimizi birlikte değerlendiriyoruz."}
+              />
+            </div>
           </div>
         )}
 
@@ -409,12 +428,14 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
               <p style={{ fontSize: 12, color: '#94a3b8', marginBottom: 20 }}>Profil sayfanızda hangi bölümlerin görüneceğini seçin.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {([
-                  { key: 'show_uzmanlik', label: 'Uzmanlık Alanları' },
-                  { key: 'show_paketler', label: 'Seans Paketleri' },
-                  { key: 'show_yorumlar', label: 'Değerlendirmeler' },
-                  { key: 'show_blog',     label: 'Blog Yazıları' },
-                  { key: 'show_egitim',   label: 'Eğitim & Sertifikalar' },
-                  { key: 'show_klinik',   label: 'Klinik Bilgileri' },
+                  { key: 'show_uzmanlik',    label: 'Uzmanlık Alanları' },
+                  { key: 'show_paketler',    label: 'Seans Paketleri' },
+                  { key: 'show_yorumlar',    label: 'Değerlendirmeler' },
+                  { key: 'show_blog',        label: 'Blog Yazıları' },
+                  { key: 'show_egitim',      label: 'Eğitim & Sertifikalar' },
+                  { key: 'show_klinik',      label: 'Klinik Bilgileri' },
+                  { key: 'show_seans_sayisi', label: 'Tamamlanan Seans Sayısı' },
+                  { key: 'show_ilk_seans',    label: 'İlk Seans Nasıl Geçer?' },
                 ] as { key: keyof ProfilGorunum; label: string }[]).map(({ key, label }) => {
                   const on = gorunum[key]
                   return (
