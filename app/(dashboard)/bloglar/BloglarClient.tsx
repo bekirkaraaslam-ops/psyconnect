@@ -234,7 +234,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             <div>
               <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>URL</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '6px 10px' }}>
-                <span style={{ fontSize: 12, color: '#94a3b8', flexShrink: 0 }}>/{bookingSlug}/</span>
+                <span style={{ fontSize: 12, color: '#94a3b8', flexShrink: 0 }}>{bookingSlug}.seansify.com/</span>
                 <input
                   style={{ flex: 1, fontSize: 12, border: 'none', outline: 'none', background: 'transparent', color: '#334155', minWidth: 0 }}
                   value={slug}

@@ -174,7 +174,7 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
     if (!error) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
   }
 
-  const profilUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://seansify.com'}/${psych.booking_slug}`
+  const profilUrl = `https://${psych.booking_slug}.seansify.com`
   const initials = psych.booking_slug.slice(0, 2).toUpperCase()
 
   return (
