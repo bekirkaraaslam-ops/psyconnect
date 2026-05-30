@@ -151,19 +151,34 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
   }
 
   const formatDate = (s: string) => new Date(s).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })
-
   const yayindaCount = bloglar.filter(b => b.yayinda).length
 
   // ── EDITOR ───────────────────────────────────────────────────────────
   if (mode === 'edit') return (
-    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
-      {/* Editor topbar */}
-      <div style={{
+    <div style={{ minHeight: '100vh', background: 'var(--background)', paddingBottom: 80 }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .editor-topbar { padding: 10px 16px !important; }
+          .editor-topbar-left span.editor-sep,
+          .editor-topbar-left span.editor-title { display: none !important; }
+          .editor-topbar-right .editor-wordcount,
+          .editor-topbar-right .editor-iptal { display: none !important; }
+          .editor-body { padding: 16px 14px !important; }
+          .editor-meta-grid { grid-template-columns: 1fr !important; }
+          .editor-mobile-bar { display: flex !important; }
+        }
+        @media (min-width: 641px) {
+          .editor-mobile-bar { display: none !important; }
+        }
+      `}</style>
+
+      {/* Topbar */}
+      <div className="editor-topbar" style={{
         position: 'sticky', top: 0, zIndex: 10,
         background: 'var(--card)', borderBottom: '1px solid var(--border)',
         padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="editor-topbar-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => setMode('list')} style={{
             background: 'none', border: 'none', fontSize: 13, color: '#64748b',
             cursor: 'pointer', fontWeight: 600, padding: '6px 10px', borderRadius: 8,
@@ -174,13 +189,17 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             </svg>
             Geri
           </button>
-          <span style={{ color: '#e2e8f0' }}>|</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--foreground)' }}>
+          <span className="editor-sep" style={{ color: '#e2e8f0' }}>|</span>
+          <span className="editor-title" style={{ fontSize: 14, fontWeight: 700, color: 'var(--foreground)' }}>
             {editing ? 'Yazıyı Düzenle' : 'Yeni Blog Yazısı'}
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {icerik && <span style={{ fontSize: 12, color: '#94a3b8' }}>{wordCount(icerik)} kelime · {readTime(icerik)}</span>}
+        <div className="editor-topbar-right" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {icerik && (
+            <span className="editor-wordcount" style={{ fontSize: 12, color: '#94a3b8' }}>
+              {wordCount(icerik)} kelime · {readTime(icerik)}
+            </span>
+          )}
           <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
             <div
               onClick={() => setYayinda(p => !p)}
@@ -197,7 +216,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             </div>
             {yayinda ? 'Yayında' : 'Taslak'}
           </label>
-          <button onClick={() => setMode('list')} style={{
+          <button className="editor-iptal" onClick={() => setMode('list')} style={{
             padding: '8px 16px', borderRadius: 10, border: '1px solid #dde5e2',
             background: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#64748b',
           }}>
@@ -208,13 +227,13 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             background: '#4a7c6f', color: '#fff', fontSize: 13, fontWeight: 700,
             cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1,
           }}>
-            {saving ? 'Kaydediliyor...' : editing ? 'Güncelle' : 'Kaydet'}
+            {saving ? 'Kaydediliyor…' : editing ? 'Güncelle' : 'Kaydet'}
           </button>
         </div>
       </div>
 
       {/* Editor body */}
-      <div style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px' }}>
+      <div className="editor-body" style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px' }}>
         {err && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#dc2626' }}>
             {err}
@@ -222,22 +241,22 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
         )}
 
         {/* Kapak Resmi */}
-        <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 20 }}>
+        <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 16 }}>
           <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 12 }}>Kapak Resmi</label>
           <input ref={kapakInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && handleKapakUpload(e.target.files[0])} />
           {kapakUrl ? (
-            <div style={{ position: 'relative', display: 'inline-block' }}>
+            <div>
               <img src={kapakUrl} alt="Kapak" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 10, display: 'block' }} />
               <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                 <button onClick={() => kapakInputRef.current?.click()} disabled={uploadingKapak} style={{
                   fontSize: 12, fontWeight: 600, color: '#4a7c6f', background: '#f0fdf4', border: '1px solid #d1fae5',
-                  borderRadius: 8, padding: '5px 12px', cursor: 'pointer',
+                  borderRadius: 8, padding: '6px 14px', cursor: 'pointer',
                 }}>
                   {uploadingKapak ? 'Yükleniyor…' : 'Değiştir'}
                 </button>
                 <button onClick={() => setKapakUrl(null)} style={{
                   fontSize: 12, fontWeight: 600, color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca',
-                  borderRadius: 8, padding: '5px 12px', cursor: 'pointer',
+                  borderRadius: 8, padding: '6px 14px', cursor: 'pointer',
                 }}>
                   Kaldır
                 </button>
@@ -265,12 +284,12 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
         </div>
 
         {/* Meta alanları */}
-        <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 20 }}>
-          <div style={{ marginBottom: 16 }}>
+        <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 16 }}>
+          <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>Başlık</label>
             <input
               style={{
-                width: '100%', padding: '10px 0', fontSize: 22, fontWeight: 700,
+                width: '100%', padding: '10px 0', fontSize: 20, fontWeight: 700,
                 border: 'none', borderBottom: '2px solid #e2e8f0', outline: 'none',
                 background: 'transparent', color: 'var(--foreground)', boxSizing: 'border-box',
               }}
@@ -279,7 +298,8 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
               placeholder="Blog başlığını yazın..."
             />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+
+          <div className="editor-meta-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
               <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>Kategori</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -288,7 +308,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                   const renk = KATRENKLERİ[k] ?? { bg: '#f1f5f9', color: '#475569' }
                   return (
                     <button key={k} onClick={() => setKategori(sel ? '' : k)} style={{
-                      fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 6, cursor: 'pointer',
+                      fontSize: 12, fontWeight: 600, padding: '5px 11px', borderRadius: 6, cursor: 'pointer',
                       border: `1.5px solid ${sel ? renk.color : '#dde5e2'}`,
                       background: sel ? renk.bg : '#fff',
                       color: sel ? renk.color : '#94a3b8',
@@ -298,11 +318,13 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
               </div>
             </div>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>URL</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '6px 10px' }}>
-                <span style={{ fontSize: 12, color: '#94a3b8', flexShrink: 0 }}>{bookingSlug}.seansify.com/</span>
+              <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>URL Slug</label>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '8px 12px' }}>
+                <span style={{ fontSize: 11, color: '#94a3b8', display: 'block', marginBottom: 4 }}>
+                  …/{bookingSlug}/blog/
+                </span>
                 <input
-                  style={{ flex: 1, fontSize: 12, border: 'none', outline: 'none', background: 'transparent', color: '#334155', minWidth: 0 }}
+                  style={{ width: '100%', fontSize: 13, border: 'none', outline: 'none', background: 'transparent', color: '#334155', boxSizing: 'border-box' }}
                   value={slug}
                   onChange={e => setSlug(e.target.value)}
                   placeholder="blog-slug"
@@ -314,19 +336,57 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
 
         {/* İçerik */}
         <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 12 }}>İçerik</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>İçerik</label>
+            {icerik && (
+              <span style={{ fontSize: 11, color: '#cbd5e1' }}>{wordCount(icerik)} kelime · {readTime(icerik)}</span>
+            )}
+          </div>
           <textarea
             style={{
-              width: '100%', padding: '12px 0', fontSize: 15, lineHeight: 1.8,
-              border: 'none', outline: 'none', resize: 'none', minHeight: 400,
+              width: '100%', padding: '4px 0', fontSize: 15, lineHeight: 1.8,
+              border: 'none', outline: 'none', resize: 'none', minHeight: 360,
               background: 'transparent', color: 'var(--foreground)', boxSizing: 'border-box',
               fontFamily: 'inherit',
             }}
             value={icerik}
             onChange={e => setIcerik(e.target.value)}
-            placeholder="Yazınızı buraya yazın..."
+            placeholder="Yazınızı buraya yazın... (Markdown desteklenir: ## Başlık, **kalın**, - liste)"
           />
         </div>
+      </div>
+
+      {/* Mobile sticky bottom bar */}
+      <div className="editor-mobile-bar" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+        background: 'var(--card)', borderTop: '1px solid var(--border)',
+        padding: '12px 16px',
+        paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+        alignItems: 'center', justifyContent: 'space-between', gap: 12,
+      }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
+          <div
+            onClick={() => setYayinda(p => !p)}
+            style={{
+              width: 40, height: 22, borderRadius: 11, cursor: 'pointer', position: 'relative', transition: 'background 0.2s',
+              background: yayinda ? '#4a7c6f' : '#e2e8f0', flexShrink: 0,
+            }}
+          >
+            <div style={{
+              position: 'absolute', top: 3, left: yayinda ? 20 : 3, width: 16, height: 16,
+              borderRadius: '50%', background: '#fff', transition: 'left 0.2s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.15)',
+            }} />
+          </div>
+          {yayinda ? 'Yayında' : 'Taslak'}
+        </label>
+        <button onClick={handleSave} disabled={saving} style={{
+          flex: 1, maxWidth: 200, padding: '12px 20px', borderRadius: 12, border: 'none',
+          background: '#4a7c6f', color: '#fff', fontSize: 14, fontWeight: 700,
+          cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1,
+        }}>
+          {saving ? 'Kaydediliyor…' : editing ? 'Güncelle' : 'Kaydet'}
+        </button>
       </div>
     </div>
   )
@@ -334,10 +394,19 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
   // ── LIST ─────────────────────────────────────────────────────────────
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .list-header { padding: 16px 16px !important; }
+          .list-body { padding: 12px 12px !important; }
+          .blog-card-actions { padding: 10px 12px !important; border-top: 1px solid var(--border); width: 100%; box-sizing: border-box; }
+          .blog-card-actions-sep { display: none !important; }
+        }
+      `}</style>
+
       {/* Header */}
-      <div style={{
+      <div className="list-header" style={{
         background: 'var(--card)', borderBottom: '1px solid var(--border)',
-        padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
       }}>
         <div>
           <h1 style={{ fontSize: 18, fontWeight: 800, color: 'var(--foreground)', margin: 0, marginBottom: 2 }}>Bloglarım</h1>
@@ -349,8 +418,8 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
           onClick={openNew}
           style={{
             background: '#4a7c6f', color: '#fff', border: 'none', borderRadius: 12,
-            padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -360,11 +429,11 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
         </button>
       </div>
 
-      <div style={{ padding: '24px 28px', maxWidth: 800 }}>
+      <div className="list-body" style={{ padding: '20px 24px', maxWidth: 800 }}>
         {bloglar.length === 0 ? (
           <div style={{
             background: 'var(--card)', borderRadius: 20, border: '1px solid var(--border)',
-            padding: '56px 32px', textAlign: 'center',
+            padding: '48px 24px', textAlign: 'center',
           }}>
             <div style={{
               width: 64, height: 64, borderRadius: '50%', background: '#f0fdf4',
@@ -390,88 +459,130 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {bloglar.map(b => {
               const renk = b.kategori ? (KATRENKLERİ[b.kategori] ?? { bg: '#f1f5f9', color: '#475569' }) : null
-              const preview = b.icerik.slice(0, 120).trim()
+              const preview = b.icerik.replace(/#+\s/g, '').replace(/\*\*/g, '').slice(0, 110).trim()
               const isCopied = copied === b.id
 
               return (
                 <div key={b.id} style={{
                   background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)',
-                  overflow: 'hidden',
-                  display: 'flex', alignItems: 'stretch',
-                  transition: 'box-shadow 0.15s',
+                  overflow: 'hidden', display: 'flex', flexDirection: 'column',
                 }}>
-                  {/* Kapak thumbnail */}
-                  {b.kapak_url && (
-                    <div style={{
-                      width: 80, flexShrink: 0,
-                      background: `url(${b.kapak_url}) center/cover no-repeat`,
-                    }} />
-                  )}
-
-                  {/* Sol çizgi — yayın durumu */}
-                  <div style={{
-                    width: 3, alignSelf: 'stretch', flexShrink: 0,
-                    background: b.yayinda ? '#4a7c6f' : '#e2e8f0',
-                  }} />
-
-                  {/* İçerik */}
-                  <div style={{ flex: 1, minWidth: 0, padding: '16px 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                      <h3 style={{
-                        fontSize: 14, fontWeight: 700, color: 'var(--foreground)', margin: 0,
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%',
-                      }}>
-                        {b.baslik}
-                      </h3>
-                      {renk && (
-                        <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 5, background: renk.bg, color: renk.color, flexShrink: 0 }}>
-                          {b.kategori}
-                        </span>
-                      )}
-                    </div>
-                    {preview && (
-                      <p style={{ fontSize: 13, color: '#94a3b8', margin: '0 0 6px', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {preview}{b.icerik.length > 120 ? '…' : ''}
-                      </p>
+                  {/* Üst satır: thumbnail + içerik + (desktop aksiyonlar) */}
+                  <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                    {/* Kapak thumbnail */}
+                    {b.kapak_url && (
+                      <div style={{
+                        width: 72, flexShrink: 0,
+                        background: `url(${b.kapak_url}) center/cover no-repeat`,
+                      }} />
                     )}
-                    <p style={{ fontSize: 11, color: '#cbd5e1', margin: 0 }}>
-                      {formatDate(b.created_at)} · {readTime(b.icerik)}
-                    </p>
-                  </div>
 
-                  {/* Aksiyonlar */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, padding: '0 16px' }}>
-                    {b.yayinda && (
+                    {/* Sol çizgi — yayın durumu */}
+                    <div style={{
+                      width: 3, alignSelf: 'stretch', flexShrink: 0,
+                      background: b.yayinda ? '#4a7c6f' : '#e2e8f0',
+                    }} />
+
+                    {/* İçerik */}
+                    <div style={{ flex: 1, minWidth: 0, padding: '14px 16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
+                        <h3 style={{
+                          fontSize: 14, fontWeight: 700, color: 'var(--foreground)', margin: 0,
+                          lineHeight: 1.4, flex: 1, minWidth: 0,
+                        }}>
+                          {b.baslik}
+                        </h3>
+                        {renk && (
+                          <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 5, background: renk.bg, color: renk.color, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                            {b.kategori}
+                          </span>
+                        )}
+                      </div>
+                      {preview && (
+                        <p style={{ fontSize: 12, color: '#94a3b8', margin: '0 0 5px', lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
+                          {preview}{b.icerik.length > 110 ? '…' : ''}
+                        </p>
+                      )}
+                      <p style={{ fontSize: 11, color: '#cbd5e1', margin: 0 }}>
+                        {formatDate(b.created_at)} · {readTime(b.icerik)}
+                      </p>
+                    </div>
+
+                    {/* Desktop aksiyonlar (sağda dikey hizalı) */}
+                    <div className="blog-card-actions-sep" style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, padding: '0 14px' }}>
+                      {b.yayinda && (
+                        <button
+                          onClick={() => copyLink(b)}
+                          title="Linki kopyala"
+                          style={{
+                            width: 32, height: 32, borderRadius: 8, border: '1px solid #dde5e2',
+                            background: isCopied ? '#f0fdf4' : '#f8fafc',
+                            color: isCopied ? '#15803d' : '#94a3b8',
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0, transition: 'all 0.15s',
+                          }}
+                        >
+                          {isCopied ? (
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                            </svg>
+                          )}
+                        </button>
+                      )}
                       <button
-                        onClick={() => copyLink(b)}
-                        title="Linki kopyala"
+                        onClick={() => toggleYayinda(b)}
                         style={{
-                          width: 32, height: 32, borderRadius: 8, border: '1px solid #dde5e2',
-                          background: isCopied ? '#f0fdf4' : '#f8fafc',
-                          color: isCopied ? '#15803d' : '#94a3b8',
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0, transition: 'all 0.15s',
+                          fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 8,
+                          border: `1px solid ${b.yayinda ? '#4a7c6f' : '#dde5e2'}`,
+                          background: b.yayinda ? '#f0fdf4' : '#f8fafc',
+                          color: b.yayinda ? '#15803d' : '#94a3b8',
+                          cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap',
                         }}
                       >
-                        {isCopied ? (
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        ) : (
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                          </svg>
-                        )}
+                        {b.yayinda ? '✓ Yayında' : 'Taslak'}
                       </button>
-                    )}
+                      <button
+                        onClick={() => openEdit(b)}
+                        style={{
+                          padding: '5px 12px', borderRadius: 8, border: '1px solid #dde5e2',
+                          background: '#fff', fontSize: 12, fontWeight: 600, color: '#64748b', cursor: 'pointer',
+                        }}
+                      >
+                        Düzenle
+                      </button>
+                      <button
+                        onClick={() => handleDelete(b.id)}
+                        disabled={deleting === b.id}
+                        style={{
+                          width: 32, height: 32, borderRadius: 8, border: '1px solid #fecaca',
+                          background: '#fef2f2', color: '#dc2626', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          opacity: deleting === b.id ? 0.5 : 1, flexShrink: 0,
+                        }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          <path d="M10 11v6M14 11v6M9 6V4h6v2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Mobile aksiyonlar (altta, tam genişlik) */}
+                  <div className="blog-card-actions" style={{ display: 'none', alignItems: 'center', gap: 8, padding: '10px 14px', flexWrap: 'wrap' }}>
                     <button
                       onClick={() => toggleYayinda(b)}
                       style={{
-                        fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 8,
+                        fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 8,
                         border: `1px solid ${b.yayinda ? '#4a7c6f' : '#dde5e2'}`,
                         background: b.yayinda ? '#f0fdf4' : '#f8fafc',
                         color: b.yayinda ? '#15803d' : '#94a3b8',
-                        cursor: 'pointer', transition: 'all 0.15s',
+                        cursor: 'pointer',
                       }}
                     >
                       {b.yayinda ? '✓ Yayında' : 'Taslak'}
@@ -479,27 +590,50 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                     <button
                       onClick={() => openEdit(b)}
                       style={{
-                        padding: '5px 12px', borderRadius: 8, border: '1px solid #dde5e2',
+                        flex: 1, padding: '7px 14px', borderRadius: 8, border: '1px solid #dde5e2',
                         background: '#fff', fontSize: 12, fontWeight: 600, color: '#64748b', cursor: 'pointer',
+                        textAlign: 'center' as const,
                       }}
                     >
                       Düzenle
                     </button>
+                    {b.yayinda && (
+                      <button
+                        onClick={() => copyLink(b)}
+                        title="Linki kopyala"
+                        style={{
+                          width: 36, height: 36, borderRadius: 8, border: '1px solid #dde5e2',
+                          background: isCopied ? '#f0fdf4' : '#f8fafc',
+                          color: isCopied ? '#15803d' : '#94a3b8',
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, transition: 'all 0.15s',
+                        }}
+                      >
+                        {isCopied ? (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        ) : (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                          </svg>
+                        )}
+                      </button>
+                    )}
                     <button
                       onClick={() => handleDelete(b.id)}
                       disabled={deleting === b.id}
                       style={{
-                        width: 32, height: 32, borderRadius: 8, border: '1px solid #fecaca',
+                        width: 36, height: 36, borderRadius: 8, border: '1px solid #fecaca',
                         background: '#fef2f2', color: '#dc2626', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         opacity: deleting === b.id ? 0.5 : 1, flexShrink: 0,
                       }}
                     >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="3 6 5 6 21 6" />
                         <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                        <path d="M10 11v6M14 11v6" />
-                        <path d="M9 6V4h6v2" />
+                        <path d="M10 11v6M14 11v6M9 6V4h6v2" />
                       </svg>
                     </button>
                   </div>
