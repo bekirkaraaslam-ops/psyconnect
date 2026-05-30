@@ -30,7 +30,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
   const bioHasMore = bioParagraphs.length > 1
 
   return (
-    <div style={{ fontFamily: '"Georgia", "Times New Roman", serif', background: C.bg, color: C.ink, lineHeight: 1.6 }}>
+    <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
       {/* NAV */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(250,246,241,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -62,6 +62,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       )}
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
         @media (max-width: 768px) {
           .sicak-nav-links { display: none !important; }
           .sicak-hamburger { display: block !important; }
@@ -73,15 +74,17 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           .sicak-randevu-grid { grid-template-columns: 1fr !important; }
           .sicak-contact-grid { grid-template-columns: 1fr !important; }
           .sicak-section { padding: 48px 20px !important; }
+          .sicak-hakkimda-grid { grid-template-columns: 1fr !important; }
+          .sicak-hero-section { padding: 40px 20px 0 !important; }
         }
       `}</style>
 
       {/* HERO */}
-      <section style={{ background: `linear-gradient(160deg,${C.bgWarm},${C.bg})`, padding: '80px 40px 0', borderBottom: `1px solid ${C.border}` }}>
+      <section className="sicak-hero-section" style={{ background: `linear-gradient(160deg,${C.bgWarm},${C.bg})`, padding: '80px 40px 0', borderBottom: `1px solid ${C.border}` }}>
         <div className="sicak-hero-grid" style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 420px', gap: 64, alignItems: 'end' }}>
           <div style={{ paddingBottom: 64 }}>
             {psych.unvan && <div style={{ fontSize: 12, fontWeight: 400, color: C.inkLight, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16, fontFamily: 'system-ui' }}>{psych.unvan}</div>}
-            <h1 style={{ fontSize: 56, fontWeight: 700, color: C.ink, lineHeight: 1.05, letterSpacing: '-2px', margin: '0 0 20px', fontStyle: 'italic' }}>{ad}</h1>
+            <h1 style={{ fontSize: 56, fontWeight: 700, color: C.ink, lineHeight: 1.05, letterSpacing: '-2px', margin: '0 0 20px', fontStyle: 'italic', fontFamily: "'Playfair Display', Georgia, serif" }}>{ad}</h1>
             {psych.profil_alinti && (
               <p style={{ fontSize: 18, color: C.inkLight, lineHeight: 1.8, margin: '0 0 28px' }}>&ldquo;{psych.profil_alinti}&rdquo;</p>
             )}
@@ -131,7 +134,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* HAKKIMDA */}
       {psych.bio_text && (
         <section id="hakkimda" className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, alignItems: 'start' }}>
+          <div className="sicak-hakkimda-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, alignItems: 'start' }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Hakkımda</div>
               <div style={{ width: 40, height: 3, background: C.accent, borderRadius: 2 }} />
@@ -154,7 +157,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
             <div style={{ marginBottom: 48, fontFamily: 'system-ui' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Yaklaşımım</div>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Çalışma Felsefem</h2>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Çalışma Felsefem</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {psych.yaklasim.map((y, i) => (
@@ -176,7 +179,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
         <section id="uzmanlik" className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
           <div style={{ marginBottom: 40, fontFamily: 'system-ui' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Uzmanlık</div>
-            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Uzmanlık Alanlarım</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Uzmanlık Alanlarım</h2>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {psych.uzmanlik_alanlari.map(alan => (
@@ -192,7 +195,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', fontFamily: 'system-ui' }}>
             <div style={{ marginBottom: 40 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Eğitim</div>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Akademik Geçmiş</h2>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Akademik Geçmiş</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {psych.egitim.map((e, i) => (
@@ -215,7 +218,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 40, fontFamily: 'system-ui' }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Blog</div>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Yazılarım</h2>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Yazılarım</h2>
             </div>
             <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none', fontFamily: 'system-ui' }}>Tümünü gör →</Link>
           </div>
@@ -249,7 +252,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
         <div className="sicak-randevu-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: paketler.length > 0 ? '1fr 1fr' : '1fr', gap: 48, alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Randevu</div>
-            <h2 style={{ fontSize: 40, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', lineHeight: 1.2, margin: '0 0 16px' }}>Birlikte yola çıkalım.</h2>
+            <h2 style={{ fontSize: 40, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", lineHeight: 1.2, margin: '0 0 16px' }}>Birlikte yola çıkalım.</h2>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
               Randevu Al →
             </Link>
@@ -275,7 +278,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
         <section className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
           <div style={{ textAlign: 'center', marginBottom: 48, fontFamily: 'system-ui' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Yorumlar</div>
-            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: 0 }}>Danışan Deneyimleri</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Danışan Deneyimleri</h2>
           </div>
           <div className="sicak-yorumlar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, fontFamily: 'system-ui' }}>
             {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
@@ -291,23 +294,16 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* İLETİŞİM */}
       <section id="iletisim" style={{ background: C.bgWarm, borderTop: `1px solid ${C.border}` }}>
-        <div className="sicak-contact-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, fontFamily: 'system-ui' }}>
+        <div className="sicak-contact-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr', gap: 48, fontFamily: 'system-ui' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>İletişim</div>
-            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: '0 0 24px' }}>Bize Ulaşın</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: '0 0 24px' }}>Bize Ulaşın</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {psych.klinik_adi && <div style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>{psych.klinik_adi}</div>}
               {psych.klinik_adres && <div style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.6 }}>{psych.klinik_adres}</div>}
               {psych.klinik_tel && <a href={`tel:${psych.klinik_tel}`} style={{ fontSize: 14, color: C.accent, fontWeight: 600, textDecoration: 'none' }}>📞 {psych.klinik_tel}</a>}
               {psych.calisma_saatleri && <div style={{ fontSize: 14, color: C.inkLight }}>🕐 {psych.calisma_saatleri}</div>}
             </div>
-          </div>
-          <div style={{ background: C.white, borderRadius: 20, padding: 32, border: `1px solid ${C.border}`, boxShadow: '0 4px 20px rgba(45,31,20,0.07)' }}>
-            <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, fontFamily: '"Georgia",serif', margin: '0 0 12px' }}>Kapımız açık</h3>
-            <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: '0 0 22px' }}>Sormak istediğiniz her şey için buradayım. İlk adım zor — ama zorunlu değil.</p>
-            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.accent, color: '#fff', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
-              Randevu Al →
-            </Link>
           </div>
         </div>
       </section>

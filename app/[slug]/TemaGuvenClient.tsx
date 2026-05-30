@@ -39,7 +39,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
   const bioHasMore = bioParagraphs.length > 1
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: C.bg, color: '#1e293b', lineHeight: 1.6 }}>
+    <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: '#1e293b', lineHeight: 1.6 }}>
 
       {/* NAV */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: C.navy, padding: '0 48px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -70,6 +70,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
       )}
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
         @media (max-width: 768px) {
           .guven-nav-links { display: none !important; }
           .guven-hamburger { display: block !important; }
@@ -81,11 +82,13 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           .guven-randevu-grid { grid-template-columns: 1fr !important; }
           .guven-contact-grid { grid-template-columns: 1fr !important; }
           .guven-section { padding: 48px 20px !important; }
+          .guven-hakkimda-grid { grid-template-columns: 1fr !important; }
+          .guven-hero-section { padding: 48px 20px 0 !important; }
         }
       `}</style>
 
       {/* HERO */}
-      <section style={{ background: `linear-gradient(150deg,#0f1e36 0%,${C.navy} 50%,#243b63 100%)`, color: '#fff', padding: '72px 48px 0', overflow: 'hidden', position: 'relative' }}>
+      <section className="guven-hero-section" style={{ background: `linear-gradient(150deg,#0f1e36 0%,${C.navy} 50%,#243b63 100%)`, color: '#fff', padding: '72px 48px 0', overflow: 'hidden', position: 'relative' }}>
         <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle,${C.tealBright}18,transparent 70%)`, pointerEvents: 'none' }} />
         <div className="guven-hero-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 380px', gap: 48, alignItems: 'end', position: 'relative', zIndex: 1 }}>
           <div style={{ paddingBottom: 56 }}>
@@ -95,7 +98,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
               <span style={{ fontSize: 11, background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80', borderRadius: 20, padding: '4px 12px', fontWeight: 600 }}>● Randevu Müsait</span>
             </div>
             {psych.unvan && <div style={{ fontSize: 11, fontWeight: 700, color: C.tealBright, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 10 }}>{psych.unvan}</div>}
-            <h1 style={{ fontSize: 52, fontWeight: 900, color: '#fff', lineHeight: 1.1, letterSpacing: '-2px', margin: '0 0 16px' }}>{ad}</h1>
+            <h1 style={{ fontSize: 52, fontWeight: 900, color: '#fff', lineHeight: 1.1, letterSpacing: '-2px', margin: '0 0 16px', fontFamily: "'Playfair Display', Georgia, serif" }}>{ad}</h1>
             {psych.profil_alinti && (
               <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.65)', lineHeight: 1.8, margin: '0 0 28px', borderLeft: `3px solid ${C.tealBright}`, paddingLeft: 16 }}>
                 &ldquo;{psych.profil_alinti}&rdquo;
@@ -156,8 +159,8 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
       {psych.bio_text && (
         <section id="hakkimda" className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
           <SecNum n="01" label="Hakkımda" />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 40, alignItems: 'start' }}>
-            <h2 style={{ fontSize: 30, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', lineHeight: 1.25, margin: 0 }}>Sizinle açık ve dürüst bir şekilde çalışıyorum.</h2>
+          <div className="guven-hakkimda-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 40, alignItems: 'start' }}>
+            <h2 style={{ fontSize: 30, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', lineHeight: 1.25, margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>Sizinle açık ve dürüst bir şekilde çalışıyorum.</h2>
             <div>
               <p style={{ fontSize: 15, color: C.inkLight, lineHeight: 1.8, margin: '0 0 14px' }}>{bioExpanded ? psych.bio_text : bioShort}</p>
               {bioHasMore && (
@@ -175,7 +178,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
         <section id="yaklasim" style={{ background: C.bgLight, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
           <div className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
             <SecNum n="02" label="Yaklaşımım" />
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 36px' }}>Çalışma Felsefem</h2>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 36px', fontFamily: "'Playfair Display', Georgia, serif" }}>Çalışma Felsefem</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0, borderLeft: `4px solid ${C.tealBright}` }}>
               {psych.yaklasim.map((y, i) => (
                 <div key={i} style={{ paddingLeft: 28, paddingBottom: 28, paddingTop: i > 0 ? 28 : 0, borderTop: i > 0 ? `1px solid ${C.border}` : 'none' }}>
@@ -197,7 +200,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
       {psych.uzmanlik_alanlari && psych.uzmanlik_alanlari.length > 0 && (
         <section id="uzmanlik" className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
           <SecNum n="03" label="Uzmanlık" />
-          <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px' }}>Uzmanlık Alanlarım</h2>
+          <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px', fontFamily: "'Playfair Display', Georgia, serif" }}>Uzmanlık Alanlarım</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {psych.uzmanlik_alanlari.map(alan => (
               <span key={alan} style={{ fontSize: 13, fontWeight: 600, color: C.navy, background: C.bgLight, border: `1.5px solid ${C.border}`, borderRadius: 8, padding: '8px 16px' }}>{alan}</span>
@@ -211,7 +214,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
         <section style={{ background: C.bgLight, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
           <div className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
             <SecNum n="04" label="Eğitim" />
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px' }}>Akademik Geçmiş</h2>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px', fontFamily: "'Playfair Display', Georgia, serif" }}>Akademik Geçmiş</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {psych.egitim.map((e, i) => (
                 <div key={i} style={{ background: C.bg, borderRadius: 12, padding: '18px 22px', border: `1px solid ${C.border}`, display: 'flex', gap: 14, alignItems: 'center' }}>
@@ -232,7 +235,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
         <section id="blog" className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
           <SecNum n="05" label="Blog" />
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28 }}>
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: 0 }}>Yazılarım</h2>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>Yazılarım</h2>
             <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.teal, textDecoration: 'none' }}>Tümünü gör →</Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -262,7 +265,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
         <div className="guven-randevu-grid" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px', display: 'grid', gridTemplateColumns: paketler.length > 0 ? '1fr 380px' : '1fr', gap: 48, alignItems: 'start' }}>
           <div>
             <SecNum n="06" label="Randevu" />
-            <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', letterSpacing: '-1px', lineHeight: 1.15, margin: '0 0 16px' }}>Profesyonel destek almaya hazır mısınız?</h2>
+            <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', letterSpacing: '-1px', lineHeight: 1.15, margin: '0 0 16px', fontFamily: "'Playfair Display', Georgia, serif" }}>Profesyonel destek almaya hazır mısınız?</h2>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.tealBright, color: '#fff', borderRadius: 10, padding: '14px 30px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: `0 4px 16px ${C.tealBright}40` }}>
               Randevu Talebi Oluştur →
             </Link>
@@ -289,7 +292,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
         <section style={{ background: C.bgLight, borderBottom: `1px solid ${C.border}` }}>
           <div className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
             <SecNum n="07" label="Yorumlar" />
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px' }}>Danışan Deneyimleri</h2>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 28px', fontFamily: "'Playfair Display', Georgia, serif" }}>Danışan Deneyimleri</h2>
             <div className="guven-yorumlar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
               {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
                 <div key={y.id} style={{ background: C.bg, borderRadius: 14, padding: '22px 24px', border: `1px solid ${C.border}` }}>
@@ -306,9 +309,9 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
       {/* İLETİŞİM */}
       <section id="iletisim" className="guven-section" style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 48px' }}>
         <SecNum n="08" label="İletişim" />
-        <div className="guven-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+        <div className="guven-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 48 }}>
           <div>
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 24px' }}>Bize Ulaşın</h2>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.navy, letterSpacing: '-0.5px', margin: '0 0 24px', fontFamily: "'Playfair Display', Georgia, serif" }}>Bize Ulaşın</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {psych.klinik_adi && <div style={{ fontSize: 15, fontWeight: 700, color: C.navy }}>{psych.klinik_adi}</div>}
               {psych.klinik_adres && <div style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.6 }}>{psych.klinik_adres}</div>}

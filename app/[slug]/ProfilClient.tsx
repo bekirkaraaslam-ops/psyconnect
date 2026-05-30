@@ -124,7 +124,8 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
   const bioHasMore = bioParagraphs.length > 1
 
   return (
-    <div style={{ background: '#f4f9f7', minHeight: '100vh', paddingBottom: 88 }}>
+    <div style={{ background: '#f4f9f7', minHeight: '100vh', paddingBottom: 88, fontFamily: "'Lato', system-ui, sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');`}</style>
 
       {/* HEADER */}
       <header style={{
@@ -193,7 +194,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
               <div style={{ fontSize: 10, fontWeight: 700, color: '#6ee7b7', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: 4 }}>
                 {psych.unvan ?? 'Psikolog'}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 5 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 5, fontFamily: "'Playfair Display', Georgia, serif" }}>
                 {ad}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -581,7 +582,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
 
 function SectionTitle({ children, noMargin }: { children: React.ReactNode; noMargin?: boolean }) {
   return (
-    <div style={{ fontSize: 15, fontWeight: 800, color: '#0d1f18', marginBottom: noMargin ? 0 : 12, display: 'flex', alignItems: 'center', gap: 7 }}>
+    <div style={{ fontSize: 15, fontWeight: 800, color: '#0d1f18', marginBottom: noMargin ? 0 : 12, display: 'flex', alignItems: 'center', gap: 7, fontFamily: "'Playfair Display', Georgia, serif" }}>
       <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#4a7c6f', display: 'inline-block', flexShrink: 0 }} />
       {children}
     </div>

@@ -31,7 +31,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
   const bioHasMore = bioParagraphs.length > 1
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: C.bg, color: C.ink, lineHeight: 1.6 }}>
+    <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
       {/* NAV */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(245,240,232,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -61,6 +61,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
       )}
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
         @media (max-width: 768px) {
           .doga-nav-links { display: none !important; }
           .doga-hamburger { display: block !important; }
@@ -73,18 +74,20 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           .doga-randevu-grid { grid-template-columns: 1fr !important; }
           .doga-contact-grid { grid-template-columns: 1fr !important; }
           .doga-section { padding: 48px 20px !important; }
+          .doga-hakkimda-grid { grid-template-columns: 1fr !important; }
+          .doga-hero-section { padding: 40px 20px 0 !important; }
         }
       `}</style>
 
       {/* HERO */}
-      <section style={{ background: `linear-gradient(150deg,${C.oliveLight} 0%,${C.bg} 60%,${C.earthLight} 100%)`, padding: '72px 40px 0', position: 'relative', overflow: 'hidden' }}>
+      <section className="doga-hero-section" style={{ background: `linear-gradient(150deg,${C.oliveLight} 0%,${C.bg} 60%,${C.earthLight} 100%)`, padding: '72px 40px 0', position: 'relative', overflow: 'hidden' }}>
         {/* Organik blob arka plan */}
         <div style={{ position: 'absolute', top: -60, right: 40, width: 300, height: 300, borderRadius: '60% 40% 70% 30% / 50% 60% 40% 50%', background: `${C.olive}12`, pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: 0, left: -40, width: 200, height: 200, borderRadius: '40% 60% 30% 70% / 60% 40% 60% 40%', background: `${C.earth}10`, pointerEvents: 'none' }} />
         <div className="doga-hero-grid" style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 420px', gap: 56, alignItems: 'end', position: 'relative', zIndex: 1 }}>
           <div style={{ paddingBottom: 64 }}>
             {psych.unvan && <div style={{ fontSize: 11, fontWeight: 700, color: C.sage, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>{psych.unvan}</div>}
-            <h1 style={{ fontSize: 54, fontWeight: 800, color: C.ink, lineHeight: 1.05, letterSpacing: '-2.5px', margin: '0 0 18px' }}>{ad}</h1>
+            <h1 style={{ fontSize: 54, fontWeight: 800, color: C.ink, lineHeight: 1.05, letterSpacing: '-2.5px', margin: '0 0 18px', fontFamily: "'Playfair Display', Georgia, serif" }}>{ad}</h1>
             {psych.profil_alinti && (
               <div style={{ background: 'rgba(255,255,255,0.7)', borderRadius: 16, padding: '16px 20px', border: `1px solid ${C.border}`, marginBottom: 24, fontSize: 16, color: C.inkLight, lineHeight: 1.8, fontStyle: 'italic' }}>
                 🌿 &ldquo;{psych.profil_alinti}&rdquo;
@@ -146,8 +149,8 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
             <span style={{ fontSize: 20 }}>🌿</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Hakkımda</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 40, alignItems: 'start' }}>
-            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.ink, lineHeight: 1.25, letterSpacing: '-0.5px', margin: 0 }}>Doğal, güvenli bir alan yaratıyoruz.</h2>
+          <div className="doga-hakkimda-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 40, alignItems: 'start' }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, color: C.ink, lineHeight: 1.25, letterSpacing: '-0.5px', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>Doğal, güvenli bir alan yaratıyoruz.</h2>
             <div>
               <p style={{ fontSize: 16, color: C.inkLight, lineHeight: 1.85, margin: '0 0 16px' }}>{bioExpanded ? psych.bio_text : bioShort}</p>
               {bioHasMore && (
@@ -168,7 +171,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
               <span style={{ fontSize: 20 }}>🌸</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Yaklaşımım</span>
             </div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 36px' }}>Çalışma Felsefem</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 36px', fontFamily: "'Playfair Display', Georgia, serif" }}>Çalışma Felsefem</h2>
             <div className="doga-yaklasim-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
               {psych.yaklasim.map((y, i) => (
                 <div key={i} style={{ background: C.white, borderRadius: 20, padding: 24, border: `1px solid ${C.border}`, boxShadow: '0 2px 12px rgba(44,36,22,0.05)' }}>
@@ -189,7 +192,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
             <span style={{ fontSize: 20 }}>🍃</span>
             <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Uzmanlık</span>
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 28px' }}>Uzmanlık Alanlarım</h2>
+          <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 28px', fontFamily: "'Playfair Display', Georgia, serif" }}>Uzmanlık Alanlarım</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             {psych.uzmanlik_alanlari.map(alan => (
               <span key={alan} style={{ fontSize: 14, fontWeight: 600, color: C.olive, background: C.oliveLight, border: `1.5px solid ${C.olive}30`, borderRadius: 24, padding: '8px 18px' }}>{alan}</span>
@@ -206,7 +209,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
               <span style={{ fontSize: 20 }}>📚</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Eğitim</span>
             </div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 28px' }}>Akademik Geçmiş</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 28px', fontFamily: "'Playfair Display', Georgia, serif" }}>Akademik Geçmiş</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {psych.egitim.map((e, i) => (
                 <div key={i} style={{ background: C.white, borderRadius: 14, padding: '18px 22px', border: `1px solid ${C.border}`, display: 'flex', gap: 14, alignItems: 'center' }}>
@@ -231,7 +234,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
                 <span style={{ fontSize: 20 }}>✍️</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>Blog</span>
               </div>
-              <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: 0 }}>Yazılarım</h2>
+              <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>Yazılarım</h2>
             </div>
             <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.olive, textDecoration: 'none' }}>Tümünü gör →</Link>
           </div>
@@ -265,7 +268,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
         <div className="doga-randevu-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '72px 40px', display: 'grid', gridTemplateColumns: paketler.length > 0 ? '1fr 1fr' : '1fr', gap: 48, alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Randevu</div>
-            <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-1px', margin: '0 0 16px' }}>Doğal bir süreçle başlayalım.</h2>
+            <h2 style={{ fontSize: 40, fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-1px', margin: '0 0 16px', fontFamily: "'Playfair Display', Georgia, serif" }}>Doğal bir süreçle başlayalım.</h2>
             <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: C.olive, borderRadius: 12, padding: '13px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
               🌱 Randevu Al
             </Link>
@@ -292,7 +295,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           <div className="doga-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '72px 40px' }}>
             <div style={{ textAlign: 'center', marginBottom: 44 }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>💚</div>
-              <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: 0 }}>Danışan Deneyimleri</h2>
+              <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: 0, fontFamily: "'Playfair Display', Georgia, serif" }}>Danışan Deneyimleri</h2>
             </div>
             <div className="doga-yorumlar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
               {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
@@ -313,21 +316,15 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           <span style={{ fontSize: 20 }}>🤝</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: C.olive, letterSpacing: '1.5px', textTransform: 'uppercase' }}>İletişim</span>
         </div>
-        <div className="doga-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+        <div className="doga-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 48 }}>
           <div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 24px' }}>Bize Ulaşın</h2>
+            <h2 style={{ fontSize: 36, fontWeight: 800, color: C.ink, letterSpacing: '-0.5px', margin: '0 0 24px', fontFamily: "'Playfair Display', Georgia, serif" }}>Bize Ulaşın</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {psych.klinik_adi && <div style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>{psych.klinik_adi}</div>}
               {psych.klinik_adres && <div style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.6 }}>{psych.klinik_adres}</div>}
               {psych.klinik_tel && <a href={`tel:${psych.klinik_tel}`} style={{ fontSize: 14, color: C.olive, fontWeight: 600, textDecoration: 'none' }}>📞 {psych.klinik_tel}</a>}
               {psych.calisma_saatleri && <div style={{ fontSize: 14, color: C.inkLight }}>🕐 {psych.calisma_saatleri}</div>}
             </div>
-          </div>
-          <div style={{ background: C.oliveLight, borderRadius: 24, padding: 32, border: `1px solid ${C.olive}25` }}>
-            <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, margin: '0 0 12px' }}>Doğal bir başlangıç</h3>
-            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'block', textAlign: 'center', background: C.olive, color: '#fff', borderRadius: 12, padding: '13px', fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
-              🌱 Randevu Al
-            </Link>
           </div>
         </div>
       </section>
