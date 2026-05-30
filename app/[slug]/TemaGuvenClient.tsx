@@ -76,7 +76,7 @@ export default function TemaGuvenClient({ psych, bloglar, yorumlar, paketler }: 
           .guven-hamburger { display: block !important; }
           .guven-hero-grid { grid-template-columns: 1fr !important; }
           .guven-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
-          .guven-hero-photo img, .guven-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .guven-hero-photo img, .guven-hero-photo > div:first-child { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
           .guven-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .guven-blog-grid { grid-template-columns: 1fr !important; }
           .guven-yorumlar-grid { grid-template-columns: 1fr !important; }

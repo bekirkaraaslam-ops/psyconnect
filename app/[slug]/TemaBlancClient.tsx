@@ -88,7 +88,8 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
           .blanc-hamburger { display: block !important; }
           .blanc-hero-grid { grid-template-columns: 1fr !important; }
           .blanc-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
-          .blanc-hero-photo img, .blanc-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .blanc-hero-photo img, .blanc-hero-photo > div:first-child { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .blanc-hero-badge { display: none !important; }
           .blanc-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .blanc-approach-grid { grid-template-columns: 1fr !important; }
           .blanc-uzmanlik-grid { grid-template-columns: 1fr 1fr !important; }
@@ -137,7 +138,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
               </div>
             )}
             {psych.deneyim_yil && (
-              <div style={{ position: 'absolute', bottom: 24, left: -24, background: '#fff', borderRadius: 16, padding: '16px 20px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: `1px solid ${C.border}` }}>
+              <div className="blanc-hero-badge" style={{ position: 'absolute', bottom: 24, left: -24, background: '#fff', borderRadius: 16, padding: '16px 20px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: `1px solid ${C.border}` }}>
                 <div style={{ fontSize: 28, fontWeight: 900, color: C.accent, lineHeight: 1 }}>{psych.deneyim_yil}</div>
                 <div style={{ fontSize: 11, color: C.inkLight, marginTop: 2 }}>yıl deneyim</div>
               </div>

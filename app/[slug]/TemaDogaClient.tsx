@@ -67,7 +67,8 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           .doga-hamburger { display: block !important; }
           .doga-hero-grid { grid-template-columns: 1fr !important; }
           .doga-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
-          .doga-hero-photo img, .doga-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .doga-hero-photo img, .doga-hero-photo > div:first-child { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .doga-hero-badge { display: none !important; }
           .doga-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .doga-yaklasim-grid { grid-template-columns: 1fr !important; }
           .doga-blog-grid { grid-template-columns: 1fr !important; }
@@ -118,7 +119,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
               </div>
             )}
             {psych.deneyim_yil && (
-              <div style={{ position: 'absolute', bottom: 24, left: -16, background: '#fff', borderRadius: 16, padding: '14px 18px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', border: `1px solid ${C.border}` }}>
+              <div className="doga-hero-badge" style={{ position: 'absolute', bottom: 24, left: -16, background: '#fff', borderRadius: 16, padding: '14px 18px', boxShadow: '0 8px 28px rgba(0,0,0,0.1)', border: `1px solid ${C.border}` }}>
                 <div style={{ fontSize: 26, fontWeight: 900, color: C.olive, lineHeight: 1 }}>{psych.deneyim_yil}</div>
                 <div style={{ fontSize: 11, color: C.inkLight, marginTop: 2 }}>yıl deneyim</div>
               </div>

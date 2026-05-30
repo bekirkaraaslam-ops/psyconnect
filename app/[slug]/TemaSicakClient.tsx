@@ -68,7 +68,8 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           .sicak-hamburger { display: block !important; }
           .sicak-hero-grid { grid-template-columns: 1fr !important; }
           .sicak-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
-          .sicak-hero-photo img, .sicak-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .sicak-hero-photo img, .sicak-hero-photo > div:first-child { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
+          .sicak-hero-badge { display: none !important; }
           .sicak-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .sicak-blog-grid { grid-template-columns: 1fr !important; }
           .sicak-yorumlar-grid { grid-template-columns: 1fr !important; }
@@ -107,7 +108,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
               </div>
             )}
             {psych.deneyim_yil && (
-              <div style={{ position: 'absolute', bottom: 24, right: -20, background: '#fff', borderRadius: 16, padding: '14px 18px', boxShadow: '0 8px 28px rgba(0,0,0,0.12)', fontFamily: 'system-ui' }}>
+              <div className="sicak-hero-badge" style={{ position: 'absolute', bottom: 24, right: -20, background: '#fff', borderRadius: 16, padding: '14px 18px', boxShadow: '0 8px 28px rgba(0,0,0,0.12)', fontFamily: 'system-ui' }}>
                 <div style={{ fontSize: 26, fontWeight: 900, color: C.accent, lineHeight: 1 }}>{psych.deneyim_yil}</div>
                 <div style={{ fontSize: 11, color: C.inkLight, marginTop: 2 }}>yıl deneyim</div>
               </div>
