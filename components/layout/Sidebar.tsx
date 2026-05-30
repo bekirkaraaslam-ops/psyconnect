@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -162,11 +163,7 @@ export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarPr
       {/* Logo */}
       <div className="px-2 lg:px-6 mb-8 flex flex-col items-center lg:items-start">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: '#4a7c6f' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 1-2 2H3" />
-            </svg>
-          </div>
+          <Image src="/logo.svg" alt="Seansify" width={32} height={32} className="rounded-xl flex-shrink-0" />
           <span className="hidden lg:inline font-semibold text-base" style={{ color: 'var(--foreground)' }}>Seansify</span>
         </div>
         <div className="mt-2 hidden lg:block">
