@@ -87,7 +87,8 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
           .blanc-nav-links { display: none !important; }
           .blanc-hamburger { display: block !important; }
           .blanc-hero-grid { grid-template-columns: 1fr !important; }
-          .blanc-hero-photo { display: none !important; }
+          .blanc-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
+          .blanc-hero-photo img, .blanc-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
           .blanc-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .blanc-approach-grid { grid-template-columns: 1fr !important; }
           .blanc-uzmanlik-grid { grid-template-columns: 1fr 1fr !important; }

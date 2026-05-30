@@ -67,7 +67,8 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           .sicak-nav-links { display: none !important; }
           .sicak-hamburger { display: block !important; }
           .sicak-hero-grid { grid-template-columns: 1fr !important; }
-          .sicak-hero-photo { display: none !important; }
+          .sicak-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
+          .sicak-hero-photo img, .sicak-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
           .sicak-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .sicak-blog-grid { grid-template-columns: 1fr !important; }
           .sicak-yorumlar-grid { grid-template-columns: 1fr !important; }

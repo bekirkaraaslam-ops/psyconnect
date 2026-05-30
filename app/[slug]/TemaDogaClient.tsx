@@ -66,7 +66,8 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
           .doga-nav-links { display: none !important; }
           .doga-hamburger { display: block !important; }
           .doga-hero-grid { grid-template-columns: 1fr !important; }
-          .doga-hero-photo { display: none !important; }
+          .doga-hero-photo { display: flex !important; justify-content: center; order: -1; margin-bottom: 20px; }
+          .doga-hero-photo img, .doga-hero-photo > div { width: 130px !important; height: 130px !important; aspect-ratio: 1/1 !important; border-radius: 50% !important; }
           .doga-stats-grid { grid-template-columns: 1fr 1fr !important; }
           .doga-yaklasim-grid { grid-template-columns: 1fr !important; }
           .doga-blog-grid { grid-template-columns: 1fr !important; }
