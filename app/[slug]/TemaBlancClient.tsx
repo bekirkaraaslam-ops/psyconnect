@@ -50,7 +50,7 @@ export default function TemaBlancClient({ psych, bloglar, yorumlar, paketler }: 
     <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
       {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(196,222,212,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
         <a href="#" style={{ fontSize: 16, fontWeight: 800, color: C.ink, textDecoration: 'none', letterSpacing: '-0.5px' }}>
           {unvanTam}
         </a>

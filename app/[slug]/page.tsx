@@ -6,6 +6,8 @@ import TemaBlancClient from './TemaBlancClient'
 import TemaSicakClient from './TemaSicakClient'
 import TemaGuvenClient from './TemaGuvenClient'
 import TemaDogaClient from './TemaDogaClient'
+import TemaEsintiClient from './TemaEsintiClient'
+import TemaDalgaClient from './TemaDalgaClient'
 
 function getSupabase() {
   return createClient(
@@ -98,10 +100,12 @@ export default async function PsikologProfilPage({ params }: Context) {
   }
 
   switch (psych.tema) {
-    case 'blanc': return <TemaBlancClient {...sharedProps} />
-    case 'sicak': return <TemaSicakClient {...sharedProps} />
-    case 'guven': return <TemaGuvenClient {...sharedProps} />
-    case 'doga':  return <TemaDogaClient  {...sharedProps} />
-    default:      return <ProfilClient    {...sharedProps} />
+    case 'blanc':  return <TemaBlancClient  {...sharedProps} />
+    case 'sicak':  return <TemaSicakClient  {...sharedProps} />
+    case 'guven':  return <TemaGuvenClient  {...sharedProps} />
+    case 'doga':   return <TemaDogaClient   {...sharedProps} />
+    case 'esinti': return <TemaEsintiClient {...sharedProps} />
+    case 'dalga':  return <TemaDalgaClient  {...sharedProps} />
+    default:       return <ProfilClient     {...sharedProps} />
   }
 }

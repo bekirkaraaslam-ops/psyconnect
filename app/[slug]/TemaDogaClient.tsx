@@ -44,7 +44,7 @@ export default function TemaDogaClient({ psych, bloglar, yorumlar, paketler }: W
     <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
       {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(245,240,232,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(210,222,192,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <a href="#" style={{ fontSize: 16, fontWeight: 700, color: C.ink, textDecoration: 'none', letterSpacing: '-0.3px' }}>{unvanTam}</a>
         <ul style={{ display: 'flex', gap: 4, listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }} className="doga-nav-links">
           {[

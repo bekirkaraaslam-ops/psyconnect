@@ -43,7 +43,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
     <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
       {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(250,246,241,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(228,205,188,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}`, padding: '0 40px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <a href="#" style={{ fontSize: 17, fontWeight: 700, color: C.ink, textDecoration: 'none', fontStyle: 'italic' }}>
           {unvanTam}
         </a>
