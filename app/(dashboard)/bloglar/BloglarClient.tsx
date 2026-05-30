@@ -166,6 +166,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
           .editor-body { padding: 16px 14px !important; }
           .editor-meta-grid { grid-template-columns: 1fr !important; }
           .editor-mobile-bar { display: flex !important; }
+          .editor-container { padding-bottom: 140px !important; }
         }
         @media (min-width: 641px) {
           .editor-mobile-bar { display: none !important; }
@@ -233,7 +234,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
       </div>
 
       {/* Editor body */}
-      <div className="editor-body" style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px' }}>
+      <div className="editor-body editor-container" style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px' }}>
         {err && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#dc2626' }}>
             {err}
@@ -356,13 +357,13 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
         </div>
       </div>
 
-      {/* Mobile sticky bottom bar */}
+      {/* Mobile sticky bottom bar — sits above MobileNav (~60px) */}
       <div className="editor-mobile-bar" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+        position: 'fixed', bottom: 60, left: 0, right: 0, zIndex: 55,
         background: 'var(--card)', borderTop: '1px solid var(--border)',
         padding: '12px 16px',
-        paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
         alignItems: 'center', justifyContent: 'space-between', gap: 12,
+        boxShadow: '0 -2px 12px rgba(0,0,0,0.08)',
       }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
           <div
