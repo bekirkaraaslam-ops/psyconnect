@@ -341,8 +341,6 @@ body {
 }
 
 /* ── Dark mode: Stat card arka planları ── */
-html.dark [style*="background: #f8fafc"],
-html.dark [style*="background:#f8fafc"] { background: #1e293b !important; }
 html.dark [style*="background: #fef2f2"],
 html.dark [style*="background:#fef2f2"] { background: #2d0a0a !important; }
 
@@ -460,6 +458,20 @@ html.dark [data-page="landing"] { color: inherit; }
 .delay-600 { animation-delay: 0.6s; }
 .delay-700 { animation-delay: 0.7s; }
 .delay-800 { animation-delay: 0.8s; }
+
+/* ── Dark mode: amber kenarlık (PendingApprovalsPanel, MissingNotesAccordion) ── */
+html.dark [style*="border-color: #fef3c7"] { border-color: #78350f !important; }
+html.dark [style*="borderColor: #fef3c7"]  { border-color: #78350f !important; }
+html.dark [style*="border-bottom: 1px solid #fef3c7"] { border-bottom-color: #78350f !important; }
+html.dark [style*="border-top: 1px solid #fef3c7"]    { border-top-color: #78350f !important; }
+
+/* ── Dark mode: açık pembe kenarlık (QRConnect bağlantıyı kes butonu) ── */
+html.dark [style*="border-color: #fca5a5"] { border-color: #7f1d1d !important; }
+html.dark [style*="borderColor: #fca5a5"]  { border-color: #7f1d1d !important; }
+
+/* ── Dark mode: f8fafc input/inner kutu — karttan koyu görünsün ── */
+html.dark [style*="background: #f8fafc"],
+html.dark [style*="background:#f8fafc"] { background: #0f172a !important; }
 
 /* ── Dark mode: ek background düzeltmeleri ── */
 
