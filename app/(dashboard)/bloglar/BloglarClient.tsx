@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 interface Blog {
@@ -11,6 +11,7 @@ interface Blog {
   yayinda: boolean
   created_at: string
   icerik: string
+  kapak_url: string | null
 }
 
 interface Props {
@@ -60,25 +61,40 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
   const [kategori, setKategori] = useState('')
   const [icerik, setIcerik] = useState('')
   const [yayinda, setYayinda] = useState(false)
+  const [kapakUrl, setKapakUrl] = useState<string | null>(null)
+  const [uploadingKapak, setUploadingKapak] = useState(false)
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [copied, setCopied] = useState<string | null>(null)
+  const kapakInputRef = useRef<HTMLInputElement>(null)
 
   function openNew() {
     setEditing(null)
-    setBaslik(''); setSlug(''); setKategori(''); setIcerik(''); setYayinda(false); setErr('')
+    setBaslik(''); setSlug(''); setKategori(''); setIcerik(''); setYayinda(false); setKapakUrl(null); setErr('')
     setMode('edit')
   }
 
   function openEdit(b: Blog) {
     setEditing(b)
-    setBaslik(b.baslik); setSlug(b.slug); setKategori(b.kategori ?? ''); setIcerik(b.icerik); setYayinda(b.yayinda); setErr('')
+    setBaslik(b.baslik); setSlug(b.slug); setKategori(b.kategori ?? ''); setIcerik(b.icerik); setYayinda(b.yayinda); setKapakUrl(b.kapak_url ?? null); setErr('')
     setMode('edit')
   }
 
   function handleBaslikChange(v: string) {
     setBaslik(v)
     if (!editing) setSlug(makeSlug(v))
+  }
+
+  async function handleKapakUpload(file: File) {
+    setUploadingKapak(true)
+    const ext = file.name.split('.').pop()
+    const path = `${psychologistId}/${Date.now()}.${ext}`
+    const { error: upErr } = await supabase.storage.from('blog-kapaklar').upload(path, file, { upsert: true, contentType: file.type })
+    if (upErr) { setErr('Kapak yüklenemedi: ' + upErr.message); setUploadingKapak(false); return }
+    const { data: { publicUrl } } = supabase.storage.from('blog-kapaklar').getPublicUrl(path)
+    setKapakUrl(publicUrl)
+    setUploadingKapak(false)
   }
 
   async function handleSave() {
@@ -89,7 +105,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
     if (editing) {
       const { data, error } = await supabase
         .from('psikolog_bloglar')
-        .update({ baslik, slug, kategori: kategori || null, icerik, yayinda, updated_at: new Date().toISOString() })
+        .update({ baslik, slug, kategori: kategori || null, icerik, yayinda, kapak_url: kapakUrl, updated_at: new Date().toISOString() })
         .eq('id', editing.id)
         .select()
         .single()
@@ -99,7 +115,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
     } else {
       const { data, error } = await supabase
         .from('psikolog_bloglar')
-        .insert({ psychologist_id: psychologistId, baslik, slug, kategori: kategori || null, icerik, yayinda })
+        .insert({ psychologist_id: psychologistId, baslik, slug, kategori: kategori || null, icerik, yayinda, kapak_url: kapakUrl })
         .select()
         .single()
       setSaving(false)
@@ -125,6 +141,13 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
     const { error } = await supabase.from('psikolog_bloglar').delete().eq('id', id)
     setDeleting(null)
     if (!error) setBloglar(prev => prev.filter(b => b.id !== id))
+  }
+
+  async function copyLink(b: Blog) {
+    const url = `https://seansify.com/${bookingSlug}/blog/${b.slug}`
+    await navigator.clipboard.writeText(url)
+    setCopied(b.id)
+    setTimeout(() => setCopied(null), 2000)
   }
 
   const formatDate = (s: string) => new Date(s).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -197,6 +220,49 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             {err}
           </div>
         )}
+
+        {/* Kapak Resmi */}
+        <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 20 }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 12 }}>Kapak Resmi</label>
+          <input ref={kapakInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && handleKapakUpload(e.target.files[0])} />
+          {kapakUrl ? (
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <img src={kapakUrl} alt="Kapak" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 10, display: 'block' }} />
+              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                <button onClick={() => kapakInputRef.current?.click()} disabled={uploadingKapak} style={{
+                  fontSize: 12, fontWeight: 600, color: '#4a7c6f', background: '#f0fdf4', border: '1px solid #d1fae5',
+                  borderRadius: 8, padding: '5px 12px', cursor: 'pointer',
+                }}>
+                  {uploadingKapak ? 'Yükleniyor…' : 'Değiştir'}
+                </button>
+                <button onClick={() => setKapakUrl(null)} style={{
+                  fontSize: 12, fontWeight: 600, color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca',
+                  borderRadius: 8, padding: '5px 12px', cursor: 'pointer',
+                }}>
+                  Kaldır
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => kapakInputRef.current?.click()}
+              disabled={uploadingKapak}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '20px', borderRadius: 12,
+                border: '2px dashed #dde5e2', background: '#f8fafc',
+                cursor: 'pointer', color: '#94a3b8', fontSize: 13, fontWeight: 600,
+                justifyContent: 'center',
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              {uploadingKapak ? 'Yükleniyor…' : 'Kapak resmi yükle'}
+            </button>
+          )}
+        </div>
 
         {/* Meta alanları */}
         <div style={{ background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)', padding: 20, marginBottom: 20 }}>
@@ -296,7 +362,6 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
 
       <div style={{ padding: '24px 28px', maxWidth: 800 }}>
         {bloglar.length === 0 ? (
-          /* Empty state */
           <div style={{
             background: 'var(--card)', borderRadius: 20, border: '1px solid var(--border)',
             padding: '56px 32px', textAlign: 'center',
@@ -326,23 +391,31 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             {bloglar.map(b => {
               const renk = b.kategori ? (KATRENKLERİ[b.kategori] ?? { bg: '#f1f5f9', color: '#475569' }) : null
               const preview = b.icerik.slice(0, 120).trim()
+              const isCopied = copied === b.id
 
               return (
                 <div key={b.id} style={{
                   background: 'var(--card)', borderRadius: 16, border: '1px solid var(--border)',
-                  padding: '16px 20px',
-                  display: 'flex', alignItems: 'flex-start', gap: 16,
+                  overflow: 'hidden',
+                  display: 'flex', alignItems: 'stretch',
                   transition: 'box-shadow 0.15s',
                 }}>
+                  {/* Kapak thumbnail */}
+                  {b.kapak_url && (
+                    <div style={{
+                      width: 80, flexShrink: 0,
+                      background: `url(${b.kapak_url}) center/cover no-repeat`,
+                    }} />
+                  )}
+
                   {/* Sol çizgi — yayın durumu */}
                   <div style={{
-                    width: 3, alignSelf: 'stretch', borderRadius: 4, flexShrink: 0,
+                    width: 3, alignSelf: 'stretch', flexShrink: 0,
                     background: b.yayinda ? '#4a7c6f' : '#e2e8f0',
-                    minHeight: 48,
                   }} />
 
                   {/* İçerik */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ flex: 1, minWidth: 0, padding: '16px 20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                       <h3 style={{
                         fontSize: 14, fontWeight: 700, color: 'var(--foreground)', margin: 0,
@@ -367,7 +440,30 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                   </div>
 
                   {/* Aksiyonlar */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, padding: '0 16px' }}>
+                    {b.yayinda && (
+                      <button
+                        onClick={() => copyLink(b)}
+                        title="Linki kopyala"
+                        style={{
+                          width: 32, height: 32, borderRadius: 8, border: '1px solid #dde5e2',
+                          background: isCopied ? '#f0fdf4' : '#f8fafc',
+                          color: isCopied ? '#15803d' : '#94a3b8',
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, transition: 'all 0.15s',
+                        }}
+                      >
+                        {isCopied ? (
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        ) : (
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                          </svg>
+                        )}
+                      </button>
+                    )}
                     <button
                       onClick={() => toggleYayinda(b)}
                       style={{

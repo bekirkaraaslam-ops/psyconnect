@@ -17,7 +17,7 @@ export default async function BloglarPage() {
 
   const { data: bloglar } = await supabase
     .from('psikolog_bloglar')
-    .select('id, baslik, slug, kategori, yayinda, created_at, icerik')
+    .select('id, baslik, slug, kategori, yayinda, created_at, icerik, kapak_url')
     .eq('psychologist_id', psych.id)
     .order('created_at', { ascending: false })
 

@@ -25,6 +25,8 @@ export default async function SettingsPage() {
           subscriptionEndsAt={psychologist?.subscription_ends_at ?? null}
         />
 
+        <PackagesPanel />
+
         <ReferralPanel />
 
         <div className="flex justify-end">

@@ -169,32 +169,70 @@ export default function RaporlarClient() {
 
   const isFutureMonth = year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth() + 1)
 
+  function exportCSV() {
+    const headers = ['Tarih', 'Danışan', 'Tür', 'Seans Durumu', 'Ücret (₺)', 'Ödeme Durumu']
+    const rows = appointments.map(a => [
+      new Date(a.appointment_date).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }),
+      a.patient_name ?? '',
+      a.appointment_type === 'online' ? 'Online' : 'Yüz yüze',
+      STATUS_LABELS[a.status]?.label ?? a.status,
+      a.ucret ?? '',
+      ODEME_LABELS[a.odeme_durumu ?? '']?.label ?? '',
+    ])
+    const csv = [headers, ...rows]
+      .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      .join('\n')
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `seansify-rapor-${year}-${String(month).padStart(2, '0')}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="p-6 space-y-6 max-w-5xl">
       {/* Ay Seçici */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={prevMonth}
-          className="p-2 rounded-lg transition-colors hover:opacity-80"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </button>
-        <div className="text-xl font-semibold min-w-[180px] text-center" style={{ color: 'var(--foreground)' }}>
-          {MONTHS[month - 1]} {year}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={prevMonth}
+            className="p-2 rounded-lg transition-colors hover:opacity-80"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div className="text-xl font-semibold min-w-[180px] text-center" style={{ color: 'var(--foreground)' }}>
+            {MONTHS[month - 1]} {year}
+          </div>
+          <button
+            onClick={nextMonth}
+            disabled={isFutureMonth}
+            className="p-2 rounded-lg transition-colors hover:opacity-80 disabled:opacity-30"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
         </div>
-        <button
-          onClick={nextMonth}
-          disabled={isFutureMonth}
-          className="p-2 rounded-lg transition-colors hover:opacity-80 disabled:opacity-30"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
+        {!loading && appointments.length > 0 && (
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg transition-colors hover:opacity-80"
+            style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            CSV İndir
+          </button>
+        )}
       </div>
 
       {/* Özet Kartlar */}
