@@ -22,7 +22,7 @@ export default function DashboardShell({ planType }: Props) {
   return (
     <>
       <Sidebar planType={planType} onAyarlarClick={() => openAyarlar('profil')} />
-      <MobileNav onAyarlarClick={() => openAyarlar('profil')} />
+      <MobileNav planType={planType} onAyarlarClick={() => openAyarlar('profil')} />
       <AyarlarModal
         open={ayarlarOpen}
         onClose={() => setAyarlarOpen(false)}
