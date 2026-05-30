@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { WebsiteProps, blogOzet, tarih, okumaMin } from './websiteTypes'
 
 const C = {
@@ -29,6 +29,16 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
   const bioShort = bioParagraphs[0] ?? ''
   const bioHasMore = bioParagraphs.length > 1
 
+  useEffect(() => {
+    const els = document.querySelectorAll('.sicak-scroll-fade')
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) } }),
+      { threshold: 0.08 }
+    )
+    els.forEach(el => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+
   return (
     <div style={{ fontFamily: "'Lato', system-ui, sans-serif", background: C.bg, color: C.ink, lineHeight: 1.6 }}>
 
@@ -47,7 +57,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           ].map(l => (
             <li key={l.href}><a href={l.href} style={{ fontSize: 14, color: C.inkLight, textDecoration: 'none', padding: '6px 10px' }}>{l.label}</a></li>
           ))}
-          <li><Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ background: C.accent, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
+          <li><Link href={`https://seansify.com/book/${psych.booking_slug}`} className="sicak-btn-cta" style={{ background: C.accent, color: '#fff', borderRadius: 24, padding: '8px 20px', fontSize: 13, fontWeight: 700, textDecoration: 'none', marginLeft: 8 }}>Randevu Al</Link></li>
         </ul>
         <button onClick={() => setMenuOpen(o => !o)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: C.ink }} className="sicak-hamburger">{menuOpen ? '✕' : '☰'}</button>
       </nav>
@@ -63,6 +73,48 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
+
+        @keyframes sicak-slide-up {
+          from { opacity: 0; transform: translateY(28px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .sicak-hero-left > * {
+          opacity: 0;
+          animation: sicak-slide-up 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        .sicak-hero-left > *:nth-child(1) { animation-delay: 0s; }
+        .sicak-hero-left > *:nth-child(2) { animation-delay: 0.1s; }
+        .sicak-hero-left > *:nth-child(3) { animation-delay: 0.2s; }
+        .sicak-hero-left > *:nth-child(4) { animation-delay: 0.3s; }
+        .sicak-hero-left > *:nth-child(5) { animation-delay: 0.38s; }
+        .sicak-hero-photo-anim {
+          opacity: 0;
+          animation: sicak-slide-up 0.65s cubic-bezier(0.22,1,0.36,1) 0.22s forwards;
+        }
+        .sicak-scroll-fade {
+          opacity: 0;
+          transform: translateY(22px);
+          transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .sicak-scroll-fade.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .sicak-btn-cta {
+          transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+        }
+        .sicak-btn-cta:hover {
+          transform: translateY(-2px) scale(1.03) !important;
+          box-shadow: 0 8px 22px rgba(193,123,94,0.36) !important;
+        }
+        .sicak-card-hover {
+          transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        .sicak-card-hover:hover {
+          transform: translateY(-4px) !important;
+          box-shadow: 0 12px 32px rgba(45,31,20,0.1) !important;
+        }
+
         @media (max-width: 768px) {
           .sicak-nav-links { display: none !important; }
           .sicak-hamburger { display: block !important; }
@@ -84,7 +136,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* HERO */}
       <section className="sicak-hero-section" style={{ background: `linear-gradient(160deg,${C.bgWarm},${C.bg})`, padding: '80px 40px 0', borderBottom: `1px solid ${C.border}` }}>
         <div className="sicak-hero-grid" style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 420px', gap: 64, alignItems: 'end' }}>
-          <div style={{ paddingBottom: 64 }}>
+          <div className="sicak-hero-left" style={{ paddingBottom: 64 }}>
             {psych.unvan && <div style={{ fontSize: 12, fontWeight: 400, color: C.inkLight, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16, fontFamily: 'system-ui' }}>{psych.unvan}</div>}
             <h1 style={{ fontSize: 56, fontWeight: 700, color: C.ink, lineHeight: 1.05, letterSpacing: '-2px', margin: '0 0 20px', fontStyle: 'italic', fontFamily: "'Playfair Display', Georgia, serif" }}>{ad}</h1>
             {psych.profil_alinti && (
@@ -95,11 +147,11 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
               {psych.sehir && <span style={{ fontSize: 12, color: C.inkLight, background: 'rgba(255,255,255,0.7)', border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px', fontFamily: 'system-ui' }}>📍 {psych.sehir}</span>}
               {psych.tpd_uye_no && <span style={{ fontSize: 12, color: C.inkLight, background: 'rgba(255,255,255,0.7)', border: `1px solid ${C.border}`, borderRadius: 20, padding: '5px 12px', fontFamily: 'system-ui' }}>{psych.tpd_uye_no}</span>}
             </div>
-            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 30px', fontSize: 16, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} className="sicak-btn-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 30px', fontSize: 16, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
               Randevu Al
             </Link>
           </div>
-          <div className="sicak-hero-photo" style={{ position: 'relative', alignSelf: 'end' }}>
+          <div className="sicak-hero-photo sicak-hero-photo-anim" style={{ position: 'relative', alignSelf: 'end' }}>
             {psych.foto_url ? (
               <img src={psych.foto_url} alt={ad} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', borderRadius: '120px 120px 40px 40px', boxShadow: '0 20px 60px rgba(45,31,20,0.15)' }} />
             ) : (
@@ -119,7 +171,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* STATS */}
       <section style={{ background: C.white, borderBottom: `1px solid ${C.border}` }}>
-        <div className="sicak-stats-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', fontFamily: 'system-ui' }}>
+        <div className="sicak-stats-grid sicak-scroll-fade" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 40px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', fontFamily: 'system-ui' }}>
           {[
             psych.deneyim_yil ? { v: `${psych.deneyim_yil}+`, l: 'Yıl Deneyim' } : null,
             ortalamaPuan ? { v: `${ortalamaPuan}★`, l: 'Değerlendirme' } : null,
@@ -136,7 +188,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* HAKKIMDA */}
       {psych.bio_text && (
         <section id="hakkimda" className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
-          <div className="sicak-hakkimda-grid" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, alignItems: 'start' }}>
+          <div className="sicak-hakkimda-grid sicak-scroll-fade" style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 48, alignItems: 'start' }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Hakkımda</div>
               <div style={{ width: 40, height: 3, background: C.accent, borderRadius: 2 }} />
@@ -156,14 +208,14 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* YAKLAŞIMIM */}
       {psych.yaklasim && psych.yaklasim.length > 0 && (
         <section id="yaklasim" style={{ background: C.bgWarm, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
+          <div className="sicak-scroll-fade" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
             <div style={{ marginBottom: 48, fontFamily: 'system-ui' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Yaklaşımım</div>
               <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Çalışma Felsefem</h2>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {psych.yaklasim.map((y, i) => (
-                <div key={i} style={{ background: C.white, borderRadius: 16, padding: '24px 28px', border: `1px solid ${C.border}`, display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                <div key={i} className="sicak-card-hover" style={{ background: C.white, borderRadius: 16, padding: '24px 28px', border: `1px solid ${C.border}`, display: 'flex', gap: 20, alignItems: 'flex-start' }}>
                   <div style={{ width: 48, height: 48, borderRadius: 12, background: C.accentLight, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{y.ikon}</div>
                   <div>
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: C.ink, margin: '0 0 8px', fontFamily: 'system-ui' }}>{y.baslik}</h3>
@@ -179,14 +231,16 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* UZMANLIK */}
       {psych.uzmanlik_alanlari && psych.uzmanlik_alanlari.length > 0 && (
         <section id="uzmanlik" className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
-          <div style={{ marginBottom: 40, fontFamily: 'system-ui' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Uzmanlık</div>
-            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Uzmanlık Alanlarım</h2>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {psych.uzmanlik_alanlari.map(alan => (
-              <span key={alan} style={{ fontSize: 14, fontWeight: 600, color: C.ink, background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 24, padding: '8px 18px', fontFamily: 'system-ui' }}>{alan}</span>
-            ))}
+          <div className="sicak-scroll-fade">
+            <div style={{ marginBottom: 40, fontFamily: 'system-ui' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Uzmanlık</div>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Uzmanlık Alanlarım</h2>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+              {psych.uzmanlik_alanlari.map(alan => (
+                <span key={alan} style={{ fontSize: 14, fontWeight: 600, color: C.ink, background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 24, padding: '8px 18px', fontFamily: 'system-ui' }}>{alan}</span>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -194,7 +248,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* EĞİTİM */}
       {psych.egitim && psych.egitim.length > 0 && (
         <section style={{ background: C.bgWarm, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
-          <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', fontFamily: 'system-ui' }}>
+          <div className="sicak-scroll-fade" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', fontFamily: 'system-ui' }}>
             <div style={{ marginBottom: 40 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Eğitim</div>
               <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Akademik Geçmiş</h2>
@@ -217,33 +271,35 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* BLOG */}
       {bloglar.length > 0 && (
         <section id="blog" className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 40, fontFamily: 'system-ui' }}>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Blog</div>
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Yazılarım</h2>
+          <div className="sicak-scroll-fade">
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 40, fontFamily: 'system-ui' }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Blog</div>
+                <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Yazılarım</h2>
+              </div>
+              <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none', fontFamily: 'system-ui' }}>Tümünü gör →</Link>
             </div>
-            <Link href={`https://${psych.booking_slug}.seansify.com/blog`} style={{ fontSize: 14, fontWeight: 700, color: C.accent, textDecoration: 'none', fontFamily: 'system-ui' }}>Tümünü gör →</Link>
-          </div>
-          <div style={{ display: 'grid', gap: 24 }}>
-            {bloglar.slice(0, 1).map(b => (
-              <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(45,31,20,0.06)' }}>
-                <div style={{ background: `linear-gradient(135deg,${C.accent2},${C.accent})`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220, fontSize: 64 }}>📖</div>
-                <div style={{ padding: 28 }}>
-                  {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
-                  <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, lineHeight: 1.35, margin: '10px 0' }}>{b.baslik}</h3>
-                  <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: 0, fontFamily: 'system-ui' }}>{blogOzet(b.icerik, 140)}</p>
-                  <div style={{ marginTop: 16, fontSize: 12, color: C.inkLight, fontFamily: 'system-ui' }}>{tarih(b.created_at)} · {okumaMin(b.icerik)} dk okuma</div>
-                </div>
-              </Link>
-            ))}
-            <div className="sicak-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
-              {bloglar.slice(1, 3).map(b => (
-                <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, display: 'block' }}>
-                  {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: C.ink, lineHeight: 1.4, margin: '8px 0' }}>{b.baslik}</h3>
-                  <p style={{ fontSize: 13, color: C.inkLight, lineHeight: 1.6, margin: 0, fontFamily: 'system-ui' }}>{blogOzet(b.icerik)}</p>
+            <div style={{ display: 'grid', gap: 24 }}>
+              {bloglar.slice(0, 1).map(b => (
+                <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} className="sicak-card-hover" style={{ textDecoration: 'none', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, background: C.white, borderRadius: 20, border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 2px 16px rgba(45,31,20,0.06)' }}>
+                  <div style={{ background: `linear-gradient(135deg,${C.accent2},${C.accent})`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220, fontSize: 64 }}>📖</div>
+                  <div style={{ padding: 28 }}>
+                    {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
+                    <h3 style={{ fontSize: 22, fontWeight: 700, color: C.ink, lineHeight: 1.35, margin: '10px 0' }}>{b.baslik}</h3>
+                    <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, margin: 0, fontFamily: 'system-ui' }}>{blogOzet(b.icerik, 140)}</p>
+                    <div style={{ marginTop: 16, fontSize: 12, color: C.inkLight, fontFamily: 'system-ui' }}>{tarih(b.created_at)} · {okumaMin(b.icerik)} dk okuma</div>
+                  </div>
                 </Link>
               ))}
+              <div className="sicak-blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+                {bloglar.slice(1, 3).map(b => (
+                  <Link key={b.id} href={`https://${psych.booking_slug}.seansify.com/blog/${b.slug}`} className="sicak-card-hover" style={{ textDecoration: 'none', background: C.white, borderRadius: 16, padding: 22, border: `1px solid ${C.border}`, display: 'block' }}>
+                    {b.kategori && <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, textTransform: 'uppercase', letterSpacing: '1px', fontFamily: 'system-ui' }}>{b.kategori}</span>}
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: C.ink, lineHeight: 1.4, margin: '8px 0' }}>{b.baslik}</h3>
+                    <p style={{ fontSize: 13, color: C.inkLight, lineHeight: 1.6, margin: 0, fontFamily: 'system-ui' }}>{blogOzet(b.icerik)}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -251,11 +307,11 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       {/* RANDEVU */}
       <section id="randevu" style={{ background: C.bgWarm, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
-        <div className="sicak-randevu-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: paketler.length > 0 ? '1fr 1fr' : '1fr', gap: 48, alignItems: 'center' }}>
+        <div className="sicak-randevu-grid sicak-scroll-fade" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: paketler.length > 0 ? '1fr 1fr' : '1fr', gap: 48, alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'system-ui', marginBottom: 8 }}>Randevu</div>
             <h2 style={{ fontSize: 40, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", lineHeight: 1.2, margin: '0 0 16px' }}>Birlikte yola çıkalım.</h2>
-            <Link href={`https://seansify.com/book/${psych.booking_slug}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
+            <Link href={`https://seansify.com/book/${psych.booking_slug}`} className="sicak-btn-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: C.accent, color: '#fff', borderRadius: 12, padding: '14px 28px', fontSize: 15, fontWeight: 700, textDecoration: 'none', fontFamily: 'system-ui' }}>
               Randevu Al →
             </Link>
           </div>
@@ -278,25 +334,27 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
       {/* YORUMLAR */}
       {yorumlar.length > 0 && (
         <section className="sicak-section" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48, fontFamily: 'system-ui' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Yorumlar</div>
-            <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Danışan Deneyimleri</h2>
-          </div>
-          <div className="sicak-yorumlar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, fontFamily: 'system-ui' }}>
-            {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
-              <div key={y.id} style={{ background: C.white, borderRadius: 20, padding: 24, border: `1px solid ${C.border}`, boxShadow: '0 2px 12px rgba(45,31,20,0.05)' }}>
-                <div style={{ color: '#f59e0b', fontSize: 16, marginBottom: 12 }}>{'★'.repeat(y.yildiz)}</div>
-                <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, fontStyle: 'italic', margin: '0 0 16px' }}>&ldquo;{y.yorum_metni}&rdquo;</p>
-                <div style={{ fontSize: 12, fontWeight: 600, color: C.ink }}>{y.reviewer_init ?? 'Anonim'}</div>
-              </div>
-            ))}
+          <div className="sicak-scroll-fade">
+            <div style={{ textAlign: 'center', marginBottom: 48, fontFamily: 'system-ui' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>Yorumlar</div>
+              <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: 0 }}>Danışan Deneyimleri</h2>
+            </div>
+            <div className="sicak-yorumlar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, fontFamily: 'system-ui' }}>
+              {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
+                <div key={y.id} className="sicak-card-hover" style={{ background: C.white, borderRadius: 20, padding: 24, border: `1px solid ${C.border}`, boxShadow: '0 2px 12px rgba(45,31,20,0.05)' }}>
+                  <div style={{ color: '#f59e0b', fontSize: 16, marginBottom: 12 }}>{'★'.repeat(y.yildiz)}</div>
+                  <p style={{ fontSize: 14, color: C.inkLight, lineHeight: 1.7, fontStyle: 'italic', margin: '0 0 16px' }}>&ldquo;{y.yorum_metni}&rdquo;</p>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: C.ink }}>{y.reviewer_init ?? 'Anonim'}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* İLETİŞİM */}
       <section id="iletisim" style={{ background: C.bgWarm, borderTop: `1px solid ${C.border}` }}>
-        <div className="sicak-contact-grid" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr', gap: 48, fontFamily: 'system-ui' }}>
+        <div className="sicak-contact-grid sicak-scroll-fade" style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr', gap: 48, fontFamily: 'system-ui' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.accent, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 8 }}>İletişim</div>
             <h2 style={{ fontSize: 36, fontWeight: 700, color: C.ink, fontFamily: "'Playfair Display', Georgia, serif", margin: '0 0 24px' }}>Bize Ulaşın</h2>
