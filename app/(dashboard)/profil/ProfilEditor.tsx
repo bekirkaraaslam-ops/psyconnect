@@ -75,10 +75,12 @@ const TABS = [
 ]
 
 const TEMA_SECENEKLERI = [
-  { id: 'blanc',  label: 'Blanc',  aciklama: 'Modern & Minimalist',     renk: '#3d6b5e', bg: '#fff',     border: '#e8f2ef' },
-  { id: 'sicak',  label: 'Sıcak',  aciklama: 'Sıcak & İnsancıl',       renk: '#c17b5e', bg: '#faf6f1', border: '#f5e8d8' },
-  { id: 'guven',  label: 'Güven',  aciklama: 'Uzman & Kurumsal',        renk: '#5fbfb0', bg: '#1b2d4f', border: '#2a4b7c' },
-  { id: 'doga',   label: 'Doğa',   aciklama: 'Sakin & Organik',         renk: '#5a6b3c', bg: '#f5f0e8', border: '#d8cebc' },
+  { id: 'blanc',  label: 'Blanc',   aciklama: 'Modern & Minimalist',    renk: '#3d6b5e', bg: '#fff',     border: '#e8f2ef' },
+  { id: 'sicak',  label: 'Sıcak',   aciklama: 'Sıcak & İnsancıl',      renk: '#c17b5e', bg: '#faf6f1', border: '#f5e8d8' },
+  { id: 'guven',  label: 'Güven',   aciklama: 'Uzman & Kurumsal',       renk: '#5fbfb0', bg: '#1b2d4f', border: '#2a4b7c' },
+  { id: 'doga',   label: 'Doğa',    aciklama: 'Sakin & Organik',        renk: '#5a6b3c', bg: '#f5f0e8', border: '#d8cebc' },
+  { id: 'esinti', label: 'Esinti',  aciklama: 'Editorial & Zarif',      renk: '#5a7d6c', bg: '#fafaf8', border: '#dce8e2' },
+  { id: 'dalga',  label: 'Dalga',   aciklama: 'Sıcak & Yaratıcı',      renk: '#a85530', bg: '#faf6f1', border: '#e6d8cf' },
 ]
 
 const DEFAULT_YAKLASIM: Yaklasim[] = [
