@@ -28,10 +28,14 @@ export async function POST(req: NextRequest) {
   const psychologistId = customData.psychologist_id
   const variantId = data?.variant_id?.toString()
 
+  const ONE_VARIANT = process.env.LEMONSQUEEZY_ONE_VARIANT_ID
   const BASLANGIC_VARIANT = process.env.LEMONSQUEEZY_BASLANGIC_VARIANT_ID
   const PRO_VARIANT = process.env.LEMONSQUEEZY_PRO_VARIANT_ID
 
-  const planType = variantId === PRO_VARIANT ? 'pro' : variantId === BASLANGIC_VARIANT ? 'baslangic' : null
+  const planType = variantId === PRO_VARIANT ? 'pro'
+    : variantId === ONE_VARIANT ? 'one'
+    : variantId === BASLANGIC_VARIANT ? 'one'
+    : null
 
   switch (eventName) {
     case 'subscription_created': {

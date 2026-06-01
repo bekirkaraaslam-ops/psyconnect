@@ -2,6 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
 import PatientCard from '@/components/patients/PatientCard'
+import { getLimits, isProPlan } from '@/lib/plans'
+import PatientsLimitButton from '@/components/patients/PatientsLimitButton'
+import { Suspense } from 'react'
+import PatientsLimitAlert from '@/components/patients/PatientsLimitAlert'
 
 export default async function PatientsPage() {
   const supabase = await createClient()
@@ -9,7 +13,7 @@ export default async function PatientsPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, plan_type')
     .eq('auth_user_id', user!.id)
     .single()
 
@@ -20,25 +24,55 @@ export default async function PatientsPage() {
     .eq('is_active', true)
     .order('name_surname')
 
+  const planType = psychologist?.plan_type ?? 'free'
+  const isPro = isProPlan(planType)
+  const limits = getLimits(planType)
+  const patientCount = patients?.length ?? 0
+  const atLimit = !isPro && patientCount >= limits.maxActivePatients
+
   return (
     <div className="flex-1">
       <Topbar title="Hastalar" />
+      <Suspense fallback={null}><PatientsLimitAlert /></Suspense>
 
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm" style={{ color: '#64748b' }}>
-            {patients?.length ?? 0} aktif hasta
-          </p>
-          <Link
-            href="/patients/new"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white"
-            style={{ background: '#4a7c6f' }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Yeni Hasta
-          </Link>
+          <div>
+            <p className="text-sm" style={{ color: '#64748b' }}>
+              {patientCount} aktif hasta
+            </p>
+            {!isPro && (
+              <div className="mt-1.5 flex items-center gap-2">
+                <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ background: '#e2e8f0' }}>
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${Math.min((patientCount / limits.maxActivePatients) * 100, 100)}%`,
+                      background: atLimit ? '#ef4444' : '#4a7c6f',
+                    }}
+                  />
+                </div>
+                <span className="text-xs" style={{ color: atLimit ? '#ef4444' : '#94a3b8' }}>
+                  {patientCount} / {limits.maxActivePatients}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {atLimit ? (
+            <PatientsLimitButton />
+          ) : (
+            <Link
+              href="/patients/new"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white"
+              style={{ background: '#4a7c6f' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Yeni Hasta
+            </Link>
+          )}
         </div>
 
         {!patients || patients.length === 0 ? (

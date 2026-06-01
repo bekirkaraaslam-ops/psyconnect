@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
   const variantId = planType === 'pro'
     ? process.env.LEMONSQUEEZY_PRO_VARIANT_ID
-    : process.env.LEMONSQUEEZY_BASLANGIC_VARIANT_ID
+    : process.env.LEMONSQUEEZY_ONE_VARIANT_ID ?? process.env.LEMONSQUEEZY_BASLANGIC_VARIANT_ID
 
   const { data: psych } = await supabase
     .from('psychologists')

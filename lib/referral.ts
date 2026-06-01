@@ -40,7 +40,8 @@ export async function calculateAndUpdateDiscount(psychologistId: string) {
 
   if (!psych || psych.plan_type === 'free') return
 
-  const rules = REFERRAL_RULES[psych.plan_type as 'pro' | 'baslangic']
+  const planKey = psych.plan_type === 'one' || psych.plan_type === 'baslangic' ? (psych.plan_type as 'one' | 'baslangic') : (psych.plan_type as 'pro')
+  const rules = REFERRAL_RULES[planKey]
 
   const { count } = await supabase
     .from('referrals')

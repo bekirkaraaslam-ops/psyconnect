@@ -72,7 +72,13 @@ function formatDate(iso: string) {
   })
 }
 
-export default function RaporlarClient() {
+interface RaporlarClientProps {
+  planType?: string
+}
+
+export default function RaporlarClient({ planType = 'free' }: RaporlarClientProps) {
+  const isPro = planType === 'pro'
+  const reportMonths = isPro ? Infinity : 3
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth() + 1)
@@ -106,6 +112,7 @@ export default function RaporlarClient() {
   useEffect(() => { fetchReport() }, [fetchReport])
 
   function prevMonth() {
+    if (isAtEarliestMonth) return
     setSlideDir('left')
     if (month === 1) { setMonth(12); setYear(y => y - 1) }
     else setMonth(m => m - 1)
@@ -169,6 +176,12 @@ export default function RaporlarClient() {
 
   const isFutureMonth = year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth() + 1)
 
+  const earliestAllowed = new Date(now.getFullYear(), now.getMonth() - (reportMonths - 1), 1)
+  const isAtEarliestMonth = !isPro && (
+    year < earliestAllowed.getFullYear() ||
+    (year === earliestAllowed.getFullYear() && month <= earliestAllowed.getMonth() + 1)
+  )
+
   function exportCSV() {
     const headers = ['Tarih', 'Danışan', 'Tür', 'Seans Durumu', 'Ücret (₺)', 'Ödeme Durumu']
     const rows = appointments.map(a => [
@@ -193,12 +206,19 @@ export default function RaporlarClient() {
 
   return (
     <div className="p-6 space-y-6 max-w-5xl">
+      {!isPro && (
+        <div className="flex items-center justify-between px-4 py-3 rounded-xl text-sm" style={{ background: '#fef9c3', border: '1px solid #fde047' }}>
+          <span style={{ color: '#854d0e' }}>Seansify One: Son 3 aylık raporlara erişebilirsiniz.</span>
+          <a href="/upgrade" className="text-xs font-semibold px-3 py-1 rounded-lg" style={{ background: '#4a7c6f', color: 'white' }}>Pro'ya Geç</a>
+        </div>
+      )}
       {/* Ay Seçici */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
             onClick={prevMonth}
-            className="p-2 rounded-lg transition-colors hover:opacity-80"
+            disabled={isAtEarliestMonth}
+            className="p-2 rounded-lg transition-colors hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed"
             style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

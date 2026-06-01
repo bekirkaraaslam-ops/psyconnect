@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { encrypt } from '@/lib/crypto'
 import { normalizePhone } from '@/lib/utils'
+import { getLimits, isProPlan } from '@/lib/plans'
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -10,11 +11,26 @@ export async function POST(req: NextRequest) {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, plan_type')
     .eq('auth_user_id', user.id)
     .single()
 
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  if (!isProPlan(psychologist.plan_type)) {
+    const limits = getLimits(psychologist.plan_type)
+    const { count } = await supabase
+      .from('patients')
+      .select('*', { count: 'exact', head: true })
+      .eq('psychologist_id', psychologist.id)
+      .eq('is_active', true)
+    if ((count ?? 0) >= limits.maxActivePatients) {
+      return NextResponse.json(
+        { error: 'PATIENT_LIMIT_REACHED', limit: limits.maxActivePatients },
+        { status: 403 }
+      )
+    }
+  }
 
   const body = await req.json()
   const { name_surname, phone_number, date_of_birth, notes, anamnez_enabled } = body

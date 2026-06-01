@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServerClient } from '@/lib/supabase/server'
 import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
+import { getLimits, isProPlan, startOfCurrentMonth } from '@/lib/plans'
 
 function getServiceSupabase() {
   return createClient(
@@ -17,11 +18,26 @@ export async function POST(req: NextRequest) {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, plan_type')
     .eq('auth_user_id', user.id)
     .single()
 
   if (!psychologist) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  if (!isProPlan(psychologist.plan_type)) {
+    const limits = getLimits(psychologist.plan_type)
+    const { count } = await supabase
+      .from('anamnez_forms')
+      .select('*', { count: 'exact', head: true })
+      .eq('psychologist_id', psychologist.id)
+      .gte('created_at', startOfCurrentMonth())
+    if ((count ?? 0) >= limits.monthlyFormSends) {
+      return NextResponse.json(
+        { error: 'FORM_LIMIT_REACHED', limit: limits.monthlyFormSends },
+        { status: 403 }
+      )
+    }
+  }
 
   const { patient_id } = await req.json()
   if (!patient_id) return NextResponse.json({ error: 'patient_id gerekli' }, { status: 400 })

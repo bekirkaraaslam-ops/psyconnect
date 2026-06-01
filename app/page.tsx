@@ -316,8 +316,8 @@ export default async function LandingPage() {
             {[
               {
                 step: '01', title: 'Hesabını Oluştur, Paketini Seç',
-                desc: 'Sadece adın, e-posta adresin ve şifrenle 2 dakikada kayıt ol. Ardından ihtiyacına göre Başlangıç veya Pro paketini seç.',
-                details: ['Ad Soyad + E-posta + Şifre ile kayıt', 'Paket seçimi (Başlangıç veya Pro)', 'Güvenli ödeme → Anında aktifleşme'],
+                desc: 'Sadece adın, e-posta adresin ve şifrenle 2 dakikada kayıt ol. Ardından ihtiyacına göre Seansify One veya Seansify Pro paketini seç.',
+                details: ['Ad Soyad + E-posta + Şifre ile kayıt', 'Paket seçimi (Seansify One veya Pro)', 'Güvenli ödeme → Anında aktifleşme'],
                 icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></>,
                 color: '#4a7c6f', bg: '#e8f5f1',
               },
@@ -447,38 +447,36 @@ export default async function LandingPage() {
           <div className="grid md:grid-cols-2 gap-6 mt-12">
             <div className="bg-white rounded-2xl p-5 md:p-8" style={{ border: '1px solid #c8e6dc', boxShadow: '0 1px 6px rgba(74,124,111,0.08)' }}>
               <div className="mb-6">
-                <h3 className="text-lg font-bold mb-1" style={{ color: '#0d1f18' }}>Başlangıç Paketi</h3>
-                <p className="text-xs mb-4" style={{ color: '#5a7a72' }}>Klinik yönetiminin temelleri</p>
+                <h3 className="text-lg font-bold mb-1" style={{ color: '#0d1f18' }}>Seansify One</h3>
+                <p className="text-xs mb-4" style={{ color: '#5a7a72' }}>Tüm özellikler, küçük pratikler için</p>
                 <div className="flex items-end gap-1">
-                  <span className="text-4xl font-extrabold" style={{ color: '#0d1f18' }}>950</span>
+                  <span className="text-4xl font-extrabold" style={{ color: '#0d1f18' }}>749</span>
                   <span className="text-lg font-semibold mb-1" style={{ color: '#6b8c84' }}>₺/ay</span>
                 </div>
               </div>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-5">
                 {[
-                  { text: 'Sınırsız hasta kaydı', ok: true },
-                  { text: 'Randevu takvimi', ok: true },
-                  { text: 'Seans notları ve ödev takibi', ok: true },
-                  { text: 'Klinik dashboard', ok: true },
-                  { text: 'Kişisel profil sayfası', ok: true },
-                  { text: 'Blog yazısı yayınlama', ok: true },
-                  { text: 'Danışan değerlendirme sistemi', ok: true },
-                  { text: 'WhatsApp özellikleri', ok: false, note: 'Pro gerektirir' },
-                  { text: 'Otomatik randevu asistanı', ok: false, note: 'Pro gerektirir' },
-                  { text: 'Profil görünüm özelleştirme', ok: false, note: 'Pro gerektirir' },
-                ].map((item) => (
-                  <li key={item.text} className="flex items-start gap-3 text-sm">
-                    {item.ok
-                      ? <span className="mt-0.5 flex-shrink-0 font-bold" style={{ color: '#4a7c6f' }}>✓</span>
-                      : <span className="mt-0.5 flex-shrink-0" style={{ color: '#aacfc7' }}>🔒</span>}
-                    <span style={{ color: item.ok ? '#1e3d36' : '#8aada7' }}>
-                      {item.text}{item.note && <span className="text-xs ml-1">({item.note})</span>}
-                    </span>
+                  'Randevu takvimi',
+                  'Seans notları ve ödev takibi',
+                  'Anamnez & onam formları',
+                  'Kişisel profil sayfası',
+                  'Blog yazısı (5 adet)',
+                  'Danışan değerlendirme sistemi',
+                  'WhatsApp hatırlatıcı (60/ay)',
+                ].map((text) => (
+                  <li key={text} className="flex items-start gap-3 text-sm">
+                    <span className="mt-0.5 flex-shrink-0 font-bold" style={{ color: '#4a7c6f' }}>✓</span>
+                    <span style={{ color: '#1e3d36' }}>{text}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/upgrade?plan=baslangic" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90" style={{ border: '2px solid #4a7c6f', color: '#4a7c6f' }}>
-                Başlangıç Seç
+              <ul className="space-y-1.5 mb-7 pl-1">
+                {['20 aktif hasta limiti', '15 form/ay', 'Son 3 ay raporu'].map(l => (
+                  <li key={l} className="text-xs" style={{ color: '#94a3b8' }}>· {l}</li>
+                ))}
+              </ul>
+              <Link href="/upgrade?plan=one" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90" style={{ border: '2px solid #4a7c6f', color: '#4a7c6f' }}>
+                Seansify One Seç
               </Link>
             </div>
 
@@ -488,7 +486,7 @@ export default async function LandingPage() {
               </div>
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-1 text-white">Seansify Pro</h3>
-                <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>WhatsApp otomasyonu dahil</p>
+                <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>Sınırsız her şey, tam WhatsApp otomasyonu</p>
                 <div className="flex items-end gap-1">
                   <span className="text-4xl font-extrabold text-white">1.850</span>
                   <span className="text-lg font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>₺/ay</span>
@@ -496,14 +494,15 @@ export default async function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  "Başlangıç'taki her şey",
-                  'WhatsApp hatırlatıcı sistemi',
+                  'Sınırsız hasta kaydı',
+                  'Sınırsız WhatsApp mesajı',
                   'Otomatik randevu asistanı',
+                  'Tüm seans geçmişi',
+                  'Sınırsız form gönderimi',
+                  'Sınırsız blog yazısı',
+                  'Tam rapor geçmişi',
                   'Bekleme listesi otomasyonu',
-                  'Profil görünüm özelleştirme',
-                  'Blog & değerlendirme analitiği',
                   'Öncelikli destek',
-                  'Gelecek tüm özellikler',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm">
                     <span className="mt-0.5 flex-shrink-0 font-bold text-white">✓</span>
@@ -545,7 +544,7 @@ export default async function LandingPage() {
               { q: 'WhatsApp numaramı kullanabilir miyim?', a: 'Evet, kendi kişisel veya iş WhatsApp numaranızı bağlayabilirsiniz. QR kod ile yapılan tek seferlik kurulum 2 dakikadan az sürer.' },
               { q: 'İstediğim zaman iptal edebilir miyim?', a: 'Evet. Herhangi bir taahhüt yoktur. Aboneliğinizi istediğiniz an iptal edebilirsiniz; mevcut dönem sonunda hizmet sona erer ve ücret alınmaz.' },
               { q: 'Verilerim güvende mi? KVKK uyumlu mu?', a: 'Seansify tamamen KVKK uyumludur. Tüm veriler Supabase altyapısında şifreli olarak saklanır. Hasta verileri üçüncü taraflarla asla paylaşılmaz.' },
-              { q: 'Teknik destek nasıl çalışıyor?', a: 'Başlangıç paketi kullanıcıları e-posta desteğinden yararlanır. Pro kullanıcıları öncelikli destek alır ve genellikle 4 saat içinde yanıt verilir.' },
+              { q: 'Teknik destek nasıl çalışıyor?', a: 'Seansify One kullanıcıları e-posta desteğinden yararlanır. Pro kullanıcıları öncelikli destek alır ve genellikle 4 saat içinde yanıt verilir.' },
             ].map((item) => (
               <details key={item.q} className="rounded-2xl overflow-hidden group bg-white" style={{ border: '1px solid #c8e6dc' }}>
                 <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-semibold text-sm select-none" style={{ color: '#0d1f18' }}>

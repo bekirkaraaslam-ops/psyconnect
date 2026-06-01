@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import LimitReachedModal from '@/components/ui/LimitReachedModal'
 
 interface Blog {
   id: string
@@ -18,6 +19,7 @@ interface Props {
   psychologistId: string
   bookingSlug: string
   bloglar: Blog[]
+  planType?: string
 }
 
 const KATEGORİLER = ['Kaygı', 'Depresyon', 'İlişkiler', 'Kişisel Gelişim', 'Ebeveynlik', 'Travma', 'Genel']
@@ -51,9 +53,12 @@ function readTime(text: string) {
   return `${mins} dk okuma`
 }
 
-export default function BloglarClient({ psychologistId, bookingSlug, bloglar: initial }: Props) {
+export default function BloglarClient({ psychologistId, bookingSlug, bloglar: initial, planType = 'free' }: Props) {
+  const isPro = planType === 'pro'
+  const maxBlogs = isPro ? Infinity : 5
   const supabase = createClient()
   const [bloglar, setBloglar] = useState<Blog[]>(initial)
+  const [showLimitModal, setShowLimitModal] = useState(false)
   const [mode, setMode] = useState<'list' | 'edit'>('list')
   const [editing, setEditing] = useState<Blog | null>(null)
   const [baslik, setBaslik] = useState('')
@@ -70,6 +75,10 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
   const kapakInputRef = useRef<HTMLInputElement>(null)
 
   function openNew() {
+    if (!isPro && bloglar.length >= maxBlogs) {
+      setShowLimitModal(true)
+      return
+    }
     setEditing(null)
     setBaslik(''); setSlug(''); setKategori(''); setIcerik(''); setYayinda(false); setKapakUrl(null); setErr('')
     setMode('edit')
@@ -395,6 +404,12 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
   // ── LIST ─────────────────────────────────────────────────────────────
   return (
     <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      <LimitReachedModal
+        open={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        title="Blog Limitine Ulaştınız"
+        description={`Seansify One planında en fazla ${maxBlogs} blog yazısı yayınlayabilirsiniz. Sınırsız içerik için Pro'ya geçin.`}
+      />
       <style>{`
         @media (max-width: 640px) {
           .list-header { padding: 16px 16px !important; }
@@ -413,6 +428,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
           <h1 style={{ fontSize: 18, fontWeight: 800, color: 'var(--foreground)', margin: 0, marginBottom: 2 }}>Bloglarım</h1>
           <p style={{ fontSize: 12, color: '#94a3b8', margin: 0 }}>
             {bloglar.length} yazı · {yayindaCount} yayında
+            {!isPro && <span style={{ color: bloglar.length >= maxBlogs ? '#ef4444' : '#94a3b8' }}> · {bloglar.length}/{maxBlogs} limit</span>}
           </p>
         </div>
         <button

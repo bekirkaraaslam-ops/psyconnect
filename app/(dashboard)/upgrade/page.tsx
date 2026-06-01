@@ -13,35 +13,45 @@ declare global {
   }
 }
 
-const plans: { key: string; name: string; price: string; description: string; features: string[]; lockedFeatures: string[]; note?: string; highlight: boolean }[] = [
+const plans: { key: string; name: string; price: string; description: string; features: string[]; limits: string[]; highlight: boolean }[] = [
   {
-    key: 'baslangic',
-    name: 'Başlangıç',
-    price: '950',
-    description: 'Randevu yönetimi ve temel özellikler',
+    key: 'one',
+    name: 'Seansify One',
+    price: '749',
+    description: 'Tüm özellikler, küçük pratikler için',
     features: [
-      'Sınırsız hasta kaydı',
       'Randevu takvimi',
-      'Seans notları',
+      'Seans notları (son 90 gün)',
+      'Anamnez & onam formları',
+      'Hasta profil sayfası',
+      'Blog yazısı (5 adet)',
+      'Danışan değerlendirme sistemi',
+      'WhatsApp hatırlatıcı (60/ay)',
     ],
-    lockedFeatures: [],
-    note: 'WhatsApp özellikleri Pro\'ya dahildir.',
+    limits: [
+      '20 aktif hasta',
+      '15 form/ay',
+      'Son 3 ay raporu',
+    ],
     highlight: false,
   },
   {
     key: 'pro',
     name: 'Seansify Pro',
-    price: '1850',
-    description: 'Tüm özellikler, tam WhatsApp entegrasyonu',
+    price: '1.850',
+    description: 'Sınırsız her şey, tam WhatsApp otomasyonu',
     features: [
       'Sınırsız hasta kaydı',
-      'Randevu takvimi',
-      'Seans notları',
-      'WhatsApp hatırlatıcı',
+      'Tüm seans geçmişi',
+      'Sınırsız form gönderimi',
+      'Sınırsız WhatsApp mesajı',
       'Otomatik randevu asistanı',
+      'Sınırsız blog yazısı',
+      'Tam rapor geçmişi',
+      'Bekleme listesi otomasyonu',
       'Öncelikli destek',
     ],
-    lockedFeatures: [],
+    limits: [],
     highlight: true,
   },
 ]
@@ -156,31 +166,25 @@ function UpgradeContent() {
                   <span className="text-sm" style={{ color: '#94a3b8' }}>/ay</span>
                 </div>
 
-                <ul className="space-y-2.5 mb-6">
-                  {plan.features.map(feature => {
-                    const isLocked = plan.lockedFeatures.includes(feature)
-                    return (
-                      <li key={feature} className="flex items-center gap-2.5 text-sm">
-                        {isLocked ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        )}
-                        <span style={{ color: isLocked ? '#94a3b8' : '#334155' }}>{feature}</span>
-                      </li>
-                    )
-                  })}
+                <ul className="space-y-2.5 mb-4">
+                  {plan.features.map(feature => (
+                    <li key={feature} className="flex items-center gap-2.5 text-sm">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span style={{ color: '#334155' }}>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
 
-                {'note' in plan && plan.note && (
-                  <p className="text-xs mb-4" style={{ color: '#94a3b8' }}>
-                    {plan.note}
-                  </p>
+                {plan.limits.length > 0 && (
+                  <ul className="space-y-1.5 mb-5 pl-1">
+                    {plan.limits.map(limit => (
+                      <li key={limit} className="flex items-center gap-2 text-xs" style={{ color: '#94a3b8' }}>
+                        <span>·</span> {limit}
+                      </li>
+                    ))}
+                  </ul>
                 )}
 
                 <button

@@ -49,7 +49,7 @@ const handler = schedule('0 * * * *', async () => {
       mevcut_seans_no,
       is_first_session,
       patient:patients(name_surname, phone_number),
-      psychologist:psychologists(id, full_name, is_connected, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji)
+      psychologist:psychologists(id, full_name, is_connected, plan_type, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji)
     `)
     .eq('reminder_sent', false)
     .neq('status', 'canceled')
@@ -70,6 +70,12 @@ const handler = schedule('0 * * * *', async () => {
 
   console.log(`[send-reminders] ${appointments.length} hatırlatıcı gönderilecek`)
 
+  const WA_MONTHLY_LIMIT = 60
+  const monthStart = new Date()
+  monthStart.setDate(1)
+  monthStart.setHours(0, 0, 0, 0)
+  const waCountCache: Record<string, number> = {}
+
   for (const apt of appointments as any[]) {
     const psychologist = apt.psychologist
     const patient      = apt.patient
@@ -77,6 +83,23 @@ const handler = schedule('0 * * * *', async () => {
     if (!psychologist?.is_connected) {
       console.warn(`[send-reminders] Psikolog WA bağlı değil – apt: ${apt.id}`)
       continue
+    }
+
+    const psychId = psychologist.id
+    if (psychologist.plan_type !== 'pro') {
+      if (waCountCache[psychId] === undefined) {
+        const { count } = await supabase
+          .from('appointments')
+          .select('*', { count: 'exact', head: true })
+          .eq('psychologist_id', psychId)
+          .eq('reminder_sent', true)
+          .gte('reminder_sent_at', monthStart.toISOString())
+        waCountCache[psychId] = count ?? 0
+      }
+      if (waCountCache[psychId] >= WA_MONTHLY_LIMIT) {
+        console.warn(`[send-reminders] WA limit doldu (${WA_MONTHLY_LIMIT}/ay) – psikolog: ${psychId}`)
+        continue
+      }
     }
 
     const date    = new Date(apt.appointment_date)
@@ -114,6 +137,7 @@ const handler = schedule('0 * * * *', async () => {
         status: 'success',
       })
 
+      if (waCountCache[psychId] !== undefined) waCountCache[psychId]++
       console.log(`[send-reminders] ✓ Gönderildi → ${patient.name_surname}`)
 
       if (apt.is_first_session && psychologist.hosgeldiniz_mesaji) {

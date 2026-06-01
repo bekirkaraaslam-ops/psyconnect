@@ -9,7 +9,7 @@ export default async function BloglarPage() {
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('id, booking_slug')
+    .select('id, booking_slug, plan_type')
     .eq('auth_user_id', user.id)
     .single()
 
@@ -21,5 +21,5 @@ export default async function BloglarPage() {
     .eq('psychologist_id', psych.id)
     .order('created_at', { ascending: false })
 
-  return <BloglarClient psychologistId={psych.id} bookingSlug={psych.booking_slug} bloglar={bloglar ?? []} />
+  return <BloglarClient psychologistId={psych.id} bookingSlug={psych.booking_slug} bloglar={bloglar ?? []} planType={psych.plan_type ?? 'free'} />
 }
