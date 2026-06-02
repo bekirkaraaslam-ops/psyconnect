@@ -162,8 +162,8 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                       {getInitials(apt.patient?.name_surname ?? '?')}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm font-medium truncate" style={{ color: '#334155' }}>{apt.patient?.name_surname}</div>
-                      <div className="text-xs" style={{ color: '#64748b' }}>{formatDateTime(apt.appointment_date)}</div>
+                      <div className="text-sm font-medium truncate text-[#334155] dark:text-slate-100">{apt.patient?.name_surname}</div>
+                      <div className="text-xs text-[#64748b] dark:text-slate-400">{formatDateTime(apt.appointment_date)}</div>
                     </div>
                   </div>
 
@@ -202,36 +202,36 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                   transition: 'grid-template-rows 0.28s cubic-bezier(0.4,0,0.2,1)',
                 }}>
                 <div style={{ minHeight: 0, overflow: 'hidden' }}>
-                  <div className="px-4 pb-4 pt-1" style={{ background: '#f8fafc', borderTop: '1px solid #f1f5f9' }}>
+                  <div className="px-4 pb-4 pt-1 bg-[#f8fafc] dark:bg-slate-800/60" style={{ borderTop: '1px solid #f1f5f9' }}>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <div>
-                        <div className="text-xs font-medium mb-0.5" style={{ color: '#94a3b8' }}>Tür</div>
-                        <div className="text-sm" style={{ color: '#334155' }}>
+                        <div className="text-xs font-medium mb-0.5 text-[#94a3b8] dark:text-slate-500">Tür</div>
+                        <div className="text-sm text-[#334155] dark:text-slate-100">
                           {apt.appointment_type === 'online' ? '💻 Online' : '🏢 Yüz yüze'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs font-medium mb-0.5" style={{ color: '#94a3b8' }}>Süre</div>
-                        <div className="text-sm" style={{ color: '#334155' }}>
+                        <div className="text-xs font-medium mb-0.5 text-[#94a3b8] dark:text-slate-500">Süre</div>
+                        <div className="text-sm text-[#334155] dark:text-slate-100">
                           {apt.duration_minutes ? `${apt.duration_minutes} dk` : '—'}
                         </div>
                       </div>
                       <div>
-                        <div className="text-xs font-medium mb-0.5" style={{ color: '#94a3b8' }}>Durum</div>
+                        <div className="text-xs font-medium mb-0.5 text-[#94a3b8] dark:text-slate-500">Durum</div>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${appointmentStatusColor(apt.status)}`}>
                           {appointmentStatusLabel(apt.status)}
                         </span>
                       </div>
                       <div>
-                        <div className="text-xs font-medium mb-0.5" style={{ color: '#94a3b8' }}>Telefon</div>
-                        <div className="text-sm" style={{ color: '#334155' }}>{apt.patient?.phone_number ?? '—'}</div>
+                        <div className="text-xs font-medium mb-0.5 text-[#94a3b8] dark:text-slate-500">Telefon</div>
+                        <div className="text-sm text-[#334155] dark:text-slate-100">{apt.patient?.phone_number ?? '—'}</div>
                       </div>
                     </div>
 
                     {/* Seans ücreti */}
-                    <div className="rounded-xl border p-3 mb-3" style={{ borderColor: '#e2e8f0', background: 'white' }}>
+                    <div className="rounded-xl border p-3 mb-3 bg-white dark:bg-slate-700/60" style={{ borderColor: '#e2e8f0' }}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-semibold" style={{ color: '#334155' }}>Seans Ücreti</span>
+                        <span className="text-xs font-semibold text-[#334155] dark:text-slate-100">Seans Ücreti</span>
                         {!isEditingFee && (
                           <button
                             onClick={e => { e.stopPropagation(); openFeeEdit(apt) }}
@@ -286,7 +286,7 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                         <div>
                           {displayUcret != null ? (
                             <div className="flex items-center gap-2">
-                              <span className="text-lg font-bold" style={{ color: '#334155' }}>
+                              <span className="text-lg font-bold text-[#334155] dark:text-slate-100">
                                 ₺{displayUcret.toLocaleString('tr-TR')}
                               </span>
                               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -317,8 +317,8 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
                       </button>
                       <Link
                         href={`/appointments/${apt.id}`}
-                        className="flex-1 flex items-center justify-center gap-1 text-xs px-3 py-2 rounded-lg font-medium"
-                        style={{ color: '#4a7c6f', border: '1px solid #dde5e2', background: 'white' }}
+                        className="flex-1 flex items-center justify-center gap-1 text-xs px-3 py-2 rounded-lg font-medium bg-white dark:bg-slate-700 dark:border-slate-600"
+                        style={{ color: '#4a7c6f', border: '1px solid #dde5e2' }}
                         onClick={e => e.stopPropagation()}
                       >
                         Detay sayfası →
@@ -335,8 +335,8 @@ export default function UpcomingList({ appointments }: { appointments: Apt[] }) 
         {appointments.length > INITIAL_VISIBLE && (
           <button
             onClick={() => setShowAll(v => !v)}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-gray-50"
-            style={{ color: '#4a7c6f', borderTop: '1px solid #f1f5f9' }}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 text-[#4a7c6f] dark:text-[#6ee7b7]"
+            style={{ borderTop: '1px solid #f1f5f9' }}
           >
             {showAll ? (
               <>

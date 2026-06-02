@@ -60,7 +60,7 @@ export default async function AppointmentsPage() {
 
         {/* Üst satır: başlık + buton */}
         <div className="flex items-center justify-between">
-          <p className="text-sm" style={{ color: '#64748b' }}>
+          <p className="text-sm text-slate-500 dark:text-slate-300">
             {upcoming.length} yaklaşan randevu
           </p>
           <Link
@@ -106,7 +106,7 @@ export default async function AppointmentsPage() {
 
             {/* Yaklaşan */}
             <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#64748b' }}>
+              <h2 className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2 text-slate-500 dark:text-slate-300">
                 Yaklaşan
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-xs font-bold" style={{ background: '#4a7c6f' }}>
                   {upcoming.length}
@@ -117,7 +117,7 @@ export default async function AppointmentsPage() {
 
             {/* Geçmiş */}
             <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#64748b' }}>
+              <h2 className="text-xs font-semibold uppercase tracking-wide mb-3 flex items-center gap-2 text-slate-500 dark:text-slate-300">
                 Geçmiş
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold" style={{ background: '#e2e8f0', color: '#64748b' }}>
                   {past.length}
