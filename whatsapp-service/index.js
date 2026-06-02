@@ -520,19 +520,26 @@ async function connectWhatsApp(psychologistId) {
 
       if (text !== 'EVET' && text !== 'ONAYLA' && text !== 'IPTAL' && text !== 'İPTAL') continue
 
+      console.log(`[evet/iptal] "${text}" geldi — phone: ${phone}`)
+
       const supabase = getSupabase()
 
-      const { data: patient } = await supabase
+      const { data: patient, error: patientErr } = await supabase
         .from('patients')
         .select('id')
         .eq('psychologist_id', psychologistId)
         .filter('phone_number', 'ilike', `%${phone.slice(-9)}`)
-        .single()
+        .maybeSingle()
 
-      if (!patient) continue
+      if (!patient) {
+        console.warn(`[evet/iptal] hasta bulunamadı — phone: ${phone}, err: ${patientErr?.message}`)
+        continue
+      }
+
+      console.log(`[evet/iptal] hasta bulundu: ${patient.id}`)
 
       const now = new Date().toISOString()
-      const { data: apt } = await supabase
+      const { data: apt, error: aptErr } = await supabase
         .from('appointments')
         .select('id, appointment_date, psychologist_id, reminder_sent_at, psychologist:psychologists(id, full_name, phone_number)')
         .eq('patient_id', patient.id)
@@ -542,9 +549,14 @@ async function connectWhatsApp(psychologistId) {
         .order('reminder_sent_at', { ascending: false, nullsFirst: false })
         .order('appointment_date', { ascending: true })
         .limit(1)
-        .single()
+        .maybeSingle()
 
-      if (!apt) continue
+      if (!apt) {
+        console.warn(`[evet/iptal] randevu bulunamadı — patient: ${patient.id}, err: ${aptErr?.message}`)
+        continue
+      }
+
+      console.log(`[evet/iptal] randevu bulundu: ${apt.id}, işlem: ${text}`)
 
       if (text === 'EVET' || text === 'ONAYLA') {
         await supabase
@@ -592,6 +604,7 @@ async function connectWhatsApp(psychologistId) {
 // ── Endpoints ─────────────────────────────────────────────────
 
 app.get('/health', (req, res) => res.json({ ok: true }))
+app.get('/ping', (req, res) => res.json({ version: 'v3-2026-06-03', connectedCount: sockets.size }))
 
 app.post('/connect/:id', async (req, res) => {
   const { id } = req.params
