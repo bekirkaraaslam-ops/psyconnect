@@ -21,7 +21,7 @@ app.use(express.json())
 // ── Güvenlik: API key kontrolü ───────────────────────────────
 const API_KEY = process.env.WA_API_KEY
 app.use((req, res, next) => {
-  if (req.path === '/health') return next()
+  if (req.path === '/health' || req.path === '/ping') return next()
   if (req.headers['x-api-key'] !== API_KEY) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
