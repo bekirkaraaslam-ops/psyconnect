@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 
 interface Context {
@@ -57,11 +58,14 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   const { error } = await supabase
     .from('appointments')
-    .update({ appointment_date: newDate })
+    .update({ appointment_date: newDate, reminder_sent: false, reminder_sent_at: null })
     .eq('id', id)
     .eq('psychologist_id', psychologist.id)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  revalidatePath('/dashboard')
+  revalidatePath('/appointments')
 
   const waUrl = process.env.WA_SERVICE_URL
   const waKey = process.env.WA_API_KEY

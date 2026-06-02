@@ -467,21 +467,27 @@ async function connectWhatsApp(psychologistId) {
 
       // ── Bot: Randevu talebi ──────────────────────────────────
       if (text.includes('RANDEVU') && rawText.length < 50) {
-        const slots = await findAvailableSlots(psychologistId, 3)
-        if (slots.length === 0) {
-          await sock.sendMessage(jid, { text: 'Şu an müsait randevu saati bulunamadı. Lütfen daha sonra tekrar deneyin.' })
-          continue
+        try {
+          const slots = await findAvailableSlots(psychologistId, 3)
+          console.log(`[randevu] ${phone} → ${slots.length} slot bulundu`)
+          if (slots.length === 0) {
+            await sock.sendMessage(jid, { text: 'Şu an müsait randevu saati bulunamadı. Lütfen daha sonra tekrar deneyin.' })
+            continue
+          }
+          botSessions.set(phone, {
+            state: 'awaiting_selection',
+            slots,
+            psychologistId,
+            expiresAt: Date.now() + 10 * 60 * 1000,
+          })
+          const lines = slots.map((s, i) => `${i + 1}) ${formatSlotTR(s)}`).join('\n')
+          await sock.sendMessage(jid, {
+            text: `Merhaba! Size en yakın uygun randevu saatlerimiz şunlardır:\n\n${lines}\n\nRandevunuzu oluşturmak için lütfen seçtiğiniz numarayı ve adınızı yazın.\nÖrnek: *1, Ahmet Yılmaz*\n\nBu saatler size uygun değilse *bekleme listesi* yazabilirsiniz.`,
+          })
+        } catch (err) {
+          console.error(`[randevu] Hata → ${err.message}`)
+          await sock.sendMessage(jid, { text: 'Randevu saatleri getirilirken bir hata oluştu. Lütfen tekrar deneyin.' })
         }
-        botSessions.set(phone, {
-          state: 'awaiting_selection',
-          slots,
-          psychologistId,
-          expiresAt: Date.now() + 10 * 60 * 1000,
-        })
-        const lines = slots.map((s, i) => `${i + 1}) ${formatSlotTR(s)}`).join('\n')
-        await sock.sendMessage(jid, {
-          text: `Merhaba! Size en yakın uygun randevu saatlerimiz şunlardır:\n\n${lines}\n\nRandevunuzu oluşturmak için lütfen seçtiğiniz numarayı ve adınızı yazın.\nÖrnek: *1, Ahmet Yılmaz*\n\nBu saatler size uygun değilse *bekleme listesi* yazabilirsiniz.`,
-        })
         continue
       }
 
@@ -528,12 +534,13 @@ async function connectWhatsApp(psychologistId) {
       const now = new Date().toISOString()
       const { data: apt } = await supabase
         .from('appointments')
-        .select('id, appointment_date, psychologist_id, psychologist:psychologists(id, full_name, phone_number)')
+        .select('id, appointment_date, psychologist_id, reminder_sent_at, psychologist:psychologists(id, full_name, phone_number)')
         .eq('patient_id', patient.id)
         .eq('psychologist_id', psychologistId)
-        .eq('status', 'waiting')
+        .in('status', ['waiting', 'seansify_pending', 'confirmed'])
         .gt('appointment_date', now)
-        .order('appointment_date')
+        .order('reminder_sent_at', { ascending: false, nullsFirst: false })
+        .order('appointment_date', { ascending: true })
         .limit(1)
         .single()
 
