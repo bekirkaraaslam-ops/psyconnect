@@ -1,5 +1,6 @@
 const express = require('express')
 const pino = require('pino')
+const cron = require('node-cron')
 const makeWASocket = require('@whiskeysockets/baileys').default
 const {
   useMultiFileAuthState,
@@ -753,6 +754,22 @@ app.post('/disconnect/:id', async (req, res) => {
     .update({ whatsapp_session: null, is_connected: false })
     .eq('id', id)
   res.json({ ok: true })
+})
+
+// ── Saatlik hatırlatıcı cron ──────────────────────────────────
+cron.schedule('0 * * * *', async () => {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://seansify.com'
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) return
+  try {
+    const res = await fetch(`${appUrl}/api/cron/send-reminders`, {
+      headers: { Authorization: `Bearer ${cronSecret}` },
+    })
+    const data = await res.json()
+    console.log(`[cron] Hatırlatıcılar gönderildi: ${data.sent ?? 0}`)
+  } catch (err) {
+    console.error('[cron] Hatırlatıcı hatası:', err.message)
+  }
 })
 
 // ── Servisin çökmesini engelle ────────────────────────────────
