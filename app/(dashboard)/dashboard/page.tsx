@@ -150,7 +150,7 @@ export default async function OverviewPage() {
             <div key={stat.label} className="bg-white rounded-2xl p-3 md:p-5 flex items-center gap-3 md:gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
               <div>
                 <div className="text-xl md:text-2xl font-bold leading-none mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-xs leading-tight" style={{ color: '#64748b' }}>{stat.label}</div>
+                <div className="text-xs leading-tight text-slate-500 dark:text-slate-300">{stat.label}</div>
               </div>
             </div>
           ))}
@@ -168,7 +168,7 @@ export default async function OverviewPage() {
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#eff6ff' }}>
                 <span style={{ fontSize: 18 }}>🕐</span>
               </div>
-              <div className="text-sm font-semibold" style={{ color: '#334155' }}>Bekleme Listesi</div>
+              <div className="text-sm font-semibold text-slate-700 dark:text-white">Bekleme Listesi</div>
             </div>
             <div className="text-3xl font-bold mb-1" style={{ color: '#3b82f6' }}>
               {waitingListCount ?? 0}
@@ -185,7 +185,7 @@ export default async function OverviewPage() {
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#faf5ff' }}>
                 <span style={{ fontSize: 18 }}>📋</span>
               </div>
-              <div className="text-sm font-semibold" style={{ color: '#334155' }}>Bekleyen Anamnez</div>
+              <div className="text-sm font-semibold text-slate-700 dark:text-white">Bekleyen Anamnez</div>
             </div>
             {!unfilledAnamnez || unfilledAnamnez.length === 0 ? (
               <div className="text-sm" style={{ color: '#94a3b8' }}>Tüm formlar doldurulmuş ✓</div>
@@ -216,7 +216,7 @@ export default async function OverviewPage() {
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fff1f2' }}>
                 <span style={{ fontSize: 18 }}>📊</span>
               </div>
-              <div className="text-sm font-semibold" style={{ color: '#334155' }}>Bu Haftaki İptaller</div>
+              <div className="text-sm font-semibold text-slate-700 dark:text-white">Bu Haftaki İptaller</div>
             </div>
             <div className="flex items-end gap-4">
               <div>
@@ -259,14 +259,14 @@ function DayTimeline({ todayApts, tomorrowApts }: { todayApts: any[]; tomorrowAp
   return (
     <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
       <div className="flex border-b" style={{ borderColor: '#dde5e2' }}>
-        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155', borderRight: '1px solid #dde5e2' }}>
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2 text-slate-700 dark:text-white" style={{ borderRight: '1px solid #dde5e2' }}>
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#4a7c6f' }} />
           Bugün
           <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
             {todayApts.length} seans
           </span>
         </div>
-        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2" style={{ color: '#334155' }}>
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2 text-slate-700 dark:text-white">
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#3b82f6' }} />
           Yarın
           <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#3b82f6' }}>

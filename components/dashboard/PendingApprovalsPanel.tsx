@@ -40,7 +40,7 @@ export default function PendingApprovalsPanel({ initialItems }: { initialItems: 
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#fef3c7' }}>
           <span style={{ fontSize: 16 }}>⏳</span>
         </div>
-        <h2 className="font-semibold" style={{ color: '#334155' }}>Onay Bekleyen Randevular</h2>
+        <h2 className="font-semibold text-slate-700 dark:text-white">Onay Bekleyen Randevular</h2>
         <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#b45309' }}>
           {items.length}
         </span>
