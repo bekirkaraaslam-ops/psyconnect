@@ -131,6 +131,45 @@ export async function POST(req: NextRequest) {
   const workStart: number = psych.work_start_hour ?? 9
   const workEnd: number = psych.work_end_hour ?? 18
 
+  // ── RANDEVU — her state'de çalışır, session'ı sıfırlar ─────────────────────
+  if (textLower === 'randevu') {
+    await setSession(supabase, phone, psychologistId, 'idle', {})
+
+    if (psych.tatil_modu) {
+      await sendReply(psychologistId, phone,
+        'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
+    const currentHour = nowTR.getHours()
+    const currentDayNum = nowTR.getDay()
+    const currentDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === currentDayNum)
+    const isWorkDay = !!currentDayName && workDays.includes(currentDayName)
+    const isWorkHour = currentHour >= workStart && currentHour < workEnd
+
+    if (!isWorkDay || !isWorkHour) {
+      await sendReply(psychologistId, phone,
+        `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    const days = getAvailableDays(workDays)
+    if (days.length === 0) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
+      const waitSlug = psych.booking_slug ?? psychologistId
+      const waitUrl = `${appUrl}/bekle/${waitSlug}`
+      await sendReply(psychologistId, phone, `Şu an müsait randevu günü bulunmamaktadır.\n\nBekleme listesine eklenip boşalan randevulardan haberdar olmak ister misiniz? 👇\n${waitUrl}`)
+      return NextResponse.json({ ok: true })
+    }
+    const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
+    await setSession(supabase, phone, psychologistId, 'awaiting_day', { available_days: days })
+    await sendReply(psychologistId, phone, `📅 Müsait günler:\n\n${list}\n\nTercih ettiğiniz günün numarasını yazın.`)
+    return NextResponse.json({ ok: true })
+  }
+
   // ── EVET / İPTAL — her state'de çalışır ─────────────────────
   if (textLower === 'evet' || textLower === 'onayla') {
     const { data: patient } = await supabase
@@ -146,7 +185,7 @@ export async function POST(req: NextRequest) {
         .from('appointments')
         .select('id, appointment_date')
         .eq('patient_id', patient.id)
-        .in('status', ['waiting', 'seansify_pending'])
+        .in('status', ['waiting', 'seansify_pending', 'confirmed'])
         .gte('appointment_date', new Date().toISOString())
         .order('appointment_date', { ascending: true })
         .limit(1)
@@ -181,6 +220,7 @@ export async function POST(req: NextRequest) {
         .eq('patient_id', patient.id)
         .in('status', ['waiting', 'confirmed', 'seansify_pending'])
         .gte('appointment_date', new Date().toISOString())
+        .order('reminder_sent_at', { ascending: false, nullsFirst: false })
         .order('appointment_date', { ascending: true })
         .limit(1)
         .maybeSingle()
@@ -212,41 +252,6 @@ export async function POST(req: NextRequest) {
   const { step, context } = session as { step: string; context: Record<string, unknown> }
 
   if (step === 'idle') {
-    if (textLower === 'randevu') {
-      if (psych.tatil_modu) {
-        await sendReply(psychologistId, phone,
-          'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
-        )
-        return NextResponse.json({ ok: true })
-      }
-
-      // Mesai saatleri kontrolü (Istanbul saati)
-      const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
-      const currentHour = nowTR.getHours()
-      const currentDayNum = nowTR.getDay()
-      const currentDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === currentDayNum)
-      const isWorkDay = !!currentDayName && workDays.includes(currentDayName)
-      const isWorkHour = currentHour >= workStart && currentHour < workEnd
-
-      if (!isWorkDay || !isWorkHour) {
-        await sendReply(psychologistId, phone,
-          `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
-        )
-        return NextResponse.json({ ok: true })
-      }
-
-      const days = getAvailableDays(workDays)
-      if (days.length === 0) {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
-        const waitSlug = psych.booking_slug ?? psychologistId
-        const waitUrl = `${appUrl}/bekle/${waitSlug}`
-        await sendReply(psychologistId, phone, `Şu an müsait randevu günü bulunmamaktadır.\n\nBekleme listesine eklenip boşalan randevulardan haberdar olmak ister misiniz? 👇\n${waitUrl}`)
-        return NextResponse.json({ ok: true })
-      }
-      const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
-      await setSession(supabase, phone, psychologistId, 'awaiting_day', { available_days: days })
-      await sendReply(psychologistId, phone, `📅 Müsait günler:\n\n${list}\n\nTercih ettiğiniz günün numarasını yazın.`)
-    }
     return NextResponse.json({ ok: true })
   }
 
@@ -332,7 +337,7 @@ export async function POST(req: NextRequest) {
         status: 'seansify_pending',
         appointment_type: 'yuzyuze',
         ucret: pkg?.birim_fiyat ?? null,
-        odeme_durumu: pkg ? 'bekliyor' : null,
+        odeme_durumu: 'bekliyor',
       })
       if (pkg) await incrementPaket(supabase, patient.id)
       await setSession(supabase, phone, psychologistId, 'idle', {})
@@ -407,7 +412,7 @@ export async function POST(req: NextRequest) {
         status: 'seansify_pending',
         appointment_type: 'yuzyuze',
         ucret,
-        odeme_durumu: ucret != null ? 'bekliyor' : null,
+        odeme_durumu: 'bekliyor',
         toplam_paket_seansi,
         mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
       })
