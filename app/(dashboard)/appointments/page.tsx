@@ -148,12 +148,19 @@ export default async function AppointmentsPage() {
   )
 }
 
+const BG_CLASS: Record<string, string> = {
+  '#eff6ff': 'bg-[#eff6ff] dark:bg-blue-950/50',
+  '#f0fdf4': 'bg-[#f0fdf4] dark:bg-green-950/50',
+  '#f8fafc': 'bg-[#f8fafc] dark:bg-slate-800/60',
+  '#fef2f2': 'bg-[#fef2f2] dark:bg-red-950/50',
+}
+
 function StatCard({ label, value, sub, bg, valueColor, labelColor }: {
   label: string; value: number; sub: string
   bg: string; valueColor: string; labelColor: string
 }) {
   return (
-    <div className="rounded-2xl p-5" style={{ background: bg }}>
+    <div className={`rounded-2xl p-5 ${BG_CLASS[bg] ?? `bg-[${bg}]`}`}>
       <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: labelColor }}>{label}</p>
       <p className="text-4xl font-bold leading-none" style={{ color: valueColor }}>{value}</p>
       <p className="text-xs mt-2" style={{ color: labelColor, opacity: 0.7 }}>{sub}</p>

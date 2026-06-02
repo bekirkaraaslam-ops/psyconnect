@@ -188,8 +188,8 @@ export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarPr
                 key={item.href}
                 onClick={onAyarlarClick}
                 title={item.label}
-                className="relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors w-full hover:bg-gray-100 dark:hover:bg-slate-700"
-                style={{ color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                className="relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors w-full hover:bg-gray-100 dark:hover:bg-slate-700 text-[#64748b] dark:text-slate-300"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
               >
                 {item.icon}
                 <span className="hidden lg:inline flex-1">{item.label}</span>
@@ -206,9 +206,11 @@ export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarPr
                 'relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
                 isActive
                   ? 'text-white'
-                  : 'hover:bg-gray-100 dark:hover:bg-slate-700'
+                  : showLock
+                    ? 'hover:bg-gray-100 dark:hover:bg-slate-700 text-[#94a3b8] dark:text-slate-500'
+                    : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-[#64748b] dark:text-slate-300'
               )}
-              style={isActive ? { background: '#4a7c6f', color: 'white' } : { color: showLock ? '#94a3b8' : '#64748b' }}
+              style={isActive ? { background: '#4a7c6f', color: 'white' } : {}}
             >
               {isActive && (
                 <span style={{
