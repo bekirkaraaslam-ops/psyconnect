@@ -190,7 +190,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
       }}>
         <div className="editor-topbar-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => setMode('list')} style={{
-            background: 'none', border: 'none', fontSize: 13, color: '#64748b',
+            background: 'none', border: 'none', fontSize: 13, color: 'var(--muted-foreground)',
             cursor: 'pointer', fontWeight: 600, padding: '6px 10px', borderRadius: 8,
             display: 'flex', alignItems: 'center', gap: 6,
           }}>
@@ -210,7 +210,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
               {wordCount(icerik)} kelime · {readTime(icerik)}
             </span>
           )}
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: 'var(--foreground)', cursor: 'pointer' }}>
             <div
               onClick={() => setYayinda(p => !p)}
               style={{
@@ -227,8 +227,8 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             {yayinda ? 'Yayında' : 'Taslak'}
           </label>
           <button className="editor-iptal" onClick={() => setMode('list')} style={{
-            padding: '8px 16px', borderRadius: 10, border: '1px solid #dde5e2',
-            background: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#64748b',
+            padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border)',
+            background: 'var(--card)', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: 'var(--muted-foreground)',
           }}>
             İptal
           </button>
@@ -319,9 +319,9 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                   return (
                     <button key={k} onClick={() => setKategori(sel ? '' : k)} style={{
                       fontSize: 12, fontWeight: 600, padding: '5px 11px', borderRadius: 6, cursor: 'pointer',
-                      border: `1.5px solid ${sel ? renk.color : '#dde5e2'}`,
-                      background: sel ? renk.bg : '#fff',
-                      color: sel ? renk.color : '#94a3b8',
+                      border: `1.5px solid ${sel ? renk.color : 'var(--border)'}`,
+                      background: sel ? renk.bg : 'var(--card)',
+                      color: sel ? renk.color : 'var(--muted-foreground)',
                     }}>{k}</button>
                   )
                 })}
@@ -329,12 +329,12 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
             </div>
             <div>
               <label style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>URL Slug</label>
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '8px 12px' }}>
+              <div style={{ background: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 12px' }}>
                 <span style={{ fontSize: 11, color: '#94a3b8', display: 'block', marginBottom: 4 }}>
                   …/{bookingSlug}/blog/
                 </span>
                 <input
-                  style={{ width: '100%', fontSize: 13, border: 'none', outline: 'none', background: 'transparent', color: '#334155', boxSizing: 'border-box' }}
+                  style={{ width: '100%', fontSize: 13, border: 'none', outline: 'none', background: 'transparent', color: 'var(--foreground)', boxSizing: 'border-box' }}
                   value={slug}
                   onChange={e => setSlug(e.target.value)}
                   placeholder="blog-slug"
@@ -374,7 +374,7 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
         alignItems: 'center', justifyContent: 'space-between', gap: 12,
         boxShadow: '0 -2px 12px rgba(0,0,0,0.08)',
       }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: 'var(--foreground)', cursor: 'pointer' }}>
           <div
             onClick={() => setYayinda(p => !p)}
             style={{
@@ -565,8 +565,8 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                       <button
                         onClick={() => openEdit(b)}
                         style={{
-                          padding: '5px 12px', borderRadius: 8, border: '1px solid #dde5e2',
-                          background: '#fff', fontSize: 12, fontWeight: 600, color: '#64748b', cursor: 'pointer',
+                          padding: '5px 12px', borderRadius: 8, border: '1px solid var(--border)',
+                          background: 'var(--card)', fontSize: 12, fontWeight: 600, color: 'var(--muted-foreground)', cursor: 'pointer',
                         }}
                       >
                         Düzenle
@@ -607,8 +607,8 @@ export default function BloglarClient({ psychologistId, bookingSlug, bloglar: in
                     <button
                       onClick={() => openEdit(b)}
                       style={{
-                        flex: 1, padding: '7px 14px', borderRadius: 8, border: '1px solid #dde5e2',
-                        background: '#fff', fontSize: 12, fontWeight: 600, color: '#64748b', cursor: 'pointer',
+                        flex: 1, padding: '7px 14px', borderRadius: 8, border: '1px solid var(--border)',
+                        background: 'var(--card)', fontSize: 12, fontWeight: 600, color: 'var(--muted-foreground)', cursor: 'pointer',
                         textAlign: 'center' as const,
                       }}
                     >

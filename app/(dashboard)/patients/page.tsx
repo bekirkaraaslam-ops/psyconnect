@@ -38,7 +38,7 @@ export default async function PatientsPage() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-sm" style={{ color: '#64748b' }}>
+            <p className="text-sm text-slate-500 dark:text-slate-300">
               {patientCount} aktif hasta
             </p>
             {!isPro && (

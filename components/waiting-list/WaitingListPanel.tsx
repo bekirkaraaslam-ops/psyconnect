@@ -59,14 +59,14 @@ export default function WaitingListPanel({ initialEntries, psychologistId, booki
     <div className="space-y-5">
       {/* Kayıt linki */}
       <div className="bg-white rounded-2xl border p-5 space-y-3" style={{ borderColor: '#dde5e2' }}>
-        <h3 className="font-semibold text-sm" style={{ color: '#334155' }}>Kayıt Linki</h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <h3 className="font-semibold text-sm text-[#334155] dark:text-slate-100">Kayıt Linki</h3>
+        <p className="text-xs text-[#64748b] dark:text-slate-400">
           Bu linki hastanıza gönderin — doldurunca bekleme listesine eklenirler.
         </p>
         <div className="flex items-center gap-2">
           <div
-            className="flex-1 px-3 py-2 rounded-lg border text-xs font-mono truncate"
-            style={{ borderColor: '#dde5e2', color: '#4a7c6f', background: '#f8fafc' }}
+            className="flex-1 px-3 py-2 rounded-lg border text-xs font-mono truncate bg-[#f8fafc] dark:bg-slate-800 dark:border-slate-600"
+            style={{ color: '#4a7c6f' }}
           >
             {waitingLink}
           </div>
@@ -84,7 +84,7 @@ export default function WaitingListPanel({ initialEntries, psychologistId, booki
       <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
         <div className="px-5 py-4 border-b" style={{ borderColor: '#dde5e2' }}>
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-sm" style={{ color: '#334155' }}>
+            <h3 className="font-semibold text-sm text-[#334155] dark:text-slate-100">
               Bekleyenler ({entries.length})
             </h3>
           </div>
@@ -100,14 +100,14 @@ export default function WaitingListPanel({ initialEntries, psychologistId, booki
               <li key={e.id} className="px-5 py-4 flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-sm" style={{ color: '#334155' }}>{e.name_surname}</span>
+                    <span className="font-medium text-sm text-[#334155] dark:text-slate-100">{e.name_surname}</span>
                     {e.status === 'offered' && (
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: '#fef3c7', color: '#92400e' }}>
                         Teklif Gönderildi
                       </span>
                     )}
                   </div>
-                  <p className="text-xs mb-1.5" style={{ color: '#64748b' }}>{e.phone_number}</p>
+                  <p className="text-xs mb-1.5 text-[#64748b] dark:text-slate-400">{e.phone_number}</p>
 
                   {e.preferred_days?.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-1">

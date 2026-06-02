@@ -35,14 +35,14 @@ export default function PatientCard({ patient }: { patient: Patient }) {
           {getInitials(patient.name_surname)}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold truncate" style={{ color: '#334155' }}>
+          <div className="text-sm font-semibold truncate text-[#334155] dark:text-slate-100">
             {patient.name_surname}
           </div>
-          <div className="text-xs mt-0.5" style={{ color: '#64748b' }}>
+          <div className="text-xs mt-0.5 text-[#64748b] dark:text-slate-400">
             {formatPhoneDisplay(patient.phone_number)}
           </div>
           {patient.date_of_birth && (
-            <div className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+            <div className="text-xs mt-0.5 text-[#94a3b8] dark:text-slate-500">
               {formatDate(patient.date_of_birth)}
             </div>
           )}

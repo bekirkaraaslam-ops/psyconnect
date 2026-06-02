@@ -108,19 +108,16 @@ export default function YorumlarClient({ yorumlar: initial }: Props) {
           label="Ortalama Puan"
           sub={avgRating ? <StarRow n={Math.round(Number(avgRating))} size={12} /> : undefined}
           accent="#f59e0b"
-          bg="#fffbeb"
         />
         <StatCard
           value={String(onaylanan.length)}
           label="Yayındaki Yorum"
           accent="#4a7c6f"
-          bg="#f0fdf4"
         />
         <StatCard
           value={String(bekleyen.length)}
           label="Onay Bekliyor"
           accent={bekleyen.length > 0 ? '#f59e0b' : '#94a3b8'}
-          bg={bekleyen.length > 0 ? '#fffbeb' : '#f8fafc'}
         />
       </div>
 
@@ -137,7 +134,7 @@ export default function YorumlarClient({ yorumlar: initial }: Props) {
                 padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
                 border: `1.5px solid ${active ? '#4a7c6f' : '#dde5e2'}`,
                 background: active ? '#f0fdf4' : 'var(--card)',
-                color: active ? '#15803d' : '#64748b',
+                color: active ? '#15803d' : 'var(--muted-foreground)',
                 display: 'flex', alignItems: 'center', gap: 7,
                 transition: 'all 0.15s',
               }}
@@ -177,7 +174,7 @@ export default function YorumlarClient({ yorumlar: initial }: Props) {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4, flexWrap: 'wrap', gap: 6 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <StarRow n={y.yildiz} size={15} />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#475569' }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--foreground)' }}>
                         {y.reviewer_init ?? 'Anonim'}
                       </span>
                       {tab === 'onaylanan' && (
@@ -191,7 +188,7 @@ export default function YorumlarClient({ yorumlar: initial }: Props) {
                     </span>
                   </div>
                   {y.yorum_metni ? (
-                    <p style={{ fontSize: 13, color: '#475569', lineHeight: 1.65, margin: 0, marginBottom: 12 }}>
+                    <p style={{ fontSize: 13, color: 'var(--foreground)', lineHeight: 1.65, margin: 0, marginBottom: 12, opacity: 0.85 }}>
                       "{y.yorum_metni}"
                     </p>
                   ) : (
@@ -237,11 +234,11 @@ export default function YorumlarClient({ yorumlar: initial }: Props) {
   )
 }
 
-function StatCard({ value, label, sub, accent, bg }: {
-  value: string; label: string; sub?: React.ReactNode; accent: string; bg: string
+function StatCard({ value, label, sub, accent }: {
+  value: string; label: string; sub?: React.ReactNode; accent: string; bg?: string
 }) {
   return (
-    <div style={{ background: bg, borderRadius: 14, border: `1px solid ${accent}22`, padding: '14px 16px' }}>
+    <div style={{ background: 'var(--card)', borderRadius: 14, border: `1px solid ${accent}44`, padding: '14px 16px' }}>
       <div style={{ fontSize: 24, fontWeight: 800, color: accent, lineHeight: 1, marginBottom: 2 }}>{value}</div>
       {sub && <div style={{ marginBottom: 2 }}>{sub}</div>}
       <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 500 }}>{label}</div>
