@@ -185,7 +185,7 @@ export async function POST(req: NextRequest, { params }: Context) {
       appointment_type: appointment_type === 'online' ? 'online' : 'yuzyuze',
       kvkk_consented_at: kvkk_consented ? new Date().toISOString() : null,
       ucret: paketUcret,
-      odeme_durumu: paketUcret != null ? 'bekliyor' : null,
+      odeme_durumu: 'bekliyor',
       toplam_paket_seansi,
       mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
     })
