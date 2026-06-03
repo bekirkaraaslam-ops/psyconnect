@@ -47,9 +47,11 @@ function getSupabase() {
 }
 
 // ── In-memory socket + QR deposu ─────────────────────────────
-const sockets = new Map()     // psychologistId → socket
-const qrCodes = new Map()     // psychologistId → qrDataUrl
-const statuses = new Map()    // psychologistId → 'connecting'|'qr'|'connected'|'disconnected'
+const sockets = new Map()          // psychologistId → socket
+const qrCodes = new Map()          // psychologistId → qrDataUrl
+const statuses = new Map()         // psychologistId → 'connecting'|'qr'|'connected'|'disconnected'
+const reconnectCounts = new Map()  // psychologistId → consecutive fail count
+const badMacCounts = new Map()     // psychologistId → bad mac error count
 // botSessions state türleri:
 //   'awaiting_selection'        → randevu slot seçimi bekliyor
 //   'awaiting_waitlist_response' → bekleme listesi teklifi yanıtı bekliyor
@@ -281,6 +283,21 @@ function isBeklemIntent(text) {
   return keywords.some(k => text.includes(k))
 }
 
+// ── Session temizle ve yeniden bağlan ────────────────────────
+async function clearSessionAndReconnect(psychologistId, reason) {
+  console.warn(`[${psychologistId}] Session temizleniyor: ${reason}`)
+  badMacCounts.delete(psychologistId)
+  reconnectCounts.delete(psychologistId)
+  const dir = sessionDir(psychologistId)
+  try { fs.rmSync(dir, { recursive: true, force: true }) } catch {}
+  await getSupabase()
+    .from('psychologists')
+    .update({ whatsapp_session: null, is_connected: false })
+    .eq('id', psychologistId)
+    .catch(() => {})
+  setTimeout(() => connectWhatsApp(psychologistId), 3000)
+}
+
 // ── WhatsApp bağlantısı kur ───────────────────────────────────
 async function connectWhatsApp(psychologistId) {
   if (sockets.has(psychologistId)) {
@@ -297,11 +314,32 @@ async function connectWhatsApp(psychologistId) {
   const { state, saveCreds } = await useMultiFileAuthState(dir)
   const { version } = await fetchLatestBaileysVersion()
 
+  // Bad MAC hatalarını yakalayan custom logger
+  const badMacLogger = {
+    level: 'silent',
+    child: () => badMacLogger,
+    trace: () => {}, debug: () => {}, info: () => {}, warn: () => {},
+    error: (...args) => {
+      const msg = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ')
+      if (msg.includes('Bad MAC') || msg.includes('bad mac')) {
+        const count = (badMacCounts.get(psychologistId) ?? 0) + 1
+        badMacCounts.set(psychologistId, count)
+        console.warn(`[${psychologistId}] Bad MAC #${count}`)
+        if (count >= 5) {
+          const sock = sockets.get(psychologistId)
+          if (sock) { try { sock.end(undefined) } catch {} }
+          sockets.delete(psychologistId)
+          clearSessionAndReconnect(psychologistId, `Bad MAC loop (${count}x)`)
+        }
+      }
+    },
+  }
+
   const sock = makeWASocket({
     version,
     auth: {
       creds: state.creds,
-      keys: makeCacheableSignalKeyStore(state.keys, { level: 'silent', child: () => ({ level: 'silent' }), trace: () => {}, debug: () => {}, info: () => {}, warn: () => {}, error: () => {} }),
+      keys: makeCacheableSignalKeyStore(state.keys, badMacLogger),
     },
     printQRInTerminal: false,
     logger: pino({ level: 'silent' }),
@@ -324,6 +362,8 @@ async function connectWhatsApp(psychologistId) {
     if (connection === 'open') {
       qrCodes.delete(psychologistId)
       statuses.set(psychologistId, 'connected')
+      reconnectCounts.delete(psychologistId)
+      badMacCounts.delete(psychologistId)
       await setConnected(psychologistId, true)
     }
 
@@ -335,6 +375,8 @@ async function connectWhatsApp(psychologistId) {
       statuses.set(psychologistId, 'disconnected')
       await setConnected(psychologistId, false)
 
+      console.warn(`[${psychologistId}] Bağlantı kapandı — code: ${code}, msg: ${errMsg}`)
+
       if (code === DisconnectReason.loggedOut) {
         getSupabase()
           .from('psychologists')
@@ -342,19 +384,22 @@ async function connectWhatsApp(psychologistId) {
           .eq('id', psychologistId)
           .then(() => {})
           .catch(() => {})
-      } else if (errMsg.includes('Bad MAC') || code === 401 || code === 403) {
-        // Bozuk session — temizle ve QR ile yeniden bağlan
-        console.warn(`[${psychologistId}] Bad MAC / auth hatası — session temizleniyor`)
-        const dir = sessionDir(psychologistId)
-        try { fs.rmSync(dir, { recursive: true, force: true }) } catch {}
-        await getSupabase()
-          .from('psychologists')
-          .update({ whatsapp_session: null })
-          .eq('id', psychologistId)
-          .catch(() => {})
-        setTimeout(() => connectWhatsApp(psychologistId), 3000)
+      } else if (
+        errMsg.toLowerCase().includes('bad mac') ||
+        errMsg.toLowerCase().includes('bad session') ||
+        code === 401 || code === 403 || code === 500
+      ) {
+        await clearSessionAndReconnect(psychologistId, `disconnect code ${code}: ${errMsg}`)
       } else {
-        setTimeout(() => connectWhatsApp(psychologistId), 5000)
+        // Ardışık başarısız bağlantı sayacı
+        const attempts = (reconnectCounts.get(psychologistId) ?? 0) + 1
+        reconnectCounts.set(psychologistId, attempts)
+        console.warn(`[${psychologistId}] Yeniden bağlanıyor (deneme ${attempts})`)
+        if (attempts >= 5) {
+          await clearSessionAndReconnect(psychologistId, `${attempts} ardışık başarısız deneme`)
+        } else {
+          setTimeout(() => connectWhatsApp(psychologistId), 5000)
+        }
       }
     }
   })
