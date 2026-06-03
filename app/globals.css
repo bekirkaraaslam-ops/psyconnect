@@ -2,6 +2,8 @@
 @source "../app/**/*.{js,ts,jsx,tsx}";
 @source "../components/**/*.{js,ts,jsx,tsx}";
 
+@variant dark (&:is(html.dark *));
+
 :root {
   --background: #F0F4F2;
   --foreground: #334155;
