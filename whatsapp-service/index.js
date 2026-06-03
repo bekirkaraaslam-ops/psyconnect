@@ -52,6 +52,7 @@ const qrCodes = new Map()          // psychologistId → qrDataUrl
 const statuses = new Map()         // psychologistId → 'connecting'|'qr'|'connected'|'disconnected'
 const reconnectCounts = new Map()  // psychologistId → consecutive fail count
 const badMacCounts = new Map()     // psychologistId → bad mac error count
+const connectingFlags = new Set()  // psychologistId → bağlantı kurulum süreci devam ediyor
 // botSessions state türleri:
 //   'awaiting_selection'        → randevu slot seçimi bekliyor
 //   'awaiting_waitlist_response' → bekleme listesi teklifi yanıtı bekliyor
@@ -300,6 +301,15 @@ async function clearSessionAndReconnect(psychologistId, reason) {
 
 // ── WhatsApp bağlantısı kur ───────────────────────────────────
 async function connectWhatsApp(psychologistId) {
+  // Eş zamanlı çakışmayı önle — aynı psikolog için ikinci bağlantı açma
+  if (connectingFlags.has(psychologistId)) {
+    console.warn(`[${psychologistId}] Bağlantı zaten devam ediyor, atlanıyor`)
+    return
+  }
+  connectingFlags.add(psychologistId)
+
+  try {
+
   if (sockets.has(psychologistId)) {
     try { sockets.get(psychologistId).end(undefined) } catch {}
     sockets.delete(psychologistId)
@@ -360,6 +370,7 @@ async function connectWhatsApp(psychologistId) {
     }
 
     if (connection === 'open') {
+      connectingFlags.delete(psychologistId)
       qrCodes.delete(psychologistId)
       statuses.set(psychologistId, 'connected')
       reconnectCounts.delete(psychologistId)
@@ -368,16 +379,19 @@ async function connectWhatsApp(psychologistId) {
     }
 
     if (connection === 'close') {
+      connectingFlags.delete(psychologistId)
       const code = (lastDisconnect?.error)?.output?.statusCode
       const errMsg = lastDisconnect?.error?.message ?? ''
+      const isConflict = errMsg.toLowerCase().includes('conflict') || errMsg.toLowerCase().includes('çakışma')
       sockets.delete(psychologistId)
       qrCodes.delete(psychologistId)
       statuses.set(psychologistId, 'disconnected')
       await setConnected(psychologistId, false)
 
-      console.warn(`[${psychologistId}] Bağlantı kapandı — code: ${code}, msg: ${errMsg}`)
+      console.warn(`[${psychologistId}] Bağlantı kapandı — kod: ${code}, msj: ${errMsg}`)
 
-      if (code === DisconnectReason.loggedOut) {
+      if (code === DisconnectReason.loggedOut && !isConflict) {
+        // Gerçek logout — session temizle, QR gerekecek
         getSupabase()
           .from('psychologists')
           .update({ whatsapp_session: null })
@@ -387,24 +401,25 @@ async function connectWhatsApp(psychologistId) {
       } else if (
         errMsg.toLowerCase().includes('bad mac') ||
         errMsg.toLowerCase().includes('bad session') ||
-        code === 401 || code === 403 || code === 500
+        code === 403 || code === 500
       ) {
         await clearSessionAndReconnect(psychologistId, `disconnect code ${code}: ${errMsg}`)
       } else {
-        // Ardışık başarısız bağlantı sayacı
+        // 440 (çakışma), 401 (stream hatası), 515 (restart) → sadece yeniden bağlan, session geçerli
         const attempts = (reconnectCounts.get(psychologistId) ?? 0) + 1
         reconnectCounts.set(psychologistId, attempts)
-        console.warn(`[${psychologistId}] Yeniden bağlanıyor (deneme ${attempts})`)
+        const delay = code === 440 ? 2000 : 5000
+        console.warn(`[${psychologistId}] Yeniden bağlanıyor (deneme ${attempts}, ${delay / 1000}s)`)
         if (attempts >= 5) {
           await clearSessionAndReconnect(psychologistId, `${attempts} ardışık başarısız deneme`)
         } else {
-          setTimeout(() => connectWhatsApp(psychologistId), 5000)
+          setTimeout(() => connectWhatsApp(psychologistId), delay)
         }
       }
     }
   })
 
-  // ── Gelen mesajları dinle ─────────────────────────────────────
+  // ── Gelen mesajları dinle (try-catch dışarıdan sarılı) ───────
   sock.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
     if (type !== 'notify') return
     for (const msg of msgs) {
@@ -644,6 +659,11 @@ async function connectWhatsApp(psychologistId) {
       }
     }
   })
+
+  } catch (err) {
+    connectingFlags.delete(psychologistId)
+    console.error(`[${psychologistId}] connectWhatsApp kurulum hatası:`, err.message)
+  }
 }
 
 // ── Endpoints ─────────────────────────────────────────────────
@@ -684,8 +704,8 @@ app.post('/send', async (req, res) => {
   const sock = sockets.get(psychologistId)
 
   if (!sock || statuses.get(psychologistId) !== 'connected') {
-    // Bağlı değilse yeniden bağlanmayı tetikle — ama ikinci socket AÇMA
-    if (statuses.get(psychologistId) === 'disconnected' || !sock) {
+    // Bağlı değilse yeniden bağlanmayı tetikle — connectingFlags kontrolüyle çakışma önle
+    if (!connectingFlags.has(psychologistId) && (statuses.get(psychologistId) === 'disconnected' || !sock)) {
       connectWhatsApp(psychologistId).catch(() => {})
     }
     return res.status(503).json({ error: 'WhatsApp bağlı değil, yeniden bağlanıyor' })
