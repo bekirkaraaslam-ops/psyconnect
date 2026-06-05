@@ -109,16 +109,16 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
                     <div className="text-xs text-[#64748b] dark:text-slate-400">{formatDateTime(apt.appointment_date)}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                  {apt.reminder_sent && <span className="text-xs" title="Hatırlatıcı gönderildi">💬</span>}
+                <div className="flex items-center gap-1 md:gap-1.5 shrink-0 ml-2">
+                  {apt.reminder_sent && <span className="text-xs hidden sm:inline" title="Hatırlatıcı gönderildi">💬</span>}
                   {apt.mevcut_seans_no && apt.toplam_paket_seansi && (
-                    <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: '#f0f9ff', color: '#0369a1' }}>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full hidden sm:inline" style={{ background: '#f0f9ff', color: '#0369a1' }}>
                       {apt.mevcut_seans_no}/{apt.toplam_paket_seansi}
                     </span>
                   )}
-                  {apt.appointment_type === 'online' && <span className="text-xs" title="Online">💻</span>}
+                  {apt.appointment_type === 'online' && <span className="text-xs hidden sm:inline" title="Online">💻</span>}
                   {displayUcret != null && (
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
+                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium hidden md:inline ${
                       displayOdeme === 'odendi' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'
                     }`} title={displayOdeme === 'odendi' ? 'Ödendi' : 'Ödeme bekliyor'}>
                       ₺{displayUcret.toLocaleString('tr-TR')}

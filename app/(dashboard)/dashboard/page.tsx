@@ -123,7 +123,7 @@ export default async function OverviewPage() {
     <div className="flex-1">
       <Topbar title="Genel Bakış" />
 
-      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+      <div className="p-3 md:p-6 space-y-4 md:space-y-6">
 
         {/* Başlarken kartı — yalnızca hiç hastası olmayan yeni kullanıcılara */}
         {isNew && (
@@ -282,18 +282,18 @@ function DayTimeline({ todayApts, tomorrowApts }: { todayApts: any[]; tomorrowAp
   return (
     <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
       <div className="flex border-b" style={{ borderColor: '#dde5e2' }}>
-        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2 text-slate-700 dark:text-white" style={{ borderRight: '1px solid #dde5e2' }}>
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#4a7c6f' }} />
-          Bugün
-          <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
-            {todayApts.length} seans
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-1.5 min-w-0 text-slate-700 dark:text-white" style={{ borderRight: '1px solid #dde5e2' }}>
+          <span className="w-2 h-2 rounded-full inline-block shrink-0" style={{ background: '#4a7c6f' }} />
+          <span className="truncate">Bugün</span>
+          <span className="ml-auto shrink-0 text-xs font-normal px-1.5 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
+            {todayApts.length}
           </span>
         </div>
-        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-2 text-slate-700 dark:text-white">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#3b82f6' }} />
-          Yarın
-          <span className="ml-auto text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#3b82f6' }}>
-            {tomorrowApts.length} seans
+        <div className="flex-1 px-3 md:px-5 py-3 text-sm font-semibold flex items-center gap-1.5 min-w-0 text-slate-700 dark:text-white">
+          <span className="w-2 h-2 rounded-full inline-block shrink-0" style={{ background: '#3b82f6' }} />
+          <span className="truncate">Yarın</span>
+          <span className="ml-auto shrink-0 text-xs font-normal px-1.5 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#3b82f6' }}>
+            {tomorrowApts.length}
           </span>
         </div>
       </div>

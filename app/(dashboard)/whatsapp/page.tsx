@@ -34,7 +34,7 @@ export default async function WhatsAppPage() {
     <div className="flex-1">
       <Topbar title="WhatsApp Bağlantısı" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-3 md:p-6 space-y-5 md:space-y-6">
         <div className="flex justify-center">
           <QRConnect isConnected={psychologist?.is_connected ?? false} />
         </div>

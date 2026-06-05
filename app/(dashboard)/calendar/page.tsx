@@ -7,7 +7,7 @@ export default function CalendarPage() {
     <div className="flex-1">
       <Topbar title="Takvim" />
 
-      <div className="p-6">
+      <div className="p-2 md:p-6">
         <SeansifyPendingPanel />
         <AppointmentCalendar />
       </div>

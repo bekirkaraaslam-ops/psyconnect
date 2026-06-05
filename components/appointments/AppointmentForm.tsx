@@ -127,7 +127,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border p-6 space-y-5" style={{ borderColor: '#dde5e2' }}>
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border p-4 md:p-6 space-y-5" style={{ borderColor: '#dde5e2' }}>
       {error && (
         <div className="px-4 py-3 rounded-lg text-sm" style={{ background: '#fee2e2', color: '#dc2626' }}>
           {error}
@@ -287,7 +287,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             <div className="pl-7 space-y-3">
               <div>
                 <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Tekrar Sıklığı</label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {([['weekly', 'Haftalık'], ['biweekly', '2 Haftada Bir'], ['monthly', 'Aylık']] as const).map(([val, label]) => (
                     <button
                       key={val}

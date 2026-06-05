@@ -21,9 +21,9 @@ export default async function Topbar({ title }: TopbarProps) {
 
   return (
     <header className="h-16 border-b flex items-center justify-between px-4 md:px-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
-      <h1 className="text-lg font-semibold truncate mr-3" style={{ color: 'var(--foreground)' }}>{title}</h1>
+      <h1 className="text-base md:text-lg font-semibold truncate min-w-0 mr-2" style={{ color: 'var(--foreground)' }}>{title}</h1>
 
-      <div className="flex items-center gap-2 md:gap-3 shrink-0">
+      <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
         <NotificationBell />
         <DarkModeToggle />
         {/* WhatsApp status indicator — masaüstünde metin, mobilde sadece nokta */}

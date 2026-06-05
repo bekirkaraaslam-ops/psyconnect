@@ -73,22 +73,22 @@ export default async function PatientDetailPage({ params }: Props) {
     <div className="flex-1">
       <Topbar title={patient.name_surname} />
 
-      <div className="p-6 space-y-5 max-w-4xl">
+      <div className="p-3 md:p-6 space-y-5 max-w-4xl">
         {/* Patient Info Card */}
-        <div className="bg-white rounded-2xl border p-5" style={{ borderColor: '#dde5e2' }}>
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
+        <div className="bg-white rounded-2xl border p-4 md:p-5" style={{ borderColor: '#dde5e2' }}>
+          <div className="flex items-start justify-between gap-2 mb-4">
+            <div className="flex items-center gap-3 min-w-0">
               <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold text-white" style={{ background: '#4a7c6f' }}>
                 {patient.name_surname.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
               </div>
-              <div>
-                <h2 className="font-semibold" style={{ color: '#334155' }}>{patient.name_surname}</h2>
+              <div className="min-w-0">
+                <h2 className="font-semibold truncate" style={{ color: '#334155' }}>{patient.name_surname}</h2>
                 <p className="text-sm" style={{ color: '#64748b' }}>{formatPhoneDisplay(patient.phone_number)}</p>
               </div>
             </div>
             <Link
               href={`/patients/${id}/edit`}
-              className="text-sm px-3 py-1.5 rounded-lg border font-medium"
+              className="text-sm px-3 py-1.5 rounded-lg border font-medium shrink-0"
               style={{ borderColor: '#dde5e2', color: '#64748b' }}
             >
               Düzenle

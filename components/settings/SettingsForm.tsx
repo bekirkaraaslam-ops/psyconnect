@@ -184,7 +184,7 @@ harita_linki: haritaLinki || null,
             </p>
           </div>
 
-          <div className="flex items-center justify-between pt-1 border-t" style={{ borderColor: '#f1f5f9' }}>
+          <div className="flex items-center justify-between gap-2 pt-1 border-t" style={{ borderColor: '#f1f5f9' }}>
             <div>
               <p className="text-xs font-medium" style={{ color: '#64748b' }}>Abonelik</p>
               {subscriptionEndsAt && (

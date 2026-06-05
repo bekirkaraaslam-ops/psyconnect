@@ -28,7 +28,7 @@ export default async function EditAppointmentPage({ params }: Props) {
   return (
     <div className="flex-1">
       <Topbar title="Randevu Düzenle" />
-      <div className="p-6 max-w-lg">
+      <div className="p-3 md:p-6 max-w-lg">
         <AppointmentForm patients={patients ?? []} appointment={apt} />
       </div>
     </div>

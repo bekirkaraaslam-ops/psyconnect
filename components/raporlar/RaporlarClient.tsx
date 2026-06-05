@@ -205,7 +205,7 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6 max-w-5xl">
       {!isPro && (
         <div className="flex items-center justify-between px-4 py-3 rounded-xl text-sm" style={{ background: '#fef9c3', border: '1px solid #fde047' }}>
           <span style={{ color: '#854d0e' }}>Seansify One: Son 3 aylık raporlara erişebilirsiniz.</span>
@@ -213,8 +213,8 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
         </div>
       )}
       {/* Ay Seçici */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-3 md:gap-4">
           <button
             onClick={prevMonth}
             disabled={isAtEarliestMonth}
@@ -225,7 +225,7 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <div className="text-xl font-semibold min-w-[180px] text-center" style={{ color: 'var(--foreground)' }}>
+          <div className="text-base md:text-xl font-semibold min-w-[120px] md:min-w-[180px] text-center" style={{ color: 'var(--foreground)' }}>
             {MONTHS[month - 1]} {year}
           </div>
           <button
@@ -304,7 +304,7 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
       {/* Gelir Özeti Bar */}
       {!loading && summary && (summary.tahsilEdilen + summary.bekleyenOdeme) > 0 && (
         <div className="rounded-xl p-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-          <div className="flex justify-between text-sm mb-2" style={{ color: 'var(--muted-foreground)' }}>
+          <div className="flex flex-wrap justify-between gap-1 text-sm mb-2" style={{ color: 'var(--muted-foreground)' }}>
             <span>Tahsil: <strong style={{ color: '#4a7c6f' }}>{formatCurrency(summary.tahsilEdilen)}</strong></span>
             <span>Toplam Potansiyel: <strong>{formatCurrency(summary.tahsilEdilen + summary.bekleyenOdeme)}</strong></span>
           </div>
@@ -336,7 +336,7 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key)}
-              className="px-4 py-3 text-sm font-medium transition-colors"
+              className="flex-1 px-2 md:px-4 py-3 text-xs md:text-sm font-medium transition-colors"
               style={{
                 color: filter === tab.key ? '#4a7c6f' : 'var(--muted-foreground)',
                 borderBottom: filter === tab.key ? '2px solid #4a7c6f' : '2px solid transparent',

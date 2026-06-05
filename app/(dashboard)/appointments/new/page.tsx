@@ -22,7 +22,7 @@ export default async function NewAppointmentPage() {
   return (
     <div className="flex-1">
       <Topbar title="Yeni Randevu" />
-      <div className="p-6 max-w-lg">
+      <div className="p-3 md:p-6 max-w-lg">
         <AppointmentForm patients={patients ?? []} />
       </div>
     </div>

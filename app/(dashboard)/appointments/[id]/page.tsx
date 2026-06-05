@@ -62,7 +62,7 @@ export default async function AppointmentDetailPage({ params }: Props) {
     <div className="flex-1">
       <Topbar title="Randevu Detayı" />
 
-      <div className="p-6 max-w-2xl space-y-5">
+      <div className="p-3 md:p-6 max-w-2xl space-y-5">
         <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
           <div className="flex items-center justify-between">
             <span className={`text-sm px-3 py-1 rounded-full font-medium ${appointmentStatusColor(apt.status)}`}>

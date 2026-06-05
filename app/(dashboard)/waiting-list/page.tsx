@@ -22,7 +22,7 @@ export default async function WaitingListPage() {
   return (
     <div className="flex-1">
       <Topbar title="Bekleme Listesi" />
-      <div className="p-6 max-w-2xl">
+      <div className="p-3 md:p-6 max-w-2xl">
         <WaitingListPanel
           initialEntries={entries ?? []}
           psychologistId={psychologist!.id}

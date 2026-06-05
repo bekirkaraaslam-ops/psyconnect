@@ -17,7 +17,7 @@ export default async function SettingsPage() {
   return (
     <div className="flex-1">
       <Topbar title="Ayarlar" />
-      <div className="p-6 space-y-5 max-w-5xl">
+      <div className="p-3 md:p-6 space-y-5 max-w-5xl">
         <SettingsForm
           psychologist={psychologist ?? null}
           email={user?.email ?? ''}

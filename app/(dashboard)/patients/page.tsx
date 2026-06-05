@@ -35,8 +35,8 @@ export default async function PatientsPage() {
       <Topbar title="Hastalar" />
       <Suspense fallback={null}><PatientsLimitAlert /></Suspense>
 
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="p-3 md:p-6">
+        <div className="flex items-center justify-between gap-3 mb-6">
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-300">
               {patientCount} aktif hasta

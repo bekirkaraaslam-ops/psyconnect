@@ -36,7 +36,7 @@ export default function AppointmentCalendar() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
   return (
-    <div className="bg-white rounded-2xl border p-2 sm:p-4" style={{ borderColor: '#dde5e2' }}>
+    <div className="bg-white rounded-2xl border p-1 sm:p-4" style={{ borderColor: '#dde5e2' }}>
       <div className="mb-3 flex flex-wrap gap-2 sm:gap-3 text-xs font-medium px-1">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: '#16a34a' }} />
@@ -63,7 +63,11 @@ export default function AppointmentCalendar() {
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={isMobile ? 'timeGridDay' : 'timeGridWeek'}
             locale={trLocale}
-            headerToolbar={{
+            headerToolbar={isMobile ? {
+              left: 'prev,next',
+              center: 'title',
+              right: 'timeGridDay,timeGridWeek',
+            } : {
               left: 'prev,next today',
               center: 'title',
               right: 'timeGridDay,timeGridWeek,dayGridMonth',
