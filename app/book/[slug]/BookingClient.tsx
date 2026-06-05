@@ -29,6 +29,16 @@ const DAY_MAP: Record<string, number> = {
   perşembe: 4, cuma: 5, cumartesi: 6,
 }
 
+const ALL_DAYS = [
+  { key: 'pazartesi', label: 'Pzt' },
+  { key: 'salı',      label: 'Sal' },
+  { key: 'çarşamba',  label: 'Çar' },
+  { key: 'perşembe',  label: 'Per' },
+  { key: 'cuma',      label: 'Cum' },
+  { key: 'cumartesi', label: 'Cmt' },
+  { key: 'pazar',     label: 'Paz' },
+]
+
 function generateSlots(psych: Psychologist, bookedISO: string[]): Slot[] {
   const slots: Slot[] = []
   const now = new Date()
@@ -97,10 +107,10 @@ interface Props {
   paketSablonlari: PaketSablon[]
 }
 
-type Step = 'slots' | 'package' | 'form' | 'success' | 'error'
+type Step = 'slots' | 'package' | 'form' | 'success' | 'error' | 'waiting-form' | 'waiting-success'
 
 function StepIndicator({ step, hasPackages }: { step: Step; hasPackages: boolean }) {
-  if (step === 'success' || step === 'error') return null
+  if (step === 'success' || step === 'error' || step === 'waiting-form' || step === 'waiting-success') return null
 
   const steps = hasPackages
     ? [
@@ -169,6 +179,18 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
   const [submitting, setSubmitting] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
+  // Bekleme listesi state
+  const [wlForm, setWlForm] = useState({
+    name_surname: '',
+    phone_number: '',
+    preferred_time_start: 9,
+    preferred_time_end: 18,
+    notes: '',
+  })
+  const [wlDays, setWlDays] = useState<string[]>(['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma'])
+  const [wlKvkk, setWlKvkk] = useState(false)
+  const [wlError, setWlError] = useState('')
+
   const hasPackages = paketSablonlari.length > 0
 
   function goToNextAfterSlot() {
@@ -200,11 +222,61 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
     }
   }
 
+  async function handleWaitingListSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setWlError('')
+    const res = await fetch('/api/waiting-list', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        psychologist_id: psych.id,
+        ...wlForm,
+        preferred_days: wlDays,
+      }),
+    })
+    setSubmitting(false)
+    if (res.ok) {
+      setStep('waiting-success')
+    } else {
+      const d = await res.json()
+      setWlError(d.error ?? 'Bir hata oluştu.')
+    }
+  }
+
   if (step === 'error') {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#f4faf8' }}>
         <div className="text-center p-8">
           <p className="text-sm" style={{ color: '#64748b' }}>{errorMsg || 'Bir hata oluştu.'}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (step === 'waiting-success') {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#f4faf8' }}>
+        <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-lg" style={{ borderColor: '#dde5e2' }}>
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#e8f5f1' }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-bold mb-2" style={{ color: '#0d1f18' }}>Bekleme Listesine Alındınız!</h2>
+          <p className="text-sm mb-1" style={{ color: '#334155' }}>
+            Müsait randevu çıktığında WhatsApp üzerinden bildirim alacaksınız.
+          </p>
+          <p className="text-sm" style={{ color: '#64748b' }}>
+            <strong>{psych.full_name}</strong> sizinle iletişime geçecektir.
+          </p>
+          <div className="mt-5 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm" style={{ background: '#f0fdf4', color: '#15803d' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M11.998 0C5.375 0 0 5.375 0 12c0 2.124.558 4.115 1.528 5.845L.057 23.55a.75.75 0 00.927.928l5.726-1.473A11.954 11.954 0 0012 24c6.626 0 12-5.375 12-12S18.624 0 11.998 0zm.002 21.75a9.945 9.945 0 01-5.031-1.36l-.361-.214-3.742.963.993-3.635-.236-.374A9.952 9.952 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+            </svg>
+            WhatsApp bildirimlerini açık tutun
+          </div>
         </div>
       </div>
     )
@@ -222,7 +294,9 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
           </div>
           <h1 className="text-xl font-bold" style={{ color: '#0d1f18' }}>{psych.full_name}</h1>
           <p className="text-sm mt-1" style={{ color: '#64748b' }}>
-            Randevu talebi — {psych.session_duration_minutes} dakika
+            {step === 'waiting-form'
+              ? 'Bekleme listesi kaydı'
+              : `Randevu talebi — ${psych.session_duration_minutes} dakika`}
           </p>
         </div>
 
@@ -230,39 +304,63 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
 
         {/* Adım 1: Zaman seçimi */}
         {step === 'slots' && (
-          <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
-            <h2 className="text-sm font-semibold" style={{ color: '#334155' }}>Müsait Zamanlar</h2>
-            {slots.length === 0 ? (
-              <p className="text-sm text-center py-4" style={{ color: '#94a3b8' }}>
-                Yakın zamanda müsait randevu bulunmuyor.
-              </p>
-            ) : (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {slots.map(slot => (
-                  <button
-                    key={slot.datetime}
-                    type="button"
-                    onClick={() => setSelectedSlot(slot.datetime)}
-                    className="w-full text-left px-4 py-3 rounded-xl border text-sm transition-colors"
-                    style={{
-                      borderColor: selectedSlot === slot.datetime ? '#4a7c6f' : '#dde5e2',
-                      background: selectedSlot === slot.datetime ? '#f0fdf4' : '#fff',
-                      color: '#334155',
-                    }}
-                  >
-                    {slot.label}
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="space-y-3">
+            <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
+              <h2 className="text-sm font-semibold" style={{ color: '#334155' }}>Müsait Zamanlar</h2>
+              {slots.length === 0 ? (
+                <p className="text-sm text-center py-4" style={{ color: '#94a3b8' }}>
+                  Yakın zamanda müsait randevu bulunmuyor.
+                </p>
+              ) : (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {slots.map(slot => (
+                    <button
+                      key={slot.datetime}
+                      type="button"
+                      onClick={() => setSelectedSlot(slot.datetime)}
+                      className="w-full text-left px-4 py-3 rounded-xl border text-sm transition-colors"
+                      style={{
+                        borderColor: selectedSlot === slot.datetime ? '#4a7c6f' : '#dde5e2',
+                        background: selectedSlot === slot.datetime ? '#f0fdf4' : '#fff',
+                        color: '#334155',
+                      }}
+                    >
+                      {slot.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {slots.length > 0 && (
+                <button
+                  type="button"
+                  disabled={!selectedSlot}
+                  onClick={goToNextAfterSlot}
+                  className="w-full py-3 rounded-xl text-sm font-medium text-white disabled:opacity-40"
+                  style={{ background: '#4a7c6f' }}
+                >
+                  Devam Et
+                </button>
+              )}
+            </div>
+
+            {/* Bekleme listesi seçeneği */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px" style={{ background: '#dde5e2' }} />
+              <span className="text-xs" style={{ color: '#94a3b8' }}>veya</span>
+              <div className="flex-1 h-px" style={{ background: '#dde5e2' }} />
+            </div>
+
             <button
               type="button"
-              disabled={!selectedSlot}
-              onClick={goToNextAfterSlot}
-              className="w-full py-3 rounded-xl text-sm font-medium text-white disabled:opacity-40"
-              style={{ background: '#4a7c6f' }}
+              onClick={() => setStep('waiting-form')}
+              className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border text-sm font-medium transition-colors"
+              style={{ borderColor: '#dde5e2', background: '#fff', color: '#4a7c6f' }}
             >
-              Devam Et
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+                <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+              </svg>
+              Bekleme Listesine Katıl
             </button>
           </div>
         )}
@@ -464,6 +562,166 @@ export default function BookingClient({ slug, psych, bookedSlots, paketSablonlar
                 style={{ background: '#4a7c6f' }}
               >
                 {submitting ? 'Gönderiliyor...' : 'Talep Gönder'}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Bekleme listesi formu */}
+        {step === 'waiting-form' && (
+          <form onSubmit={handleWaitingListSubmit} className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
+            <div className="flex items-center gap-3 pb-2 border-b" style={{ borderColor: '#f1f5f9' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#e8f5f1' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold" style={{ color: '#334155' }}>Bekleme Listesi</p>
+                <p className="text-xs" style={{ color: '#94a3b8' }}>Müsait randevu çıkınca WhatsApp ile bildirim alırsınız</p>
+              </div>
+            </div>
+
+            {wlError && (
+              <div className="px-4 py-3 rounded-lg text-sm" style={{ background: '#fee2e2', color: '#dc2626' }}>
+                {wlError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Ad Soyad *</label>
+              <input
+                type="text"
+                required
+                value={wlForm.name_surname}
+                onChange={e => setWlForm(p => ({ ...p, name_surname: e.target.value }))}
+                className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+                style={{ borderColor: '#dde5e2', color: '#334155' }}
+                placeholder="Adınız Soyadınız"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>WhatsApp Numarası *</label>
+              <input
+                type="tel"
+                required
+                value={wlForm.phone_number}
+                onChange={e => setWlForm(p => ({ ...p, phone_number: e.target.value }))}
+                className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+                style={{ borderColor: '#dde5e2', color: '#334155' }}
+                placeholder="05XX XXX XX XX"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: '#334155' }}>Uygun Günler</label>
+              <div className="flex flex-wrap gap-2">
+                {ALL_DAYS.map(day => {
+                  const active = wlDays.includes(day.key)
+                  return (
+                    <button
+                      key={day.key}
+                      type="button"
+                      onClick={() =>
+                        setWlDays(prev =>
+                          active ? prev.filter(d => d !== day.key) : [...prev, day.key]
+                        )
+                      }
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                      style={{
+                        background: active ? '#4a7c6f' : '#f1f5f9',
+                        color: active ? '#fff' : '#64748b',
+                      }}
+                    >
+                      {day.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Tercih Başlangıç</label>
+                <select
+                  value={wlForm.preferred_time_start}
+                  onChange={e => setWlForm(p => ({ ...p, preferred_time_start: Number(e.target.value) }))}
+                  className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+                  style={{ borderColor: '#dde5e2', color: '#334155' }}
+                >
+                  {Array.from({ length: 13 }, (_, i) => i + 8).map(h => (
+                    <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Tercih Bitiş</label>
+                <select
+                  value={wlForm.preferred_time_end}
+                  onChange={e => setWlForm(p => ({ ...p, preferred_time_end: Number(e.target.value) }))}
+                  className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+                  style={{ borderColor: '#dde5e2', color: '#334155' }}
+                >
+                  {Array.from({ length: 13 }, (_, i) => i + 8).map(h => (
+                    <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Not <span style={{ color: '#94a3b8' }}>(opsiyonel)</span></label>
+              <textarea
+                rows={2}
+                value={wlForm.notes}
+                onChange={e => setWlForm(p => ({ ...p, notes: e.target.value }))}
+                className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none resize-none"
+                style={{ borderColor: '#dde5e2', color: '#334155' }}
+                placeholder="Özel bir tercihiniz varsa belirtebilirsiniz..."
+              />
+            </div>
+
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={wlKvkk}
+                onChange={e => setWlKvkk(e.target.checked)}
+                className="mt-0.5 shrink-0"
+                style={{ accentColor: '#4a7c6f', width: 16, height: 16 }}
+              />
+              <span className="text-xs leading-relaxed" style={{ color: '#64748b' }}>
+                <a
+                  href="/kvkk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#4a7c6f' }}
+                  className="underline"
+                >
+                  KVKK Aydınlatma Metni
+                </a>
+                &apos;ni okudum; kişisel verilerimin randevu yönetimi amacıyla işlenmesine onay veriyorum.
+              </span>
+            </label>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => { setStep('slots'); setWlError('') }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium border"
+                style={{ borderColor: '#dde5e2', color: '#64748b' }}
+              >
+                Geri
+              </button>
+              <button
+                type="submit"
+                disabled={submitting || !wlKvkk}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white disabled:opacity-60"
+                style={{ background: '#4a7c6f' }}
+              >
+                {submitting ? 'Kaydediliyor...' : 'Listeye Ekle'}
               </button>
             </div>
           </form>
