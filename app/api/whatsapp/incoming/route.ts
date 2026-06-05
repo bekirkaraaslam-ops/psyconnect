@@ -2,6 +2,24 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getAktifPaket, incrementPaket } from '@/lib/paket'
 import { normalizePhone } from '@/lib/utils'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
+async function getGeminiIntent(message: string): Promise<string> {
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `Kullanıcının WhatsApp mesajı: "${message}"
+Bu mesajın amacı nedir? Sadece aşağıdakilerden birini yaz, başka hiçbir şey yazma:
+RANDEVU_AL - randevu almak, saat sormak, müsaitlik sormak
+RANDEVU_IPTAL - randevuyu iptal etmek
+RANDEVU_ONAYLA - randevuyu onaylamak, geleceklerini bildirmek
+DIGER - bunların dışında her şey`
+    const result = await model.generateContent(prompt)
+    return result.response.text().trim()
+  } catch {
+    return 'DIGER'
+  }
+}
 
 function getSupabase() {
   return createClient(
@@ -252,6 +270,85 @@ export async function POST(req: NextRequest) {
   const { step, context } = session as { step: string; context: Record<string, unknown> }
 
   if (step === 'idle') {
+    const intent = await getGeminiIntent(text)
+    if (intent === 'RANDEVU_AL') {
+      // Randevu akışını tetikle — "randevu" yazılmış gibi davran
+      if (psych.tatil_modu) {
+        await sendReply(psychologistId, phone,
+          'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
+        )
+        return NextResponse.json({ ok: true })
+      }
+      const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
+      const currentHour = nowTR.getHours()
+      const currentDayNum = nowTR.getDay()
+      const currentDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === currentDayNum)
+      const isWorkDay = !!currentDayName && workDays.includes(currentDayName)
+      const isWorkHour = currentHour >= workStart && currentHour < workEnd
+      if (!isWorkDay || !isWorkHour) {
+        await sendReply(psychologistId, phone,
+          `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
+        )
+        return NextResponse.json({ ok: true })
+      }
+      const days = getAvailableDays(workDays)
+      if (days.length === 0) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
+        const waitSlug = psych.booking_slug ?? psychologistId
+        await sendReply(psychologistId, phone, `Şu an müsait randevu günü bulunmamaktadır.\n\nBekleme listesine eklenip boşalan randevulardan haberdar olmak ister misiniz? 👇\n${appUrl}/bekle/${waitSlug}`)
+        return NextResponse.json({ ok: true })
+      }
+      const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
+      await setSession(supabase, phone, psychologistId, 'awaiting_day', { available_days: days })
+      await sendReply(psychologistId, phone, `📅 Müsait günler:\n\n${list}\n\nTercih ettiğiniz günün numarasını yazın.`)
+      return NextResponse.json({ ok: true })
+    }
+    if (intent === 'RANDEVU_IPTAL') {
+      // iptal akışına yönlendir
+      const { data: patient } = await supabase
+        .from('patients').select('id').eq('phone_number', phone)
+        .eq('psychologist_id', psychologistId).eq('is_active', true).maybeSingle()
+      if (patient) {
+        const { data: apt } = await supabase.from('appointments').select('id')
+          .eq('patient_id', patient.id).in('status', ['waiting', 'confirmed', 'seansify_pending'])
+          .gte('appointment_date', new Date().toISOString())
+          .order('appointment_date', { ascending: true }).limit(1).maybeSingle()
+        if (apt) {
+          await supabase.from('appointments').update({ status: 'cancelled_by_patient' }).eq('id', apt.id)
+          const { data: currentPatient } = await supabase.from('patients').select('cancel_count').eq('id', patient.id).single()
+          await supabase.from('patients').update({ cancel_count: (currentPatient?.cancel_count ?? 0) + 1 }).eq('id', patient.id)
+          await sendReply(psychologistId, phone, `❌ Randevunuz iptal edildi.\n\nYeni randevu almak için *randevu* yazabilirsiniz.`)
+          return NextResponse.json({ ok: true })
+        }
+      }
+      await sendReply(psychologistId, phone, 'İptal edilecek aktif bir randevunuz bulunamadı.')
+      return NextResponse.json({ ok: true })
+    }
+    if (intent === 'RANDEVU_ONAYLA') {
+      const { data: patient } = await supabase
+        .from('patients').select('id, name_surname').eq('phone_number', phone)
+        .eq('psychologist_id', psychologistId).eq('is_active', true).maybeSingle()
+      if (patient) {
+        const { data: apt } = await supabase.from('appointments').select('id, appointment_date')
+          .eq('patient_id', patient.id).in('status', ['waiting', 'seansify_pending', 'confirmed'])
+          .gte('appointment_date', new Date().toISOString())
+          .order('appointment_date', { ascending: true }).limit(1).maybeSingle()
+        if (apt) {
+          await supabase.from('appointments').update({ status: 'confirmed' }).eq('id', apt.id)
+          const d = new Date(apt.appointment_date)
+          const dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' })
+          const timeStr = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+          await sendReply(psychologistId, phone, `✅ Randevunuz onaylandı!\n\n📅 ${dateStr} — ${timeStr}\n\nGörüşmek üzere!`)
+          return NextResponse.json({ ok: true })
+        }
+      }
+      await sendReply(psychologistId, phone, 'Onaylanacak aktif bir randevunuz bulunamadı.')
+      return NextResponse.json({ ok: true })
+    }
+    // DIGER — ne yapacağını bildir
+    await sendReply(psychologistId, phone,
+      `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
+    )
     return NextResponse.json({ ok: true })
   }
 
