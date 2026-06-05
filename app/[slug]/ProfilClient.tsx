@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import SectionDots from './SectionDots'
 
 interface Egitim {
   baslik: string
@@ -125,7 +126,10 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
 
   return (
     <div style={{ background: '#f4f9f7', minHeight: '100vh', paddingBottom: 88, fontFamily: "'Lato', system-ui, sans-serif" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');`}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
+        html { scroll-behavior: smooth; scroll-padding-top: 58px; }
+      `}</style>
 
       {/* HEADER */}
       <header style={{
@@ -294,7 +298,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
         {/* HAKKIMDA */}
         {psych.bio_text && (
           <>
-            <div style={{ padding: '22px 20px' }}>
+            <div id="hakkimda" style={{ padding: '22px 20px' }}>
               <SectionTitle>Hakkımda</SectionTitle>
               <div style={{ background: '#fff', borderRadius: 16, padding: '18px 20px', border: '1px solid #e4eeea', boxShadow: '0 2px 12px rgba(74,124,111,0.05)' }}>
                 <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.8, margin: 0 }}>
@@ -347,7 +351,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
         {show.uzmanlik && psych.uzmanlik_alanlari && psych.uzmanlik_alanlari.length > 0 && (
           <>
             <Divider />
-            <div style={{ padding: '22px 20px' }}>
+            <div id="uzmanlik" style={{ padding: '22px 20px' }}>
               <SectionTitle>Uzmanlık Alanları</SectionTitle>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {psych.uzmanlik_alanlari.map(alan => (
@@ -391,7 +395,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
         {show.paketler && paketler.length > 0 && (
           <>
             <Divider />
-            <div style={{ padding: '22px 20px' }}>
+            <div id="paketler" style={{ padding: '22px 20px' }}>
               <SectionTitle>Seans Paketleri</SectionTitle>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {paketler.map(p => (
@@ -441,7 +445,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
         {show.yorumlar && yorumlar.length > 0 && (
           <>
             <Divider />
-            <div style={{ padding: '22px 20px' }}>
+            <div id="yorumlar" style={{ padding: '22px 20px' }}>
               <SectionTitle>Danışan Deneyimleri</SectionTitle>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {yorumlar.filter(y => y.yorum_metni).slice(0, 3).map(y => (
@@ -515,7 +519,7 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
         {show.klinik && (psych.klinik_adi || psych.klinik_adres) && (
           <>
             <Divider />
-            <div style={{ padding: '22px 20px' }}>
+            <div id="klinik" style={{ padding: '22px 20px' }}>
               <SectionTitle>Klinik & Konum</SectionTitle>
               <div style={{ background: '#fff', borderRadius: 16, padding: '18px 20px', border: '1px solid #e4eeea', boxShadow: '0 2px 12px rgba(74,124,111,0.05)' }}>
                 <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
@@ -552,6 +556,17 @@ export default function ProfilClient({ psych, bloglar, yorumlar, paketler, tamam
       <footer style={{ background: '#fff', borderTop: '1px solid #e4eeea', padding: '16px 24px', textAlign: 'center', fontSize: 11, color: '#94a3b8', marginBottom: 0 }}>
         Bu sayfa <Link href="/" style={{ color: '#4a7c6f', textDecoration: 'none', fontWeight: 700 }}>Seansify</Link> altyapısıyla oluşturulmuştur &nbsp;·&nbsp; seansify.com/{psych.booking_slug}
       </footer>
+
+      <SectionDots
+        sections={[
+          { id: 'hakkimda', label: 'Hakkımda' },
+          { id: 'uzmanlik', label: 'Uzmanlık' },
+          { id: 'paketler', label: 'Paketler' },
+          { id: 'yorumlar', label: 'Yorumlar' },
+          { id: 'klinik', label: 'Klinik' },
+        ]}
+        accentColor="#4a7c6f"
+      />
 
       {/* FLOATING RANDEVU BUTONU */}
       <div style={{

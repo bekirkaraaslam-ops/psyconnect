@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { WebsiteProps, blogOzet, tarih, okumaMin } from './websiteTypes'
+import SectionDots from './SectionDots'
 
 const C = {
   terra: '#a85530',
@@ -52,6 +53,7 @@ export default function TemaDalgaClient({ psych, bloglar, yorumlar, paketler }: 
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Nunito:wght@400;500;600;700&display=swap');
+        html { scroll-behavior: smooth; scroll-padding-top: 68px; }
 
         @keyframes dalga-slide-up {
           from { opacity: 0; transform: translateY(28px); }
@@ -377,6 +379,18 @@ export default function TemaDalgaClient({ psych, bloglar, yorumlar, paketler }: 
           Randevu Talebi Oluştur
         </Link>
       </div>
+
+      <SectionDots
+        sections={[
+          { id: 'hakkimda', label: 'Hakkımda' },
+          { id: 'yaklasim', label: 'Yaklaşımım' },
+          { id: 'uzmanlik', label: 'Uzmanlık' },
+          { id: 'blog', label: 'Blog' },
+          { id: 'randevu', label: 'Randevu' },
+          { id: 'iletisim', label: 'İletişim' },
+        ]}
+        accentColor={C.terra}
+      />
 
     </div>
   )

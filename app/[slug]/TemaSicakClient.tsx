@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { WebsiteProps, blogOzet, tarih, okumaMin } from './websiteTypes'
+import SectionDots from './SectionDots'
 
 const C = {
   ink: '#2d1f14',
@@ -73,6 +74,7 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap');
+        html { scroll-behavior: smooth; scroll-padding-top: 68px; }
 
         @keyframes sicak-slide-up {
           from { opacity: 0; transform: translateY(28px); }
@@ -382,6 +384,18 @@ export default function TemaSicakClient({ psych, bloglar, yorumlar, paketler }: 
           Randevu Talebi Oluştur
         </Link>
       </div>
+
+      <SectionDots
+        sections={[
+          { id: 'hakkimda', label: 'Hakkımda' },
+          { id: 'yaklasim', label: 'Yaklaşımım' },
+          { id: 'uzmanlik', label: 'Uzmanlık' },
+          { id: 'blog', label: 'Blog' },
+          { id: 'randevu', label: 'Randevu' },
+          { id: 'iletisim', label: 'İletişim' },
+        ]}
+        accentColor={C.accent}
+      />
 
     </div>
   )

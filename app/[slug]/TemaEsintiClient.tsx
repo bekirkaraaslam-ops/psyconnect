@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { WebsiteProps, blogOzet, tarih, okumaMin } from './websiteTypes'
+import SectionDots from './SectionDots'
 
 const C = {
   sage: '#5a7d6c',
@@ -52,6 +53,7 @@ export default function TemaEsintiClient({ psych, bloglar, yorumlar, paketler }:
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap');
+        html { scroll-behavior: smooth; scroll-padding-top: 68px; }
 
         @keyframes esinti-slide-up {
           from { opacity: 0; transform: translateY(28px); }
@@ -376,6 +378,18 @@ export default function TemaEsintiClient({ psych, bloglar, yorumlar, paketler }:
           Randevu Talebi Oluştur
         </Link>
       </div>
+
+      <SectionDots
+        sections={[
+          { id: 'hakkimda', label: 'Hakkımda' },
+          { id: 'yaklasim', label: 'Yaklaşımım' },
+          { id: 'uzmanlik', label: 'Uzmanlık' },
+          { id: 'blog', label: 'Blog' },
+          { id: 'randevu', label: 'Randevu' },
+          { id: 'iletisim', label: 'İletişim' },
+        ]}
+        accentColor={C.sage}
+      />
 
     </div>
   )
