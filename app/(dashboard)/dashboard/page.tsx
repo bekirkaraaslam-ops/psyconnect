@@ -93,11 +93,28 @@ export default async function OverviewPage() {
   const totalBekleyenOdeme = (bekleyenOdemeler ?? []).reduce((s: number, a: any) => s + (a.ucret ?? 0), 0)
 
   const stats = [
-    { label: 'Toplam Hasta', value: totalPatients ?? 0, color: '#4a7c6f', icon: '👥' },
-    { label: 'Bugünkü Randevular', value: todayCount ?? 0, color: '#3b82f6', icon: '📅' },
-    { label: 'Bu Hafta', value: weekCount ?? 0, color: '#8b5cf6', icon: '🗓️' },
-    { label: 'Bekleyen Ödeme', value: totalBekleyenOdeme > 0 ? `₺${totalBekleyenOdeme.toLocaleString('tr-TR')}` : '₺0', color: '#f59e0b', icon: '💰' },
-    ...(isPro ? [{ label: 'WA Durumu', value: psychologist?.is_connected ? 'Bağlı' : 'Bağlı Değil', color: psychologist?.is_connected ? '#16a34a' : '#dc2626', icon: '💬' }] : []),
+    {
+      label: 'Toplam Hasta', value: totalPatients ?? 0, color: '#4a7c6f', bg: 'rgba(74,124,111,0.1)',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    },
+    {
+      label: 'Bugünkü Randevular', value: todayCount ?? 0, color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="14" strokeWidth="3"/></svg>,
+    },
+    {
+      label: 'Bu Hafta', value: weekCount ?? 0, color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>,
+    },
+    {
+      label: 'Bekleyen Ödeme', value: totalBekleyenOdeme > 0 ? `₺${totalBekleyenOdeme.toLocaleString('tr-TR')}` : '₺0', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+    },
+    ...(isPro ? [{
+      label: 'WA Durumu', value: psychologist?.is_connected ? 'Bağlı' : 'Bağlı Değil',
+      color: psychologist?.is_connected ? '#16a34a' : '#dc2626',
+      bg: psychologist?.is_connected ? 'rgba(22,163,74,0.1)' : 'rgba(220,38,38,0.1)',
+      icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+    }] : []),
   ]
 
   const isNew = (totalPatients ?? 0) === 0
@@ -145,12 +162,18 @@ export default async function OverviewPage() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
           {stats.map(stat => (
-            <div key={stat.label} className="bg-white rounded-2xl p-3 md:p-5 flex items-center gap-3 md:gap-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', borderLeft: `3px solid ${stat.color}` }}>
-              <div>
-                <div className="text-xl md:text-2xl font-bold leading-none mb-1" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-xs leading-tight text-slate-500 dark:text-slate-300">{stat.label}</div>
+            <div key={stat.label}
+              className="bg-white rounded-2xl p-4 md:p-5 flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: (stat as any).bg, color: stat.color }}>
+                {(stat as any).icon}
+              </div>
+              <div className="min-w-0">
+                <div className="text-lg md:text-2xl font-bold leading-none mb-0.5 truncate" style={{ color: stat.color }}>{stat.value}</div>
+                <div className="text-xs leading-tight" style={{ color: '#94a3b8' }}>{stat.label}</div>
               </div>
             </div>
           ))}
@@ -163,10 +186,10 @@ export default async function OverviewPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
 
           {/* Bekleme Listesi */}
-          <Link href="/waiting-list" className="bg-white rounded-2xl p-4 md:p-5 hover:shadow-md transition-shadow block" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <Link href="/waiting-list" className="bg-white rounded-2xl p-4 md:p-5 block transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#eff6ff' }}>
-                <span style={{ fontSize: 18 }}>🕐</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
               <div className="text-sm font-semibold text-slate-700 dark:text-white">Bekleme Listesi</div>
             </div>
@@ -180,10 +203,10 @@ export default async function OverviewPage() {
           </Link>
 
           {/* Doldurulmamış Anamnez Formları */}
-          <div className="bg-white rounded-2xl p-4 md:p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div className="bg-white rounded-2xl p-4 md:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#faf5ff' }}>
-                <span style={{ fontSize: 18 }}>📋</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               </div>
               <div className="text-sm font-semibold text-slate-700 dark:text-white">Bekleyen Anamnez</div>
             </div>
@@ -211,10 +234,10 @@ export default async function OverviewPage() {
           </div>
 
           {/* Bu Haftaki İptaller */}
-          <div className="bg-white rounded-2xl p-4 md:p-5" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div className="bg-white rounded-2xl p-4 md:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center gap-3 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#fff1f2' }}>
-                <span style={{ fontSize: 18 }}>📊</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
               </div>
               <div className="text-sm font-semibold text-slate-700 dark:text-white">Bu Haftaki İptaller</div>
             </div>

@@ -203,25 +203,24 @@ export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarPr
               href={item.href}
               title={item.label}
               className={cn(
-                'relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
+                'relative flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'text-white'
+                  ? 'text-[#2d5a51]'
                   : showLock
                     ? 'hover:bg-gray-100 dark:hover:bg-slate-700 text-[#94a3b8] dark:text-slate-500'
                     : 'hover:bg-gray-100 dark:hover:bg-slate-700 text-[#64748b] dark:text-slate-300'
               )}
-              style={isActive ? { background: '#4a7c6f', color: 'white' } : {}}
+              style={isActive ? { background: 'rgba(74,124,111,0.12)', fontWeight: 600 } : {}}
             >
               {isActive && (
                 <span style={{
-                  position: 'absolute', left: 0, top: 6, bottom: 6,
+                  position: 'absolute', left: 0, top: 5, bottom: 5,
                   width: 3, borderRadius: '0 3px 3px 0',
-                  background: 'rgba(255,255,255,0.75)',
-                  transformOrigin: 'top',
+                  background: '#4a7c6f',
                   animation: 'indicatorSlideIn 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards',
                 }} />
               )}
-              {item.icon}
+              <span style={isActive ? { color: '#4a7c6f' } : {}}>{item.icon}</span>
               <span className="hidden lg:inline flex-1">{item.label}</span>
               {showLock && (
                 <span className="hidden lg:inline" style={{ color: '#94a3b8' }}>

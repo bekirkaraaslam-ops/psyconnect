@@ -523,6 +523,41 @@ html:has([data-page="landing"]) {
   transform: none;
 }
 
+/* ── Input focus states ── */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: #4a7c6f !important;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.15) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ── Form placeholder rengi ── */
+::placeholder {
+  color: #b0bec9 !important;
+  opacity: 1;
+}
+
+/* ── Button spinner ── */
+@keyframes btnSpin {
+  to { transform: rotate(360deg); }
+}
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: btnSpin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+.btn-spinner-dark {
+  border-color: rgba(74,124,111,0.25);
+  border-top-color: #4a7c6f;
+}
+
 /* ── Pricing Pro card glow ── */
 @keyframes pricingGlow {
   0%, 100% { box-shadow: 0 4px 24px rgba(74,124,111,0.4), 0 0 0 0 rgba(74,124,111,0); }

@@ -74,9 +74,10 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-60"
+          className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2"
           style={{ background: '#4a7c6f' }}
         >
+          {loading && <span className="btn-spinner" />}
           {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
         </button>
       </form>
