@@ -261,7 +261,7 @@ export default async function LandingPage() {
 
       {/* ── Stats Bar ── */}
       <section style={{ background: '#e8f5f1', borderTop: '1px solid #c8e6dc', borderBottom: '1px solid #c8e6dc' }}>
-        <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+        <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
           {[
             {
               icon: <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />,
@@ -279,13 +279,8 @@ export default async function LandingPage() {
               label: 'Daha Az No-Show',
             },
             {
-              icon: <><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></>,
-              value: '5 Dk',
-              label: 'Kurulum Süresi',
-            },
-            {
               icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="9" y1="15" x2="15" y2="15" /></>,
-              value: 'Sıfır',
+              value: '0',
               label: 'Kağıt Form',
             },
             {
