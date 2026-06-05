@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { formatDateTime, appointmentStatusColor, appointmentStatusLabel, getInitials } from '@/lib/utils'
+import { formatDateTime, appointmentStatusColor, appointmentStatusLabel, appointmentStatusAccent, getInitials } from '@/lib/utils'
+import AppointmentDrawer from './AppointmentDrawer'
 
 interface Apt {
   id: string
@@ -24,6 +24,7 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
   const router = useRouter()
   const [showAll, setShowAll] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [drawerAptId, setDrawerAptId] = useState<string | null>(null)
 
   const [feeAptId, setFeeAptId] = useState<string | null>(null)
   const [feeValue, setFeeValue] = useState('')
@@ -80,6 +81,7 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
   const hidden = appointments.length - INITIAL_VISIBLE
 
   return (
+    <>
     <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
       <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
         {visible.map(apt => {
@@ -89,15 +91,17 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
           const displayOdeme = local !== undefined ? local.odeme_durumu : apt.odeme_durumu
           const isEditingFee = feeAptId === apt.id
 
+          const accent = appointmentStatusAccent(apt.status)
+
           return (
-            <div key={apt.id}>
+            <div key={apt.id} style={{ borderLeft: `3px solid ${accent.bar}` }}>
               {/* Satır */}
               <div
                 className="flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer"
                 onClick={() => toggleExpand(apt.id)}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold text-white shrink-0" style={{ background: '#4a7c6f' }}>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0" style={{ background: accent.avatar, color: accent.avatarText }}>
                     {getInitials(apt.patient?.name_surname ?? '?')}
                   </div>
                   <div className="min-w-0">
@@ -240,14 +244,13 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
                     )}
                   </div>
 
-                  <Link
-                    href={`/appointments/${apt.id}`}
+                  <button
+                    onClick={e => { e.stopPropagation(); setDrawerAptId(apt.id) }}
                     className="flex items-center justify-center gap-1 text-xs px-3 py-2 rounded-lg font-medium w-full bg-white dark:bg-slate-700 dark:border-slate-600"
                     style={{ color: '#4a7c6f', border: '1px solid #dde5e2' }}
-                    onClick={e => e.stopPropagation()}
                   >
-                    Detay sayfası →
-                  </Link>
+                    Detaylar →
+                  </button>
                 </div>
               </div>
               </div>
@@ -259,7 +262,7 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
       {appointments.length > INITIAL_VISIBLE && (
         <button
           onClick={() => setShowAll(v => !v)}
-          className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 text-[#4a7c6f] dark:text-[#6ee7b7]"
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 text[#4a7c6f] dark:text-[#6ee7b7]"
           style={{ borderTop: '1px solid #f1f5f9' }}
         >
           {showAll ? (
@@ -279,6 +282,9 @@ export default function PastList({ appointments }: { appointments: Apt[] }) {
           )}
         </button>
       )}
+
     </div>
+    <AppointmentDrawer appointmentId={drawerAptId} onClose={() => setDrawerAptId(null)} />
+    </>
   )
 }

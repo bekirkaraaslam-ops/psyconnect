@@ -94,3 +94,16 @@ export function appointmentStatusColor(status: string): string {
   }
   return map[status] ?? 'bg-gray-100 text-gray-600'
 }
+
+export function appointmentStatusAccent(status: string): { bar: string; avatar: string; avatarText: string } {
+  const map: Record<string, { bar: string; avatar: string; avatarText: string }> = {
+    waiting:              { bar: '#f59e0b', avatar: '#fef3c7', avatarText: '#92400e' },
+    confirmed:            { bar: '#22c55e', avatar: '#dcfce7', avatarText: '#166534' },
+    canceled:             { bar: '#ef4444', avatar: '#fee2e2', avatarText: '#991b1b' },
+    completed:            { bar: '#94a3b8', avatar: '#f1f5f9', avatarText: '#475569' },
+    cancelled_by_patient: { bar: '#ef4444', avatar: '#fee2e2', avatarText: '#991b1b' },
+    seansify_pending:     { bar: '#f97316', avatar: '#ffedd5', avatarText: '#9a3412' },
+    no_show:              { bar: '#ef4444', avatar: '#fef2f2', avatarText: '#991b1b' },
+  }
+  return map[status] ?? { bar: '#94a3b8', avatar: '#f1f5f9', avatarText: '#475569' }
+}
