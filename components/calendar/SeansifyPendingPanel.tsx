@@ -29,13 +29,15 @@ export default function SeansifyPendingPanel() {
 
   useEffect(() => {
     fetchPending()
+    window.addEventListener('appointments:refresh', fetchPending)
+    return () => window.removeEventListener('appointments:refresh', fetchPending)
   }, [fetchPending])
 
   async function handleAction(id: string, action: 'approve' | 'reject') {
     setActionLoading(id + action)
     await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
     setActionLoading(null)
-    await fetchPending()
+    window.dispatchEvent(new CustomEvent('appointments:refresh'))
     window.dispatchEvent(new CustomEvent('calendar:refresh'))
   }
 

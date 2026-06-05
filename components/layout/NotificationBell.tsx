@@ -44,7 +44,11 @@ export default function NotificationBell() {
     }
     fetchData()
     const interval = setInterval(fetchData, 5 * 60 * 1000)
-    return () => clearInterval(interval)
+    window.addEventListener('appointments:refresh', fetchData)
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('appointments:refresh', fetchData)
+    }
   }, [])
 
   useEffect(() => {
@@ -71,6 +75,7 @@ export default function NotificationBell() {
     setPending(prev => prev.filter(i => i.id !== approving.id))
     setApproving(null)
     setLoading(null)
+    window.dispatchEvent(new CustomEvent('appointments:refresh'))
     router.refresh()
   }
 
@@ -79,6 +84,7 @@ export default function NotificationBell() {
     await fetch(`/api/appointments/${id}/reject`, { method: 'POST' })
     setPending(prev => prev.filter(i => i.id !== id))
     setLoading(null)
+    window.dispatchEvent(new CustomEvent('appointments:refresh'))
     router.refresh()
   }
 
@@ -87,6 +93,7 @@ export default function NotificationBell() {
     await fetch(`/api/appointments/${id}/${action}`, { method: 'POST' })
     setAwaiting(prev => prev.filter(i => i.id !== id))
     setLoading(null)
+    window.dispatchEvent(new CustomEvent('appointments:refresh'))
     router.refresh()
   }
 
