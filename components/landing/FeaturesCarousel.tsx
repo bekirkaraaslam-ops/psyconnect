@@ -98,8 +98,8 @@ export default function FeaturesCarousel() {
           scrollSnapType: 'x mandatory',
           WebkitOverflowScrolling: 'touch' as never,
           scrollbarWidth: 'none' as never,
+          width: '100vw',
           marginLeft: '-24px',
-          marginRight: '-24px',
         }}
       >
         {Array.from({ length: pages }).map((_, pageIdx) => {
@@ -108,7 +108,7 @@ export default function FeaturesCarousel() {
             <div
               key={pageIdx}
               style={{
-                minWidth: '100%', flexShrink: 0, scrollSnapAlign: 'start',
+                minWidth: '100vw', flexShrink: 0, scrollSnapAlign: 'start',
                 display: 'flex', flexDirection: 'column', gap: '12px',
                 paddingLeft: '24px', paddingRight: '24px',
                 boxSizing: 'border-box',
