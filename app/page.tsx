@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import DemoTabs from '@/components/landing/DemoTabs'
 import ScrollRevealInit from '@/components/landing/ScrollRevealInit'
 import FeaturesCarousel from '@/components/landing/FeaturesCarousel'
+import SectionDots from '@/app/[slug]/SectionDots'
 
 export const metadata: Metadata = {
   title: 'Seansify — Psikologlar için Klinik Yönetim Platformu',
@@ -659,6 +660,16 @@ export default async function LandingPage() {
       </footer>
 
       <ScrollRevealInit />
+      <SectionDots
+        sections={[
+          { id: 'ozellikler', label: 'Özellikler' },
+          { id: 'nasil-calisir', label: 'Nasıl Çalışır' },
+          { id: 'fiyatlandirma', label: 'Fiyatlandırma' },
+          { id: 'sss', label: 'SSS' },
+          { id: 'iletisim', label: 'İletişim' },
+        ]}
+        accentColor="#4a7c6f"
+      />
     </div>
   )
 }

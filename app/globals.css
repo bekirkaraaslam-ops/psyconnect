@@ -506,6 +506,12 @@ html.dark [style*="border-color: #e2e8f0"] { border-color: var(--border) !import
 /* border shorthand #dde5e2 (butonlar, kartlar) */
 html.dark [style*="border: 1px solid #dde5e2"] { border-color: var(--border) !important; }
 
+/* ── Landing page smooth scroll ── */
+[data-page="landing"] {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
+}
+
 /* ── Scroll reveal ── */
 .scroll-reveal {
   opacity: 0;
