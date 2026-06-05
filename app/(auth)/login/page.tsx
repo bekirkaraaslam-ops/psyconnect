@@ -50,9 +50,11 @@ export default function LoginPage() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-colors"
+            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
             style={{ borderColor: '#dde5e2', color: '#334155' }}
             placeholder="ornek@mail.com"
+            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
+            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
           />
         </div>
 
@@ -65,9 +67,11 @@ export default function LoginPage() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
             style={{ borderColor: '#dde5e2', color: '#334155' }}
             placeholder="••••••••"
+            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
+            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
           />
         </div>
 
@@ -75,7 +79,7 @@ export default function LoginPage() {
           type="submit"
           disabled={loading}
           className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2"
-          style={{ background: '#4a7c6f' }}
+          style={{ background: 'linear-gradient(135deg, #4a7c6f 0%, #2a5446 100%)' }}
         >
           {loading && <span className="btn-spinner" />}
           {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
