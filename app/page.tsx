@@ -406,6 +406,9 @@ export default async function LandingPage() {
                   'İptal olan saati doldurmak için tek tek arıyorsunuz',
                   'Hasta gelip gelmeyeceğini gün gelene kadar bilmiyorsunuz',
                   'Anamnez formunu kağıda yazdırıp toplantıda veriyorsunuz',
+                  'Seans notlarını ayrı belgelere yazıp kaybolmasına izin veriyorsunuz',
+                  'Ödeme takibini elle yapıyor, kimin borcunu aklınızda tutuyorsunuz',
+                  'Mesai saati dışındaki randevu taleplerini kaçırıyorsunuz',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm" style={{ color: '#5a7a72' }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" strokeWidth="2.5" strokeLinecap="round" className="flex-shrink-0 mt-0.5">
@@ -433,6 +436,9 @@ export default async function LandingPage() {
                   'İptal = bekleme listesine otomatik teklif, saat dolar',
                   'Hasta WhatsApp üzerinden onaylar, siz anlık bilgilendirilirsiniz',
                   'Anamnez formu linke tıkla, dijital doldur, sistemde sakla',
+                  'SOAP seans notları dijital tutulur, her zaman erişilebilir',
+                  'Ödeme durumu otomatik izlenir, borçlu danışanı anında görürsünüz',
+                  'AI asistan 7/24 randevu alır, siz uyurken takvim dolar',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2.5" strokeLinecap="round" className="flex-shrink-0 mt-0.5">
