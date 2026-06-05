@@ -6,7 +6,7 @@ const authRoutes = ['/login', '/register']
 
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? 'seansify.com'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const hostname = request.headers.get('host') ?? ''
 
@@ -34,7 +34,6 @@ export async function middleware(request: NextRequest) {
   )
 
   // Auth sayfalarında ve landing page'de gerçek session doğrulaması yap
-  // (landing page: giriş yapmış kullanıcıyı dashboard'a yönlendirmek için)
   if (isAuthRoute || pathname === '/') {
     return await updateSession(request)
   }
