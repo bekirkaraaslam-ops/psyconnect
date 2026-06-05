@@ -65,8 +65,8 @@ export default async function OverviewPage() {
     { data: bekleyenOdemeler },
   ] = await Promise.all([
     supabase.from('patients').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).eq('is_active', true),
-    supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd),
-    supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', now.toISOString()).lte('appointment_date', weekEnd).neq('status', 'canceled'),
+    supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd).in('status', ['waiting', 'confirmed']),
+    supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', now.toISOString()).lte('appointment_date', weekEnd).neq('status', 'canceled').neq('status', 'cancelled_by_patient'),
     supabase.from('appointments').select('id, appointment_date, duration_minutes, booking_name, booking_phone, patient:patients(name_surname, phone_number)').eq('psychologist_id', psychologistId).eq('status', 'seansify_pending').order('appointment_date'),
     supabase.from('waiting_list').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).in('status', ['waiting', 'offered']),
     supabase.from('anamnez_forms').select('id, expires_at, created_at, patient:patients(name_surname)').eq('psychologist_id', psychologistId).is('filled_at', null).order('created_at', { ascending: false }).limit(5),
