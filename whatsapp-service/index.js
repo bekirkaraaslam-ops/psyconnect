@@ -438,23 +438,43 @@ async function connectWhatsApp(psychologistId) {
       // ── Mesai dışı koruma ────────────────────────────────────
       const { data: psyData } = await getSupabase()
         .from('psychologists')
-        .select('work_start_hour, work_end_hour')
+        .select('work_start_hour, work_end_hour, work_days')
         .eq('id', psychologistId)
         .single()
 
       const workStart = psyData?.work_start_hour ?? 9
       const workEnd = psyData?.work_end_hour ?? 18
+      const workDays = psyData?.work_days ?? ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma']
       const nowIST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
       const currentHour = nowIST.getHours()
-      const isOutsideWorkHours = currentHour < workStart || currentHour >= workEnd
+      const todayName = DAY_MAP[nowIST.getDay()]
+      const isWorkDay = workDays.includes(todayName)
+      const isOutsideWorkHours = !isWorkDay || currentHour < workStart || currentHour >= workEnd
 
       if (isOutsideWorkHours && text !== 'EVET' && text !== 'IPTAL' && text !== 'İPTAL' && !text.includes('RANDEVU')) {
         const session = botSessions.get(phone)
         if (!session || session.expiresAt <= Date.now()) {
-          const startStr = String(workStart).padStart(2, '0') + ':00'
-          await sock.sendMessage(jid, {
-            text: `Şu an mesai saatleri dışındayız. ${startStr}'de size yardımcı olmaya çalışacağız. 🕐`,
-          })
+          let offHoursMsg
+          if (!isWorkDay) {
+            const nextWorkDay = (() => {
+              for (let i = 1; i <= 7; i++) {
+                const d = new Date(nowIST)
+                d.setDate(d.getDate() + i)
+                if (workDays.includes(DAY_MAP[d.getDay()])) {
+                  return DAY_MAP[d.getDay()].charAt(0).toUpperCase() + DAY_MAP[d.getDay()].slice(1)
+                }
+              }
+              return null
+            })()
+            const startStr = String(workStart).padStart(2, '0') + ':00'
+            offHoursMsg = nextWorkDay
+              ? `Bugün çalışma günümüz değil. ${nextWorkDay} günü saat ${startStr}'den itibaren size yardımcı olmaya çalışacağız. 📅`
+              : `Bugün çalışma günümüz değil. En yakın mesai günümüzde size yardımcı olmaya çalışacağız. 📅`
+          } else {
+            const startStr = String(workStart).padStart(2, '0') + ':00'
+            offHoursMsg = `Şu an mesai saatleri dışındayız. ${startStr}'de size yardımcı olmaya çalışacağız. 🕐`
+          }
+          await sock.sendMessage(jid, { text: offHoursMsg })
           continue
         }
       }
