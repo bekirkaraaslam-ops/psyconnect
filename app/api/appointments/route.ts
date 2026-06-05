@@ -102,6 +102,11 @@ export async function POST(req: NextRequest) {
       const timeStr = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
       const msg = `📅 Randevunuz oluşturuldu!\n\n👤 ${patient.name_surname}\n🗓 ${dateStr} — ${timeStr}\n\nRandevunuzu onaylamak için *EVET*, iptal için *İPTAL* yazabilirsiniz.`
       await sendWhatsApp(psychologist.id, patient.phone_number, msg)
+      // reminder_sent_at'ı şimdiye set et — EVET/İPTAL handler'ının bu randevuyu bulmasını sağlar
+      await supabase
+        .from('appointments')
+        .update({ reminder_sent_at: new Date().toISOString() })
+        .eq('id', data.id)
     }
   }
 
