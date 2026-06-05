@@ -5,13 +5,40 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+function getPasswordStrength(pw: string): 0 | 1 | 2 | 3 | 4 {
+  if (pw.length === 0) return 0
+  if (pw.length < 6) return 1
+  let score = 1
+  if (pw.length >= 8) score++
+  if (/[A-Z]/.test(pw) || /[0-9]/.test(pw)) score++
+  if (/[^A-Za-z0-9]/.test(pw)) score++
+  return Math.min(score, 4) as 0 | 1 | 2 | 3 | 4
+}
+
+const STRENGTH_LABEL = ['', 'Zayıf', 'Orta', 'İyi', 'Güçlü']
+const STRENGTH_COLOR = ['', '#ef4444', '#f97316', '#84cc16', '#22c55e']
+
+const inputClass = 'w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150'
+const inputStyle = { borderColor: '#dde5e2', color: '#334155' }
+const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  e.target.style.borderColor = '#4a7c6f'
+  e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)'
+}
+const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  e.target.style.borderColor = '#dde5e2'
+  e.target.style.boxShadow = 'none'
+}
+
 function RegisterForm() {
   const router = useRouter()
   const [fullName, setFullName] = useState('')
+  const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const strength = getPasswordStrength(password)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -25,6 +52,7 @@ function RegisterForm() {
       options: {
         data: {
           full_name: fullName,
+          phone_number: phone,
         },
       },
     })
@@ -51,55 +79,80 @@ function RegisterForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>
-            Ad Soyad
-          </label>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Ad Soyad</label>
           <input
             type="text"
             value={fullName}
             onChange={e => setFullName(e.target.value)}
             required
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
-            style={{ borderColor: '#dde5e2', color: '#334155' }}
+            className={inputClass}
+            style={inputStyle}
             placeholder="Dr. Ayşe Yılmaz"
-            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
-            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>
-            E-posta
-          </label>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Telefon Numarası</label>
+          <input
+            type="tel"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            required
+            className={inputClass}
+            style={inputStyle}
+            placeholder="05XX XXX XX XX"
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>E-posta</label>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
-            style={{ borderColor: '#dde5e2', color: '#334155' }}
+            className={inputClass}
+            style={inputStyle}
             placeholder="ornek@mail.com"
-            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
-            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>
-            Şifre
-          </label>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Şifre</label>
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
             minLength={6}
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
-            style={{ borderColor: '#dde5e2', color: '#334155' }}
+            className={inputClass}
+            style={inputStyle}
             placeholder="En az 6 karakter"
-            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
-            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
+          {password.length > 0 && (
+            <div className="mt-2">
+              <div className="flex gap-1 mb-1">
+                {[1, 2, 3, 4].map(i => (
+                  <div
+                    key={i}
+                    className="h-1 flex-1 rounded-full transition-all duration-300"
+                    style={{ background: i <= strength ? STRENGTH_COLOR[strength] : '#e2e8f0' }}
+                  />
+                ))}
+              </div>
+              <p className="text-xs" style={{ color: STRENGTH_COLOR[strength] }}>
+                {STRENGTH_LABEL[strength]}
+              </p>
+            </div>
+          )}
         </div>
 
         <button
