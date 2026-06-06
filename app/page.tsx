@@ -282,6 +282,7 @@ export default async function LandingPage() {
               icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="9" y1="15" x2="15" y2="15" /></>,
               value: '0',
               label: 'Kağıt Form',
+              mobileHide: true,
             },
             {
               icon: <><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></>,
@@ -289,7 +290,7 @@ export default async function LandingPage() {
               label: 'Online Randevu',
             },
           ].map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-2 scroll-reveal">
+            <div key={s.label} className={`flex flex-col items-center gap-2 scroll-reveal${'mobileHide' in s && s.mobileHide ? ' hidden sm:flex' : ''}`}>
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-1" style={{ background: 'rgba(74,124,111,0.15)' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
               </div>
