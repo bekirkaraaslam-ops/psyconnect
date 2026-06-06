@@ -106,7 +106,7 @@ export default function FeaturesCarousel() {
             <div
               key={pageIdx}
               style={{
-                minWidth: '100%', flexShrink: 0, scrollSnapAlign: 'start',
+                flexBasis: '100%', flexShrink: 0, flexGrow: 0, scrollSnapAlign: 'start',
                 display: 'flex', flexDirection: 'column', gap: '12px',
                 paddingLeft: '24px', paddingRight: '24px',
                 boxSizing: 'border-box',
