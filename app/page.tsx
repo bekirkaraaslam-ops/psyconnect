@@ -309,7 +309,9 @@ export default async function LandingPage() {
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white scroll-reveal">Her Şey Tek Platformda</h2>
             <p className="text-base max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>Klinik yönetiminiz için ihtiyacınız olan tüm araçlar, tek çatı altında.</p>
           </div>
-
+        </div>
+        {/* Mobile: padding yok (carousel kendi padding'ini yönetir); Desktop: normal px-6 */}
+        <div className="max-w-5xl mx-auto md:px-6">
           <FeaturesCarousel />
         </div>
       </section>
