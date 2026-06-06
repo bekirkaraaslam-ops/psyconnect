@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -18,6 +18,11 @@ function getPasswordStrength(pw: string): 0 | 1 | 2 | 3 | 4 {
 const STRENGTH_LABEL = ['', 'Zayıf', 'Orta', 'İyi', 'Güçlü']
 const STRENGTH_COLOR = ['', '#ef4444', '#f97316', '#84cc16', '#22c55e']
 
+const PLAN_LABELS: Record<string, { name: string; price: string; color: string; bg: string }> = {
+  one: { name: 'Seansify One', price: '749 ₺/ay', color: '#4a7c6f', bg: '#e8f5f1' },
+  pro: { name: 'Seansify Pro', price: '1.850 ₺/ay', color: '#ffffff', bg: '#4a7c6f' },
+}
+
 const inputClass = 'w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150'
 const inputStyle = { borderColor: '#dde5e2', color: '#334155' }
 const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -31,6 +36,10 @@ const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 
 function RegisterForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const plan = searchParams.get('plan') ?? ''
+  const planInfo = PLAN_LABELS[plan] ?? null
+
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -63,13 +72,23 @@ function RegisterForm() {
       return
     }
 
-    router.push('/upgrade')
+    router.push(plan ? `/upgrade?plan=${plan}` : '/upgrade')
     router.refresh()
   }
 
   return (
     <>
-      <h2 className="text-xl font-semibold mb-6" style={{ color: '#334155' }}>Kayıt Ol</h2>
+      <h2 className="text-xl font-semibold mb-4" style={{ color: '#334155' }}>Kayıt Ol</h2>
+
+      {planInfo && (
+        <div className="mb-5 px-4 py-3 rounded-xl flex items-center justify-between gap-3" style={{ background: planInfo.bg, border: `1.5px solid ${planInfo.color === '#ffffff' ? '#4a7c6f' : planInfo.color}` }}>
+          <div>
+            <p className="text-xs font-medium" style={{ color: planInfo.color === '#ffffff' ? 'rgba(255,255,255,0.75)' : '#4a7c6f' }}>Seçilen plan</p>
+            <p className="text-sm font-bold" style={{ color: planInfo.color === '#ffffff' ? '#ffffff' : '#0d1f18' }}>{planInfo.name}</p>
+          </div>
+          <p className="text-sm font-semibold whitespace-nowrap" style={{ color: planInfo.color === '#ffffff' ? '#ffffff' : '#4a7c6f' }}>{planInfo.price}</p>
+        </div>
+      )}
 
       {error && (
         <div className="mb-4 px-4 py-3 rounded-lg text-sm" style={{ background: '#fee2e2', color: '#dc2626' }}>

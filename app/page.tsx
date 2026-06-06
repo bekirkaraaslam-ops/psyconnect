@@ -494,7 +494,7 @@ export default async function LandingPage() {
                   <li key={l} className="text-xs" style={{ color: '#94a3b8' }}>· {l}</li>
                 ))}
               </ul>
-              <Link href="/upgrade?plan=one" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90" style={{ border: '2px solid #4a7c6f', color: '#4a7c6f' }}>
+              <Link href="/register?plan=one" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90" style={{ border: '2px solid #4a7c6f', color: '#4a7c6f' }}>
                 Seansify One Seç
               </Link>
             </div>
@@ -529,7 +529,7 @@ export default async function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link href="/upgrade?plan=pro" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90 shadow-lg" style={{ background: 'white', color: '#4a7c6f' }}>
+              <Link href="/register?plan=pro" className="block w-full text-center py-3 rounded-xl text-sm font-bold transition-all hover:opacity-90 shadow-lg" style={{ background: 'white', color: '#4a7c6f' }}>
                 Pro'ya Geç
               </Link>
             </div>
