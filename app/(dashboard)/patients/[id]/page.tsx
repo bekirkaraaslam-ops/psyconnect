@@ -4,12 +4,7 @@ import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
 import { formatDate, formatPhoneDisplay } from '@/lib/utils'
 import { decrypt as decryptNote } from '@/lib/crypto'
-import SeansNotlari from '@/components/patients/SeansNotlari'
-import AnamnezPanel from '@/components/patients/AnamnezPanel'
-import OdemelerPanel from '@/components/patients/OdemelerPanel'
-import OnamPanel from '@/components/patients/OnamPanel'
-import PaketPanel from '@/components/patients/PaketPanel'
-import RandevuGecmisiPanel from '@/components/patients/RandevuGecmisiPanel'
+import PatientDetailTabs from '@/components/patients/PatientDetailTabs'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -39,13 +34,12 @@ export default async function PatientDetailPage({ params }: Props) {
 
   const { data: appointments } = await supabase
     .from('appointments')
-    .select('*')
+    .select('id, appointment_date, duration_minutes, status')
     .eq('patient_id', id)
     .eq('psychologist_id', psychologist.id)
     .order('appointment_date', { ascending: false })
     .limit(50)
 
-  // Anamnez formu (varsa)
   const { data: anamnezForm } = await supabase
     .from('anamnez_forms')
     .select('id, filled_at, expires_at, sikayet_encrypted, sure_encrypted, gecmis_tedavi_encrypted, ilac_kullanim_encrypted, aile_gecmis_encrypted, uyku_durum_encrypted, beslenme_durum_encrypted, acil_kisi_encrypted, ek_notlar_encrypted')
@@ -55,7 +49,6 @@ export default async function PatientDetailPage({ params }: Props) {
     .limit(1)
     .maybeSingle()
 
-  // Onam formu (varsa)
   const { data: onamForm } = await supabase
     .from('onam_formlar')
     .select('id, filled_at, expires_at, imza_text')
@@ -73,12 +66,12 @@ export default async function PatientDetailPage({ params }: Props) {
     <div className="flex-1">
       <Topbar title={patient.name_surname} />
 
-      <div className="p-3 md:p-6 space-y-5 max-w-4xl">
-        {/* Patient Info Card */}
+      <div className="p-3 md:p-6 space-y-4 max-w-4xl">
+        {/* Hasta bilgi kartı — her zaman görünür */}
         <div className="bg-white rounded-2xl border p-4 md:p-5" style={{ borderColor: '#dde5e2' }}>
           <div className="flex items-start justify-between gap-2 mb-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold text-white" style={{ background: '#4a7c6f' }}>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold text-white shrink-0" style={{ background: '#4a7c6f' }}>
                 {patient.name_surname.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)}
               </div>
               <div className="min-w-0">
@@ -116,19 +109,15 @@ export default async function PatientDetailPage({ params }: Props) {
           )}
         </div>
 
-        <RandevuGecmisiPanel hastaId={id} appointments={appointments ?? []} />
-
-        {patient.anamnez_enabled && (
-          <AnamnezPanel form={anamnezForm ?? null} />
-        )}
-
-        <OnamPanel form={onamForm ?? null} />
-
-        <PaketPanel hastaId={id} />
-
-        <OdemelerPanel hastaId={id} />
-
-        <SeansNotlari hastaId={id} hastaAdi={patient.name_surname} />
+        {/* Sekmeli içerik */}
+        <PatientDetailTabs
+          hastaId={id}
+          hastaAdi={patient.name_surname}
+          appointments={appointments ?? []}
+          anamnezForm={anamnezForm ?? null}
+          onamForm={onamForm ?? null}
+          anamnezEnabled={!!patient.anamnez_enabled}
+        />
       </div>
     </div>
   )
