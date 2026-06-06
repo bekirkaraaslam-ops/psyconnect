@@ -77,16 +77,18 @@ const FEATURES = [
   },
 ]
 
-const PER_PAGE = 6
+const PER_PAGE_MOBILE = 3
+const PER_PAGE_DESKTOP = 6
 
 export default function FeaturesCarousel() {
-  const pages = Math.ceil(FEATURES.length / PER_PAGE)
+  const mobilePages = Math.ceil(FEATURES.length / PER_PAGE_MOBILE)
+  const desktopPages = Math.ceil(FEATURES.length / PER_PAGE_DESKTOP)
   const [current, setCurrent] = useState(0)
 
   const prev = () => setCurrent(p => Math.max(0, p - 1))
-  const next = () => setCurrent(p => Math.min(pages - 1, p + 1))
+  const next = () => setCurrent(p => Math.min(desktopPages - 1, p + 1))
 
-  const visible = FEATURES.slice(current * PER_PAGE, current * PER_PAGE + PER_PAGE)
+  const visible = FEATURES.slice(current * PER_PAGE_DESKTOP, current * PER_PAGE_DESKTOP + PER_PAGE_DESKTOP)
 
   return (
     <div>
@@ -100,8 +102,8 @@ export default function FeaturesCarousel() {
           scrollbarWidth: 'none' as never,
         }}
       >
-        {Array.from({ length: pages }).map((_, pageIdx) => {
-          const page = FEATURES.slice(pageIdx * PER_PAGE, pageIdx * PER_PAGE + PER_PAGE)
+        {Array.from({ length: mobilePages }).map((_, pageIdx) => {
+          const page = FEATURES.slice(pageIdx * PER_PAGE_MOBILE, pageIdx * PER_PAGE_MOBILE + PER_PAGE_MOBILE)
           return (
             <div
               key={pageIdx}
@@ -125,14 +127,14 @@ export default function FeaturesCarousel() {
               ))}
               {/* Mobile dots */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', paddingTop: '8px' }}>
-                {Array.from({ length: pages }).map((_, di) => (
+                {Array.from({ length: mobilePages }).map((_, di) => (
                   <span key={di} style={{
                     width: di === pageIdx ? 20 : 6, height: 6, borderRadius: 3,
                     background: di === pageIdx ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
                     transition: 'width 0.3s', display: 'inline-block',
                   }} />
                 ))}
-                {pageIdx < pages - 1 && (
+                {pageIdx < mobilePages - 1 && (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'arrowBounce 1.4s ease-in-out infinite', marginLeft: 4 }}>
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
@@ -182,7 +184,7 @@ export default function FeaturesCarousel() {
           </button>
 
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {Array.from({ length: pages }).map((_, i) => (
+            {Array.from({ length: desktopPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
@@ -199,13 +201,13 @@ export default function FeaturesCarousel() {
 
           <button
             onClick={next}
-            disabled={current === pages - 1}
+            disabled={current === desktopPages - 1}
             style={{
               width: 42, height: 42, borderRadius: '50%',
-              border: `1.5px solid ${current === pages - 1 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.5)'}`,
-              background: current === pages - 1 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.15)',
-              color: current === pages - 1 ? 'rgba(255,255,255,0.2)' : 'white',
-              cursor: current === pages - 1 ? 'default' : 'pointer',
+              border: `1.5px solid ${current === desktopPages - 1 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.5)'}`,
+              background: current === desktopPages - 1 ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.15)',
+              color: current === desktopPages - 1 ? 'rgba(255,255,255,0.2)' : 'white',
+              cursor: current === desktopPages - 1 ? 'default' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.15s', flexShrink: 0,
             }}
@@ -218,7 +220,7 @@ export default function FeaturesCarousel() {
         </div>
 
         <p style={{ textAlign: 'center', marginTop: 10, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
-          {current + 1} / {pages}
+          {current + 1} / {desktopPages}
         </p>
       </div>
     </div>
