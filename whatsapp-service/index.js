@@ -435,51 +435,7 @@ async function connectWhatsApp(psychologistId) {
       const text = rawText.toUpperCase()
       console.log(`[msg] ${phone} → "${rawText}"`)
 
-      // ── Mesai dışı koruma ────────────────────────────────────
-      const { data: psyData } = await getSupabase()
-        .from('psychologists')
-        .select('work_start_hour, work_end_hour, work_days')
-        .eq('id', psychologistId)
-        .single()
-
-      const workStart = psyData?.work_start_hour ?? 9
-      const workEnd = psyData?.work_end_hour ?? 18
-      const workDays = psyData?.work_days ?? ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma']
-      const nowIST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
-      const currentHour = nowIST.getHours()
-      const todayName = DAY_MAP[nowIST.getDay()]
-      const isWorkDay = workDays.includes(todayName)
-      const isOutsideWorkHours = !isWorkDay || currentHour < workStart || currentHour >= workEnd
-
-      if (isOutsideWorkHours && text !== 'EVET' && text !== 'IPTAL' && text !== 'İPTAL' && !text.includes('RANDEVU')) {
-        const session = botSessions.get(phone)
-        if (!session || session.expiresAt <= Date.now()) {
-          let offHoursMsg
-          if (!isWorkDay) {
-            const nextWorkDay = (() => {
-              for (let i = 1; i <= 7; i++) {
-                const d = new Date(nowIST)
-                d.setDate(d.getDate() + i)
-                if (workDays.includes(DAY_MAP[d.getDay()])) {
-                  return DAY_MAP[d.getDay()].charAt(0).toUpperCase() + DAY_MAP[d.getDay()].slice(1)
-                }
-              }
-              return null
-            })()
-            const startStr = String(workStart).padStart(2, '0') + ':00'
-            offHoursMsg = nextWorkDay
-              ? `Bugün çalışma günümüz değil. ${nextWorkDay} günü saat ${startStr}'den itibaren size yardımcı olmaya çalışacağız. 📅`
-              : `Bugün çalışma günümüz değil. En yakın mesai günümüzde size yardımcı olmaya çalışacağız. 📅`
-          } else {
-            const startStr = String(workStart).padStart(2, '0') + ':00'
-            offHoursMsg = `Şu an mesai saatleri dışındayız. ${startStr}'de size yardımcı olmaya çalışacağız. 🕐`
-          }
-          await sock.sendMessage(jid, { text: offHoursMsg })
-          continue
-        }
-      }
-
-      // ── Bekleme listesi teklif yanıtı ────────────────────────
+      // ── Bekleme listesi teklif yanıtı (in-memory, önce kontrol et) ─
       const session = botSessions.get(phone)
       if (session?.state === 'awaiting_waitlist_response' && session.expiresAt > Date.now()) {
         if (text === 'EVET') {
@@ -545,137 +501,26 @@ async function connectWhatsApp(psychologistId) {
         continue
       }
 
-      // ── Bot: Randevu talebi ──────────────────────────────────
-      if (text.includes('RANDEVU') && rawText.length < 50) {
-        try {
-          const slots = await findAvailableSlots(psychologistId, 3)
-          console.log(`[randevu] ${phone} → ${slots.length} slot bulundu`)
-          if (slots.length === 0) {
-            await sock.sendMessage(jid, { text: 'Şu an müsait randevu saati bulunamadı. Lütfen daha sonra tekrar deneyin.' })
-            continue
-          }
-          botSessions.set(phone, {
-            state: 'awaiting_selection',
-            slots,
-            psychologistId,
-            expiresAt: Date.now() + 10 * 60 * 1000,
-          })
-          const lines = slots.map((s, i) => `${i + 1}) ${formatSlotTR(s)}`).join('\n')
-          await sock.sendMessage(jid, {
-            text: `Merhaba! Size en yakın uygun randevu saatlerimiz şunlardır:\n\n${lines}\n\nRandevunuzu oluşturmak için lütfen seçtiğiniz numarayı ve adınızı yazın.\nÖrnek: *1, Ahmet Yılmaz*\n\nBu saatler size uygun değilse *bekleme listesi* yazabilirsiniz.`,
-          })
-        } catch (err) {
-          console.error(`[randevu] Hata → ${err.message}`)
-          await sock.sendMessage(jid, { text: 'Randevu saatleri getirilirken bir hata oluştu. Lütfen tekrar deneyin.' })
-        }
-        continue
-      }
-
-      // ── Bot: Seçim cevabı "1, Ahmet Yılmaz" ─────────────────
-      if (session && session.state === 'awaiting_selection' && session.expiresAt > Date.now()) {
-        // Bekleme listesi isteği
-        if (isBeklemIntent(text)) {
-          botSessions.delete(phone)
-          const { data: psySlug } = await getSupabase().from('psychologists').select('booking_slug').eq('id', psychologistId).single()
-          const waitSlug = psySlug?.booking_slug ?? psychologistId
-          const registrationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/bekle/${waitSlug}`
-          await sock.sendMessage(jid, {
-            text: `Sizi bekleme listesine ekleyebiliriz! Aşağıdaki linkten bilgilerinizi doldurun, müsait randevu çıktığında WhatsApp'tan bildirim alırsınız:\n\n${registrationUrl}`,
-          })
-          continue
-        }
-
-        const match = rawText.match(/^(\d)[,\s]+(.+)$/)
-        if (match) {
-          const slotIndex = parseInt(match[1]) - 1
-          const nameSurname = match[2].trim()
-          if (slotIndex >= 0 && slotIndex < session.slots.length) {
-            const selectedSlot = session.slots[slotIndex]
-            botSessions.delete(phone)
-            await createBotAppointment(session.psychologistId, phone, nameSurname, selectedSlot, sock, jid)
-            continue
-          }
-        }
-      }
-
-      if (text !== 'EVET' && text !== 'ONAYLA' && text !== 'IPTAL' && text !== 'İPTAL') continue
-
-      console.log(`[evet/iptal] "${text}" geldi — phone: ${phone}`)
-
-      const supabase = getSupabase()
-
-      const { data: patient, error: patientErr } = await supabase
-        .from('patients')
-        .select('id')
-        .eq('psychologist_id', psychologistId)
-        .filter('phone_number', 'ilike', `%${phone.slice(-9)}`)
-        .maybeSingle()
-
-      if (!patient) {
-        console.warn(`[evet/iptal] hasta bulunamadı — phone: ${phone}, err: ${patientErr?.message}`)
-        continue
-      }
-
-      console.log(`[evet/iptal] hasta bulundu: ${patient.id}`)
-
-      const now = new Date().toISOString()
-      const { data: apt, error: aptErr } = await supabase
-        .from('appointments')
-        .select('id, appointment_date, psychologist_id, reminder_sent_at, psychologist:psychologists(id, full_name, phone_number)')
-        .eq('patient_id', patient.id)
-        .eq('psychologist_id', psychologistId)
-        .in('status', ['waiting', 'seansify_pending', 'confirmed'])
-        .gt('appointment_date', now)
-        .order('reminder_sent_at', { ascending: false, nullsFirst: false })
-        .order('appointment_date', { ascending: true })
-        .limit(1)
-        .maybeSingle()
-
-      if (!apt) {
-        console.warn(`[evet/iptal] randevu bulunamadı — patient: ${patient.id}, err: ${aptErr?.message}`)
-        continue
-      }
-
-      console.log(`[evet/iptal] randevu bulundu: ${apt.id}, işlem: ${text}`)
-
-      if (text === 'EVET' || text === 'ONAYLA') {
-        await supabase
-          .from('appointments')
-          .update({ status: 'confirmed', patient_responded_at: now })
-          .eq('id', apt.id)
-
-        await sock.sendMessage(jid, { text: '✅ Randevunuz onaylandı. Görüşmek üzere!' })
-
-      } else {
-        await supabase
-          .from('appointments')
-          .update({ status: 'cancelled_by_patient', patient_responded_at: now })
-          .eq('id', apt.id)
-
-        await sock.sendMessage(jid, { text: '❌ Randevunuz iptal edildi. İptalinizi aldık, iyi günler.' })
-
-        const psyPhone = apt.psychologist?.phone_number
-        if (psyPhone) {
-          const aptDate = new Date(apt.appointment_date).toLocaleString('tr-TR', {
-            day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
-            timeZone: 'Europe/Istanbul'
-          })
-          await sock.sendMessage(`${normalizePhone(psyPhone)}@s.whatsapp.net`, {
-            text: `❌ *Randevu İptali*\n\nBir hasta randevusunu iptal etti.\nTarih: ${aptDate}`
-          })
-        }
-
-        // Bekleme listesi cascade tetikle
-        try {
-          await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/waiting-list/cascade`, {
+      // ── Diğer tüm mesajları Next.js bot'a ilet ──────────────
+      try {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL
+        if (appUrl) {
+          await fetch(`${appUrl}/api/whatsapp/incoming`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': process.env.WA_API_KEY,
+            },
             body: JSON.stringify({
-              psychologist_id: psychologistId,
-              slot_date: apt.appointment_date,
+              psychologistId,
+              phone: normalizePhone(phone),
+              message: rawText,
             }),
+            signal: AbortSignal.timeout(15000),
           })
-        } catch {}
+        }
+      } catch (err) {
+        console.error(`[incoming] Next.js bot iletim hatası: ${err.message}`)
       }
     }
   })
@@ -889,6 +734,11 @@ process.on('unhandledRejection', (reason) => {
 const PORT = process.env.PORT || 3001
 app.listen(PORT, async () => {
   console.log(`WhatsApp servisi çalışıyor: port ${PORT}`)
+
+  // Keepalive — Railway sleep engellemek için her 4 dakikada kendine ping
+  setInterval(() => {
+    fetch(`http://localhost:${PORT}/ping`).catch(() => {})
+  }, 4 * 60 * 1000)
 
   try {
     const { data: connected } = await getSupabase()

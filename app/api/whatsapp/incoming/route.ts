@@ -16,7 +16,6 @@ RANDEVU_ONAYLA - randevuyu onaylamak, geleceklerini bildirmek
 DIGER - bunların dışında her şey`
     const result = await model.generateContent(prompt)
     const raw = result.response.text().trim()
-    // Sadece bilinen intent'leri kabul et, aksi hâlde DIGER döndür
     if (['RANDEVU_AL','RANDEVU_IPTAL','RANDEVU_ONAYLA','DIGER'].includes(raw)) return raw
     return 'DIGER'
   } catch {
@@ -71,23 +70,66 @@ async function handleRandevuIptal(
   const { data: patient } = await supabase
     .from('patients').select('id').eq('phone_number', phone)
     .eq('psychologist_id', psychologistId).eq('is_active', true).maybeSingle()
-  if (patient) {
-    const { data: apt } = await supabase.from('appointments').select('id')
-      .eq('patient_id', patient.id).in('status', ['waiting', 'confirmed', 'seansify_pending'])
-      .gte('appointment_date', new Date().toISOString())
-      .order('reminder_sent_at', { ascending: false, nullsFirst: false })
-      .order('appointment_date', { ascending: true })
-      .limit(1).maybeSingle()
-    if (apt) {
-      await supabase.from('appointments').update({ status: 'cancelled_by_patient' }).eq('id', apt.id)
-      const { data: currentPatient } = await supabase.from('patients').select('cancel_count').eq('id', patient.id).single()
-      await supabase.from('patients').update({ cancel_count: (currentPatient?.cancel_count ?? 0) + 1 }).eq('id', patient.id)
-      await sendReply(psychologistId, phone, `❌ Randevunuz iptal edildi.\n\nYeni randevu almak için *randevu* yazabilirsiniz.`)
-      return
-    }
+
+  if (!patient) {
+    await sendReply(psychologistId, phone, 'İptal edilecek aktif bir randevunuz bulunamadı.')
+    return
+  }
+
+  const { data: apts } = await supabase.from('appointments')
+    .select('id, appointment_date')
+    .eq('patient_id', patient.id)
+    .in('status', ['waiting', 'confirmed', 'seansify_pending'])
+    .gte('appointment_date', new Date().toISOString())
+    .order('appointment_date', { ascending: true })
+
+  if (!apts || apts.length === 0) {
+    await sendReply(psychologistId, phone, 'İptal edilecek aktif bir randevunuz bulunamadı.')
+    return
+  }
+
+  const fmtApt = (a: { id: string; appointment_date: string }) => {
+    const d = new Date(a.appointment_date)
+    const dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long', timeZone: 'Europe/Istanbul' })
+    const timeStr = d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' })
+    return `${dateStr} — ${timeStr}`
+  }
+
+  if (apts.length === 1) {
+    const label = fmtApt(apts[0])
+    await setSession(supabase, phone, psychologistId, 'awaiting_cancel_confirm', {
+      appointment_id: apts[0].id,
+      appointment_label: label,
+    })
+    await sendReply(psychologistId, phone,
+      `❗ *${label}* randevunuzu iptal etmek istediğinize emin misiniz?\n\n*evet* — İptal et\n*hayır* — Vazgeç`
+    )
+    return
+  }
+
+  const items = apts.map(a => ({ id: a.id, label: fmtApt(a) }))
+  const list = items.map((a, i) => `${i + 1}️⃣ ${a.label}`).join('\n')
+  await setSession(supabase, phone, psychologistId, 'awaiting_cancel_selection', { appointments: items })
+  await sendReply(psychologistId, phone, `Hangi randevunuzu iptal etmek istiyorsunuz?\n\n${list}`)
+}
+
+async function doCancelAppointment(
+  supabase: ReturnType<typeof getSupabase>,
+  psychologistId: string,
+  phone: string,
+  aptId: string,
+  aptLabel: string,
+) {
+  await supabase.from('appointments').update({ status: 'cancelled_by_patient' }).eq('id', aptId)
+  const { data: apt } = await supabase.from('appointments').select('patient_id').eq('id', aptId).maybeSingle()
+  if (apt) {
+    const { data: p } = await supabase.from('patients').select('cancel_count').eq('id', apt.patient_id).maybeSingle()
+    await supabase.from('patients').update({ cancel_count: (p?.cancel_count ?? 0) + 1 }).eq('id', apt.patient_id)
   }
   await setSession(supabase, phone, psychologistId, 'idle', {})
-  await sendReply(psychologistId, phone, 'İptal edilecek aktif bir randevunuz bulunamadı.')
+  await sendReply(psychologistId, phone,
+    `❌ *${aptLabel}* randevunuz iptal edildi.\n\nYeni randevu almak için *randevu* yazabilirsiniz.`
+  )
 }
 
 async function handleRandevuOnayla(
@@ -180,7 +222,6 @@ async function getAvailableSlots(
     .lte('appointment_date', `${dayIso}T23:59:59+03:00`)
     .not('status', 'in', '("canceled","cancelled_by_patient")')
 
-  // UTC+3 (Türkiye) saatine çevirerek karşılaştır
   const bookedHours = new Set((booked ?? []).map((a: { appointment_date: string }) => {
     const d = new Date(a.appointment_date)
     return (d.getUTCHours() + 3) % 24
@@ -215,6 +256,8 @@ async function setSession(
   )
 }
 
+const TATIL_MESAJ = 'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
+
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key')
   if (apiKey !== process.env.WA_API_KEY) {
@@ -243,27 +286,43 @@ export async function POST(req: NextRequest) {
   const workStart: number = psych.work_start_hour ?? 9
   const workEnd: number = psych.work_end_hour ?? 18
 
-  // ── RANDEVU — her state'de çalışır, session'ı sıfırlar ─────────────────────
+  // Session fetched early so keyword handlers can use step context
+  const session = await getSession(supabase, phone, psychologistId)
+  const { step, context } = session as { step: string; context: Record<string, unknown> }
+
+  // ── RANDEVU keyword — her state'de çalışır, session'ı sıfırlar ──────────────
   if (textLower === 'randevu') {
     await setSession(supabase, phone, psychologistId, 'idle', {})
     await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
     return NextResponse.json({ ok: true })
   }
 
-  // ── EVET / İPTAL — her state'de çalışır ─────────────────────
+  // ── EVET / ONAYLA — cancel confirm veya randevu onaylama ───────────────────
   if (textLower === 'evet' || textLower === 'onayla') {
-    await handleRandevuOnayla(supabase, psychologistId, phone)
+    if (step === 'awaiting_cancel_confirm') {
+      await doCancelAppointment(supabase, psychologistId, phone, context.appointment_id as string, context.appointment_label as string)
+    } else {
+      await handleRandevuOnayla(supabase, psychologistId, phone)
+    }
     return NextResponse.json({ ok: true })
   }
 
+  // ── HAYIR — iptal akışından çık ────────────────────────────────────────────
+  if (textLower === 'hayır' || textLower === 'hayir') {
+    if (step === 'awaiting_cancel_confirm' || step === 'awaiting_cancel_selection') {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, 'Anlaşıldı, randevu iptal isteğiniz iptal edildi.')
+    }
+    return NextResponse.json({ ok: true })
+  }
+
+  // ── İPTAL keyword ───────────────────────────────────────────────────────────
   if (textLower === 'iptal') {
     await handleRandevuIptal(supabase, psychologistId, phone)
     return NextResponse.json({ ok: true })
   }
 
-  // ── STATE MACHINE ────────────────────────────────────────────
-  const session = await getSession(supabase, phone, psychologistId)
-  const { step, context } = session as { step: string; context: Record<string, unknown> }
+  // ── STATE MACHINE ────────────────────────────────────────────────────────────
 
   if (step === 'idle') {
     const intent = await getGeminiIntent(text)
@@ -279,14 +338,47 @@ export async function POST(req: NextRequest) {
       await handleRandevuOnayla(supabase, psychologistId, phone)
       return NextResponse.json({ ok: true })
     }
-    // DIGER
+    // DIGER — mesai saatleri dışındaysa bildir
+    const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
+    const curHour = nowTR.getHours()
+    const curDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === nowTR.getDay())
+    if (!curDayName || !workDays.includes(curDayName) || curHour < workStart || curHour >= workEnd) {
+      await sendReply(psychologistId, phone,
+        `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
+      )
+      return NextResponse.json({ ok: true })
+    }
     await sendReply(psychologistId, phone,
       `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
     )
     return NextResponse.json({ ok: true })
   }
 
+  if (step === 'awaiting_cancel_selection') {
+    const appointments = (context.appointments ?? []) as { id: string; label: string }[]
+    const n = parseInt(text)
+    if (isNaN(n) || n < 1 || n > appointments.length) {
+      const list = appointments.map((a, i) => `${i + 1}️⃣ ${a.label}`).join('\n')
+      await sendReply(psychologistId, phone, `Lütfen 1-${appointments.length} arası bir numara girin:\n\n${list}`)
+      return NextResponse.json({ ok: true })
+    }
+    const selected = appointments[n - 1]
+    await setSession(supabase, phone, psychologistId, 'awaiting_cancel_confirm', {
+      appointment_id: selected.id,
+      appointment_label: selected.label,
+    })
+    await sendReply(psychologistId, phone,
+      `❗ *${selected.label}* randevunuzu iptal etmek istediğinize emin misiniz?\n\n*evet* — İptal et\n*hayır* — Vazgeç`
+    )
+    return NextResponse.json({ ok: true })
+  }
+
   if (step === 'awaiting_day') {
+    if (psych.tatil_modu) {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, TATIL_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
     const days = (context.available_days ?? []) as { label: string; iso: string }[]
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > days.length) {
@@ -312,6 +404,11 @@ export async function POST(req: NextRequest) {
   }
 
   if (step === 'awaiting_time') {
+    if (psych.tatil_modu) {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, TATIL_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
     const times = (context.available_times ?? []) as string[]
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > times.length) {
@@ -323,7 +420,29 @@ export async function POST(req: NextRequest) {
     const aptIso = new Date(`${context.day_iso}T${selectedTime}:00+03:00`).toISOString()
     const aptLabel = `${context.day_label} — ${selectedTime}`
 
-    // Aktif paket şablonları var mı?
+    await setSession(supabase, phone, psychologistId, 'awaiting_appointment_type', {
+      appointment_iso: aptIso,
+      appointment_label: aptLabel,
+    })
+    await sendReply(psychologistId, phone, `Seansınız nasıl gerçekleşecek?\n\n1️⃣ Yüz yüze\n2️⃣ Online`)
+    return NextResponse.json({ ok: true })
+  }
+
+  if (step === 'awaiting_appointment_type') {
+    if (psych.tatil_modu) {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, TATIL_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
+    const n = parseInt(text)
+    if (n !== 1 && n !== 2) {
+      await sendReply(psychologistId, phone, 'Lütfen *1* (Yüz yüze) veya *2* (Online) yazın.')
+      return NextResponse.json({ ok: true })
+    }
+    const appointmentType = n === 1 ? 'yuzyuze' : 'online'
+    const aptIso = context.appointment_iso as string
+    const aptLabel = context.appointment_label as string
+
     const { data: paketler } = await supabase
       .from('paket_sablonlari')
       .select('id, name, session_count, price_tl')
@@ -341,6 +460,7 @@ export async function POST(req: NextRequest) {
       await setSession(supabase, phone, psychologistId, 'awaiting_package', {
         appointment_iso: aptIso,
         appointment_label: aptLabel,
+        appointment_type: appointmentType,
         paket_sablonlari: paketler,
       })
       await sendReply(psychologistId, phone,
@@ -367,19 +487,21 @@ export async function POST(req: NextRequest) {
         appointment_date: aptIso,
         duration_minutes: 50,
         status: 'seansify_pending',
-        appointment_type: 'yuzyuze',
+        appointment_type: appointmentType,
         ucret: ucretPaketsiz,
         odeme_durumu: ucretPaketsiz != null ? 'bekliyor' : null,
       })
       if (pkg) await incrementPaket(supabase, patient.id)
       await setSession(supabase, phone, psychologistId, 'idle', {})
+      const typeLabel = appointmentType === 'online' ? '💻 Online' : '🏢 Yüz yüze'
       await sendReply(psychologistId, phone,
-        `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+        `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}\n${typeLabel}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
       )
     } else {
       await setSession(supabase, phone, psychologistId, 'awaiting_name', {
         appointment_iso: aptIso,
         appointment_label: aptLabel,
+        appointment_type: appointmentType,
         selected_paket: null,
       })
       await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
@@ -388,7 +510,13 @@ export async function POST(req: NextRequest) {
   }
 
   if (step === 'awaiting_package') {
+    if (psych.tatil_modu) {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, TATIL_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
     const paketler = (context.paket_sablonlari ?? []) as { id: string; name: string; session_count: number; price_tl: number }[]
+    const appointmentType = (context.appointment_type as string) ?? 'yuzyuze'
     const tekSeansNum = paketler.length + 1
     const n = parseInt(text)
 
@@ -442,7 +570,7 @@ export async function POST(req: NextRequest) {
         appointment_date: aptIso,
         duration_minutes: 50,
         status: 'seansify_pending',
-        appointment_type: 'yuzyuze',
+        appointment_type: appointmentType,
         ucret,
         odeme_durumu: 'bekliyor',
         toplam_paket_seansi,
@@ -450,13 +578,15 @@ export async function POST(req: NextRequest) {
       })
       await setSession(supabase, phone, psychologistId, 'idle', {})
       const paketBilgi = selectedPaket ? `\n📦 ${selectedPaket.name}` : ''
+      const typeLabel = appointmentType === 'online' ? '\n💻 Online' : '\n🏢 Yüz yüze'
       await sendReply(psychologistId, phone,
-        `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+        `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${(patient as { id: string; name_surname: string }).name_surname}\n📅 ${aptLabel}${typeLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
       )
     } else {
       await setSession(supabase, phone, psychologistId, 'awaiting_name', {
         appointment_iso: aptIso,
         appointment_label: aptLabel,
+        appointment_type: appointmentType,
         selected_paket: selectedPaket,
       })
       await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
@@ -465,10 +595,17 @@ export async function POST(req: NextRequest) {
   }
 
   if (step === 'awaiting_name') {
+    if (psych.tatil_modu) {
+      await setSession(supabase, phone, psychologistId, 'idle', {})
+      await sendReply(psychologistId, phone, TATIL_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
     if (text.length < 3 || !text.includes(' ')) {
       await sendReply(psychologistId, phone, 'Lütfen adınızı ve soyadınızı tam olarak yazın. Örnek: *Ahmet Yılmaz*')
       return NextResponse.json({ ok: true })
     }
+
+    const appointmentType = (context.appointment_type as string) ?? 'yuzyuze'
 
     // Önce mevcut hasta var mı kontrol et (duplicate key önleme)
     const { data: existingPatient } = await supabase
@@ -518,7 +655,7 @@ export async function POST(req: NextRequest) {
       appointment_date: context.appointment_iso,
       duration_minutes: 50,
       status: 'seansify_pending',
-      appointment_type: 'yuzyuze',
+      appointment_type: appointmentType,
       ucret,
       odeme_durumu: ucret != null ? 'bekliyor' : null,
       toplam_paket_seansi,
@@ -526,8 +663,9 @@ export async function POST(req: NextRequest) {
     })
     await setSession(supabase, phone, psychologistId, 'idle', {})
     const paketBilgi = selectedPaket ? `\n📦 ${selectedPaket.name}` : ''
+    const typeLabel = appointmentType === 'online' ? '\n💻 Online' : '\n🏢 Yüz yüze'
     await sendReply(psychologistId, phone,
-      `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${text}\n📅 ${context.appointment_label}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+      `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${text}\n📅 ${context.appointment_label}${typeLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
     )
     return NextResponse.json({ ok: true })
   }

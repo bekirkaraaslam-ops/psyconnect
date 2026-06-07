@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { formatDateTime, appointmentStatusColor, appointmentStatusLabel, appointmentStatusAccent, formatPhoneDisplay } from '@/lib/utils'
+import ManuelHatirlaticiButton from './ManuelHatirlaticiButton'
 
 interface LastSoap {
   tarih: string
@@ -244,6 +245,9 @@ export default function AppointmentDrawer({ appointmentId, onClose }: Props) {
                     </div>
                   </div>
                 )}
+
+                {/* Hatırlatıcı */}
+                <ManuelHatirlaticiButton appointmentId={apt.id} />
 
                 {/* Alt butonlar */}
                 <div className="flex gap-3 pt-1">

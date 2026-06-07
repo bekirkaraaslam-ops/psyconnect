@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
 import { formatDateTime, appointmentStatusColor, appointmentStatusLabel, formatPhoneDisplay } from '@/lib/utils'
-import ManuelHatirlaticiButton from '@/components/appointments/ManuelHatirlaticiButton'
 import { decrypt } from '@/lib/crypto'
 
 interface Props {
@@ -72,8 +71,6 @@ export default async function AppointmentDetailPage({ params }: Props) {
               Düzenle
             </Link>
           </div>
-
-          <ManuelHatirlaticiButton appointmentId={apt.id} />
 
           <div className="space-y-3 text-sm">
             <div>

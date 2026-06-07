@@ -20,7 +20,7 @@ export default async function AppointmentsPage() {
   const [{ data: appointments }, { data: weekApts }, { count: pendingCount }] = await Promise.all([
     supabase
       .from('appointments')
-      .select('*, patient:patients(name_surname, phone_number)')
+      .select('*, patient:patients(id, name_surname, phone_number)')
       .eq('psychologist_id', psychologist!.id)
       .order('appointment_date', { ascending: false })
       .limit(60),

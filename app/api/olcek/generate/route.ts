@@ -60,5 +60,37 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://seansify.app'
-  return NextResponse.json({ link: `${baseUrl}/olcek/${token}` })
+  const link = `${baseUrl}/olcek/${token}`
+
+  // WhatsApp bildirimi — fire and forget
+  try {
+    const { data: patient } = await service
+      .from('patients')
+      .select('phone_number, name_surname')
+      .eq('id', patient_id)
+      .maybeSingle()
+
+    const { data: psych2 } = await service
+      .from('psychologists')
+      .select('id, is_connected')
+      .eq('id', psychologist.id)
+      .maybeSingle()
+
+    if (patient?.phone_number && psych2?.is_connected) {
+      const { data: scale } = await service
+        .from('scales')
+        .select('name')
+        .eq('id', scale_id)
+        .maybeSingle()
+      const scaleName = scale?.name ?? 'değerlendirme ölçeği'
+      const waMsg = `Merhaba! Psikologunuz sizin için bir *${scaleName}* gönderdi.\n\nLütfen aşağıdaki linkten doldurun:\n${link}\n\n_(Geçerlilik süresi: 7 gün)_`
+      fetch(`${process.env.WA_SERVICE_URL}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.WA_API_KEY! },
+        body: JSON.stringify({ psychologistId: psych2.id, phone: patient.phone_number, message: waMsg }),
+      }).catch(() => {})
+    }
+  } catch { /* WA hata sessizce geç */ }
+
+  return NextResponse.json({ link })
 }
