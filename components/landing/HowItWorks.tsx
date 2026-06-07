@@ -368,13 +368,21 @@ export default function HowItWorks() {
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#0d1f18', marginBottom: 6 }}>{step.title}</div>
                   <div style={{ fontSize: 13, lineHeight: 1.6, color: '#5a7a72' }}>{step.desc}</div>
                 </button>
-                {isOpen && (
-                  <div style={{ borderRadius: '0 0 16px 16px', overflow: 'hidden', border: `2px solid ${step.color}60`, borderTop: 'none' }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateRows: isOpen ? '1fr' : '0fr',
+                  transition: 'grid-template-rows 0.35s ease, opacity 0.25s ease',
+                  borderRadius: '0 0 16px 16px',
+                  border: `2px solid ${step.color}60`,
+                  borderTop: 'none',
+                  opacity: isOpen ? 1 : 0,
+                }}>
+                  <div style={{ overflow: 'hidden' }}>
                     <BrowserFrame url={step.url}>
                       {step.mockup}
                     </BrowserFrame>
                   </div>
-                )}
+                </div>
               </div>
             )
           })}

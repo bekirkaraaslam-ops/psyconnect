@@ -35,7 +35,7 @@ export default async function LandingPage() {
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-50" style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #c8e6dc' }}>
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
+          <Link href="#hero" className="flex items-center gap-2.5 flex-shrink-0">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#4a7c6f' }}>
               <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
                 <rect x="6" y="11" width="28" height="24" rx="3" fill="white" />
