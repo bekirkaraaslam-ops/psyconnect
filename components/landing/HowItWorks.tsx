@@ -188,6 +188,7 @@ const steps = [
 
 export default function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0)
+  const [expandedMobile, setExpandedMobile] = useState<number | null>(null)
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
@@ -338,20 +339,45 @@ export default function HowItWorks() {
           </div>
         </div>
 
-        {/* Mobile: vertical stack with mockup each */}
-        <div className="md:hidden space-y-10">
-          {steps.map((step, i) => (
-            <div key={i}>
-              <div style={{ padding: '20px', borderRadius: 16, background: '#fff', border: `2px solid ${step.color}30`, marginBottom: 12 }}>
-                <div className="text-xs font-bold tracking-widest mb-1" style={{ color: step.color }}>ADIM {step.num}</div>
-                <h3 className="text-base font-bold mb-2" style={{ color: '#0d1f18' }}>{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: '#5a7a72' }}>{step.desc}</p>
+        {/* Mobile: accordion — karta tıklayınca mockup açılır */}
+        <div className="md:hidden space-y-4">
+          {steps.map((step, i) => {
+            const isOpen = expandedMobile === i
+            return (
+              <div key={i}>
+                <button
+                  onClick={() => setExpandedMobile(isOpen ? null : i)}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    padding: '20px', borderRadius: isOpen ? '16px 16px 0 0' : 16,
+                    background: '#fff', border: `2px solid ${step.color}${isOpen ? '60' : '30'}`,
+                    borderBottom: isOpen ? 'none' : undefined,
+                    cursor: 'pointer', display: 'block',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: step.color, marginBottom: 4 }}>ADIM {step.num}</div>
+                    <svg
+                      width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke={step.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s ease', flexShrink: 0 }}
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#0d1f18', marginBottom: 6 }}>{step.title}</div>
+                  <div style={{ fontSize: 13, lineHeight: 1.6, color: '#5a7a72' }}>{step.desc}</div>
+                </button>
+                {isOpen && (
+                  <div style={{ borderRadius: '0 0 16px 16px', overflow: 'hidden', border: `2px solid ${step.color}60`, borderTop: 'none' }}>
+                    <BrowserFrame url={step.url}>
+                      {step.mockup}
+                    </BrowserFrame>
+                  </div>
+                )}
               </div>
-              <BrowserFrame url={step.url}>
-                {step.mockup}
-              </BrowserFrame>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
