@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 const tabs = [
   { key: 'dashboard', label: 'Genel Bakış' },
@@ -9,9 +9,11 @@ const tabs = [
   { key: 'raporlar', label: 'Raporlar' },
 ]
 
+const AUTO_INTERVAL = 3000
+
 function DashboardMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', height: '100%', overflow: 'hidden', padding: 20 }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
         {[
           { label: 'Bugün', value: '3 Randevu', color: '#4a7c6f', bg: '#e8f5f1' },
@@ -70,7 +72,7 @@ function TakvimMockup() {
   const slots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 16 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', height: '100%', overflow: 'hidden', padding: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#334155' }}>26–30 Mayıs 2026</div>
         <div style={{ display: 'flex', gap: 4 }}>
@@ -141,7 +143,7 @@ function TakvimMockup() {
 
 function RandevularMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', height: '100%', overflow: 'hidden', padding: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#334155' }}>Randevular</div>
         <div style={{ background: '#4a7c6f', color: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 600 }}>+ Yeni Randevu</div>
@@ -173,7 +175,7 @@ function RandevularMockup() {
 
 function RaporlarMockup() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', minHeight: 'clamp(300px, 55vw, 440px)', padding: 20 }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', height: '100%', overflow: 'hidden', padding: 20 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
         <div style={{ background: '#fff', border: '1px solid #dde5e2', borderRadius: 8, padding: '5px 8px', fontSize: 11, color: '#64748b' }}>◀</div>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#334155' }}>Mayıs 2026</div>
@@ -229,8 +231,133 @@ const mockups: Record<string, React.ReactNode> = {
   raporlar: <RaporlarMockup />,
 }
 
-export default function DemoTabs() {
+export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
   const [active, setActive] = useState('dashboard')
+  const [progress, setProgress] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const startCycle = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    if (progressRef.current) clearInterval(progressRef.current)
+
+    setProgress(0)
+    const startTime = Date.now()
+
+    progressRef.current = setInterval(() => {
+      setProgress(Math.min((Date.now() - startTime) / AUTO_INTERVAL, 1))
+    }, 40)
+
+    intervalRef.current = setInterval(() => {
+      setActive(prev => {
+        const idx = tabs.findIndex(t => t.key === prev)
+        return tabs[(idx + 1) % tabs.length].key
+      })
+      setProgress(0)
+      const t = Date.now()
+      if (progressRef.current) clearInterval(progressRef.current)
+      progressRef.current = setInterval(() => {
+        setProgress(Math.min((Date.now() - t) / AUTO_INTERVAL, 1))
+      }, 40)
+    }, AUTO_INTERVAL)
+  }, [])
+
+  useEffect(() => {
+    startCycle()
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (progressRef.current) clearInterval(progressRef.current)
+    }
+  }, [startCycle])
+
+  const handleTabClick = (key: string) => {
+    setActive(key)
+    startCycle()
+  }
+
+  const frame = (
+    <div>
+      {/* Tab buttons */}
+      <div className="flex justify-center gap-1.5 md:gap-2 mb-3 flex-wrap">
+        {tabs.map(tab => {
+          const isActive = active === tab.key
+          return (
+            <button
+              key={tab.key}
+              onClick={() => handleTabClick(tab.key)}
+              className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold transition-all"
+              style={heroMode ? {
+                background: isActive ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.07)',
+                color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+                border: `1px solid ${isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)'}`,
+              } : {
+                background: isActive ? '#4a7c6f' : '#fff',
+                color: isActive ? '#fff' : '#4a7c6f',
+                border: `1px solid ${isActive ? '#4a7c6f' : '#c8e6de'}`,
+              }}
+            >
+              {tab.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Auto-rotate progress bar */}
+      <div className="flex justify-center mb-4">
+        <div style={{ width: 120, height: 2, borderRadius: 99, background: heroMode ? 'rgba(255,255,255,0.12)' : '#dde5e2', overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            width: `${progress * 100}%`,
+            background: heroMode ? 'rgba(255,255,255,0.6)' : '#4a7c6f',
+            borderRadius: 99,
+            transition: 'width 40ms linear',
+          }} />
+        </div>
+      </div>
+
+      {/* Browser frame */}
+      <div className="rounded-2xl overflow-hidden shadow-xl" style={{ border: heroMode ? '1px solid rgba(255,255,255,0.15)' : '1px solid #c8e6de' }}>
+        <div style={{ background: '#0d1f18', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', opacity: 0.7 }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', opacity: 0.7 }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', opacity: 0.7 }} />
+          <div style={{ flex: 1, background: 'rgba(255,255,255,0.08)', borderRadius: 6, padding: '3px 10px', marginLeft: 8 }}>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>seansify.com/{active}</span>
+          </div>
+        </div>
+
+        <div className="h-[320px] md:h-[clamp(280px,42vw,400px)]" style={{ display: 'flex', background: '#fff', overflow: 'hidden' }}>
+          <div className="hidden md:flex" style={{ width: 44, background: '#fff', borderRight: '1px solid #dde5e2', flexDirection: 'column', alignItems: 'center', paddingTop: 16, gap: 4 }}>
+            <div style={{ width: 24, height: 24, borderRadius: 6, background: '#4a7c6f', marginBottom: 12 }} />
+            {[
+              { key: 'dashboard', label: '⊞' },
+              { key: 'takvim', label: '📅' },
+              { key: 'randevular', label: '📋' },
+              { key: 'raporlar', label: '📊' },
+            ].map(item => (
+              <button
+                key={item.key}
+                onClick={() => handleTabClick(item.key)}
+                style={{
+                  width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: active === item.key ? '#4a7c6f' : 'transparent',
+                  border: 'none', cursor: 'pointer', fontSize: 14,
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div key={active} style={{ flex: 1, height: '100%', overflow: 'hidden', animation: 'fadeInUp 0.22s ease forwards' }}>
+            {mockups[active]}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  if (heroMode) return frame
 
   return (
     <section className="py-12 md:py-20" style={{ background: '#f8fffe' }}>
@@ -239,68 +366,7 @@ export default function DemoTabs() {
           <h2 className="text-2xl md:text-3xl font-extrabold mb-3 scroll-reveal" style={{ color: '#0d1f18' }}>Sistemi Keşfedin</h2>
           <p className="text-sm md:text-base scroll-reveal" style={{ color: '#4a7c6f' }}>Klinik yönetiminizi Seansify ile nasıl dönüştüreceğinizi görün</p>
         </div>
-
-        {/* Tab buttons */}
-        <div className="flex justify-center gap-1.5 md:gap-2 mb-6 flex-wrap">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActive(tab.key)}
-              className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold transition-all"
-              style={{
-                background: active === tab.key ? '#4a7c6f' : '#fff',
-                color: active === tab.key ? '#fff' : '#4a7c6f',
-                border: `1px solid ${active === tab.key ? '#4a7c6f' : '#c8e6de'}`,
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Browser frame */}
-        <div className="rounded-2xl overflow-hidden shadow-xl" style={{ border: '1px solid #c8e6de' }}>
-          {/* Browser chrome */}
-          <div style={{ background: '#0d1f18', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', opacity: 0.7 }} />
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', opacity: 0.7 }} />
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', opacity: 0.7 }} />
-            <div style={{ flex: 1, background: 'rgba(255,255,255,0.08)', borderRadius: 6, padding: '3px 10px', marginLeft: 8 }}>
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>seansify.com/{active}</span>
-            </div>
-          </div>
-
-          {/* App chrome (sidebar + content) */}
-          <div style={{ display: 'flex', background: '#fff', minHeight: 'clamp(300px, 55vw, 440px)' }}>
-            {/* Mini sidebar */}
-            <div style={{ width: 44, background: '#fff', borderRight: '1px solid #dde5e2', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 16, gap: 4 }}>
-              <div style={{ width: 24, height: 24, borderRadius: 6, background: '#4a7c6f', marginBottom: 12 }} />
-              {[
-                { key: 'dashboard', label: '⊞' },
-                { key: 'takvim', label: '📅' },
-                { key: 'randevular', label: '📋' },
-                { key: 'raporlar', label: '📊' },
-              ].map(item => (
-                <button
-                  key={item.key}
-                  onClick={() => setActive(item.key)}
-                  style={{
-                    width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: active === item.key ? '#4a7c6f' : 'transparent',
-                    border: 'none', cursor: 'pointer', fontSize: 14,
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Page content */}
-            <div key={active} style={{ flex: 1, overflow: 'hidden', animation: 'fadeInUp 0.22s ease forwards' }}>
-              {mockups[active]}
-            </div>
-          </div>
-        </div>
+        {frame}
       </div>
     </section>
   )
