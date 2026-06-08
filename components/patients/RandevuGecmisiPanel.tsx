@@ -104,7 +104,7 @@ export default function RandevuGecmisiPanel({ hastaId, appointments }: Props) {
                       ) : (
                         <button
                           onClick={() => setConfirmId(apt.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg"
+                          className="transition-opacity text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
                           style={{ color: '#94a3b8', background: '#f8fafc' }}
                         >
                           İptal

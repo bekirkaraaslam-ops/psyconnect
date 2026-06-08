@@ -38,12 +38,8 @@ export default function OnboardingWidget({ steps }: Props) {
 
   return (
     <div
+      className="fixed z-50 left-3 right-3 bottom-20 sm:left-auto sm:right-6 sm:bottom-6 sm:w-[300px]"
       style={{
-        position: 'fixed',
-        bottom: 24,
-        right: 24,
-        zIndex: 50,
-        width: 300,
         transition: 'opacity 0.28s ease, transform 0.28s ease',
         opacity: visible && !closing ? 1 : 0,
         transform: visible && !closing ? 'translateY(0)' : 'translateY(16px)',

@@ -302,9 +302,9 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       </div>
       {open && <>
 
-      <div className="flex" style={{ height: '520px' }}>
+      <div className="flex flex-col md:flex-row md:h-[520px]">
         {/* SOL — Seans Listesi */}
-        <div className="w-52 border-r flex-shrink-0 flex flex-col overflow-hidden" style={{ borderColor: '#dde5e2' }}>
+        <div className="w-full md:w-52 border-b md:border-b-0 md:border-r flex-shrink-0 flex flex-col overflow-hidden max-h-52 md:max-h-none" style={{ borderColor: '#dde5e2' }}>
           {loading ? (
             <div className="p-4 text-sm text-center" style={{ color: '#94a3b8' }}>Yükleniyor...</div>
           ) : notlar.length === 0 ? (
@@ -340,7 +340,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
         </div>
 
         {/* SAĞ — Not Detayı */}
-        <div className="flex-1 p-5 overflow-y-auto">
+        <div className="flex-1 p-4 md:p-5 overflow-y-auto">
           {!secilenId && !yeniMode ? (
             <div className="flex items-center justify-center h-full text-sm" style={{ color: '#94a3b8' }}>
               Soldan bir seans seçin veya yeni seans ekleyin.
