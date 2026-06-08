@@ -7,6 +7,7 @@ import HowItWorks from '@/components/landing/HowItWorks'
 import BeforeAfter from '@/components/landing/BeforeAfter'
 import BlobBackground from '@/components/landing/BlobBackground'
 import SectionDots from '@/app/[slug]/SectionDots'
+import ShootingStars from '@/components/landing/ShootingStars'
 
 export const metadata: Metadata = {
   title: 'Seansify — Psikologlar için Klinik Yönetim Platformu',
@@ -131,7 +132,7 @@ export default async function LandingPage() {
                 Danışanlara Odaklan
               </p>
               <p className="animate-fade-up delay-300 text-sm md:text-base max-w-md mb-8 leading-relaxed mx-auto md:mx-0" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                Randevularınızı yönetin, WhatsApp hatırlatıcıları otomatik gönderin ve yapay zeka asistanıyla 7/24 randevu alın.
+                Pazartesi sabahı takvime bakıyorsunuz — bir randevu iptal, biri onaylamadı, biri saat değiştirmek istiyor. Gün daha başlamadı. <span style={{ color: '#6ee7b7', fontWeight: 700 }}>Seansify</span>, bu döngüyü sizin yerinize yönetir.
               </p>
 
               <div className="animate-fade-up delay-400 flex flex-col sm:flex-row gap-3 justify-center md:justify-start mb-8">
@@ -186,7 +187,7 @@ export default async function LandingPage() {
       <HowItWorks />
 
       {/* ── Özellikler ── */}
-      <section id="ozellikler" className="py-16 md:py-24" style={{ background: 'linear-gradient(180deg, #2d5a51 0%, #4a7c6f 100%)' }}>
+      <section id="ozellikler" className="py-16 md:py-24" style={{ background: 'linear-gradient(180deg, #2d5a51 0%, #4a7c6f 100%)', backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(180deg, #2d5a51 0%, #4a7c6f 100%)', backgroundSize: '28px 28px, 100% 100%' }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white scroll-reveal">Her Şey Tek Platformda</h2>
@@ -199,8 +200,9 @@ export default async function LandingPage() {
       </section>
 
       {/* ── Fiyatlandırma ── */}
-      <section id="fiyatlandirma" className="py-16 md:py-24" style={{ background: 'rgba(255,255,255,0.52)' }}>
-        <div className="max-w-4xl mx-auto px-6">
+      <section id="fiyatlandirma" className="py-16 md:py-24" style={{ position: 'relative', backgroundColor: '#eaf3ef', backgroundImage: 'radial-gradient(circle, rgba(74,124,111,0.13) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
+        <ShootingStars />
+        <div className="max-w-4xl mx-auto px-6" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-5">
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Şeffaf Fiyatlandırma</h2>
             <p className="text-base" style={{ color: '#5a7a72' }}>İstediğin zaman iptal et, taahhüt yok.</p>
@@ -294,9 +296,9 @@ export default async function LandingPage() {
       </section>
 
       {/* ── SSS ── */}
-      <section id="sss" className="py-16 md:py-24" style={{ background: 'transparent' }}>
-
-        <div className="max-w-3xl mx-auto px-6">
+      <section id="sss" className="py-16 md:py-24" style={{ position: 'relative', backgroundColor: '#f2f8f5', backgroundImage: 'radial-gradient(circle, rgba(74,124,111,0.10) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
+        <ShootingStars />
+        <div className="max-w-3xl mx-auto px-6" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4 scroll-reveal" style={{ color: '#0d1f18' }}>Sık Sorulan Sorular</h2>
           </div>
@@ -326,8 +328,9 @@ export default async function LandingPage() {
       </section>
 
       {/* ── İletişim ── */}
-      <section id="iletisim" className="py-16 md:py-24" style={{ background: 'rgba(255,255,255,0.52)' }}>
-        <div className="max-w-3xl mx-auto px-6 text-center">
+      <section id="iletisim" className="py-16 md:py-24" style={{ position: 'relative', backgroundColor: '#eaf3ef', backgroundImage: 'radial-gradient(circle, rgba(74,124,111,0.13) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
+        <ShootingStars />
+        <div className="max-w-3xl mx-auto px-6 text-center" style={{ position: 'relative', zIndex: 1 }}>
           <div className="mb-10">
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Yardıma mı İhtiyacın Var?</h2>
             <p className="text-base max-w-md mx-auto" style={{ color: '#5a7a72' }}>Sorularında veya teknik konularda destek ekibimiz yardımcı olmaktan memnuniyet duyar.</p>

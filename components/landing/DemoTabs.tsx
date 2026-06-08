@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import WaAnimasyonMockup, { WA_TOTAL_DURATION } from './WaAnimasyonMockup'
 
 const tabs = [
   { key: 'dashboard', label: 'Genel Bakış' },
   { key: 'takvim', label: 'Takvim' },
   { key: 'randevular', label: 'Randevular' },
   { key: 'raporlar', label: 'Raporlar' },
+  { key: 'whatsapp', label: '💬 WhatsApp' },
 ]
 
 const AUTO_INTERVAL = 3000
@@ -224,7 +226,7 @@ function RaporlarMockup() {
   )
 }
 
-const mockups: Record<string, React.ReactNode> = {
+const staticMockups: Record<string, React.ReactNode> = {
   dashboard: <DashboardMockup />,
   takvim: <TakvimMockup />,
   randevular: <RandevularMockup />,
@@ -236,10 +238,16 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
   const [progress, setProgress] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const waTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const stopCycle = useCallback(() => {
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null }
+    if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = null }
+  }, [])
 
   const startCycle = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    if (progressRef.current) clearInterval(progressRef.current)
+    if (waTimerRef.current) { clearTimeout(waTimerRef.current); waTimerRef.current = null }
+    stopCycle()
 
     setProgress(0)
     const startTime = Date.now()
@@ -251,7 +259,7 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
     intervalRef.current = setInterval(() => {
       setActive(prev => {
         const idx = tabs.findIndex(t => t.key === prev)
-        return tabs[(idx + 1) % tabs.length].key
+        return tabs[(idx + 1) % tabs.length].key // whatsapp dahil tüm sekmeler
       })
       setProgress(0)
       const t = Date.now()
@@ -260,37 +268,60 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
         setProgress(Math.min((Date.now() - t) / AUTO_INTERVAL, 1))
       }, 40)
     }, AUTO_INTERVAL)
-  }, [])
+  }, [stopCycle])
+
+  // WhatsApp sekmesi aktif olduğunda (hem auto hem manuel) uzun süre bekle
+  useEffect(() => {
+    if (active !== 'whatsapp') return
+    stopCycle()
+    setProgress(0)
+    if (waTimerRef.current) clearTimeout(waTimerRef.current)
+    const startTime = Date.now()
+    progressRef.current = setInterval(() => {
+      setProgress(Math.min((Date.now() - startTime) / WA_TOTAL_DURATION, 1))
+    }, 40)
+    waTimerRef.current = setTimeout(() => {
+      if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = null }
+      const idx = tabs.findIndex(t => t.key === 'whatsapp')
+      setActive(tabs[(idx + 1) % tabs.length].key)
+      startCycle()
+    }, WA_TOTAL_DURATION)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active])
 
   useEffect(() => {
     startCycle()
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-      if (progressRef.current) clearInterval(progressRef.current)
+      stopCycle()
+      if (waTimerRef.current) clearTimeout(waTimerRef.current)
     }
-  }, [startCycle])
+  }, [startCycle, stopCycle])
 
   const handleTabClick = (key: string) => {
+    if (waTimerRef.current) { clearTimeout(waTimerRef.current); waTimerRef.current = null }
     setActive(key)
-    startCycle()
+    if (key !== 'whatsapp') startCycle()
+    // whatsapp için yukarıdaki useEffect devreye girer
   }
 
   const frame = (
     <div>
       {/* Tab buttons */}
-      <div className="flex justify-center gap-1.5 md:gap-2 mb-3 flex-wrap">
+      <div className="flex justify-center mb-3" style={{ gap: 6, overflowX: 'auto', flexWrap: 'nowrap' }}>
         {tabs.map(tab => {
           const isActive = active === tab.key
           return (
             <button
               key={tab.key}
               onClick={() => handleTabClick(tab.key)}
-              className="px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold transition-all"
+              className="font-semibold transition-all whitespace-nowrap flex-shrink-0"
               style={heroMode ? {
+                padding: '5px 10px', borderRadius: 10, fontSize: 11,
                 background: isActive ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.07)',
                 color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
                 border: `1px solid ${isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)'}`,
               } : {
+                padding: '5px 10px', borderRadius: 10, fontSize: 11,
                 background: isActive ? '#4a7c6f' : '#fff',
                 color: isActive ? '#fff' : '#4a7c6f',
                 border: `1px solid ${isActive ? '#4a7c6f' : '#c8e6de'}`,
@@ -322,7 +353,9 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
           <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b', opacity: 0.7 }} />
           <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', opacity: 0.7 }} />
           <div style={{ flex: 1, background: 'rgba(255,255,255,0.08)', borderRadius: 6, padding: '3px 10px', marginLeft: 8 }}>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>seansify.com/{active}</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>
+              {active === 'whatsapp' ? 'wa.me/seansify-bot' : `seansify.com/${active}`}
+            </span>
           </div>
         </div>
 
@@ -334,6 +367,7 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
               { key: 'takvim', label: '📅' },
               { key: 'randevular', label: '📋' },
               { key: 'raporlar', label: '📊' },
+              { key: 'whatsapp', label: '💬' },
             ].map(item => (
               <button
                 key={item.key}
@@ -350,7 +384,10 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
           </div>
 
           <div key={active} style={{ flex: 1, height: '100%', overflow: 'hidden', animation: 'fadeInUp 0.22s ease forwards' }}>
-            {mockups[active]}
+            {active === 'whatsapp'
+              ? <WaAnimasyonMockup isActive />
+              : staticMockups[active]
+            }
           </div>
         </div>
       </div>
