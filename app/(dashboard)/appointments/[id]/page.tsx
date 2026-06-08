@@ -74,7 +74,7 @@ export default async function AppointmentDetailPage({ params }: Props) {
 
           <div className="space-y-3 text-sm">
             <div>
-              <span className="text-xs font-medium" style={{ color: '#94a3b8' }}>HASTA</span>
+              <span className="text-xs font-medium" style={{ color: '#94a3b8' }}>DANIŞAN</span>
               <p className="font-medium mt-0.5" style={{ color: '#334155' }}>
                 <Link href={`/patients/${apt.patient?.id}`} className="hover:underline">{apt.patient?.name_surname}</Link>
               </p>

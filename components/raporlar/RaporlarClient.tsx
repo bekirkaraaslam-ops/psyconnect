@@ -50,7 +50,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }
   confirmed: { label: 'Onaylı', color: '#2563eb', bg: '#eff6ff' },
   seansify_pending: { label: 'Bekliyor', color: '#d97706', bg: '#fef3c7' },
   canceled: { label: 'İptal', color: '#ef4444', bg: '#fef2f2' },
-  cancelled_by_patient: { label: 'İptal (Hasta)', color: '#ef4444', bg: '#fef2f2' },
+  cancelled_by_patient: { label: 'İptal (Danışan)', color: '#ef4444', bg: '#fef2f2' },
   no_show: { label: 'Gelmedi', color: '#94a3b8', bg: '#f1f5f9' },
 }
 

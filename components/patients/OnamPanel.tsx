@@ -63,9 +63,9 @@ export default function OnamPanel({ hastaId, form }: Props) {
           <div className="space-y-3">
             <p className="text-sm" style={{ color: '#94a3b8' }}>
               {isWaiting
-                ? 'Onam formu linki gönderildi, hasta henüz imzalamadı.'
+                ? 'Onam formu linki gönderildi, danışan henüz imzalamadı.'
                 : isExpired
-                ? 'Form linkinin süresi doldu, hasta imzalamadı.'
+                ? 'Form linkinin süresi doldu, danışan imzalamadı.'
                 : 'Form henüz gönderilmedi.'}
             </p>
             {!isWaiting && (

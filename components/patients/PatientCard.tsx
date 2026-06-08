@@ -60,7 +60,7 @@ export default function PatientCard({ patient }: { patient: Patient }) {
       <div className="flex items-center justify-end px-4 py-2 border-t rounded-b-2xl" style={{ borderColor: '#f1f5f9' }}>
         {confirming ? (
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <span className="text-xs" style={{ color: '#64748b' }}>Hastayı silmek istiyor musunuz?</span>
+            <span className="text-xs" style={{ color: '#64748b' }}>Danışanı silmek istiyor musunuz?</span>
             <button
               onClick={handleDelete}
               disabled={deleting}

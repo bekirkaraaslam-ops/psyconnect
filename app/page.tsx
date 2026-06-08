@@ -10,8 +10,8 @@ import SectionDots from '@/app/[slug]/SectionDots'
 import ShootingStars from '@/components/landing/ShootingStars'
 
 export const metadata: Metadata = {
-  title: 'Seansify — Psikologlar için Klinik Yönetim Platformu',
-  description: 'Randevularınızı yönetin, WhatsApp ile otomatik hatırlatıcı gönderin. KVKK uyumlu, güvenli klinik yönetim sistemi.',
+  title: 'Seansify — Psikologlar için Pratik Asistan',
+  description: 'Randevularınızı yönetin, WhatsApp ile otomatik hatırlatıcı gönderin. KVKK uyumlu, danışan takip ve iletişim yönetim aracı.',
 }
 
 async function getPsychologistCount(): Promise<number> {
@@ -62,7 +62,7 @@ export default async function LandingPage() {
           <div className="hidden md:flex items-center gap-3">
             <Link href="/login" className="px-4 py-2 text-sm font-medium rounded-lg" style={{ color: '#3d5952' }}>Giriş Yap</Link>
             <Link href="/register" className="btn-primary px-4 py-2 text-sm font-semibold rounded-lg" style={{ background: '#4a7c6f', color: '#ffffff' }}>
-              Kliniğini Dijitalleştir
+              Ücretsiz Başla
             </Link>
           </div>
 
@@ -80,7 +80,7 @@ export default async function LandingPage() {
               ))}
               <hr style={{ borderColor: '#c8e6dc' }} />
               <Link href="/login" className="px-3 py-2 text-sm rounded-lg" style={{ color: '#3d5952' }}>Giriş Yap</Link>
-              <Link href="/register" className="px-3 py-2 text-sm font-semibold rounded-lg text-center" style={{ background: '#4a7c6f', color: 'white' }}>Kliniğini Dijitalleştir</Link>
+              <Link href="/register" className="px-3 py-2 text-sm font-semibold rounded-lg text-center" style={{ background: '#4a7c6f', color: 'white' }}>Ücretsiz Başla</Link>
             </div>
           </details>
         </div>
@@ -126,7 +126,7 @@ export default async function LandingPage() {
               </div>
 
               <h1 className="animate-fade-up delay-100 text-3xl md:text-5xl font-extrabold leading-tight mb-4 tracking-tight text-white">
-                Klinik Yönetimini<br />Otomatikleştir
+                Pratiğini<br />Otomatikleştir
               </h1>
               <p className="animate-fade-up delay-200 text-2xl md:text-3xl font-extrabold mb-5 tracking-tight" style={{ color: '#a8e6d4' }}>
                 Danışanlara Odaklan
@@ -137,7 +137,7 @@ export default async function LandingPage() {
 
               <div className="animate-fade-up delay-400 flex flex-col sm:flex-row gap-3 justify-center md:justify-start mb-8">
                 <Link href="/register" className="btn-primary inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold shadow-lg" style={{ background: 'white', color: '#2d5a51' }}>
-                  Kliniğini Dijitalleştir
+                  Pratiğini Bir Üst Seviyeye Taşı
                   <span className="btn-arrow">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -191,7 +191,7 @@ export default async function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white scroll-reveal">Her Şey Tek Platformda</h2>
-            <p className="text-base max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>Klinik yönetiminiz için ihtiyacınız olan tüm araçlar, tek çatı altında.</p>
+            <p className="text-base max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.7)' }}>Pratiğiniz için ihtiyacınız olan tüm araçlar, tek çatı altında.</p>
           </div>
         </div>
         <div className="max-w-5xl mx-auto px-4 md:px-6">
@@ -235,7 +235,7 @@ export default async function LandingPage() {
                 ))}
               </ul>
               <ul className="space-y-1.5 mb-7 pl-1">
-                {['20 aktif hasta limiti', '15 form/ay', 'Son 3 ay raporu'].map(l => (
+                {['20 aktif danışan limiti', '15 form/ay', 'Son 3 ay raporu'].map(l => (
                   <li key={l} className="text-xs" style={{ color: '#94a3b8' }}>· {l}</li>
                 ))}
               </ul>
@@ -258,7 +258,7 @@ export default async function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Sınırsız hasta kaydı',
+                  'Sınırsız danışan kaydı',
                   'Sınırsız WhatsApp mesajı',
                   'Otomatik randevu asistanı',
                   'Tüm seans geçmişi',
@@ -308,7 +308,7 @@ export default async function LandingPage() {
               { q: 'Ödeme güvenli mi?', a: 'Tüm ödemeler Lemon Squeezy altyapısı üzerinden 256-bit SSL şifreleme ile güvenle işlenir. Kart bilgileriniz Seansify sunucularında saklanmaz.' },
               { q: 'WhatsApp numaramı kullanabilir miyim?', a: 'Evet, kendi kişisel veya iş WhatsApp numaranızı bağlayabilirsiniz. QR kod ile yapılan tek seferlik kurulum 2 dakikadan az sürer.' },
               { q: 'İstediğim zaman iptal edebilir miyim?', a: 'Evet. Herhangi bir taahhüt yoktur. Aboneliğinizi istediğiniz an iptal edebilirsiniz; mevcut dönem sonunda hizmet sona erer ve ücret alınmaz.' },
-              { q: 'Verilerim güvende mi? KVKK uyumlu mu?', a: 'Seansify tamamen KVKK uyumludur. Tüm veriler Supabase altyapısında şifreli olarak saklanır. Hasta verileri üçüncü taraflarla asla paylaşılmaz.' },
+              { q: 'Verilerim güvende mi? KVKK uyumlu mu?', a: 'Seansify tamamen KVKK uyumludur. Tüm veriler Supabase altyapısında şifreli olarak saklanır. Danışan verileri üçüncü taraflarla asla paylaşılmaz.' },
               { q: 'Teknik destek nasıl çalışıyor?', a: 'Seansify One kullanıcıları e-posta desteğinden yararlanır. Pro kullanıcıları öncelikli destek alır ve genellikle 4 saat içinde yanıt verilir.' },
             ].map((item) => (
               <details key={item.q} className="rounded-2xl overflow-hidden group bg-white" style={{ border: '1px solid #c8e6dc' }}>
@@ -366,7 +366,7 @@ export default async function LandingPage() {
       {/* ── Son CTA ── */}
       <section className="py-16 md:py-24" style={{ background: 'linear-gradient(135deg, #1a3a2e 0%, #2d5a51 50%, #4a7c6f 100%)' }}>
         <div className="max-w-xl mx-auto px-6 text-center">
-          <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white">Kliniğini Bugün Dijitalleştir</h2>
+          <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white">Pratiğini Bugün Bir Üst Seviyeye Taşı</h2>
           <p className="text-base mb-10" style={{ color: 'rgba(255,255,255,0.7)' }}>
             14 gün boyunca tüm özellikleri ücretsiz deneyin. Beğenmezseniz ödeme yapmayın.
           </p>
@@ -397,7 +397,7 @@ export default async function LandingPage() {
                 </div>
                 <span className="font-bold text-sm text-white">Seansify</span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>Psikologlar için akıllı klinik yönetim ve WhatsApp otomasyon platformu.</p>
+              <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>Psikologlar için randevu ve pratik yönetim platformu.</p>
             </div>
             {[
               { title: 'Ürün', links: [{ label: 'Özellikler', href: '#ozellikler' }, { label: 'Fiyatlandırma', href: '#fiyatlandirma' }, { label: 'SSS', href: '#sss' }] },

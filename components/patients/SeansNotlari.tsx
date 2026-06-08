@@ -472,7 +472,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                   value={form.ev_odevi}
                   onChange={e => setForm(p => ({ ...p, ev_odevi: e.target.value }))}
                   rows={3}
-                  placeholder="Hastaya verilecek ev ödevi..."
+                  placeholder="Danışana verilecek ev ödevi..."
                   className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
                   style={{ borderColor: '#dde5e2', color: '#334155' }}
                 />

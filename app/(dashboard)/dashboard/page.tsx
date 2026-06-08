@@ -101,7 +101,7 @@ export default async function OverviewPage() {
 
   const stats = [
     {
-      label: 'Toplam Hasta', value: totalPatients ?? 0, color: '#4a7c6f', bg: 'rgba(74,124,111,0.1)',
+      label: 'Toplam Danışan', value: totalPatients ?? 0, color: '#4a7c6f', bg: 'rgba(74,124,111,0.1)',
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     },
     {
@@ -143,8 +143,8 @@ export default async function OverviewPage() {
     },
     {
       id: 'patient',
-      label: 'İlk hastanı ekle',
-      description: 'Hasta listesine ilk kaydı oluştur',
+      label: 'İlk danışanını ekle',
+      description: 'Danışan listesine ilk kaydı oluştur',
       href: '/patients/new',
       done: (totalPatients ?? 0) > 0,
     },
@@ -158,14 +158,14 @@ export default async function OverviewPage() {
     {
       id: 'note',
       label: 'Bir seans notu yaz',
-      description: 'Hasta sayfasından Seans sekmesine git',
+      description: 'Danışan sayfasından Seans sekmesine git',
       href: '/patients',
       done: (totalNotes ?? 0) > 0,
     },
     {
       id: 'anamnez',
       label: 'Danışanına anamnez formu gönder',
-      description: 'Hasta sayfasından Değerlendirme sekmesini aç',
+      description: 'Danışan sayfasından Değerlendirme sekmesini aç',
       href: '/patients',
       done: (totalAnamnezForms ?? 0) > 0,
     },

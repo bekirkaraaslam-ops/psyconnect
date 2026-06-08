@@ -401,7 +401,7 @@ export default function DemoTabs({ heroMode = false }: { heroMode?: boolean }) {
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-extrabold mb-3 scroll-reveal" style={{ color: '#0d1f18' }}>Sistemi Keşfedin</h2>
-          <p className="text-sm md:text-base scroll-reveal" style={{ color: '#4a7c6f' }}>Klinik yönetiminizi Seansify ile nasıl dönüştüreceğinizi görün</p>
+          <p className="text-sm md:text-base scroll-reveal" style={{ color: '#4a7c6f' }}>Pratiğinizi Seansify ile nasıl kolaylaştıracağınızı görün</p>
         </div>
         {frame}
       </div>

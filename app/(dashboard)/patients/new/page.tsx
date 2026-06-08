@@ -28,7 +28,7 @@ export default async function NewPatientPage() {
 
   return (
     <div className="flex-1">
-      <Topbar title="Yeni Hasta" />
+      <Topbar title="Yeni Danışan" />
       <div className="p-3 md:p-6 max-w-lg">
         <PatientForm />
       </div>

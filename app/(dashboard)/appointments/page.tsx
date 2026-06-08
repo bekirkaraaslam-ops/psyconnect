@@ -136,7 +136,7 @@ export default async function AppointmentsPage() {
               <line x1="8" y1="14" x2="8" y2="14" /><line x1="12" y1="14" x2="12" y2="14" /><line x1="16" y1="14" x2="16" y2="14" />
             </svg>
             <p className="font-semibold mb-1" style={{ color: '#334155' }}>Henüz randevu yok</p>
-            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk randevunuzu oluşturarak hasta takibine başlayın.</p>
+            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk randevunuzu oluşturarak danışan takibine başlayın.</p>
             <Link href="/appointments/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4a7c6f' }}>
               İlk Randevunu Ekle →
             </Link>

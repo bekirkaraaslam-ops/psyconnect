@@ -36,7 +36,7 @@ export default async function EditPatientPage({ params }: Props) {
 
   return (
     <div className="flex-1">
-      <Topbar title="Hasta Düzenle" />
+      <Topbar title="Danışan Düzenle" />
       <div className="p-3 md:p-6 max-w-lg">
         <PatientForm
           patient={{

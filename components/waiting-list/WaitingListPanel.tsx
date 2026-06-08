@@ -61,7 +61,7 @@ export default function WaitingListPanel({ initialEntries, psychologistId, booki
       <div className="bg-white rounded-2xl border p-5 space-y-3" style={{ borderColor: '#dde5e2' }}>
         <h3 className="font-semibold text-sm text-[#334155] dark:text-slate-100">Kayıt Linki</h3>
         <p className="text-xs text-[#64748b] dark:text-slate-400">
-          Bu linki hastanıza gönderin — doldurunca bekleme listesine eklenirler.
+          Bu linki danışanınıza gönderin — doldurunca bekleme listesine eklenirler.
         </p>
         <div className="flex items-center gap-2">
           <div

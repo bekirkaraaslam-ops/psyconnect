@@ -84,7 +84,7 @@ export default function SetupWizard({ psychologistId, initialName, initialPhone,
     router.refresh()
   }
 
-  const stepLabels = ['Profil', 'İlk Hasta', 'Hazırsın']
+  const stepLabels = ['Profil', 'İlk Danışan', 'Hazırsın']
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -230,9 +230,9 @@ export default function SetupWizard({ psychologistId, initialName, initialPhone,
                       <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                     </svg>
                   </div>
-                  <h2 className="text-lg font-semibold mb-2" style={{ color: '#0d1f18' }}>İlk hastanı ekle</h2>
+                  <h2 className="text-lg font-semibold mb-2" style={{ color: '#0d1f18' }}>İlk danışanını ekle</h2>
                   <p className="text-sm leading-relaxed" style={{ color: '#4a7c6f' }}>
-                    Sistemin çalışması için en az bir hasta gerekir. Hemen ekle, istersen randevu da oluşturalım.
+                    Sistemin çalışması için en az bir danışan gerekir. Hemen ekle, istersen randevu da oluşturalım.
                   </p>
                 </div>
 
@@ -271,7 +271,7 @@ export default function SetupWizard({ psychologistId, initialName, initialPhone,
                     className="w-full py-2.5 rounded-xl text-sm font-medium text-white disabled:opacity-60 transition-all"
                     style={{ background: 'linear-gradient(135deg, #4a7c6f, #2a5446)' }}
                   >
-                    {saving2 ? 'Ekleniyor...' : 'Hasta Ekle ve Devam Et →'}
+                    {saving2 ? 'Ekleniyor...' : 'Danışan Ekle ve Devam Et →'}
                   </button>
 
                   <button

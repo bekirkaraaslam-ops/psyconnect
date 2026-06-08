@@ -135,7 +135,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Hasta *</label>
+        <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Danışan *</label>
         <select
           name="patient_id"
           value={form.patient_id}
@@ -144,7 +144,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
           className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
           style={{ borderColor: '#dde5e2', color: '#334155' }}
         >
-          <option value="">Hasta seçin...</option>
+          <option value="">Danışan seçin...</option>
           {patients.map(p => (
             <option key={p.id} value={p.id}>{p.name_surname}</option>
           ))}
@@ -156,7 +156,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
               <line x1="12" y1="9" x2="12" y2="13"/>
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            Bu hasta daha önce <strong className="mx-1">{cancelCount}</strong> randevuyu iptal etti.
+            Bu danışan daha önce <strong className="mx-1">{cancelCount}</strong> randevuyu iptal etti.
           </div>
         )}
         {paketInfo && (
@@ -337,7 +337,7 @@ export default function AppointmentForm({ patients, appointment }: Props) {
             <option value="confirmed">Onaylandı</option>
             <option value="canceled">İptal Edildi</option>
             <option value="completed">Tamamlandı</option>
-            <option value="cancelled_by_patient">Hasta İptal Etti</option>
+            <option value="cancelled_by_patient">Danışan İptal Etti</option>
           </select>
         </div>
       )}

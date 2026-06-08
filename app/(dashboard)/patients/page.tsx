@@ -32,14 +32,14 @@ export default async function PatientsPage() {
 
   return (
     <div className="flex-1">
-      <Topbar title="Hastalar" />
+      <Topbar title="Danışanlar" />
       <Suspense fallback={null}><PatientsLimitAlert /></Suspense>
 
       <div className="p-3 md:p-6">
         <div className="flex items-center justify-between gap-3 mb-6">
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-300">
-              {patientCount} aktif hasta
+              {patientCount} aktif danışan
             </p>
             {!isPro && (
               <div className="mt-1.5 flex items-center gap-2">
@@ -70,7 +70,7 @@ export default async function PatientsPage() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Yeni Hasta
+              Yeni Danışan
             </Link>
           )}
         </div>
@@ -83,10 +83,10 @@ export default async function PatientsPage() {
               <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
-            <p className="font-semibold mb-1" style={{ color: '#334155' }}>Henüz hasta kaydı yok</p>
-            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk hastanı ekleyerek randevu yönetimine başla.</p>
+            <p className="font-semibold mb-1" style={{ color: '#334155' }}>Henüz danışan kaydı yok</p>
+            <p className="text-sm mb-5" style={{ color: '#94a3b8' }}>İlk danışanını ekleyerek randevu yönetimine başla.</p>
             <Link href="/patients/new" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white" style={{ background: '#4a7c6f' }}>
-              İlk Hastanı Ekle →
+              İlk Danışanını Ekle →
             </Link>
           </div>
         ) : (

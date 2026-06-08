@@ -21,8 +21,8 @@ export default function PatientsLimitAlert() {
     <LimitReachedModal
       open={open}
       onClose={() => setOpen(false)}
-      title="Hasta Limitine Ulaştınız"
-      description="Seansify One planında en fazla 20 aktif hasta kaydedebilirsiniz. Daha fazla hasta eklemek için Pro'ya geçin."
+      title="Danışan Limitine Ulaştınız"
+      description="Seansify One planında en fazla 20 aktif danışan kaydedebilirsiniz. Daha fazla danışan eklemek için Pro'ya geçin."
     />
   )
 }

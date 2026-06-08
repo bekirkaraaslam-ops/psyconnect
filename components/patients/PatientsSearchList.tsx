@@ -73,7 +73,7 @@ export default function PatientsSearchList({ patients }: { patients: Patient[] }
           value={query}
           onChange={e => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => { if (query) setOpen(true) }}
-          placeholder="Hasta ara..."
+          placeholder="Danışan ara..."
           className="w-full pl-8 pr-7 py-2 rounded-xl border text-sm outline-none transition-all"
           style={{
             borderColor: query ? '#4a7c6f' : '#e2e8f0',

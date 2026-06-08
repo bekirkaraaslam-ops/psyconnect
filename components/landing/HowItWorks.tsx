@@ -45,7 +45,7 @@ function KurulumMockup() {
         </div>
       </div>
       <div style={{ marginTop: 10, background: '#e8f5f1', border: '1px solid #a8d5c4', borderRadius: 10, padding: '12px', textAlign: 'center' }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: '#2d5a51' }}>✓ Hesap Oluşturuldu — Kliniğin Hazır</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#2d5a51' }}>✓ Hesap Oluşturuldu — Pratiğin Hazır</div>
       </div>
     </div>
   )
@@ -54,7 +54,7 @@ function KurulumMockup() {
 function HastalarVeRandevuMockup() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F0F4F2', padding: 20, minHeight: 340 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#334155', marginBottom: 12 }}>Hasta Listesi</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#334155', marginBottom: 12 }}>Danışan Listesi</div>
       <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #dde5e2', overflow: 'hidden', marginBottom: 10 }}>
         {[
           { name: 'Ayşe Kaya', meta: '5. seans · Yüz yüze', avatar: 'AK', color: '#4a7c6f' },
@@ -139,8 +139,8 @@ const steps = [
   {
     num: '02',
     color: '#3b82f6',
-    title: 'Hastalarını Ekle, Randevuyu Oluştur',
-    desc: 'Hasta profillerini sisteme ekle. İlk randevuyu birkaç tıkla oluştur — isim, tarih, saat kaydedildi, takip başladı.',
+    title: 'Danışanlarını Ekle, Randevuyu Oluştur',
+    desc: 'Danışan profillerini sisteme ekle. İlk randevuyu birkaç tıkla oluştur — isim, tarih, saat kaydedildi, takip başladı.',
     url: 'seansify.com/patients',
     mockup: <HastalarVeRandevuMockup />,
   },
@@ -193,7 +193,7 @@ export default function HowItWorks() {
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-4xl font-extrabold mb-4" style={{ color: '#0d1f18' }}>Nasıl Çalışır?</h2>
           <p className="text-base max-w-md mx-auto" style={{ color: '#5a7a72' }}>
-            Dört adımda tam otomatik klinik.
+            Dört adımda tam otomatik pratik.
           </p>
         </div>
 

@@ -119,7 +119,7 @@ export default function PatientForm({ patient }: Props) {
           rows={4}
           className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none resize-none"
           style={{ borderColor: '#dde5e2', color: '#334155' }}
-          placeholder="Hasta hakkında notlarınız... (şifreli saklanır)"
+          placeholder="Danışan hakkında notlarınız... (şifreli saklanır)"
         />
       </div>
 
@@ -131,7 +131,7 @@ export default function PatientForm({ patient }: Props) {
         >
           <div>
             <p className="text-sm font-medium" style={{ color: '#334155' }}>Anamnez Formu Gönderilsin mi?</p>
-            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>İlk randevudan 1 gün önce hastaya WhatsApp ile form linki gönderilir</p>
+            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>İlk randevudan 1 gün önce danışana WhatsApp ile form linki gönderilir</p>
           </div>
           <div className={`w-10 h-6 rounded-full transition-colors relative flex-shrink-0 ${anamnezEnabled ? 'bg-green-500' : 'bg-gray-200'}`}>
             <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${anamnezEnabled ? 'translate-x-5' : 'translate-x-1'}`} />

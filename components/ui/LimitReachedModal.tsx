@@ -41,7 +41,7 @@ export default function LimitReachedModal({ open, onClose, title, description }:
         <div className="rounded-xl p-4 mb-5" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
           <p className="text-xs font-semibold mb-2" style={{ color: '#4a7c6f' }}>Seansify Pro ile:</p>
           <ul className="space-y-1">
-            {['Sınırsız hasta kaydı', 'Sınırsız WhatsApp mesajı', 'Sınırsız form gönderimi', 'Tüm seans geçmişi', 'Gelişmiş raporlar'].map(f => (
+            {['Sınırsız danışan kaydı', 'Sınırsız WhatsApp mesajı', 'Sınırsız form gönderimi', 'Tüm seans geçmişi', 'Gelişmiş raporlar'].map(f => (
               <li key={f} className="flex items-center gap-2 text-xs" style={{ color: '#334155' }}>
                 <span style={{ color: '#4a7c6f' }}>✓</span> {f}
               </li>

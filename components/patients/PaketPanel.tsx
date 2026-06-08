@@ -95,7 +95,7 @@ export default function PaketPanel({ hastaId }: { hastaId: string }) {
           )}
         </div>
       ) : (
-        <p className="text-sm" style={{ color: '#94a3b8' }}>Bu hasta için aktif paket bulunmuyor.</p>
+        <p className="text-sm" style={{ color: '#94a3b8' }}>Bu danışan için aktif paket bulunmuyor.</p>
       )}
 
       {showForm && (

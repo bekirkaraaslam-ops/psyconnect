@@ -72,7 +72,7 @@ const FEATURES = [
       'QR veya WhatsApp linki ile danışana otomatik gönderilir',
       'Seans odasına girdiğinizde form ekranınızda hazır',
       'KVKK uyumlu, dijital imza ve açık rıza onayı ile',
-      'Yanıtlar hasta profiline otomatik kaydedilir',
+      'Yanıtlar danışan profiline otomatik kaydedilir',
     ],
   },
   {

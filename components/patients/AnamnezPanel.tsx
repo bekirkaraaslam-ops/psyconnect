@@ -92,9 +92,9 @@ export default function AnamnezPanel({ hastaId, form, decrypted }: Props) {
           <div className="space-y-3">
             <p className="text-sm" style={{ color: '#94a3b8' }}>
               {isWaiting
-                ? 'Form linki gönderildi, hasta henüz doldurmadı.'
+                ? 'Form linki gönderildi, danışan henüz doldurmadı.'
                 : isExpired
-                ? 'Form linkinin süresi doldu, hasta doldurmadı.'
+                ? 'Form linkinin süresi doldu, danışan doldurmadı.'
                 : 'Form henüz gönderilmedi.'}
             </p>
             {!isWaiting && (
