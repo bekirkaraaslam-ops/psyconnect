@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import UpgradeModal from '@/components/ui/UpgradeModal'
 
 interface NotOzet {
   id: string
@@ -96,6 +97,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   const [analizText, setAnalizText] = useState('')
   const [analizError, setAnalizError] = useState('')
   const [analizSeansSayisi, setAnalizSeansSayisi] = useState(0)
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
 
   const fetchNotlar = useCallback(async () => {
     setLoading(true)
@@ -255,7 +257,12 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
     })
     const data = await res.json()
     if (!res.ok) {
-      setAnalizError(data.error ?? 'Analiz oluşturulamadı.')
+      if (data.limitReached) {
+        setAnalizOpen(false)
+        setUpgradeModalOpen(true)
+      } else {
+        setAnalizError(data.error ?? 'Analiz oluşturulamadı.')
+      }
       setAnalizLoading(false)
       return
     }
@@ -289,6 +296,12 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
     new Date(iso).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
 
   return (
+    <>
+    <UpgradeModal
+      open={upgradeModalOpen}
+      onClose={() => setUpgradeModalOpen(false)}
+      featureName="AI seans ilerleme analizi"
+    />
     <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
       {/* Header */}
       <div
@@ -645,5 +658,6 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       `}</style>
       </>}
     </div>
+    </>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import UpgradeModal from '@/components/ui/UpgradeModal'
 
 interface Scale {
   id: string
@@ -81,6 +82,7 @@ export default function OlceklerPanel({ hastaId }: Props) {
   const [yorumLoadingId, setYorumLoadingId] = useState<string | null>(null)
   const [yorumErrorId, setYorumErrorId] = useState<string | null>(null)
   const [yorumOpenId, setYorumOpenId] = useState<string | null>(null)
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
 
   const fetchResponses = useCallback(() => {
     setLoading(true)
@@ -133,8 +135,13 @@ export default function OlceklerPanel({ hastaId }: Props) {
     })
     const data = await res.json()
     if (!res.ok) {
-      setYorumErrorId(responseId)
-      setYorumMap(m => ({ ...m, [responseId]: data.error ?? 'Yorum oluşturulamadı.' }))
+      if (data.limitReached) {
+        setYorumOpenId(null)
+        setUpgradeModalOpen(true)
+      } else {
+        setYorumErrorId(responseId)
+        setYorumMap(m => ({ ...m, [responseId]: data.error ?? 'Yorum oluşturulamadı.' }))
+      }
     } else {
       setYorumMap(m => ({ ...m, [responseId]: data.yorum }))
     }
@@ -176,6 +183,11 @@ export default function OlceklerPanel({ hastaId }: Props) {
 
   return (
     <>
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        featureName="AI psikometrik ölçek yorumu"
+      />
       <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#dde5e2' }}>
         <div className="px-5 py-3 flex items-center gap-2" style={{ background: '#f8fafc', borderBottom: '1px solid #dde5e2' }}>
           {icon}
