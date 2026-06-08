@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { decrypt } from '@/lib/crypto'
+import { getLimits } from '@/lib/plans'
 
 function safeDecrypt(val: string | null | undefined): string {
   if (!val) return ''
   try { return decrypt(val) } catch { return '' }
+}
+
+function currentMonth() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
 export async function POST(req: NextRequest) {
@@ -17,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('id')
+    .select('id, plan_type')
     .eq('auth_user_id', user.id)
     .single()
 
@@ -34,9 +40,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Form bulunamadı veya henüz doldurulmadı.' }, { status: 404 })
   }
 
-  // Daha önce üretilmişse direkt dön
+  // Daha önce üretilmişse direkt dön — limiti tüketmez
   if (form.ai_ozet) {
     return NextResponse.json({ ozet: form.ai_ozet })
+  }
+
+  const limits = getLimits(psych.plan_type)
+
+  if (limits.monthlyAiAnamnez !== Infinity) {
+    const month = currentMonth()
+    const { data: usage } = await supabase
+      .from('ai_usage')
+      .select('anamnez_count')
+      .eq('psychologist_id', psych.id)
+      .eq('month', month)
+      .single()
+
+    const count = usage?.anamnez_count ?? 0
+    if (count >= limits.monthlyAiAnamnez) {
+      return NextResponse.json({
+        error: `Bu ay anamnez özeti limitine ulaştınız (${limits.monthlyAiAnamnez}/${limits.monthlyAiAnamnez}). Sınırsız kullanım için Pro'ya geçin.`,
+        limitReached: true,
+      }, { status: 429 })
+    }
+
+    await supabase
+      .from('ai_usage')
+      .upsert({ psychologist_id: psych.id, month, anamnez_count: count + 1 }, { onConflict: 'psychologist_id,month' })
   }
 
   const sikayet        = safeDecrypt(form.sikayet_encrypted)
@@ -70,7 +100,6 @@ Anamnez verileri:
     const ozet = result.response.text().trim()
     if (!ozet) throw new Error('Boş yanıt')
 
-    // Veritabanına kaydet — bir sonraki istekte yeniden üretilmesin
     await supabase
       .from('anamnez_forms')
       .update({ ai_ozet: ozet })

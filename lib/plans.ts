@@ -8,6 +8,8 @@ export interface PlanLimits {
   reportMonths: number
   maxBlogPosts: number
   profileWatermark: boolean
+  monthlyAiSoap: number
+  monthlyAiAnamnez: number
 }
 
 const ONE_LIMITS: PlanLimits = {
@@ -18,6 +20,8 @@ const ONE_LIMITS: PlanLimits = {
   reportMonths: 3,
   maxBlogPosts: 5,
   profileWatermark: true,
+  monthlyAiSoap: 20,
+  monthlyAiAnamnez: 10,
 }
 
 const PRO_LIMITS: PlanLimits = {
@@ -28,6 +32,8 @@ const PRO_LIMITS: PlanLimits = {
   reportMonths: Infinity,
   maxBlogPosts: Infinity,
   profileWatermark: false,
+  monthlyAiSoap: Infinity,
+  monthlyAiAnamnez: Infinity,
 }
 
 export function getLimits(planType: string): PlanLimits {

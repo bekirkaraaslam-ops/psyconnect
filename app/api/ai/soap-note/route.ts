@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { getLimits } from '@/lib/plans'
+
+function currentMonth() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -11,6 +17,38 @@ export async function POST(req: NextRequest) {
 
   if (!seans_notu?.trim()) {
     return NextResponse.json({ error: 'Önce Genel Notlar alanını doldurun.' }, { status: 400 })
+  }
+
+  const { data: psych } = await supabase
+    .from('psychologists')
+    .select('id, plan_type')
+    .eq('auth_user_id', user.id)
+    .single()
+
+  if (!psych) return NextResponse.json({ error: 'Yetkisiz' }, { status: 401 })
+
+  const limits = getLimits(psych.plan_type)
+
+  if (limits.monthlyAiSoap !== Infinity) {
+    const month = currentMonth()
+    const { data: usage } = await supabase
+      .from('ai_usage')
+      .select('soap_count')
+      .eq('psychologist_id', psych.id)
+      .eq('month', month)
+      .single()
+
+    const count = usage?.soap_count ?? 0
+    if (count >= limits.monthlyAiSoap) {
+      return NextResponse.json({
+        error: `Bu ay SOAP notu limitine ulaştınız (${limits.monthlyAiSoap}/${limits.monthlyAiSoap}). Sınırsız kullanım için Pro'ya geçin.`,
+        limitReached: true,
+      }, { status: 429 })
+    }
+
+    await supabase
+      .from('ai_usage')
+      .upsert({ psychologist_id: psych.id, month, soap_count: count + 1 }, { onConflict: 'psychologist_id,month' })
   }
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
@@ -37,7 +75,6 @@ Türkçe, profesyonel klinik dil kullanarak yanıt ver. Yalnızca şu JSON forma
     const result = await model.generateContent(prompt)
     const raw = result.response.text().trim()
 
-    // Yanıt içindeki ilk { ... } bloğunu bul — markdown sarmalama fark etmez
     const match = raw.match(/\{[\s\S]*\}/)
     if (!match) throw new Error('JSON bulunamadı')
     const parsed = JSON.parse(match[0])
