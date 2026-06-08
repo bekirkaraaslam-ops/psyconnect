@@ -49,7 +49,7 @@ export default function GizlilikPage() {
             <ul className="space-y-2 list-disc list-inside ml-2">
               <li><strong>Kimlik verileri:</strong> Ad, soyad, kullanıcı adı</li>
               <li><strong>İletişim verileri:</strong> E-posta adresi, telefon numarası, WhatsApp numarası</li>
-              <li><strong>Hasta verileri:</strong> Psikolog kullanıcılar tarafından girilen hasta adı, iletişim bilgileri ve randevu kayıtları</li>
+              <li><strong>Danışan verileri:</strong> Psikolog kullanıcılar tarafından girilen danışan adı, iletişim bilgileri ve randevu kayıtları</li>
               <li><strong>Randevu verileri:</strong> Tarih, saat, seans notları, ödev kayıtları</li>
               <li><strong>Ödeme verileri:</strong> Abonelik planı bilgileri (ödeme kartı bilgileri Seansify tarafından saklanmamakta; Lemon Squeezy altyapısı üzerinden işlenmektedir)</li>
               <li><strong>Teknik veriler:</strong> IP adresi, tarayıcı bilgisi, oturum verileri, kullanım istatistikleri</li>

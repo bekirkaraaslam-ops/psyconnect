@@ -44,6 +44,8 @@ function RegisterForm() {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -53,6 +55,12 @@ function RegisterForm() {
     e.preventDefault()
     setLoading(true)
     setError('')
+
+    if (!termsAccepted || !privacyAccepted) {
+      setError('Devam etmek için kullanım koşullarını ve gizlilik politikasını kabul etmeniz gerekmektedir.')
+      setLoading(false)
+      return
+    }
 
     const supabase = createClient()
     const { error } = await supabase.auth.signUp({
@@ -174,10 +182,38 @@ function RegisterForm() {
           )}
         </div>
 
+        <div className="space-y-3 pt-1">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={e => setTermsAccepted(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded accent-[#4a7c6f] cursor-pointer flex-shrink-0"
+            />
+            <span className="text-xs leading-relaxed" style={{ color: '#64748b' }}>
+              <Link href="/kullanim-kosullari" target="_blank" className="font-medium underline" style={{ color: '#4a7c6f' }}>Kullanım Koşulları</Link>'nı
+              okudum ve kabul ediyorum. MBYS yükümlülüklerinin münhasıran bana ait olduğunu anladım.
+            </span>
+          </label>
+
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={privacyAccepted}
+              onChange={e => setPrivacyAccepted(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded accent-[#4a7c6f] cursor-pointer flex-shrink-0"
+            />
+            <span className="text-xs leading-relaxed" style={{ color: '#64748b' }}>
+              <Link href="/gizlilik" target="_blank" className="font-medium underline" style={{ color: '#4a7c6f' }}>Gizlilik Politikası</Link>'nı
+              ve KVKK kapsamında kişisel verilerimin işleneceğini okudum, kabul ediyorum.
+            </span>
+          </label>
+        </div>
+
         <button
           type="submit"
-          disabled={loading}
-          className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+          disabled={loading || !termsAccepted || !privacyAccepted}
+          className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           style={{ background: 'linear-gradient(135deg, #4a7c6f 0%, #2a5446 100%)' }}
         >
           {loading && <span className="btn-spinner" />}

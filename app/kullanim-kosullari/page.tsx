@@ -29,7 +29,7 @@ export default function KullanimKosullariPage() {
       <main className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-12">
           <h1 className="text-3xl font-bold mb-3" style={{ color: '#4a7c6f' }}>Kullanım Koşulları</h1>
-          <p className="text-sm" style={{ color: '#64748b' }}>Son güncelleme: 17 Mayıs 2026</p>
+          <p className="text-sm" style={{ color: '#64748b' }}>Son güncelleme: 9 Haziran 2026</p>
         </div>
 
         <div className="space-y-10 text-sm leading-relaxed" style={{ color: '#334155' }}>
@@ -37,8 +37,8 @@ export default function KullanimKosullariPage() {
           <section>
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>1. Hizmet Tanımı</h2>
             <p className="mb-3">
-              Seansify, psikologlar ve ruh sağlığı uzmanları için tasarlanmış bir klinik yönetim platformudur.
-              Platform; randevu yönetimi, hasta takibi, seans notları, WhatsApp hatırlatıcı sistemi ve otomatik
+              Seansify, psikologlar ve ruh sağlığı uzmanları için tasarlanmış bir pratik yönetim ve danışan takip aracıdır.
+              Platform; randevu yönetimi, danışan takibi, seans notları, WhatsApp hatırlatıcı sistemi ve otomatik
               randevu asistanı gibi özellikleri kapsamaktadır.
             </p>
             <p>
@@ -63,7 +63,7 @@ export default function KullanimKosullariPage() {
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>3. Abonelik ve Ödeme</h2>
             <p className="mb-3">Seansify iki abonelik planı sunmaktadır:</p>
             <ul className="space-y-2 list-disc list-inside ml-2 mb-4">
-              <li><strong>Başlangıç Paketi:</strong> 950 ₺/ay — Randevu yönetimi, hasta takibi ve seans notları</li>
+              <li><strong>Seansify One:</strong> 749 ₺/ay — Randevu yönetimi, danışan takibi ve seans notları</li>
               <li><strong>Seansify Pro:</strong> 1.850 ₺/ay — WhatsApp otomasyonu, otomatik randevu asistanı ve öncelikli destek dahil</li>
             </ul>
             <p className="mb-3">
@@ -86,20 +86,37 @@ export default function KullanimKosullariPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>5. Yasak Kullanımlar</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>5. Yasal Yükümlülükler ve MBYS Sorumluluğu</h2>
+            <p className="mb-3">
+              Seansify, psikologlar ve ruh sağlığı uzmanları için geliştirilmiş bir pratik yönetim ve danışan takip aracıdır.
+              Platform, T.C. Sağlık Bakanlığı tarafından zorunlu tutulan <strong>Muayene Bilgi Yönetim Sistemi (MBYS)</strong> entegrasyonunu
+              sağlamamaktadır.
+            </p>
+            <p className="mb-3">
+              MBYS kayıt yükümlülükleri ve ilgili mevzuat kapsamındaki tüm yasal sorumluluklar münhasıran
+              <strong> kullanıcıya (psikolog / ruh sağlığı uzmanı)</strong> aittir. Seansify bu yükümlülükleri hiçbir şekilde üstlenmez.
+            </p>
+            <p>
+              Kullanıcı, mesleki faaliyetlerini yürütürken T.C. Sağlık Bakanlığı başta olmak üzere ilgili tüm
+              düzenleyici kurumlara karşı yasal yükümlülüklerini yerine getirmekten bizzat sorumludur.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>6. Yasak Kullanımlar</h2>
             <p className="mb-3">Aşağıdaki eylemler kesinlikle yasaktır:</p>
             <ul className="space-y-2 list-disc list-inside ml-2">
               <li>Platformu yasa dışı amaçlarla kullanmak</li>
               <li>Başkalarının hesaplarına yetkisiz erişim sağlamaya çalışmak</li>
               <li>Otomatik araçlarla platforma aşırı yük bindirmek (scraping, DDoS vb.)</li>
-              <li>Hasta verilerini izinsiz üçüncü taraflarla paylaşmak</li>
+              <li>Danışan verilerini izinsiz üçüncü taraflarla paylaşmak</li>
               <li>WhatsApp özelliklerini spam amaçlı kullanmak</li>
               <li>Platformu yeniden satmak veya alt lisanslama yapmak</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>6. Sorumluluk Sınırları</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>7. Sorumluluk Sınırları</h2>
             <p className="mb-3">
               Seansify, teknik altyapının sürekliliği için azami özeni göstermekle birlikte aşağıdaki hususlarda
               sorumluluk kabul etmemektedir:
@@ -110,6 +127,7 @@ export default function KullanimKosullariPage() {
               <li>Üçüncü taraf hizmetlerinde (Supabase, Netlify, Railway) yaşanan teknik arızalar</li>
               <li>Mücbir sebep halleri (doğal afet, siber saldırı, yasal kısıtlamalar vb.)</li>
               <li>Platformun kullanılamamasından doğan dolaylı veya maddi zararlar</li>
+              <li>Kullanıcının MBYS veya diğer yasal yükümlülüklerini yerine getirmemesinden kaynaklanan idari, hukuki veya mali sonuçlar</li>
             </ul>
             <p className="mt-3">
               Seansify'ın herhangi bir durumda azami sorumluluğu, son 3 aylık abonelik bedeliyle sınırlıdır.
@@ -117,13 +135,13 @@ export default function KullanimKosullariPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>7. Fikri Mülkiyet</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>8. Fikri Mülkiyet</h2>
             <p className="mb-3">
               Platform üzerindeki tüm yazılım, tasarım, marka ve içerik Seansify'a aittir ve telif hukuku ile
               fikri mülkiyet mevzuatıyla korunmaktadır.
             </p>
             <p className="mb-3">
-              Kullanıcılar, platforma yükledikleri verilerin (hasta kayıtları, notlar vb.) hukuki sorumluluğunu
+              Kullanıcılar, platforma yükledikleri verilerin (danışan kayıtları, notlar vb.) hukuki sorumluluğunu
               üstlenir. Bu veriler üzerindeki mülkiyet hakları kullanıcıya aittir.
             </p>
             <p>
@@ -132,7 +150,7 @@ export default function KullanimKosullariPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>8. Hizmet Değişiklikleri ve Fesih</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>9. Hizmet Değişiklikleri ve Fesih</h2>
             <p className="mb-3">
               Seansify, platformu geliştirme ve değiştirme hakkını saklı tutar. Önemli değişiklikler en az
               15 gün öncesinden e-posta yoluyla bildirilecektir.
@@ -144,7 +162,7 @@ export default function KullanimKosullariPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>9. Uygulanacak Hukuk ve Uyuşmazlık Çözümü</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>10. Uygulanacak Hukuk ve Uyuşmazlık Çözümü</h2>
             <p>
               Bu koşullar Türk hukukuna tabidir. Uyuşmazlıklarda Türkiye Cumhuriyeti mahkemeleri yetkilidir.
               Çözüme kavuşturulamamış anlaşmazlıklar için öncelikle arabuluculuk yoluna başvurulacaktır.
@@ -152,7 +170,7 @@ export default function KullanimKosullariPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>10. İletişim</h2>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>11. İletişim</h2>
             <p>
               Bu koşullarla ilgili sorularınız için:{' '}
               <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a>
