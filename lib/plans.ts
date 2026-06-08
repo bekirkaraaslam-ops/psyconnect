@@ -10,6 +10,8 @@ export interface PlanLimits {
   profileWatermark: boolean
   monthlyAiSoap: number
   monthlyAiAnamnez: number
+  monthlyAiSeansAnaliz: number
+  monthlyAiOlcekYorum: number
 }
 
 const ONE_LIMITS: PlanLimits = {
@@ -22,6 +24,8 @@ const ONE_LIMITS: PlanLimits = {
   profileWatermark: true,
   monthlyAiSoap: 20,
   monthlyAiAnamnez: 10,
+  monthlyAiSeansAnaliz: 10,
+  monthlyAiOlcekYorum: 15,
 }
 
 const PRO_LIMITS: PlanLimits = {
@@ -34,6 +38,8 @@ const PRO_LIMITS: PlanLimits = {
   profileWatermark: false,
   monthlyAiSoap: Infinity,
   monthlyAiAnamnez: Infinity,
+  monthlyAiSeansAnaliz: Infinity,
+  monthlyAiOlcekYorum: Infinity,
 }
 
 export function getLimits(planType: string): PlanLimits {

@@ -7,7 +7,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 async function getGeminiIntent(message: string): Promise<string> {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
     const prompt = `Kullanıcının WhatsApp mesajı: "${message}"
 Bu mesajın amacı nedir? Sadece aşağıdakilerden birini yaz, başka hiçbir şey yazma:
 RANDEVU_AL - randevu almak, saat sormak, müsaitlik sormak
@@ -348,6 +348,22 @@ export async function POST(req: NextRequest) {
       )
       return NextResponse.json({ ok: true })
     }
+
+    // Kayıtlı danışan mı kontrol et — değilse hoş geldiniz mesajı gönder
+    const { data: existingPatient } = await supabase
+      .from('patients')
+      .select('id')
+      .eq('phone_number', phone)
+      .eq('psychologist_id', psychologistId)
+      .maybeSingle()
+
+    if (!existingPatient) {
+      await sendReply(psychologistId, phone,
+        `Merhaba! 👋 *${psych.full_name}* kliniğine hoş geldiniz, ilginiz için teşekkür ederiz.\n\nBu hat üzerinden kolayca randevu alabilirsiniz. Randevu almak için *randevu* yazmanız yeterli — size müsait günleri ve saatleri sunacağız, tercihlerinize göre randevunuzu birlikte oluşturacağız.\n\nMevcut randevunuzu onaylamak için *evet*, iptal etmek için *iptal* yazabilirsiniz.`
+      )
+      return NextResponse.json({ ok: true })
+    }
+
     await sendReply(psychologistId, phone,
       `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
     )

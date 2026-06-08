@@ -91,6 +91,11 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   const [aiSuccess, setAiSuccess] = useState(false)
   const [aiError, setAiError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [analizOpen, setAnalizOpen] = useState(false)
+  const [analizLoading, setAnalizLoading] = useState(false)
+  const [analizText, setAnalizText] = useState('')
+  const [analizError, setAnalizError] = useState('')
+  const [analizSeansSayisi, setAnalizSeansSayisi] = useState(0)
 
   const fetchNotlar = useCallback(async () => {
     setLoading(true)
@@ -237,6 +242,28 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
     setTimeout(() => setAiSuccess(false), 4000)
   }
 
+  async function handleAnalizAc() {
+    if (analizOpen && analizText) { setAnalizOpen(false); return }
+    setAnalizOpen(true)
+    if (analizText) return
+    setAnalizLoading(true)
+    setAnalizError('')
+    const res = await fetch('/api/ai/seans-analiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patient_id: hastaId }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setAnalizError(data.error ?? 'Analiz oluşturulamadı.')
+      setAnalizLoading(false)
+      return
+    }
+    setAnalizText(data.analiz)
+    setAnalizSeansSayisi(data.seans_sayisi)
+    setAnalizLoading(false)
+  }
+
   function handleYeni() {
     setYeniMode(true)
     setSecilenId(null)
@@ -279,6 +306,22 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {open && notlar.length >= 3 && (
+            <button
+              onClick={e => { e.stopPropagation(); handleAnalizAc() }}
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all"
+              style={{
+                background: analizOpen ? '#e8f5f1' : 'linear-gradient(135deg, #4a7c6f 0%, #3d6b5f 100%)',
+                color: analizOpen ? '#4a7c6f' : '#fff',
+                border: analizOpen ? '1px solid #b2d8d0' : 'none',
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              {analizOpen ? 'Analizi Gizle' : 'İlerleme Analizi'}
+            </button>
+          )}
           {open && (
             <button
               onClick={e => { e.stopPropagation(); handleYeni() }}
@@ -301,6 +344,47 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
         </div>
       </div>
       {open && <>
+
+      {/* İlerleme Analizi Paneli */}
+      {analizOpen && (
+        <div className="px-5 py-4 border-b" style={{ borderColor: '#dde5e2', background: '#f8fafc' }}>
+          <div className="flex items-center gap-2 mb-3">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a7c6f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <span className="text-xs font-semibold" style={{ color: '#4a7c6f' }}>
+              AI İLERLEME ANALİZİ
+            </span>
+            {analizSeansSayisi > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: '#e8f5f1', color: '#4a7c6f' }}>
+                Son {analizSeansSayisi} seans
+              </span>
+            )}
+          </div>
+          {analizLoading ? (
+            <div className="flex items-center gap-2 text-sm" style={{ color: '#94a3b8' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}>
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              Analiz oluşturuluyor...
+            </div>
+          ) : analizError ? (
+            <p className="text-sm" style={{ color: '#dc2626' }}>{analizError}</p>
+          ) : (
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm leading-relaxed flex-1" style={{ color: '#334155' }}>{analizText}</p>
+              <button
+                onClick={() => { setAnalizText(''); setAnalizError(''); handleAnalizAc() }}
+                className="text-xs shrink-0 px-2.5 py-1 rounded-lg border transition-all"
+                style={{ borderColor: '#dde5e2', color: '#94a3b8' }}
+                title="Yeniden oluştur"
+              >
+                ↻ Yenile
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row md:h-[520px]">
         {/* SOL — Seans Listesi */}

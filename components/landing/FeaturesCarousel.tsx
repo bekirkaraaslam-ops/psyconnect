@@ -48,13 +48,14 @@ const FEATURES = [
     color: '#8b5cf6',
     bg: 'rgba(139,92,246,0.12)',
     title: 'Yapay Zeka Asistan',
-    tagline: 'Randevu bot, SOAP notu, anamnez özeti — hepsi AI ile.',
-    old: 'Seans sonrası not yazmak için vakit harcamak, anamnez okumak için dakikalar geçirmek.',
+    tagline: 'SOAP notu, seans analizi, ölçek yorumu, randevu botu — hepsi AI ile.',
+    old: 'Seans sonrası not yazmak, anamnez okumak, ilerlemeyi elle takip etmek için saatler harcamak.',
     benefits: [
       'Seans notundan tek tıkla SOAP formatı oluşturulur',
       'Danışanın anamnez formu AI tarafından özetlenir, ilk görüşmeye hazır gelirsin',
+      'Son seansların tamamı analiz edilir, danışanın ilerlemesi tek paragrafta özetlenir',
+      'PHQ-9, GAD-7 gibi ölçek sonuçları AI tarafından klinik olarak yorumlanır',
       'Danışan istediği saatte WhatsApp\'tan randevu alır, takvim otomatik dolar',
-      'One planında: 20 SOAP + 10 anamnez özeti/ay — Pro\'da sınırsız',
     ],
   },
   {

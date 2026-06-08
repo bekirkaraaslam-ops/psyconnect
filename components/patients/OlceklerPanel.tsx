@@ -77,6 +77,10 @@ export default function OlceklerPanel({ hastaId }: Props) {
   const [link, setLink] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState('')
+  const [yorumMap, setYorumMap] = useState<Record<string, string>>({})
+  const [yorumLoadingId, setYorumLoadingId] = useState<string | null>(null)
+  const [yorumErrorId, setYorumErrorId] = useState<string | null>(null)
+  const [yorumOpenId, setYorumOpenId] = useState<string | null>(null)
 
   const fetchResponses = useCallback(() => {
     setLoading(true)
@@ -114,6 +118,27 @@ export default function OlceklerPanel({ hastaId }: Props) {
     } finally {
       setSending(false)
     }
+  }
+
+  async function handleYorumAc(responseId: string) {
+    if (yorumOpenId === responseId) { setYorumOpenId(null); return }
+    setYorumOpenId(responseId)
+    if (yorumMap[responseId]) return
+    setYorumLoadingId(responseId)
+    setYorumErrorId(null)
+    const res = await fetch('/api/ai/olcek-yorum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ response_id: responseId }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setYorumErrorId(responseId)
+      setYorumMap(m => ({ ...m, [responseId]: data.error ?? 'Yorum oluşturulamadı.' }))
+    } else {
+      setYorumMap(m => ({ ...m, [responseId]: data.yorum }))
+    }
+    setYorumLoadingId(null)
   }
 
   function copyLink() {
@@ -181,36 +206,75 @@ export default function OlceklerPanel({ hastaId }: Props) {
                   const isExpired = !r.filled_at && new Date(r.expires_at) < new Date()
                   const isWaiting = !r.filled_at && !isExpired
                   return (
-                    <div key={r.id} className="flex items-center gap-3 py-2 px-3 rounded-xl" style={{ background: '#f8fafc' }}>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium" style={{ color: '#334155' }}>{r.scale?.short_name}</p>
-                        <p className="text-xs" style={{ color: '#94a3b8' }}>
-                          {r.filled_at
-                            ? new Date(r.filled_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })
-                            : isWaiting
-                            ? 'Bekleniyor'
-                            : 'Süresi doldu'}
-                        </p>
-                      </div>
-                      {r.filled_at && r.total_score !== null ? (
-                        <div className="text-right shrink-0">
-                          <p className="text-base font-bold" style={{ color: r.interpretation_color ?? '#334155' }}>
-                            {r.total_score}
-                          </p>
-                          <p className="text-xs" style={{ color: r.interpretation_color ?? '#64748b' }}>
-                            {r.interpretation}
+                    <div key={r.id} className="rounded-xl overflow-hidden" style={{ background: '#f8fafc' }}>
+                      <div className="flex items-center gap-3 py-2 px-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium" style={{ color: '#334155' }}>{r.scale?.short_name}</p>
+                          <p className="text-xs" style={{ color: '#94a3b8' }}>
+                            {r.filled_at
+                              ? new Date(r.filled_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })
+                              : isWaiting
+                              ? 'Bekleniyor'
+                              : 'Süresi doldu'}
                           </p>
                         </div>
-                      ) : (
-                        <span
-                          className="text-xs px-2 py-0.5 rounded-full shrink-0"
-                          style={{
-                            background: isWaiting ? '#fef9c3' : '#f1f5f9',
-                            color: isWaiting ? '#a16207' : '#94a3b8',
-                          }}
-                        >
-                          {isWaiting ? 'Bekliyor' : 'Doldurmadı'}
-                        </span>
+                        {r.filled_at && r.total_score !== null ? (
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="text-right">
+                              <p className="text-base font-bold" style={{ color: r.interpretation_color ?? '#334155' }}>
+                                {r.total_score}
+                              </p>
+                              <p className="text-xs" style={{ color: r.interpretation_color ?? '#64748b' }}>
+                                {r.interpretation}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => handleYorumAc(r.id)}
+                              className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg transition-all"
+                              style={{
+                                background: yorumOpenId === r.id ? '#e8f5f1' : 'linear-gradient(135deg, #4a7c6f 0%, #3d6b5f 100%)',
+                                color: yorumOpenId === r.id ? '#4a7c6f' : '#fff',
+                                border: yorumOpenId === r.id ? '1px solid #b2d8d0' : 'none',
+                              }}
+                            >
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                              </svg>
+                              AI
+                            </button>
+                          </div>
+                        ) : (
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full shrink-0"
+                            style={{
+                              background: isWaiting ? '#fef9c3' : '#f1f5f9',
+                              color: isWaiting ? '#a16207' : '#94a3b8',
+                            }}
+                          >
+                            {isWaiting ? 'Bekliyor' : 'Doldurmadı'}
+                          </span>
+                        )}
+                      </div>
+                      {/* AI Yorum Paneli */}
+                      {yorumOpenId === r.id && (
+                        <div className="px-3 pb-3 pt-1 border-t" style={{ borderColor: '#e8f5f1' }}>
+                          <p className="text-xs font-semibold mb-1.5" style={{ color: '#4a7c6f' }}>AI KLİNİK YORUM</p>
+                          {yorumLoadingId === r.id ? (
+                            <div className="flex items-center gap-2 text-xs" style={{ color: '#94a3b8' }}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}>
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                              </svg>
+                              Yorum oluşturuluyor...
+                            </div>
+                          ) : (
+                            <p
+                              className="text-xs leading-relaxed"
+                              style={{ color: yorumErrorId === r.id ? '#dc2626' : '#334155' }}
+                            >
+                              {yorumMap[r.id]}
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
                   )
@@ -322,6 +386,7 @@ export default function OlceklerPanel({ hastaId }: Props) {
           </div>
         </div>
       )}
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </>
   )
 }
