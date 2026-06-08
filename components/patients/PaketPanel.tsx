@@ -80,7 +80,7 @@ export default function PaketPanel({ hastaId }: { hastaId: string }) {
               className="h-2 rounded-full transition-all"
               style={{
                 width: `${yuzde}%`,
-                background: kalan <= 1 ? '#f59e0b' : '#4a7c6f',
+                background: kalan <= 3 ? '#f59e0b' : '#4a7c6f',
               }}
             />
           </div>
@@ -88,9 +88,9 @@ export default function PaketPanel({ hastaId }: { hastaId: string }) {
             <span>{kalan} seans kaldı</span>
             <span>₺{paket.birim_fiyat}/seans</span>
           </div>
-          {kalan <= 1 && (
+          {kalan <= 3 && (
             <div className="px-3 py-2 rounded-lg text-xs" style={{ background: '#fef3c7', color: '#92400e' }}>
-              Paket bitmek üzere — yeni paket eklemeyi unutmayın.
+              {kalan === 0 ? 'Paket bitti — yeni paket ekleyin.' : `${kalan} seans kaldı — yeni paket eklemeyi unutmayın.`}
             </div>
           )}
         </div>

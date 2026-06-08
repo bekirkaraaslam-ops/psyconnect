@@ -107,7 +107,7 @@ export default function OdemelerPanel({ hastaId }: Props) {
 
       {/* Ödeme ekleme formu */}
       {showForm && (
-        <form onSubmit={handleAddOdeme} className="px-4 py-3 border-b space-y-2" style={{ borderColor: '#f1f5f9', background: '#fafafa' }}>
+        <form onSubmit={handleAddOdeme} className="px-4 py-3 border-b space-y-2" style={{ borderColor: '#f1f5f9', background: '#fafafa', animation: 'slideDown 0.18s ease' }}>
           <p className="text-xs font-semibold" style={{ color: '#334155' }}>Yeni Ödeme Kaydet</p>
           <div className="flex gap-2">
             <input
@@ -139,7 +139,7 @@ export default function OdemelerPanel({ hastaId }: Props) {
               <option value="">— Randevuya bağla (opsiyonel) —</option>
               {apts.filter(a => a.odeme_durumu === 'bekliyor').map(a => (
                 <option key={a.id} value={a.id}>
-                  {fmtDate(a.appointment_date)} {fmtTime(a.appointment_date)} — ₺{a.ucret}
+                  {new Date(a.appointment_date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', timeZone: 'Europe/Istanbul' })} {fmtTime(a.appointment_date)} · ₺{a.ucret}
                 </option>
               ))}
             </select>

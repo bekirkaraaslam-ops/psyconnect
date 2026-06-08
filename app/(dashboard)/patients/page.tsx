@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import Link from 'next/link'
-import PatientCard from '@/components/patients/PatientCard'
+import PatientsSearchList from '@/components/patients/PatientsSearchList'
 import { getLimits, isProPlan } from '@/lib/plans'
 import PatientsLimitButton from '@/components/patients/PatientsLimitButton'
 import { Suspense } from 'react'
@@ -90,11 +90,7 @@ export default async function PatientsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {patients.map(patient => (
-              <PatientCard key={patient.id} patient={patient} />
-            ))}
-          </div>
+          <PatientsSearchList patients={patients} />
         )}
       </div>
     </div>

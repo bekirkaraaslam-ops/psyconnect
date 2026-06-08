@@ -87,6 +87,10 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   const [yeniMode, setYeniMode] = useState(false)
   const [error, setError] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiSuccess, setAiSuccess] = useState(false)
+  const [aiError, setAiError] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const fetchNotlar = useCallback(async () => {
     setLoading(true)
@@ -175,10 +179,11 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
   }
 
   async function handleDelete() {
-    if (!secilenId || !confirm('Bu seans notunu silmek istediğinize emin misiniz?')) return
+    if (!secilenId) return
     await fetch(`/api/hasta-notlari/${secilenId}`, { method: 'DELETE' })
     setSecilenId(null)
     setDetay(null)
+    setConfirmDelete(false)
     setForm({ seans_tarihi: '', seans_notu: '', gelecek_plan: '', ev_odevi: '', soap_s: '', soap_o: '', soap_a: '', soap_p: '' })
     await fetchNotlar()
   }
@@ -199,6 +204,37 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       setSendError(data.error ?? 'Gönderilemedi.')
     }
     setSending(false)
+  }
+
+  async function handleAiSoap() {
+    if (!form.seans_notu.trim()) {
+      setAiError('Önce Genel Notlar alanına seans özetini yazın.')
+      return
+    }
+    setAiLoading(true)
+    setAiError('')
+    setAiSuccess(false)
+    const res = await fetch('/api/ai/soap-note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        seans_notu: form.seans_notu,
+        mevcut_s: form.soap_s,
+        mevcut_o: form.soap_o,
+        mevcut_a: form.soap_a,
+        mevcut_p: form.soap_p,
+      }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setAiError(data.error ?? 'Bir hata oluştu.')
+      setAiLoading(false)
+      return
+    }
+    setForm(p => ({ ...p, soap_s: data.s, soap_o: data.o, soap_a: data.a, soap_p: data.p }))
+    setAiSuccess(true)
+    setAiLoading(false)
+    setTimeout(() => setAiSuccess(false), 4000)
   }
 
   function handleYeni() {
@@ -266,15 +302,24 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
       </div>
       {open && <>
 
-      <div className="flex" style={{ minHeight: '420px' }}>
+      <div className="flex" style={{ height: '520px' }}>
         {/* SOL — Seans Listesi */}
-        <div className="w-52 border-r flex-shrink-0" style={{ borderColor: '#dde5e2' }}>
+        <div className="w-52 border-r flex-shrink-0 flex flex-col overflow-hidden" style={{ borderColor: '#dde5e2' }}>
           {loading ? (
             <div className="p-4 text-sm text-center" style={{ color: '#94a3b8' }}>Yükleniyor...</div>
           ) : notlar.length === 0 ? (
-            <div className="p-4 text-sm text-center" style={{ color: '#94a3b8' }}>Henüz not yok</div>
+            <div className="p-6 text-sm text-center" style={{ color: '#94a3b8' }}>
+              <p className="mb-2">Henüz not yok</p>
+              <button
+                onClick={handleYeni}
+                className="text-xs font-medium underline"
+                style={{ color: '#4a7c6f' }}
+              >
+                İlk seans notunu ekle
+              </button>
+            </div>
           ) : (
-            <div className="overflow-y-auto" style={{ maxHeight: '520px' }}>
+            <div className="overflow-y-auto flex-1">
               {notlar.map(n => (
                 <button
                   key={n.id}
@@ -295,7 +340,7 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
         </div>
 
         {/* SAĞ — Not Detayı */}
-        <div className="flex-1 p-5 overflow-y-auto" style={{ maxHeight: '600px' }}>
+        <div className="flex-1 p-5 overflow-y-auto">
           {!secilenId && !yeniMode ? (
             <div className="flex items-center justify-center h-full text-sm" style={{ color: '#94a3b8' }}>
               Soldan bir seans seçin veya yeni seans ekleyin.
@@ -318,6 +363,67 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                 />
               </div>
 
+              {/* Seans özeti + AI butonu */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium" style={{ color: '#64748b' }}>SEANS ÖZETİ</label>
+                  <span className="text-xs" style={{ color: '#94a3b8' }}>AI bu nottan SOAP oluşturur</span>
+                </div>
+                <textarea
+                  value={form.seans_notu}
+                  onChange={e => setForm(p => ({ ...p, seans_notu: e.target.value }))}
+                  rows={3}
+                  placeholder="Seansı kısaca özetle: neler konuşuldu, danışanın durumu, öne çıkan temalar..."
+                  className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
+                  style={{ borderColor: '#dde5e2', color: '#334155' }}
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex-1">
+                    {aiSuccess && (
+                      <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: '#065f46' }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        SOAP dolduruldu — aşağıda düzenleyebilirsiniz.
+                      </div>
+                    )}
+                    {aiError && (
+                      <p className="text-xs" style={{ color: '#dc2626' }}>{aiError}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleAiSoap}
+                    disabled={aiLoading || !form.seans_notu.trim()}
+                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all disabled:opacity-50 ml-3 shrink-0"
+                    style={{
+                      background: 'linear-gradient(135deg, #4a7c6f 0%, #3d6b5f 100%)',
+                      color: '#fff',
+                    }}
+                  >
+                    {aiLoading ? (
+                      <>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}>
+                          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                        </svg>
+                        Oluşturuluyor...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        SOAP Oluştur
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* SOAP başlığı */}
+              <div>
+                <span className="text-xs font-semibold tracking-wide" style={{ color: '#94a3b8' }}>SOAP NOTLARI</span>
+              </div>
+
               {/* SOAP Kartları */}
               {SOAP_CARDS.map(card => (
                 <div
@@ -334,14 +440,28 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                     </span>
                     <span className="text-xs font-semibold" style={{ color: '#334155' }}>{card.sublabel}</span>
                   </div>
-                  <textarea
-                    value={form[card.key]}
-                    onChange={e => setForm(p => ({ ...p, [card.key]: e.target.value }))}
-                    rows={3}
-                    placeholder={card.placeholder}
-                    className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none bg-white"
-                    style={{ borderColor: card.border, color: '#334155' }}
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <textarea
+                      value={form[card.key]}
+                      onChange={e => setForm(p => ({ ...p, [card.key]: e.target.value }))}
+                      rows={3}
+                      placeholder={card.placeholder}
+                      disabled={aiLoading}
+                      className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none bg-white"
+                      style={{ borderColor: card.border, color: '#334155', opacity: aiLoading ? 0.5 : 1 }}
+                    />
+                    {aiLoading && (
+                      <div
+                        style={{
+                          position: 'absolute', inset: 0, borderRadius: 8,
+                          background: 'linear-gradient(90deg, transparent 0%, rgba(110,231,183,0.18) 50%, transparent 100%)',
+                          backgroundSize: '200% 100%',
+                          animation: 'aiShimmer 1.4s ease-in-out infinite',
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               ))}
 
@@ -379,19 +499,6 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                 )}
               </div>
 
-              {/* Genel Notlar (eski alan, uyumluluk için) */}
-              <div>
-                <label className="block text-xs font-medium mb-1" style={{ color: '#64748b' }}>GENEL NOTLAR</label>
-                <textarea
-                  value={form.seans_notu}
-                  onChange={e => setForm(p => ({ ...p, seans_notu: e.target.value }))}
-                  rows={2}
-                  placeholder="Ek notlar..."
-                  className="w-full px-3 py-2 rounded-lg border text-sm outline-none resize-none"
-                  style={{ borderColor: '#dde5e2', color: '#334155' }}
-                />
-              </div>
-
               {error && (
                 <div className="px-3 py-2 rounded-lg text-sm" style={{ background: '#fee2e2', color: '#dc2626' }}>{error}</div>
               )}
@@ -410,19 +517,48 @@ export default function SeansNotlari({ hastaId, hastaAdi }: Props) {
                   {saving ? 'Kaydediliyor...' : 'Kaydet'}
                 </button>
                 {!yeniMode && secilenId && (
-                  <button
-                    onClick={handleDelete}
-                    className="px-4 py-2 rounded-xl text-sm font-medium border"
-                    style={{ borderColor: '#fca5a5', color: '#dc2626' }}
-                  >
-                    Sil
-                  </button>
+                  confirmDelete ? (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={handleDelete}
+                        className="px-3 py-2 rounded-xl text-xs font-semibold text-white"
+                        style={{ background: '#ef4444' }}
+                      >
+                        Evet, Sil
+                      </button>
+                      <button
+                        onClick={() => setConfirmDelete(false)}
+                        className="px-3 py-2 rounded-xl text-xs"
+                        style={{ background: '#f1f5f9', color: '#64748b' }}
+                      >
+                        İptal
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDelete(true)}
+                      className="px-4 py-2 rounded-xl text-sm font-medium border"
+                      style={{ borderColor: '#fca5a5', color: '#dc2626' }}
+                    >
+                      Sil
+                    </button>
+                  )
                 )}
               </div>
             </div>
           )}
         </div>
       </div>
+      <style>{`
+        @keyframes aiShimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+      `}</style>
       </>}
     </div>
   )

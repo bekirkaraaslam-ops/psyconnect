@@ -2,12 +2,14 @@ import { createClient } from '@/lib/supabase/server'
 import { getInitials } from '@/lib/utils'
 import DarkModeToggle from './DarkModeToggle'
 import NotificationBell from './NotificationBell'
+import BackButton from './BackButton'
 
 interface TopbarProps {
   title: string
+  backHref?: string
 }
 
-export default async function Topbar({ title }: TopbarProps) {
+export default async function Topbar({ title, backHref }: TopbarProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -21,7 +23,10 @@ export default async function Topbar({ title }: TopbarProps) {
 
   return (
     <header className="h-16 border-b flex items-center justify-between px-4 md:px-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
-      <h1 className="text-base md:text-lg font-semibold truncate min-w-0 mr-2" style={{ color: 'var(--foreground)' }}>{title}</h1>
+      <div className="flex items-center gap-1.5 min-w-0 mr-2">
+        {backHref !== undefined && <BackButton fallback={backHref || undefined} />}
+        <h1 className="text-base md:text-lg font-semibold truncate" style={{ color: 'var(--foreground)' }}>{title}</h1>
+      </div>
 
       <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
         <NotificationBell />

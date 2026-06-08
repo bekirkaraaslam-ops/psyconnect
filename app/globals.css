@@ -39,6 +39,11 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 html.dark .bg-white {
   background-color: var(--card) !important;
 }

@@ -1,0 +1,2 @@
+ALTER TABLE anamnez_forms
+  ADD COLUMN IF NOT EXISTS ai_ozet TEXT;

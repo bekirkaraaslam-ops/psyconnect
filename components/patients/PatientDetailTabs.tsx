@@ -38,11 +38,25 @@ interface OnamForm {
   imza_text: string | null
 }
 
+interface AnamnezDecrypted {
+  filled_at: string
+  sikayet: string
+  sure: string
+  gecmis_tedavi: string
+  ilac: string
+  aile: string
+  uyku: string
+  beslenme: string
+  acil_kisi: string
+  ek_notlar: string
+}
+
 interface Props {
   hastaId: string
   hastaAdi: string
   appointments: Apt[]
   anamnezForm: AnamnezForm | null
+  anamnezDecrypted: AnamnezDecrypted | null
   onamForm: OnamForm | null
   anamnezEnabled: boolean
 }
@@ -59,6 +73,7 @@ export default function PatientDetailTabs({
   hastaAdi,
   appointments,
   anamnezForm,
+  anamnezDecrypted,
   onamForm,
   anamnezEnabled,
 }: Props) {
@@ -97,8 +112,8 @@ export default function PatientDetailTabs({
       {/* Değerlendirme: anamnez + onam + ölçekler */}
       {active === 'degerlendirme' && (
         <div className="space-y-4">
-          {anamnezEnabled && <AnamnezPanel form={anamnezForm} />}
-          <OnamPanel form={onamForm} />
+          {anamnezEnabled && <AnamnezPanel hastaId={hastaId} form={anamnezForm} decrypted={anamnezDecrypted} />}
+          <OnamPanel hastaId={hastaId} form={onamForm} />
           <OlceklerPanel hastaId={hastaId} />
         </div>
       )}

@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Topbar from '@/components/layout/Topbar'
 import PendingApprovalsPanel from '@/components/dashboard/PendingApprovalsPanel'
 import MissingNotesAccordion from '@/components/dashboard/MissingNotesAccordion'
+import OnboardingWidget from '@/components/setup/OnboardingWidget'
 import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
 export default async function OverviewPage() {
@@ -10,7 +11,7 @@ export default async function OverviewPage() {
 
   const { data: psychologist } = await supabase
     .from('psychologists')
-    .select('id, full_name, subscription_status, plan_type, is_connected')
+    .select('id, full_name, subscription_status, plan_type, is_connected, varsayilan_seans_ucreti, booking_slug, onboarding_completed')
     .eq('auth_user_id', user!.id)
     .single()
 
@@ -63,6 +64,9 @@ export default async function OverviewPage() {
     { data: pastApts },
     { data: recentNotes },
     { data: bekleyenOdemeler },
+    { count: totalAppointments },
+    { count: totalNotes },
+    { count: totalAnamnezForms },
   ] = await Promise.all([
     supabase.from('patients').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).eq('is_active', true),
     supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId).gte('appointment_date', todayStart).lte('appointment_date', todayEnd).in('status', ['waiting', 'confirmed']),
@@ -77,6 +81,9 @@ export default async function OverviewPage() {
     supabase.from('appointments').select('id, appointment_date, patient:patients(id, name_surname)').eq('psychologist_id', psychologistId).in('status', ['confirmed', 'completed', 'waiting']).gte('appointment_date', yesterdayStart).lt('appointment_date', now.toISOString()).order('appointment_date', { ascending: false }),
     supabase.from('hasta_notlari').select('hasta_id, seans_tarihi').eq('psychologist_id', psychologistId).gte('seans_tarihi', yesterdayStart).lte('seans_tarihi', now.toISOString()),
     supabase.from('appointments').select('ucret').eq('psychologist_id', psychologistId).eq('odeme_durumu', 'bekliyor').not('ucret', 'is', null),
+    supabase.from('appointments').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId),
+    supabase.from('hasta_notlari').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId),
+    supabase.from('anamnez_forms').select('*', { count: 'exact', head: true }).eq('psychologist_id', psychologistId),
   ])
 
   const missingNoteApts = (pastApts ?? []).filter((apt: any) => {
@@ -117,7 +124,59 @@ export default async function OverviewPage() {
     }] : []),
   ]
 
-  const isNew = (totalPatients ?? 0) === 0
+  const showOnboarding = psychologist?.onboarding_completed === false
+
+  const onboardingSteps = showOnboarding ? [
+    {
+      id: 'account',
+      label: 'Hesabın oluşturuldu',
+      description: '',
+      href: '#',
+      done: true,
+    },
+    {
+      id: 'profile',
+      label: 'Adını ve seans ücretini gir',
+      description: 'Ayarlar sayfasından profilini tamamla',
+      href: '/settings',
+      done: !!(psychologist?.full_name && psychologist?.varsayilan_seans_ucreti != null),
+    },
+    {
+      id: 'patient',
+      label: 'İlk hastanı ekle',
+      description: 'Hasta listesine ilk kaydı oluştur',
+      href: '/patients/new',
+      done: (totalPatients ?? 0) > 0,
+    },
+    {
+      id: 'appointment',
+      label: 'İlk randevunu oluştur',
+      description: 'Takvime bir seans ekle',
+      href: '/appointments/new',
+      done: (totalAppointments ?? 0) > 0,
+    },
+    {
+      id: 'note',
+      label: 'Bir seans notu yaz',
+      description: 'Hasta sayfasından Seans sekmesine git',
+      href: '/patients',
+      done: (totalNotes ?? 0) > 0,
+    },
+    {
+      id: 'anamnez',
+      label: 'Danışanına anamnez formu gönder',
+      description: 'Hasta sayfasından Değerlendirme sekmesini aç',
+      href: '/patients',
+      done: (totalAnamnezForms ?? 0) > 0,
+    },
+    {
+      id: 'booking',
+      label: 'Booking sayfanı kişiselleştir',
+      description: 'Özel bağlantı adresi ve karşılama mesajı ayarla',
+      href: '/settings',
+      done: !!(psychologist?.booking_slug),
+    },
+  ] : []
 
   return (
     <div className="flex-1">
@@ -125,41 +184,8 @@ export default async function OverviewPage() {
 
       <div className="p-3 md:p-6 space-y-4 md:space-y-6">
 
-        {/* Başlarken kartı — yalnızca hiç hastası olmayan yeni kullanıcılara */}
-        {isNew && (
-          <div className="bg-white rounded-2xl border p-4 md:p-6" style={{ borderColor: '#dde5e2', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style={{ background: '#e8f5f1' }}>🚀</div>
-              <div>
-                <div className="text-sm font-semibold" style={{ color: '#334155' }}>Seansify'a Hoş Geldin</div>
-                <div className="text-xs" style={{ color: '#94a3b8' }}>Başlamak için şu 3 adımı tamamla</div>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Link href="/patients/new" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>1</div>
-                <div>
-                  <div className="text-sm font-medium" style={{ color: '#334155' }}>İlk hastanı ekle</div>
-                  <div className="text-xs" style={{ color: '#94a3b8' }}>Hasta kaydı oluştur</div>
-                </div>
-              </Link>
-              <Link href="/whatsapp" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>2</div>
-                <div>
-                  <div className="text-sm font-medium" style={{ color: '#334155' }}>WhatsApp'ı bağla</div>
-                  <div className="text-xs" style={{ color: '#94a3b8' }}>Hatırlatıcılar için gerekli</div>
-                </div>
-              </Link>
-              <Link href="/appointments/new" className="flex items-center gap-3 rounded-xl p-4 border hover:border-[#4a7c6f] transition-colors group" style={{ borderColor: '#dde5e2' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: '#4a7c6f', color: 'white' }}>3</div>
-                <div>
-                  <div className="text-sm font-medium" style={{ color: '#334155' }}>Randevu oluştur</div>
-                  <div className="text-xs" style={{ color: '#94a3b8' }}>İlk seansını planla</div>
-                </div>
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Onboarding widget */}
+        {showOnboarding && <OnboardingWidget steps={onboardingSteps} />}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">

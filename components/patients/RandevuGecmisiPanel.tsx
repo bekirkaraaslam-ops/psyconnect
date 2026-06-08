@@ -17,12 +17,28 @@ interface Props {
 }
 
 const INITIAL_SHOW = 3
+const CANCELABLE = ['confirmed', 'scheduled', 'pending']
 
 export default function RandevuGecmisiPanel({ hastaId, appointments }: Props) {
   const [expanded, setExpanded] = useState(false)
+  const [confirmId, setConfirmId] = useState<string | null>(null)
+  const [cancelingId, setCancelingId] = useState<string | null>(null)
+  const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({})
 
   const visible = expanded ? appointments : appointments.slice(0, INITIAL_SHOW)
   const hasMore = appointments.length > INITIAL_SHOW
+
+  async function handleCancel(id: string) {
+    setCancelingId(id)
+    await fetch(`/api/appointments/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'canceled' }),
+    })
+    setLocalStatuses(p => ({ ...p, [id]: 'canceled' }))
+    setConfirmId(null)
+    setCancelingId(null)
+  }
 
   return (
     <div className="bg-white rounded-2xl border" style={{ borderColor: '#dde5e2' }}>
@@ -44,25 +60,61 @@ export default function RandevuGecmisiPanel({ hastaId, appointments }: Props) {
       ) : (
         <>
           <div className="divide-y" style={{ borderColor: '#f1f5f9' }}>
-            {visible.map((apt) => (
-              <Link
-                key={apt.id}
-                href={`/appointments/${apt.id}`}
-                className="flex items-center justify-between px-5 py-4 hover:bg-gray-50"
-              >
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#334155' }}>
-                    {formatDateTime(apt.appointment_date)}
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
-                    {apt.duration_minutes} dakika
-                  </p>
+            {visible.map((apt) => {
+              const status = localStatuses[apt.id] ?? apt.status
+              const canCancel = CANCELABLE.includes(status)
+              const isConfirming = confirmId === apt.id
+              const isCanceling = cancelingId === apt.id
+
+              return (
+                <div key={apt.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50 group">
+                  <Link href={`/appointments/${apt.id}`} className="flex-1 min-w-0 pr-3">
+                    <p className="text-sm font-medium" style={{ color: '#334155' }}>
+                      {formatDateTime(apt.appointment_date)}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+                      {apt.duration_minutes} dakika
+                    </p>
+                  </Link>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${appointmentStatusColor(status)}`}>
+                      {appointmentStatusLabel(status)}
+                    </span>
+
+                    {canCancel && (
+                      isConfirming ? (
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleCancel(apt.id)}
+                            disabled={isCanceling}
+                            className="text-xs font-semibold px-2 py-1 rounded-lg text-white disabled:opacity-50"
+                            style={{ background: '#ef4444' }}
+                          >
+                            {isCanceling ? '...' : 'İptal Et'}
+                          </button>
+                          <button
+                            onClick={() => setConfirmId(null)}
+                            className="text-xs px-2 py-1 rounded-lg"
+                            style={{ background: '#f1f5f9', color: '#64748b' }}
+                          >
+                            Vazgeç
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmId(apt.id)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1 rounded-lg"
+                          style={{ color: '#94a3b8', background: '#f8fafc' }}
+                        >
+                          İptal
+                        </button>
+                      )
+                    )}
+                  </div>
                 </div>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${appointmentStatusColor(apt.status)}`}>
-                  {appointmentStatusLabel(apt.status)}
-                </span>
-              </Link>
-            ))}
+              )
+            })}
           </div>
 
           {hasMore && (

@@ -223,7 +223,7 @@ export default function Sidebar({ planType = 'free', onAyarlarClick }: SidebarPr
               <span style={isActive ? { color: '#4a7c6f' } : {}}>{item.icon}</span>
               <span className="hidden lg:inline flex-1">{item.label}</span>
               {showLock && (
-                <span className="hidden lg:inline" style={{ color: '#94a3b8' }}>
+                <span style={{ color: '#94a3b8' }}>
                   <LockIcon />
                 </span>
               )}
