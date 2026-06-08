@@ -83,7 +83,7 @@ export default function IptalIadePage() {
             </p>
             <p>
               Bununla birlikte, hizmetin ilk 48 saatinde teknik bir nedenden dolayı hiç kullanamadıysanız
-              <a href="mailto:info@seansify.com" className="underline ml-1" style={{ color: '#4a7c6f' }}>info@seansify.com</a>'a
+              <a href="mailto:destek@seansify.com" className="underline ml-1" style={{ color: '#4a7c6f' }}>destek@seansify.com</a>'a
               başvurarak değerlendirme talebinde bulunabilirsiniz.
             </p>
           </section>
@@ -109,7 +109,7 @@ export default function IptalIadePage() {
             </ul>
             <p className="mt-4">
               İade talepleri{' '}
-              <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a>
+              <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a>
               {' '}adresine iletilmelidir. Talepler en geç 5 iş günü içinde yanıtlanır. Onaylanan iadeler,
               ödeme yapılan yönteme bağlı olarak 5–14 iş günü içinde gerçekleştirilir.
             </p>
@@ -142,7 +142,7 @@ export default function IptalIadePage() {
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>7. İletişim</h2>
             <p>
               İptal, iade veya fatura konularındaki sorularınız için:{' '}
-              <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a>
+              <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a>
             </p>
             <p className="mt-2" style={{ color: '#64748b' }}>
               Yanıt süresi: iş günlerinde en geç 24 saat.

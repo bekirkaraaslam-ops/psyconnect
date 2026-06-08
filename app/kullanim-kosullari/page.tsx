@@ -81,7 +81,7 @@ export default function KullanimKosullariPage() {
               <li>Aboneliğinizi istediğiniz zaman, herhangi bir taahhüt olmaksızın iptal edebilirsiniz.</li>
               <li>İptal işlemi, mevcut fatura döneminin sonunda geçerli olur; erken iptal durumunda kalan süre için ücret iadesi yapılmaz.</li>
               <li>İptal sonrasında verilerinize 30 gün daha erişim sağlanır; bu süre içinde dışa aktarma işlemi yapabilirsiniz.</li>
-              <li>Teknik bir hata veya hizmet kesintisinden kaynaklanan sorunlar için <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a> adresine başvurabilirsiniz.</li>
+              <li>Teknik bir hata veya hizmet kesintisinden kaynaklanan sorunlar için <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a> adresine başvurabilirsiniz.</li>
             </ul>
           </section>
 
@@ -173,7 +173,7 @@ export default function KullanimKosullariPage() {
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>11. İletişim</h2>
             <p>
               Bu koşullarla ilgili sorularınız için:{' '}
-              <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a>
+              <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a>
             </p>
           </section>
 

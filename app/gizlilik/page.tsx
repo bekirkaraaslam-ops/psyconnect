@@ -39,7 +39,7 @@ export default function GizlilikPage() {
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#4a7c6f' }}>1. Veri Sorumlusu</h2>
             <p>
               6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu <strong>Seansify</strong>'dır.
-              İletişim için: <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a>
+              İletişim için: <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a>
             </p>
           </section>
 
@@ -130,7 +130,7 @@ export default function GizlilikPage() {
               <li>Kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme</li>
             </ul>
             <p className="mt-3">
-              Haklarınızı kullanmak için <a href="mailto:info@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>info@seansify.com</a> adresine yazabilirsiniz.
+              Haklarınızı kullanmak için <a href="mailto:destek@seansify.com" className="underline" style={{ color: '#4a7c6f' }}>destek@seansify.com</a> adresine yazabilirsiniz.
               Talebiniz en geç 30 gün içinde sonuçlandırılacaktır.
             </p>
           </section>
