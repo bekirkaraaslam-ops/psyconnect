@@ -39,12 +39,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Ölçek henüz doldurulmadı.' }, { status: 400 })
   }
 
-  const patient = response.patient as { id: string; psychologist_id: string } | null
+  const patientRaw = Array.isArray(response.patient) ? response.patient[0] : response.patient
+  const patient = patientRaw as { id: string; psychologist_id: string } | null
   if (!patient || patient.psychologist_id !== psych.id) {
     return NextResponse.json({ error: 'Yetkisiz' }, { status: 403 })
   }
 
-  const scale = response.scale as { name: string; short_name: string; description: string } | null
+  const scaleRaw = Array.isArray(response.scale) ? response.scale[0] : response.scale
+  const scale = scaleRaw as { name: string; short_name: string; description: string } | null
   if (!scale) return NextResponse.json({ error: 'Ölçek bilgisi bulunamadı' }, { status: 404 })
 
   const limits = getLimits(psych.plan_type)
