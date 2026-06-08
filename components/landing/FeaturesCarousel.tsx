@@ -449,12 +449,12 @@ export default function FeaturesCarousel() {
       </div>
 
       {/* Detail panel - desktop */}
-      <div className="hidden md:block" style={{ height: 320, overflow: 'hidden' }}>
+      <div className="hidden md:block" style={{ minHeight: 320, overflow: 'hidden' }}>
         <DetailPanel feature={feature} />
       </div>
 
       {/* Detail panel - mobile */}
-      <div className="md:hidden" style={{ height: 460, overflow: 'hidden' }}>
+      <div className="md:hidden" style={{ minHeight: 460, overflow: 'hidden' }}>
         <DetailPanelMobile feature={feature} />
       </div>
 
