@@ -423,11 +423,15 @@ async function connectWhatsApp(psychologistId) {
 
       // msg.message null ise Bad MAC — yardım menüsü göndererek Signal session'ı kur
       if (!msg.message) {
+        console.log(`[bad-mac] ${phone} — Signal session kuruluyor, yardım menüsü gönderiliyor`)
         try {
           await sock.sendMessage(jid, {
             text: 'Merhaba! 👋\n\n📅 *randevu* — Randevu almak\n❌ *iptal* — Randevu iptal\n✅ *evet* — Randevu onayla',
           })
-        } catch {}
+          console.log(`[bad-mac] ${phone} — Signal session kuruldu ✓`)
+        } catch (err) {
+          console.error(`[bad-mac] ${phone} — sendMessage hatası:`, err?.message)
+        }
         continue
       }
 

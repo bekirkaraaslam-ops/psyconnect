@@ -342,17 +342,6 @@ export async function POST(req: NextRequest) {
       await handleRandevuOnayla(supabase, psychologistId, phone)
       return NextResponse.json({ ok: true })
     }
-    // DIGER — mesai saatleri dışındaysa bildir
-    const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
-    const curHour = nowTR.getHours()
-    const curDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === nowTR.getDay())
-    if (!curDayName || !workDays.includes(curDayName) || curHour < workStart || curHour >= workEnd) {
-      await sendReply(psychologistId, phone,
-        `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
-      )
-      return NextResponse.json({ ok: true })
-    }
-
     // Kayıtlı danışan mı kontrol et — değilse hoş geldiniz mesajı gönder
     const { data: existingPatient } = await supabase
       .from('patients')
