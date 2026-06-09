@@ -53,6 +53,7 @@ const statuses = new Map()         // psychologistId → 'connecting'|'qr'|'conn
 const reconnectCounts = new Map()  // psychologistId → consecutive fail count
 const badMacCounts = new Map()     // psychologistId → bad mac error count
 const connectingFlags = new Set()  // psychologistId → bağlantı kurulum süreci devam ediyor
+const lidMaps = new Map()          // psychologistId → Map(@lid → phone number)
 // botSessions state türleri:
 //   'awaiting_selection'        → randevu slot seçimi bekliyor
 //   'awaiting_waitlist_response' → bekleme listesi teklifi yanıtı bekliyor
@@ -345,6 +346,21 @@ async function connectWhatsApp(psychologistId) {
 
   sockets.set(psychologistId, sock)
 
+  // @lid → gerçek telefon numarası eşlemesi
+  if (!lidMaps.has(psychologistId)) lidMaps.set(psychologistId, new Map())
+  const lidMap = lidMaps.get(psychologistId)
+
+  sock.ev.on('contacts.upsert', (contacts) => {
+    for (const contact of contacts) {
+      if (!contact.id?.endsWith('@s.whatsapp.net')) continue
+      if (!contact.lid) continue
+      const lid = contact.lid.includes('@') ? contact.lid : `${contact.lid}@lid`
+      const phone = contact.id.replace('@s.whatsapp.net', '')
+      lidMap.set(lid, phone)
+      console.log(`[lid-map] ${lid} → ${phone}`)
+    }
+  })
+
   sock.ev.on('creds.update', async () => {
     await saveCreds()
     await saveSession(psychologistId)
@@ -421,8 +437,25 @@ async function connectWhatsApp(psychologistId) {
       if (msg.key.fromMe) continue
       if (jid === 'status@broadcast') continue
       if (msgAgeMs > 30 * 60 * 1000) continue
-      if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
-      const phone = jid.replace('@s.whatsapp.net', '')
+
+      const isWaNet = jid.endsWith('@s.whatsapp.net')
+      const isLid   = jid.endsWith('@lid')
+      if (!isWaNet && !isLid) continue
+
+      let phone
+      if (isWaNet) {
+        phone = jid.replace('@s.whatsapp.net', '')
+      } else {
+        // @lid → gerçek telefon numarasına çevir
+        const resolved = lidMap.get(jid)
+        if (resolved) {
+          phone = resolved
+          console.log(`[lid] ${jid} → ${phone}`)
+        } else {
+          phone = jid.replace('@lid', '')
+          console.log(`[lid-warn] Çözülemeyen @lid: ${jid}, ham numara kullanılıyor: ${phone}`)
+        }
+      }
 
       // msg.message null veya okunabilir text yok → Bad MAC / protocol message
       // Her iki durumda da yardım menüsü göndererek Signal session'ı kur
