@@ -413,11 +413,14 @@ async function connectWhatsApp(psychologistId) {
     console.log(`[upsert] type=${type} count=${msgs?.length}`)
     if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
-      if (msg.key.fromMe) continue
-      if (msg.key.remoteJid === 'status@broadcast') continue
+      const jid = msg.key.remoteJid ?? ''
       const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
+      const msgType = msg.message ? Object.keys(msg.message)[0] : 'null'
+      console.log(`[filter] jid=${jid} fromMe=${msg.key.fromMe} ageSec=${Math.round(msgAgeMs/1000)} msgType=${msgType}`)
+
+      if (msg.key.fromMe) continue
+      if (jid === 'status@broadcast') continue
       if (msgAgeMs > 30 * 60 * 1000) continue
-      const jid = msg.key.remoteJid
       if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
 
