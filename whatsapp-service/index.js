@@ -409,7 +409,7 @@ async function connectWhatsApp(psychologistId) {
         // 440 (çakışma), 401 (stream hatası), 515 (restart) → sadece yeniden bağlan, session geçerli
         const attempts = (reconnectCounts.get(psychologistId) ?? 0) + 1
         reconnectCounts.set(psychologistId, attempts)
-        const delay = code === 440 ? 2000 : 5000
+        const delay = code === 440 ? 15000 : 5000
         console.warn(`[${psychologistId}] Yeniden bağlanıyor (deneme ${attempts}, ${delay / 1000}s)`)
         if (attempts >= 5) {
           await clearSessionAndReconnect(psychologistId, `${attempts} ardışık başarısız deneme`)
@@ -741,6 +741,9 @@ app.listen(PORT, async () => {
   setInterval(() => {
     fetch(`http://localhost:${PORT}/ping`).catch(() => {})
   }, 4 * 60 * 1000)
+
+  // Eski container'ın tamamen kapanmasını bekle (440 conflict önleme)
+  await new Promise(r => setTimeout(r, 15000))
 
   try {
     const { data: connected } = await getSupabase()
