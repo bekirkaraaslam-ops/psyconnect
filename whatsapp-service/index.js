@@ -442,6 +442,14 @@ async function connectWhatsApp(psychologistId) {
       const text = rawText.toUpperCase()
       console.log(`[msg] ${phone} → "${rawText}"`)
 
+      // Mesaj şifresi çözülemediyse (Bad MAC sonrası) — session yenilenmesi için cevap gönder
+      if (!rawText) {
+        try {
+          await sock.sendMessage(jid, { text: 'Mesajınızı alamadım, lütfen tekrar yazın 🙏' })
+        } catch {}
+        continue
+      }
+
       // ── Bekleme listesi teklif yanıtı (in-memory, önce kontrol et) ─
       const session = botSessions.get(phone)
       if (session?.state === 'awaiting_waitlist_response' && session.expiresAt > Date.now()) {
