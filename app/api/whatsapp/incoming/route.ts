@@ -54,18 +54,6 @@ async function handleRandevuAl(
     )
     return
   }
-  const nowTR = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }))
-  const currentHour = nowTR.getHours()
-  const currentDayNum = nowTR.getDay()
-  const currentDayName = Object.keys(DAY_JS).find(k => DAY_JS[k] === currentDayNum)
-  const isWorkDay = !!currentDayName && workDays.includes(currentDayName)
-  const isWorkHour = currentHour >= workStart && currentHour < workEnd
-  if (!isWorkDay || !isWorkHour) {
-    await sendReply(psychologistId, phone,
-      `Merhaba! Şu anda mesai saatlerimiz dışındasınız.\n\n🕐 Çalışma saatleri: ${String(workStart).padStart(2, '0')}:00 - ${String(workEnd).padStart(2, '0')}:00\n\nMesai saatleri içinde tekrar yazabilirsiniz.`
-    )
-    return
-  }
   const days = getAvailableDays(workDays)
   if (days.length === 0) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
