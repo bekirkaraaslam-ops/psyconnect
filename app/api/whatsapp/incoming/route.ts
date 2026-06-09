@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 
 function keywordIntent(text: string): string | null {
   const t = text.toLowerCase().replace('i̇', 'i')
-  if (/(randevu\s*(almak|istiyorum|almak\s*istiyorum|al|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|randevu\s*alabilir)/i.test(t)) return 'RANDEVU_AL'
+  if (/(^randevu[.!?,]?\s*$|randevu\s*(almak|istiyorum|almak\s*istiyorum|al|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|randevu\s*alabilir)/i.test(t)) return 'RANDEVU_AL'
   if (/(iptal|cancel|randevum[ıu]\s*iptal|randevu\s*iptal)/i.test(t)) return 'RANDEVU_IPTAL'
   if (/(evet|onay|geliyorum|gelirim|onayl)/i.test(t)) return 'RANDEVU_ONAYLA'
   return null
