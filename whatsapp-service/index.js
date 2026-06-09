@@ -421,28 +421,37 @@ async function connectWhatsApp(psychologistId) {
       if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
 
-      // msg.message null ise Bad MAC — yardım menüsü göndererek Signal session'ı kur
+      // msg.message null veya okunabilir text yok → Bad MAC / protocol message
+      // Her iki durumda da yardım menüsü göndererek Signal session'ı kur
+      const rawText = !msg.message ? '' : (
+        msg.message?.conversation ||
+        msg.message?.extendedTextMessage?.text ||
+        msg.message?.imageMessage?.caption ||
+        msg.message?.videoMessage?.caption ||
+        ''
+      ).trim()
+
       if (!msg.message) {
-        console.log(`[bad-mac] ${phone} — Signal session kuruluyor, yardım menüsü gönderiliyor`)
+        console.log(`[bad-mac] ${phone} — msg.message null, Signal session kuruluyor`)
+      } else if (!rawText) {
+        const msgType = Object.keys(msg.message)[0] ?? 'unknown'
+        console.log(`[bad-mac] ${phone} — okunabilir text yok (type=${msgType}), Signal session kuruluyor`)
+      }
+
+      if (!rawText) {
         try {
           await sock.sendMessage(jid, {
             text: 'Merhaba! 👋\n\n📅 *randevu* — Randevu almak\n❌ *iptal* — Randevu iptal\n✅ *evet* — Randevu onayla',
           })
-          console.log(`[bad-mac] ${phone} — Signal session kuruldu ✓`)
+          console.log(`[bad-mac] ${phone} — yardım menüsü gönderildi ✓`)
         } catch (err) {
           console.error(`[bad-mac] ${phone} — sendMessage hatası:`, err?.message)
         }
         continue
       }
 
-      const rawText = (
-        msg.message?.conversation ||
-        msg.message?.extendedTextMessage?.text ||
-        ''
-      ).trim()
       const text = rawText.toUpperCase()
       console.log(`[msg] ${phone} → "${rawText}"`)
-      if (!rawText) continue
 
       // ── Bekleme listesi teklif yanıtı (in-memory, önce kontrol et) ─
       const session = botSessions.get(phone)
