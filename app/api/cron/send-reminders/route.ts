@@ -62,6 +62,8 @@ export async function GET(req: NextRequest) {
     .neq('status', 'canceled')
     .neq('status', 'cancelled_by_patient')
     .neq('status', 'completed')
+    .neq('status', 'waiting')
+    .not('patient_id', 'is', null)
     .gte('appointment_date', from)
     .lte('appointment_date', to)
 
@@ -91,6 +93,11 @@ export async function GET(req: NextRequest) {
 
     if (!psychologist?.is_connected) {
       console.warn(`[send-reminders] Psikolog WA bağlı değil – apt: ${apt.id}`)
+      continue
+    }
+
+    if (!patient?.phone_number) {
+      console.warn(`[send-reminders] Danışan telefon yok – apt: ${apt.id}`)
       continue
     }
 
