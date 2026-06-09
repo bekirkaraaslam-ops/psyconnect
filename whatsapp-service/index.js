@@ -428,6 +428,9 @@ async function connectWhatsApp(psychologistId) {
     for (const msg of msgs) {
       if (!msg.message || msg.key.fromMe) continue
       if (msg.key.remoteJid === 'status@broadcast') continue
+      // 10 dakikadan eski mesajları atla (bağlantı sonrası eski replay'leri engeller)
+      const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
+      if (msgAgeMs > 10 * 60 * 1000) continue
       const jid = msg.key.remoteJid
       if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
