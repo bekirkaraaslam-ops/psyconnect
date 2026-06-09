@@ -335,7 +335,7 @@ async function connectWhatsApp(psychologistId) {
         const count = (badMacCounts.get(psychologistId) ?? 0) + 1
         badMacCounts.set(psychologistId, count)
         console.warn(`[${psychologistId}] Bad MAC #${count}`)
-        if (count >= 5) {
+        if (count >= 50) {
           const sock = sockets.get(psychologistId)
           if (sock) { try { sock.end(undefined) } catch {} }
           sockets.delete(psychologistId)
@@ -353,6 +353,7 @@ async function connectWhatsApp(psychologistId) {
     },
     printQRInTerminal: false,
     logger: pino({ level: 'silent' }),
+    keepAliveIntervalMs: 30000,
   })
 
   sockets.set(psychologistId, sock)
