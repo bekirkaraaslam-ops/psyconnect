@@ -569,6 +569,7 @@ async function connectWhatsApp(psychologistId) {
               psychologistId,
               phone: normalizePhone(phone),
               message: rawText,
+              replyJid: jid,
             }),
             signal: AbortSignal.timeout(15000),
           })
@@ -618,7 +619,7 @@ app.get('/status/:id', (req, res) => {
 })
 
 app.post('/send', async (req, res) => {
-  const { psychologistId, phone, message } = req.body
+  const { psychologistId, phone, message, replyJid } = req.body
 
   const sock = sockets.get(psychologistId)
 
@@ -631,7 +632,8 @@ app.post('/send', async (req, res) => {
   }
 
   try {
-    const jid = `${normalizePhone(phone)}@s.whatsapp.net`
+    // replyJid varsa doğrudan kullan (@lid desteği), yoksa normalizePhone + @s.whatsapp.net
+    const jid = replyJid || `${normalizePhone(phone)}@s.whatsapp.net`
     await sock.sendMessage(jid, { text: message })
     res.json({ ok: true })
   } catch (err) {

@@ -168,13 +168,15 @@ function getSupabase() {
   )
 }
 
+let _replyJid: string | undefined
+
 async function sendReply(psychologistId: string, phone: string, message: string, retries = 2) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(`${process.env.WA_SERVICE_URL}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.WA_API_KEY! },
-        body: JSON.stringify({ psychologistId, phone, message }),
+        body: JSON.stringify({ psychologistId, phone, message, replyJid: _replyJid }),
         signal: AbortSignal.timeout(8000),
       })
       if (res.ok) return
@@ -268,10 +270,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { psychologistId, phone: rawPhone, message } = await req.json()
+  const { psychologistId, phone: rawPhone, message, replyJid } = await req.json()
   if (!psychologistId || !rawPhone || !message) {
     return NextResponse.json({ error: 'Eksik alan' }, { status: 400 })
   }
+  _replyJid = replyJid
 
   const supabase = getSupabase()
   const phone = normalizePhone(rawPhone)
