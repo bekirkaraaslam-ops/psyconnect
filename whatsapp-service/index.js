@@ -413,16 +413,12 @@ async function connectWhatsApp(psychologistId) {
     console.log(`[upsert] type=${type} count=${msgs?.length}`)
     if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
-      const _ts = msg.messageTimestamp
-      const _jid = msg.key?.remoteJid
-      console.log(`[filter] fromMe=${msg.key?.fromMe} jid=${_jid} ts=${_ts} hasMsg=${!!msg.message}`)
-      if (msg.key.fromMe) continue
+      if (!msg.message || msg.key.fromMe) continue
       if (msg.key.remoteJid === 'status@broadcast') continue
-      const msgAgeMs = Date.now() - Number(_ts) * 1000
-      console.log(`[filter] ageMs=${msgAgeMs} limit=${10 * 60 * 1000}`)
-      if (msgAgeMs > 10 * 60 * 1000) { console.log('[filter] SKIP: too old'); continue }
+      const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
+      if (msgAgeMs > 10 * 60 * 1000) continue
       const jid = msg.key.remoteJid
-      if (!jid || !jid.endsWith('@s.whatsapp.net')) { console.log('[filter] SKIP: bad jid'); continue }
+      if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
       const rawText = (
         msg.message?.conversation ||
@@ -431,14 +427,7 @@ async function connectWhatsApp(psychologistId) {
       ).trim()
       const text = rawText.toUpperCase()
       console.log(`[msg] ${phone} → "${rawText}"`)
-
-      // Mesaj şifresi çözülemediyse (Bad MAC sonrası) — session yenilenmesi için cevap gönder
-      if (!rawText) {
-        try {
-          await sock.sendMessage(jid, { text: 'Mesajınızı alamadım, lütfen tekrar yazın 🙏' })
-        } catch {}
-        continue
-      }
+      if (!rawText) continue
 
       // ── Bekleme listesi teklif yanıtı (in-memory, önce kontrol et) ─
       const session = botSessions.get(phone)
