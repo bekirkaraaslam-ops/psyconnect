@@ -4,7 +4,19 @@ import { getAktifPaket, incrementPaket } from '@/lib/paket'
 import { normalizePhone } from '@/lib/utils'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+function keywordIntent(text: string): string | null {
+  const t = text.toLowerCase().replace('i̇', 'i')
+  if (/(randevu\s*(almak|istiyorum|almak\s*istiyorum|al|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|randevu\s*alabilir)/i.test(t)) return 'RANDEVU_AL'
+  if (/(iptal|cancel|randevum[ıu]\s*iptal|randevu\s*iptal)/i.test(t)) return 'RANDEVU_IPTAL'
+  if (/(evet|onay|geliyorum|gelirim|onayl)/i.test(t)) return 'RANDEVU_ONAYLA'
+  return null
+}
+
 async function getGeminiIntent(message: string): Promise<string> {
+  // Önce keyword ile dene — Gemini'ye gerek yoksa hiç çağırma
+  const quick = keywordIntent(message)
+  if (quick) return quick
+
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
@@ -14,8 +26,12 @@ RANDEVU_AL - randevu almak, saat sormak, müsaitlik sormak
 RANDEVU_IPTAL - randevuyu iptal etmek
 RANDEVU_ONAYLA - randevuyu onaylamak, geleceklerini bildirmek
 DIGER - bunların dışında her şey`
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text().trim()
+
+    const result = await Promise.race([
+      model.generateContent(prompt),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
+    ])
+    const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
     if (['RANDEVU_AL','RANDEVU_IPTAL','RANDEVU_ONAYLA','DIGER'].includes(raw)) return raw
     return 'DIGER'
   } catch {
