@@ -371,6 +371,7 @@ async function connectWhatsApp(psychologistId) {
     }
 
     if (connection === 'open') {
+      console.log(`[${psychologistId}] ✅ Bağlantı açıldı`)
       connectingFlags.delete(psychologistId)
       qrCodes.delete(psychologistId)
       statuses.set(psychologistId, 'connected')
@@ -422,6 +423,7 @@ async function connectWhatsApp(psychologistId) {
 
   // ── Gelen mesajları dinle (try-catch dışarıdan sarılı) ───────
   sock.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
+    console.log(`[upsert] type=${type} count=${msgs?.length}`)
     if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
       if (!msg.message || msg.key.fromMe) continue
