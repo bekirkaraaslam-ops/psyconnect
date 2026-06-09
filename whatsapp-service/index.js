@@ -413,7 +413,7 @@ async function connectWhatsApp(psychologistId) {
     console.log(`[upsert] type=${type} count=${msgs?.length}`)
     if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
-      if (!msg.message || msg.key.fromMe) continue
+      if (msg.key.fromMe) continue
       if (msg.key.remoteJid === 'status@broadcast') continue
       // 10 dakikadan eski mesajları atla (bağlantı sonrası eski replay'leri engeller)
       const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
