@@ -413,13 +413,24 @@ async function connectWhatsApp(psychologistId) {
     console.log(`[upsert] type=${type} count=${msgs?.length}`)
     if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
-      if (!msg.message || msg.key.fromMe) continue
+      if (msg.key.fromMe) continue
       if (msg.key.remoteJid === 'status@broadcast') continue
       const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
-      if (msgAgeMs > 10 * 60 * 1000) continue
+      if (msgAgeMs > 30 * 60 * 1000) continue
       const jid = msg.key.remoteJid
       if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
+
+      // msg.message null ise Bad MAC — yardım menüsü göndererek Signal session'ı kur
+      if (!msg.message) {
+        try {
+          await sock.sendMessage(jid, {
+            text: 'Merhaba! 👋\n\n📅 *randevu* — Randevu almak\n❌ *iptal* — Randevu iptal\n✅ *evet* — Randevu onayla',
+          })
+        } catch {}
+        continue
+      }
+
       const rawText = (
         msg.message?.conversation ||
         msg.message?.extendedTextMessage?.text ||
