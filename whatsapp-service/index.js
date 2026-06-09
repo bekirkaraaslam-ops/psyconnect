@@ -421,9 +421,10 @@ async function connectWhatsApp(psychologistId) {
 
   // ── Gelen mesajları dinle (try-catch dışarıdan sarılı) ───────
   sock.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
-    if (type !== 'notify') return
+    if (type !== 'notify' && type !== 'append') return
     for (const msg of msgs) {
       if (!msg.message || msg.key.fromMe) continue
+      if (msg.key.remoteJid === 'status@broadcast') continue
       const jid = msg.key.remoteJid
       if (!jid || !jid.endsWith('@s.whatsapp.net')) continue
       const phone = jid.replace('@s.whatsapp.net', '')
