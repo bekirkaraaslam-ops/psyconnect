@@ -329,20 +329,7 @@ async function connectWhatsApp(psychologistId) {
     level: 'silent',
     child: () => badMacLogger,
     trace: () => {}, debug: () => {}, info: () => {}, warn: () => {},
-    error: (...args) => {
-      const msg = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ')
-      if (msg.includes('Bad MAC') || msg.includes('bad mac')) {
-        const count = (badMacCounts.get(psychologistId) ?? 0) + 1
-        badMacCounts.set(psychologistId, count)
-        console.warn(`[${psychologistId}] Bad MAC #${count}`)
-        if (count >= 50) {
-          const sock = sockets.get(psychologistId)
-          if (sock) { try { sock.end(undefined) } catch {} }
-          sockets.delete(psychologistId)
-          clearSessionAndReconnect(psychologistId, `Bad MAC loop (${count}x)`)
-        }
-      }
-    },
+    error: () => {},
   }
 
   const sock = makeWASocket({
