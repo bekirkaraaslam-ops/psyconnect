@@ -259,12 +259,29 @@ async function setSession(
   step: string,
   context: object
 ) {
-  const { error } = await supabase.from('wa_bot_sessions').upsert(
-    { phone_number: phone, psychologist_id: psychologistId, step, context, updated_at: new Date().toISOString() },
-    { onConflict: 'phone_number,psychologist_id' }
-  )
-  if (error) console.error(`[session] setSession hata (phone=${phone} step=${step}):`, error.message)
-  else console.log(`[session] saved phone=${phone} step=${step}`)
+  const now = new Date().toISOString()
+  const { data: updated, error: updateError } = await supabase
+    .from('wa_bot_sessions')
+    .update({ step, context, updated_at: now })
+    .eq('phone_number', phone)
+    .eq('psychologist_id', psychologistId)
+    .select('id')
+
+  if (updateError) {
+    console.error(`[session] update hata (phone=${phone} step=${step}):`, updateError.message)
+    return
+  }
+
+  if (!updated || updated.length === 0) {
+    const { error: insertError } = await supabase
+      .from('wa_bot_sessions')
+      .insert({ phone_number: phone, psychologist_id: psychologistId, step, context, updated_at: now })
+    if (insertError) console.error(`[session] insert hata (phone=${phone} step=${step}):`, insertError.message)
+    else console.log(`[session] inserted phone=${phone} step=${step}`)
+    return
+  }
+
+  console.log(`[session] updated phone=${phone} step=${step}`)
 }
 
 const TATIL_MESAJ = 'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
