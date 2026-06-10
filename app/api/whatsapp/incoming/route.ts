@@ -84,9 +84,11 @@ YANIT VEREBİLECEĞİN KONULAR:
 - Paket fiyatları (sadece bunlar, başka fiyat söyleme):
 ${paketlerText}
 
+SELAMLAMA VE GENEL KONUŞMA: "Merhaba", "iyi günler", "nasılsınız" gibi mesajlara kısa ve samimi karşılık ver. Örnek: "Merhaba! Size nasıl yardımcı olabilirim?" Kesinlikle komut listesi, menü veya "randevu için randevu yazın" tarzı talimat ekleme.
+
 BİLİNMEYEN SORULARA: "Bu konuda size bilgi veremiyorum. Daha fazlası için kliniğimizle doğrudan iletişime geçebilirsiniz."
 
-ÇIKTI FORMATI: Sinyal sinyalleri (__RANDEVU_AL__ vb.) dışında sadece düz Türkçe metin yaz — markdown, başlık veya liste kullanma.
+ÇIKTI FORMATI: Sinyal sinyalleri (__RANDEVU_AL__ vb.) dışında sadece düz Türkçe metin yaz — markdown, başlık veya liste kullanma. Asla komut listesi veya menü gösterme.
 
 DANIŞAN MESAJI: "${message}"`
 
@@ -536,9 +538,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Gemini timeout/hata — fallback
-    await sendReply(psychologistId, phone,
-      `Merhaba! Randevu almak için *randevu*, iptal için *iptal* yazabilirsiniz.`
-    )
+    await sendReply(psychologistId, phone, `Merhaba! Size nasıl yardımcı olabilirim?`)
     return NextResponse.json({ ok: true })
   }
 
