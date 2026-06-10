@@ -621,24 +621,28 @@ app.get('/status/:id', (req, res) => {
 app.post('/send', async (req, res) => {
   const { psychologistId, phone, message, replyJid } = req.body
 
-  const sock = sockets.get(psychologistId)
-
+  // Socket bağlı değilse kısa süre bekleyip tekrar kontrol et (reconnect gecikmesi toleransı)
+  let sock = sockets.get(psychologistId)
   if (!sock || statuses.get(psychologistId) !== 'connected') {
-    // Bağlı değilse yeniden bağlanmayı tetikle — connectingFlags kontrolüyle çakışma önle
     if (!connectingFlags.has(psychologistId) && (statuses.get(psychologistId) === 'disconnected' || !sock)) {
       connectWhatsApp(psychologistId).catch(() => {})
     }
-    return res.status(503).json({ error: 'WhatsApp bağlı değil, yeniden bağlanıyor' })
+    // 3 saniye bekle, tekrar dene
+    await new Promise(r => setTimeout(r, 3000))
+    sock = sockets.get(psychologistId)
+    if (!sock || statuses.get(psychologistId) !== 'connected') {
+      return res.status(503).json({ error: 'WhatsApp bağlı değil' })
+    }
   }
 
   try {
     // replyJid varsa doğrudan kullan (@lid desteği), yoksa normalizePhone + @s.whatsapp.net
     const jid = replyJid || `${normalizePhone(phone)}@s.whatsapp.net`
+    console.log(`[send] → ${jid} (${message.slice(0, 40)})`)
     await sock.sendMessage(jid, { text: message })
     res.json({ ok: true })
   } catch (err) {
     console.error('[send] sendMessage hatası:', err.message)
-    // Gönderim hatasında socket'i temizle ve reconnect tetikle
     sockets.delete(psychologistId)
     statuses.set(psychologistId, 'disconnected')
     connectWhatsApp(psychologistId).catch(() => {})

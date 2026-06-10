@@ -240,12 +240,15 @@ async function getAvailableSlots(
 }
 
 async function getSession(supabase: ReturnType<typeof getSupabase>, phone: string, psychologistId: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('wa_bot_sessions')
     .select('step, context')
     .eq('phone_number', phone)
     .eq('psychologist_id', psychologistId)
+    .order('updated_at', { ascending: false })
+    .limit(1)
     .maybeSingle()
+  if (error) console.error('[session] getSession hata:', error.message)
   return data ?? { step: 'idle', context: {} }
 }
 
@@ -256,10 +259,12 @@ async function setSession(
   step: string,
   context: object
 ) {
-  await supabase.from('wa_bot_sessions').upsert(
+  const { error } = await supabase.from('wa_bot_sessions').upsert(
     { phone_number: phone, psychologist_id: psychologistId, step, context, updated_at: new Date().toISOString() },
     { onConflict: 'phone_number,psychologist_id' }
   )
+  if (error) console.error(`[session] setSession hata (phone=${phone} step=${step}):`, error.message)
+  else console.log(`[session] saved phone=${phone} step=${step}`)
 }
 
 const TATIL_MESAJ = 'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
@@ -279,6 +284,7 @@ export async function POST(req: NextRequest) {
   const supabase = getSupabase()
   const phone = normalizePhone(rawPhone)
   const text = String(message).trim()
+  console.log(`[incoming] phone=${phone} replyJid=${replyJid ?? 'none'} msg="${text.slice(0, 50)}"`);
   const textLower = text.toLowerCase().replace('i̇', 'i')
 
   const { data: psych } = await supabase
