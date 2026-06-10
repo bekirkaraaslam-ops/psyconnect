@@ -6,13 +6,13 @@ interface Context {
   params: Promise<{ id: string }>
 }
 
-async function sendWithRetry(waUrl: string, waKey: string, psychologistId: string, phone: string, message: string, retries = 2) {
+async function sendWithRetry(waUrl: string, waKey: string, psychologistId: string, phone: string, message: string, retries = 2, replyJid?: string | null) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(`${waUrl}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': waKey },
-        body: JSON.stringify({ psychologistId, phone, message }),
+        body: JSON.stringify({ psychologistId, phone, message, replyJid: replyJid ?? undefined }),
         signal: AbortSignal.timeout(8000),
       })
       if (res.ok) return
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   const { data: apt } = await supabase
     .from('appointments')
-    .select('id, appointment_date, patient:patients(name_surname, phone_number)')
+    .select('id, appointment_date, patient:patients(name_surname, phone_number, whatsapp_jid)')
     .eq('id', id)
     .eq('psychologist_id', psychologist.id)
     .single()
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   const waUrl = process.env.WA_SERVICE_URL
   const waKey = process.env.WA_API_KEY
-  const patient = apt.patient as unknown as { name_surname: string; phone_number: string } | null
+  const patient = apt.patient as unknown as { name_surname: string; phone_number: string; whatsapp_jid?: string | null } | null
 
   if (patient?.phone_number && waUrl && waKey && psychologist.is_connected) {
     const fmt = (iso: string) =>
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest, { params }: Context) {
       `*${fmt(newDate)}* tarihine ertelenmiştir. Anlayışınız için teşekkür ederiz.\n\n` +
       `Bu randevu tarihi/saati sizin için uygun değilse lütfen klinikle iletişime geçiniz.`
 
-    await sendWithRetry(waUrl, waKey, psychologist.id, patient.phone_number, message)
+    await sendWithRetry(waUrl, waKey, psychologist.id, patient.phone_number, message, 2, patient.whatsapp_jid)
   }
 
   return NextResponse.json({ ok: true })

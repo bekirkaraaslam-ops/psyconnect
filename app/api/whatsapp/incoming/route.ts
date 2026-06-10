@@ -316,6 +316,15 @@ export async function POST(req: NextRequest) {
   const workStart: number = psych.work_start_hour ?? 9
   const workEnd: number = psych.work_end_hour ?? 18
 
+  // WhatsApp JID'ini hastaya kaydet — @lid kullanıcıları için doğru adrese gönderim sağlar
+  if (replyJid) {
+    await supabase
+      .from('patients')
+      .update({ whatsapp_jid: replyJid })
+      .eq('phone_number', phone)
+      .eq('psychologist_id', psychologistId)
+  }
+
   // Session fetched early so keyword handlers can use step context
   const session = await getSession(supabase, phone, psychologistId)
   const { step, context } = session as { step: string; context: Record<string, unknown> }
@@ -657,7 +666,7 @@ export async function POST(req: NextRequest) {
     } else {
       const { data: newPatient } = await supabase
         .from('patients')
-        .insert({ psychologist_id: psychologistId, name_surname: text, phone_number: phone, is_active: true })
+        .insert({ psychologist_id: psychologistId, name_surname: text, phone_number: phone, is_active: true, whatsapp_jid: replyJid ?? null })
         .select()
         .single()
 

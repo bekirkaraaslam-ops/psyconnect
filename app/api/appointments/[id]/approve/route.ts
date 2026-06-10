@@ -7,13 +7,13 @@ interface Context {
   params: Promise<{ id: string }>
 }
 
-async function sendWithRetry(waUrl: string, waKey: string, psychologistId: string, phone: string, message: string, retries = 2) {
+async function sendWithRetry(waUrl: string, waKey: string, psychologistId: string, phone: string, message: string, retries = 2, replyJid?: string | null) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const res = await fetch(`${waUrl}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': waKey },
-        body: JSON.stringify({ psychologistId, phone, message }),
+        body: JSON.stringify({ psychologistId, phone, message, replyJid: replyJid ?? undefined }),
         signal: AbortSignal.timeout(8000),
       })
       if (res.ok) return
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest, { params }: Context) {
 
   const { data: apt, error: fetchError } = await supabase
     .from('appointments')
-    .select('id, appointment_date, psychologist_id, source, booking_name, booking_phone, patient_id, patient:patients(name_surname, phone_number)')
+    .select('id, appointment_date, psychologist_id, source, booking_name, booking_phone, patient_id, patient:patients(name_surname, phone_number, whatsapp_jid)')
     .eq('id', id)
     .eq('psychologist_id', psychologist.id)
     .single()
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest, { params }: Context) {
   let patientId = apt.patient_id
   let patientPhone: string | null = null
   let patientName: string | null = null
+  let patientWaJid: string | null = null
 
   if (apt.source === 'booking_page' && !apt.patient_id && apt.booking_name && apt.booking_phone) {
     const serviceSupabase = createServiceClient(
@@ -113,9 +114,10 @@ export async function POST(req: NextRequest, { params }: Context) {
     patientPhone = normalizePhone(apt.booking_phone)
     patientName = apt.booking_name
   } else {
-    const patient = apt.patient as unknown as { name_surname: string; phone_number: string } | null
+    const patient = apt.patient as unknown as { name_surname: string; phone_number: string; whatsapp_jid?: string | null } | null
     patientPhone = patient?.phone_number ?? null
     patientName = patient?.name_surname ?? null
+    patientWaJid = patient?.whatsapp_jid ?? null
   }
 
   // Randevuyu onayla + ücret kaydet
@@ -144,7 +146,8 @@ export async function POST(req: NextRequest, { params }: Context) {
 
     // Onay mesajı
     await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
-      `Merhaba, randevunuz klinik tarafından onaylanmıştır. ${aptDate} randevu tarihinde görüşmek üzere.`
+      `Merhaba, randevunuz klinik tarafından onaylanmıştır. ${aptDate} randevu tarihinde görüşmek üzere.`,
+      2, patientWaJid
     )
 
     // Booking page'den gelen yeni hastaya anamnez + onam formu gönder
@@ -213,7 +216,8 @@ export async function POST(req: NextRequest, { params }: Context) {
 
       if (links.length > 0) {
         await sendWithRetry(waUrl, waKey, psychologist.id, normalizePhone(patientPhone),
-          `Merhaba ${patientName ?? ''}, ilk randevunuzdan önce aşağıdaki formları doldurmanızı rica ederiz. Formlar yalnızca bir kez doldurulmalıdır:\n\n${links.join('\n\n')}\n\nFormlar hakkında herhangi bir sorunuz olursa lütfen bize bildirin. Görüşmek üzere!`
+          `Merhaba ${patientName ?? ''}, ilk randevunuzdan önce aşağıdaki formları doldurmanızı rica ederiz. Formlar yalnızca bir kez doldurulmalıdır:\n\n${links.join('\n\n')}\n\nFormlar hakkında herhangi bir sorunuz olursa lütfen bize bildirin. Görüşmek üzere!`,
+          2, patientWaJid
         )
       }
     }
