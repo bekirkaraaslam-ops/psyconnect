@@ -4,6 +4,10 @@ import { getAktifPaket, incrementPaket } from '@/lib/paket'
 import { normalizePhone } from '@/lib/utils'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+function isRealTurkishPhone(phone: string): boolean {
+  return /^905[0-9]{9}$/.test(phone)
+}
+
 function keywordIntent(text: string): string | null {
   const t = text.toLowerCase().replace('i̇', 'i')
   if (/(^randevu[.!?,]?\s*$|randevu\s*(almak|istiyorum|almak\s*istiyorum|al|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|randevu\s*alabilir)/i.test(t)) return 'RANDEVU_AL'
@@ -680,6 +684,21 @@ export async function POST(req: NextRequest) {
 
     const appointmentType = (context.appointment_type as string) ?? 'yuzyuze'
 
+    // @lid kullanıcısında telefon gerçek değil — gerçek numarayı sor
+    if (!isRealTurkishPhone(phone)) {
+      await setSession(supabase, phone, psychologistId, 'awaiting_real_phone', {
+        appointment_iso: context.appointment_iso,
+        appointment_label: context.appointment_label,
+        appointment_type: appointmentType,
+        selected_paket: context.selected_paket ?? null,
+        name_surname: text,
+      })
+      await sendReply(psychologistId, phone,
+        `Son olarak telefon numaranızı paylaşır mısınız?\n\nÖrnek: *0532 XXX XX XX*`
+      )
+      return NextResponse.json({ ok: true })
+    }
+
     // Önce mevcut hasta var mı kontrol et (duplicate key önleme)
     const { data: existingPatient } = await supabase
       .from('patients')
@@ -690,7 +709,7 @@ export async function POST(req: NextRequest) {
 
     let patientId: string
     if (existingPatient) {
-      await supabase.from('patients').update({ name_surname: text, is_active: true }).eq('id', existingPatient.id)
+      await supabase.from('patients').update({ name_surname: text, is_active: true, whatsapp_jid: replyJid ?? null }).eq('id', existingPatient.id)
       patientId = existingPatient.id
     } else {
       const { data: newPatient } = await supabase
@@ -739,6 +758,110 @@ export async function POST(req: NextRequest) {
     const typeLabel = appointmentType === 'online' ? '\n💻 Online' : '\n🏢 Yüz yüze'
     await sendReply(psychologistId, phone,
       `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${text}\n📅 ${context.appointment_label}${typeLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
+    )
+    return NextResponse.json({ ok: true })
+  }
+
+  if (step === 'awaiting_real_phone') {
+    const digits = text.replace(/\D/g, '')
+    const normalized = digits.startsWith('0') ? '90' + digits.slice(1)
+      : digits.startsWith('90') ? digits
+      : digits.startsWith('5') ? '90' + digits
+      : digits
+
+    if (!isRealTurkishPhone(normalized)) {
+      await sendReply(psychologistId, phone,
+        'Geçerli bir Türkiye telefon numarası giriniz.\n\nÖrnek: *0532 XXX XX XX*'
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    const realPhone = normalized
+    const nameSurname = (context.name_surname as string) ?? ''
+    const appointmentType = (context.appointment_type as string) ?? 'yuzyuze'
+    const selectedPaket = (context.selected_paket ?? null) as { name: string; session_count: number; price_tl: number } | null
+
+    // Gerçek numarayla kayıtlı hasta var mı?
+    const { data: existingByPhone } = await supabase
+      .from('patients')
+      .select('id')
+      .eq('phone_number', realPhone)
+      .eq('psychologist_id', psychologistId)
+      .maybeSingle()
+
+    let patientId: string
+    if (existingByPhone) {
+      await supabase.from('patients')
+        .update({ name_surname: nameSurname, is_active: true, whatsapp_jid: replyJid ?? null })
+        .eq('id', existingByPhone.id)
+      patientId = existingByPhone.id
+    } else {
+      // @lid session'ı gerçek numarayla aynı hastaya taşı (sahte numaralı kaydı güncelle)
+      const { data: existingByLid } = await supabase
+        .from('patients')
+        .select('id')
+        .eq('phone_number', phone)
+        .eq('psychologist_id', psychologistId)
+        .maybeSingle()
+
+      if (existingByLid) {
+        await supabase.from('patients')
+          .update({ phone_number: realPhone, name_surname: nameSurname, is_active: true, whatsapp_jid: replyJid ?? null })
+          .eq('id', existingByLid.id)
+        patientId = existingByLid.id
+      } else {
+        const { data: newPatient } = await supabase
+          .from('patients')
+          .insert({ psychologist_id: psychologistId, name_surname: nameSurname, phone_number: realPhone, is_active: true, whatsapp_jid: replyJid ?? null })
+          .select()
+          .single()
+        if (!newPatient) {
+          await sendReply(psychologistId, phone, 'Bir hata oluştu. Lütfen tekrar deneyin.')
+          return NextResponse.json({ ok: true })
+        }
+        patientId = newPatient.id
+      }
+    }
+
+    let ucret: number | null = null
+    let toplam_paket_seansi: number | null = null
+    if (selectedPaket) {
+      ucret = Math.round(selectedPaket.price_tl / selectedPaket.session_count)
+      toplam_paket_seansi = selectedPaket.session_count
+      await supabase.from('seans_paketleri').insert({
+        patient_id: patientId,
+        birim_fiyat: ucret,
+        toplam_seans: selectedPaket.session_count,
+        kullanilan_seans: 1,
+        aktif: selectedPaket.session_count > 1,
+      })
+    }
+
+    await supabase.from('appointments').insert({
+      psychologist_id: psychologistId,
+      patient_id: patientId,
+      appointment_date: context.appointment_iso,
+      duration_minutes: 50,
+      status: 'seansify_pending',
+      appointment_type: appointmentType,
+      ucret,
+      odeme_durumu: ucret != null ? 'bekliyor' : null,
+      toplam_paket_seansi,
+      mevcut_seans_no: toplam_paket_seansi != null ? 1 : null,
+    })
+
+    // Session'ı gerçek numaraya taşı
+    await setSession(supabase, realPhone, psychologistId, 'idle', {})
+    // Eski (sahte numaralı) session'ı temizle
+    await supabase.from('wa_bot_sessions')
+      .delete()
+      .eq('phone_number', phone)
+      .eq('psychologist_id', psychologistId)
+
+    const paketBilgi = selectedPaket ? `\n📦 ${selectedPaket.name}` : ''
+    const typeLabel = appointmentType === 'online' ? '\n💻 Online' : '\n🏢 Yüz yüze'
+    await sendReply(psychologistId, phone,
+      `✅ Randevu talebiniz alındı!\n\n📋 *Özet:*\n👤 ${nameSurname}\n📅 ${context.appointment_label}${typeLabel}${paketBilgi}\n\nPsikoloğunuz onayladıktan sonra bildirim alacaksınız.`
     )
     return NextResponse.json({ ok: true })
   }
