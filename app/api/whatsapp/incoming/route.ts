@@ -246,14 +246,23 @@ async function getAvailableSlots(
 async function getSession(supabase: ReturnType<typeof getSupabase>, phone: string, psychologistId: string) {
   const { data, error } = await supabase
     .from('wa_bot_sessions')
-    .select('step, context')
+    .select('step, context, updated_at')
     .eq('phone_number', phone)
     .eq('psychologist_id', psychologistId)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle()
   if (error) console.error('[session] getSession hata:', error.message)
-  return data ?? { step: 'idle', context: {} }
+  if (!data) return { step: 'idle', context: {} }
+  // 2 saatten eski non-idle session → sıfırla
+  if (data.step !== 'idle' && data.updated_at) {
+    const ageMs = Date.now() - new Date(data.updated_at).getTime()
+    if (ageMs > 2 * 60 * 60 * 1000) {
+      console.log(`[session] timeout — phone=${phone} step=${data.step}, idle'a döndürüldü`)
+      return { step: 'idle', context: {} }
+    }
+  }
+  return { step: data.step, context: data.context }
 }
 
 async function setSession(
@@ -361,6 +370,15 @@ export async function POST(req: NextRequest) {
   // Session fetched early so keyword handlers can use step context
   const session = await getSession(supabase, phone, psychologistId)
   const { step, context } = session as { step: string; context: Record<string, unknown> }
+
+  // ── MENÜ keyword — her adımdan çıkış, session sıfırla ────────────────────────
+  if (textLower === 'menü' || textLower === 'menu' || textLower === 'menu') {
+    await setSession(supabase, phone, psychologistId, 'idle', {})
+    await sendReply(psychologistId, phone,
+      `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
+    )
+    return NextResponse.json({ ok: true })
+  }
 
   // ── RANDEVU keyword — her state'de çalışır, session'ı sıfırlar ──────────────
   if (textLower === 'randevu') {
