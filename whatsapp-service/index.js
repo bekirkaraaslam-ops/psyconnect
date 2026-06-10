@@ -351,13 +351,37 @@ async function connectWhatsApp(psychologistId) {
   const lidMap = lidMaps.get(psychologistId)
 
   sock.ev.on('contacts.upsert', (contacts) => {
+    console.log(`[contacts] ${contacts.length} adet contact geldi`)
     for (const contact of contacts) {
-      if (!contact.id?.endsWith('@s.whatsapp.net')) continue
-      if (!contact.lid) continue
-      const lid = contact.lid.includes('@') ? contact.lid : `${contact.lid}@lid`
-      const phone = contact.id.replace('@s.whatsapp.net', '')
-      lidMap.set(lid, phone)
-      console.log(`[lid-map] ${lid} → ${phone}`)
+      const keys = Object.keys(contact).join(',')
+      if (contact.lid || contact.id?.endsWith('@lid')) {
+        console.log(`[contact-raw] id=${contact.id} lid=${contact.lid} keys=${keys}`)
+      }
+      // id @s.whatsapp.net ise ve lid varsa map'e ekle
+      if (contact.id?.endsWith('@s.whatsapp.net') && contact.lid) {
+        const lid = contact.lid.includes('@') ? contact.lid : `${contact.lid}@lid`
+        const phone = contact.id.replace('@s.whatsapp.net', '')
+        lidMap.set(lid, phone)
+        console.log(`[lid-map] ${lid} → ${phone}`)
+      }
+      // id @lid ise, lid alanından veya id'den phone bulmaya çalış
+      if (contact.id?.endsWith('@lid')) {
+        console.log(`[contact-lid] @lid contact: id=${contact.id} name=${contact.name} keys=${keys}`)
+      }
+    }
+  })
+
+  sock.ev.on('contacts.update', (updates) => {
+    for (const update of updates) {
+      if (update.lid || update.id?.endsWith('@lid')) {
+        console.log(`[contact-update] id=${update.id} lid=${update.lid}`)
+      }
+      if (update.id?.endsWith('@s.whatsapp.net') && update.lid) {
+        const lid = update.lid.includes('@') ? update.lid : `${update.lid}@lid`
+        const phone = update.id.replace('@s.whatsapp.net', '')
+        lidMap.set(lid, phone)
+        console.log(`[lid-map-update] ${lid} → ${phone}`)
+      }
     }
   })
 
