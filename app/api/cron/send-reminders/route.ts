@@ -23,14 +23,14 @@ function randomDelay() {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-async function sendViaRailway(psychologistId: string, phone: string, message: string) {
+async function sendViaRailway(psychologistId: string, phone: string, message: string, replyJid?: string | null) {
   const res = await fetch(`${process.env.WA_SERVICE_URL}/send`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': process.env.WA_API_KEY!,
     },
-    body: JSON.stringify({ psychologistId, phone, message }),
+    body: JSON.stringify({ psychologistId, phone, message, replyJid: replyJid ?? undefined }),
   })
   if (!res.ok) throw new Error(`Railway servis hatası: ${res.status}`)
 }
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       toplam_paket_seansi,
       mevcut_seans_no,
       is_first_session,
-      patient:patients(name_surname, phone_number),
+      patient:patients(name_surname, phone_number, whatsapp_jid),
       psychologist:psychologists(id, full_name, is_connected, plan_type, harita_linki, online_gorusme_linki, hosgeldiniz_mesaji)
     `)
     .eq('reminder_sent', false)
@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
 
   for (const apt of appointments as any[]) {
     const psychologist = apt.psychologist
-    const patient      = apt.patient
+    const patient      = apt.patient as unknown as { name_surname: string; phone_number: string; whatsapp_jid?: string | null } | null
 
     if (!psychologist?.is_connected) {
       console.warn(`[send-reminders] Psikolog WA bağlı değil – apt: ${apt.id}`)
@@ -141,7 +141,7 @@ export async function GET(req: NextRequest) {
       `\n\n✅ Onaylamak için *EVET* yazın\n❌ İptal etmek için *İPTAL* yazın`
 
     try {
-      await sendViaRailway(psychologist.id, patient.phone_number, message)
+      await sendViaRailway(psychologist.id, patient.phone_number, message, patient.whatsapp_jid)
 
       await supabase
         .from('appointments')
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
 
       if (apt.is_first_session && psychologist.hosgeldiniz_mesaji) {
         await randomDelay()
-        await sendViaRailway(psychologist.id, patient.phone_number, psychologist.hosgeldiniz_mesaji)
+        await sendViaRailway(psychologist.id, patient.phone_number, psychologist.hosgeldiniz_mesaji, patient.whatsapp_jid)
         await supabase
           .from('appointments')
           .update({ is_first_session: false })

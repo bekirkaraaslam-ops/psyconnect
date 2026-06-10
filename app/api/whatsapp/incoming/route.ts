@@ -299,9 +299,8 @@ export async function POST(req: NextRequest) {
   _replyJid = replyJid
 
   const supabase = getSupabase()
-  const phone = normalizePhone(rawPhone)
+  const lidPhone = normalizePhone(rawPhone)
   const text = String(message).trim()
-  console.log(`[incoming] phone=${phone} replyJid=${replyJid ?? 'none'} msg="${text.slice(0, 50)}"`);
   const textLower = text.toLowerCase().replace('i̇', 'i')
 
   const { data: psych } = await supabase
@@ -316,7 +315,35 @@ export async function POST(req: NextRequest) {
   const workStart: number = psych.work_start_hour ?? 9
   const workEnd: number = psych.work_end_hour ?? 18
 
-  // WhatsApp JID'ini hastaya kaydet — @lid kullanıcıları için doğru adrese gönderim sağlar
+  // @lid JID çözümü: replyJid ile kayıtlı hasta varsa gerçek telefon numarasını kullan.
+  // @lid'den çıkan numara gerçek telefon değil — bu lookup olmadan duplicate hasta oluşur.
+  let phone = lidPhone
+  if (replyJid) {
+    const { data: jidPatient } = await supabase
+      .from('patients')
+      .select('phone_number')
+      .eq('psychologist_id', psychologistId)
+      .eq('whatsapp_jid', replyJid)
+      .maybeSingle()
+    if (jidPatient) {
+      phone = jidPatient.phone_number
+      console.log(`[jid-resolve] ${lidPhone} → ${phone} (whatsapp_jid eşleşti)`)
+    } else {
+      // İlk kez gelen @lid — gerçek telefon numarası ile kayıtlı hasta var mı bak
+      const { data: phonePatient } = await supabase
+        .from('patients')
+        .select('id')
+        .eq('psychologist_id', psychologistId)
+        .eq('phone_number', lidPhone)
+        .maybeSingle()
+      if (phonePatient && replyJid) {
+        await supabase.from('patients').update({ whatsapp_jid: replyJid }).eq('id', phonePatient.id)
+        console.log(`[jid-map] ${lidPhone} → jid kaydedildi`)
+      }
+    }
+  }
+
+  // JID'i hasta kaydında güncelle (canonical phone ile)
   if (replyJid) {
     await supabase
       .from('patients')
@@ -324,6 +351,8 @@ export async function POST(req: NextRequest) {
       .eq('phone_number', phone)
       .eq('psychologist_id', psychologistId)
   }
+
+  console.log(`[incoming] phone=${phone} replyJid=${replyJid ?? 'none'} msg="${text.slice(0, 50)}"`)
 
   // Session fetched early so keyword handlers can use step context
   const session = await getSession(supabase, phone, psychologistId)
