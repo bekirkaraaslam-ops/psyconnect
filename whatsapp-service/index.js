@@ -54,6 +54,7 @@ const reconnectCounts = new Map()  // psychologistId → consecutive fail count
 const badMacCounts = new Map()     // psychologistId → bad mac error count
 const connectingFlags = new Set()  // psychologistId → bağlantı kurulum süreci devam ediyor
 const lidMaps = new Map()          // psychologistId → Map(@lid → phone number)
+const badMacCooldowns = new Map()  // jid → last yardım menüsü timestamp (spam önleme)
 // botSessions state türleri:
 //   'awaiting_selection'        → randevu slot seçimi bekliyor
 //   'awaiting_waitlist_response' → bekleme listesi teklifi yanıtı bekliyor
@@ -499,6 +500,14 @@ async function connectWhatsApp(psychologistId) {
       }
 
       if (!rawText) {
+        // Cooldown: aynı JID'e 60 saniyede bir yardım menüsü gönder
+        const now = Date.now()
+        const lastSent = badMacCooldowns.get(jid) ?? 0
+        if (now - lastSent < 60000) {
+          console.log(`[bad-mac] ${phone} — cooldown, atlanıyor`)
+          continue
+        }
+        badMacCooldowns.set(jid, now)
         try {
           await sock.sendMessage(jid, {
             text: 'Merhaba! 👋\n\n📅 *randevu* — Randevu almak\n❌ *iptal* — Randevu iptal\n✅ *evet* — Randevu onayla',
