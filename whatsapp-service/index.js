@@ -358,12 +358,22 @@ async function connectWhatsApp(psychologistId) {
       if (contact.lid || contact.id?.endsWith('@lid')) {
         console.log(`[contact-raw] id=${contact.id} lid=${contact.lid} keys=${keys}`)
       }
-      // id @s.whatsapp.net ise ve lid varsa map'e ekle
+      // id @s.whatsapp.net ise ve lid varsa map'e ekle + DB'ye yaz
       if (contact.id?.endsWith('@s.whatsapp.net') && contact.lid) {
         const lid = contact.lid.includes('@') ? contact.lid : `${contact.lid}@lid`
-        const phone = contact.id.replace('@s.whatsapp.net', '')
+        const rawPhone = contact.id.replace('@s.whatsapp.net', '')
+        const phone = rawPhone.startsWith('90') ? rawPhone : '90' + rawPhone.replace(/^0/, '')
         lidMap.set(lid, phone)
         console.log(`[lid-map] ${lid} → ${phone}`)
+        // DB'ye kalıcı olarak yaz — restart sonrası da korunur
+        getSupabase()
+          .from('patients')
+          .update({ whatsapp_jid: lid })
+          .eq('psychologist_id', psychologistId)
+          .eq('phone_number', phone)
+          .is('whatsapp_jid', null)
+          .then(() => {})
+          .catch(() => {})
       }
       // id @lid ise, lid alanından veya id'den phone bulmaya çalış
       if (contact.id?.endsWith('@lid')) {
@@ -379,9 +389,18 @@ async function connectWhatsApp(psychologistId) {
       }
       if (update.id?.endsWith('@s.whatsapp.net') && update.lid) {
         const lid = update.lid.includes('@') ? update.lid : `${update.lid}@lid`
-        const phone = update.id.replace('@s.whatsapp.net', '')
+        const rawPhone = update.id.replace('@s.whatsapp.net', '')
+        const phone = rawPhone.startsWith('90') ? rawPhone : '90' + rawPhone.replace(/^0/, '')
         lidMap.set(lid, phone)
         console.log(`[lid-map-update] ${lid} → ${phone}`)
+        getSupabase()
+          .from('patients')
+          .update({ whatsapp_jid: lid })
+          .eq('psychologist_id', psychologistId)
+          .eq('phone_number', phone)
+          .is('whatsapp_jid', null)
+          .then(() => {})
+          .catch(() => {})
       }
     }
   })
@@ -406,6 +425,23 @@ async function connectWhatsApp(psychologistId) {
       reconnectCounts.delete(psychologistId)
       badMacCounts.delete(psychologistId)
       await setConnected(psychologistId, true)
+
+      // DB'den JID eşlemelerini yükle — restart sonrası lidMap'i yeniden doldur
+      try {
+        const { data: jidPatients } = await getSupabase()
+          .from('patients')
+          .select('phone_number, whatsapp_jid')
+          .eq('psychologist_id', psychologistId)
+          .not('whatsapp_jid', 'is', null)
+        if (jidPatients?.length) {
+          for (const p of jidPatients) {
+            lidMap.set(p.whatsapp_jid, p.phone_number)
+          }
+          console.log(`[lid-rebuild] ${jidPatients.length} JID eşlemesi DB'den yüklendi`)
+        }
+      } catch (err) {
+        console.error('[lid-rebuild] hata:', err.message)
+      }
     }
 
     if (connection === 'close') {
@@ -510,9 +546,9 @@ async function connectWhatsApp(psychologistId) {
         badMacCooldowns.set(jid, now)
         try {
           await sock.sendMessage(jid, {
-            text: 'Merhaba! 👋\n\n📅 *randevu* — Randevu almak\n❌ *iptal* — Randevu iptal\n✅ *evet* — Randevu onayla',
+            text: 'Merhaba! 👋 Size nasıl yardımcı olabilirim?',
           })
-          console.log(`[bad-mac] ${phone} — yardım menüsü gönderildi ✓`)
+          console.log(`[bad-mac] ${phone} — karşılama gönderildi ✓`)
         } catch (err) {
           console.error(`[bad-mac] ${phone} — sendMessage hatası:`, err?.message)
         }
@@ -669,8 +705,24 @@ app.post('/send', async (req, res) => {
   }
 
   try {
-    // replyJid varsa doğrudan kullan (@lid desteği), yoksa normalizePhone + @s.whatsapp.net
-    const jid = replyJid || `${normalizePhone(phone)}@s.whatsapp.net`
+    let jid = replyJid
+    if (!jid) {
+      // replyJid yoksa (hatırlatıcılar gibi) DB'den whatsapp_jid bak
+      try {
+        const { data: pt } = await getSupabase()
+          .from('patients')
+          .select('whatsapp_jid')
+          .eq('psychologist_id', psychologistId)
+          .eq('phone_number', normalizePhone(phone))
+          .not('whatsapp_jid', 'is', null)
+          .maybeSingle()
+        if (pt?.whatsapp_jid) {
+          jid = pt.whatsapp_jid
+          console.log(`[send] @lid DB override: ${phone} → ${jid}`)
+        }
+      } catch {}
+      jid = jid || `${normalizePhone(phone)}@s.whatsapp.net`
+    }
     console.log(`[send] → ${jid} (${message.slice(0, 40)})`)
     await sock.sendMessage(jid, { text: message })
     res.json({ ok: true })
