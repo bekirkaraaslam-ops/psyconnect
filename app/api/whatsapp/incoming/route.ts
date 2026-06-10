@@ -359,6 +359,38 @@ async function setSession(
 
 const TATIL_MESAJ = 'Merhaba! Psikologumuz şu an izinde olduğundan yeni randevu talebi alınamamaktadır. Kısa süre içinde tekrar deneyebilirsiniz.'
 
+async function tryAnswerMidFlow(
+  supabase: ReturnType<typeof getSupabase>,
+  psychologistId: string,
+  phone: string,
+  text: string,
+  psych: Parameters<typeof getGeminiResponse>[1],
+  stepReminder: string,
+): Promise<boolean> {
+  const { data: paketler } = await supabase
+    .from('paket_sablonlari')
+    .select('name, session_count, price_tl')
+    .eq('psychologist_id', psychologistId)
+    .eq('is_active', true)
+    .order('sort_order')
+    .order('created_at')
+
+  const response = await getGeminiResponse(text, psych, paketler ?? [])
+
+  if (response === '__KRIZ__') {
+    await sendReply(psychologistId, phone, KRIZ_MESAJ)
+    return true
+  }
+  // Booking sinyali geldi — numara beklenen adımda geçersiz numara girilmiş, pas geç
+  if (response.startsWith('__')) return false
+
+  if (response) {
+    await sendReply(psychologistId, phone, `${response}\n\n_(${stepReminder})_`)
+    return true
+  }
+  return false
+}
+
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key')
   if (apiKey !== process.env.WA_API_KEY) {
@@ -548,7 +580,8 @@ export async function POST(req: NextRequest) {
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > days.length) {
       const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
-      await sendReply(psychologistId, phone, `Lütfen 1-${days.length} arası bir numara girin:\n\n${list}`)
+      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Randevu günü seçimi için 1-${days.length} arası numara yazabilirsiniz`)
+      if (!handled) await sendReply(psychologistId, phone, `Lütfen 1-${days.length} arası bir numara girin:\n\n${list}`)
       return NextResponse.json({ ok: true })
     }
     const selected = days[n - 1]
@@ -578,7 +611,8 @@ export async function POST(req: NextRequest) {
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > times.length) {
       const slotList = times.map((s, i) => `${i + 1}️⃣ ${s}`).join('\n')
-      await sendReply(psychologistId, phone, `Lütfen 1-${times.length} arası bir numara girin:\n\n${slotList}`)
+      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Saat seçimi için 1-${times.length} arası numara yazabilirsiniz`)
+      if (!handled) await sendReply(psychologistId, phone, `Lütfen 1-${times.length} arası bir numara girin:\n\n${slotList}`)
       return NextResponse.json({ ok: true })
     }
     const selectedTime = times[n - 1]
@@ -601,7 +635,8 @@ export async function POST(req: NextRequest) {
     }
     const n = parseInt(text)
     if (n !== 1 && n !== 2) {
-      await sendReply(psychologistId, phone, 'Lütfen *1* (Yüz yüze) veya *2* (Online) yazın.')
+      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, 'Seans türü için *1* (Yüz yüze) veya *2* (Online) yazabilirsiniz')
+      if (!handled) await sendReply(psychologistId, phone, 'Lütfen *1* (Yüz yüze) veya *2* (Online) yazın.')
       return NextResponse.json({ ok: true })
     }
     const appointmentType = n === 1 ? 'yuzyuze' : 'online'
@@ -690,7 +725,8 @@ export async function POST(req: NextRequest) {
         const perSeans = Math.round(p.price_tl / p.session_count)
         return `${i + 1}️⃣ ${p.name} — ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')} (₺${perSeans}/seans)`
       }).join('\n')
-      await sendReply(psychologistId, phone,
+      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Paket seçimi için 1-${tekSeansNum} arası numara yazabilirsiniz`)
+      if (!handled) await sendReply(psychologistId, phone,
         `Lütfen 1-${tekSeansNum} arası bir numara girin:\n\n${list}\n${tekSeansNum}️⃣ Tek Seans`
       )
       return NextResponse.json({ ok: true })
