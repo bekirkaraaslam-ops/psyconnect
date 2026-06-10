@@ -16,30 +16,90 @@ function keywordIntent(text: string): string | null {
   return null
 }
 
-async function getGeminiIntent(message: string): Promise<string> {
-  // Önce keyword ile dene — Gemini'ye gerek yoksa hiç çağırma
+const KRIZ_KEYWORDS = ['intihar', 'kendimi öldür', 'kendime zarar', 'hayatıma son', 'yaşamak istemiyorum', 'ölmek istiyorum', 'öldürmek istiyorum kendimi']
+const KRIZ_MESAJ = 'Şu an çok zor bir şey yaşıyor olabilirsiniz. Lütfen hemen yardım alın:\n\n🆘 *182* — ALO Psikiyatri Hattı (7/24, ücretsiz)\n🚨 *112* — Acil Servis\n\nRandevu almak ister misiniz? *randevu* yazabilirsiniz.'
+
+async function getGeminiResponse(
+  message: string,
+  psych: {
+    full_name: string
+    uzmanlik_alani?: string | null
+    work_start_hour: number
+    work_end_hour: number
+    work_days: string[]
+    harita_linki?: string | null
+    online_gorusme_linki?: string | null
+    tatil_modu: boolean
+  },
+  packages: { name: string; session_count: number; price_tl: number }[]
+): Promise<string> {
+  const t = message.toLowerCase()
+  if (KRIZ_KEYWORDS.some(k => t.includes(k))) return '__KRIZ__'
+
   const quick = keywordIntent(message)
-  if (quick) return quick
+  if (quick === 'RANDEVU_AL') return '__RANDEVU_AL__'
+  if (quick === 'RANDEVU_IPTAL') return '__RANDEVU_IPTAL__'
+  if (quick === 'RANDEVU_ONAYLA') return '__RANDEVU_ONAYLA__'
 
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
-    const prompt = `Kullanıcının WhatsApp mesajı: "${message}"
-Bu mesajın amacı nedir? Sadece aşağıdakilerden birini yaz, başka hiçbir şey yazma:
-RANDEVU_AL - randevu almak, saat sormak, müsaitlik sormak
-RANDEVU_IPTAL - randevuyu iptal etmek
-RANDEVU_ONAYLA - randevuyu onaylamak, geleceklerini bildirmek
-DIGER - bunların dışında her şey`
+
+    const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
+    const gunler = psych.work_days.join(', ')
+    const paketlerText = packages.length > 0
+      ? packages.map(p => `- ${p.name}: ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')}`).join('\n')
+      : 'Tanımlanmış paket yok.'
+    const seansturleri = [
+      psych.harita_linki ? `Yüz yüze (harita: ${psych.harita_linki})` : 'Yüz yüze',
+      psych.online_gorusme_linki ? `Online (link: ${psych.online_gorusme_linki})` : 'Online',
+    ].join(', ')
+
+    const systemPrompt = `Sen ${psych.full_name} kliniğinin WhatsApp randevu asistanısın. Danışanlarla kısa, samimi ve ölçülü bir dille iletişim kuruyorsun.
+
+KİMLİK KURALI: Hiçbir zaman "yapay zeka", "AI", "bot" gibi şeyler söyleme. Sorulursa: "Kliniğin randevu hattıyım."
+
+TON KURALI: Samimi ama ölçülü. Kısa cümleler. Terapötik dil YASAK — "çok zor olmalı", "yalnız değilsiniz", "güçlüsünüz" gibi ifadeler kullanma.
+
+MUTLAK YASAKLAR:
+- Psikolojik tavsiye, yorum veya yönlendirme verme
+- Tanı koy, semptom yorumla
+- İlaç veya tedavi öner
+- Psikolog hakkında kişisel yorum yap
+- Başka kliniklerle karşılaştırma yap
+- Danışan bilgilerini paylaş
+- Siyasi, dini veya hukuki içerik
+- Fiyat pazarlığı veya indirim vaat et
+
+KRİZ PROTOKOLÜ (EN YÜKSEK ÖNCELİK): İntihar, kendine zarar verme veya ölmek isteme içeren mesajlarda sadece şunu döndür: __KRIZ__
+
+YANIT VEREBİLECEĞİN KONULAR:
+- Randevu talebi → __RANDEVU_AL__
+- Randevu iptali → __RANDEVU_IPTAL__
+- Randevu onayı → __RANDEVU_ONAYLA__
+- Çalışma günleri: ${gunler}
+- Çalışma saatleri: ${saatler}
+- Seans türleri: ${seansturleri}
+- Uzmanlık alanı: ${psych.uzmanlik_alani ?? 'Belirtilmemiş'}
+- Paket fiyatları (sadece bunlar, başka fiyat söyleme):
+${paketlerText}
+
+BİLİNMEYEN SORULARA: "Bu konuda size bilgi veremiyorum. Daha fazlası için kliniğimizle doğrudan iletişime geçebilirsiniz."
+
+ÇIKTI FORMATI: Sinyal sinyalleri (__RANDEVU_AL__ vb.) dışında sadece düz Türkçe metin yaz — markdown, başlık veya liste kullanma.
+
+DANIŞAN MESAJI: "${message}"`
 
     const result = await Promise.race([
-      model.generateContent(prompt),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
+      model.generateContent(systemPrompt),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000)),
     ])
     const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
-    if (['RANDEVU_AL','RANDEVU_IPTAL','RANDEVU_ONAYLA','DIGER'].includes(raw)) return raw
-    return 'DIGER'
+    const SIGNALS = ['__RANDEVU_AL__', '__RANDEVU_IPTAL__', '__RANDEVU_ONAYLA__', '__KRIZ__']
+    if (SIGNALS.includes(raw)) return raw
+    return raw || ''
   } catch {
-    return 'DIGER'
+    return ''
   }
 }
 
@@ -318,7 +378,7 @@ export async function POST(req: NextRequest) {
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug, tatil_modu')
+    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug, tatil_modu, uzmanlik_alani, harita_linki, online_gorusme_linki')
     .eq('id', psychologistId)
     .single()
 
@@ -406,6 +466,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true })
   }
 
+  // ── KRİZ — her adımda çalışır ────────────────────────────────────────────
+  if (KRIZ_KEYWORDS.some(k => textLower.includes(k))) {
+    await sendReply(psychologistId, phone, KRIZ_MESAJ)
+    return NextResponse.json({ ok: true })
+  }
+
   // ── İPTAL keyword ───────────────────────────────────────────────────────────
   if (textLower === 'iptal') {
     await handleRandevuIptal(supabase, psychologistId, phone)
@@ -415,34 +481,38 @@ export async function POST(req: NextRequest) {
   // ── STATE MACHINE ────────────────────────────────────────────────────────────
 
   if (step === 'idle') {
-    const intent = await getGeminiIntent(text)
-    if (intent === 'RANDEVU_AL') {
+    const { data: paketler } = await supabase
+      .from('paket_sablonlari')
+      .select('name, session_count, price_tl')
+      .eq('psychologist_id', psychologistId)
+      .eq('is_active', true)
+      .order('sort_order')
+      .order('created_at')
+
+    const geminiResponse = await getGeminiResponse(text, psych, paketler ?? [])
+
+    if (geminiResponse === '__KRIZ__') {
+      await sendReply(psychologistId, phone, KRIZ_MESAJ)
+      return NextResponse.json({ ok: true })
+    }
+    if (geminiResponse === '__RANDEVU_AL__') {
       await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
       return NextResponse.json({ ok: true })
     }
-    if (intent === 'RANDEVU_IPTAL') {
+    if (geminiResponse === '__RANDEVU_IPTAL__') {
       await handleRandevuIptal(supabase, psychologistId, phone)
       return NextResponse.json({ ok: true })
     }
-    if (intent === 'RANDEVU_ONAYLA') {
+    if (geminiResponse === '__RANDEVU_ONAYLA__') {
       await handleRandevuOnayla(supabase, psychologistId, phone)
       return NextResponse.json({ ok: true })
     }
-    // Kayıtlı danışan mı kontrol et — değilse hoş geldiniz mesajı gönder
-    const { data: existingPatient } = await supabase
-      .from('patients')
-      .select('id')
-      .eq('phone_number', phone)
-      .eq('psychologist_id', psychologistId)
-      .maybeSingle()
-
-    if (!existingPatient) {
-      await sendReply(psychologistId, phone,
-        `Merhaba! 👋 *${psych.full_name}* kliniğine hoş geldiniz, ilginiz için teşekkür ederiz.\n\nBu hat üzerinden kolayca randevu alabilirsiniz. Randevu almak için *randevu* yazmanız yeterli — size müsait günleri ve saatleri sunacağız, tercihlerinize göre randevunuzu birlikte oluşturacağız.\n\nMevcut randevunuzu onaylamak için *evet*, iptal etmek için *iptal* yazabilirsiniz.`
-      )
+    if (geminiResponse) {
+      await sendReply(psychologistId, phone, geminiResponse)
       return NextResponse.json({ ok: true })
     }
 
+    // Gemini timeout/hata — fallback
     await sendReply(psychologistId, phone,
       `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
     )
