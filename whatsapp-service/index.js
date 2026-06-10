@@ -452,7 +452,7 @@ async function connectWhatsApp(psychologistId) {
   // ── Gelen mesajları dinle (try-catch dışarıdan sarılı) ───────
   sock.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
     console.log(`[upsert] type=${type} count=${msgs?.length}`)
-    if (type !== 'notify' && type !== 'append') return
+    if (type !== 'notify') return
     for (const msg of msgs) {
       const jid = msg.key.remoteJid ?? ''
       const msgAgeMs = Date.now() - Number(msg.messageTimestamp) * 1000
