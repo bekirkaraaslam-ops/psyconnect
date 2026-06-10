@@ -463,15 +463,6 @@ export async function POST(req: NextRequest) {
   const session = await getSession(supabase, phone, psychologistId)
   const { step, context } = session as { step: string; context: Record<string, unknown> }
 
-  // ── MENÜ keyword — her adımdan çıkış, session sıfırla ────────────────────────
-  if (textLower === 'menü' || textLower === 'menu' || textLower === 'menu') {
-    await setSession(supabase, phone, psychologistId, 'idle', {})
-    await sendReply(psychologistId, phone,
-      `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
-    )
-    return NextResponse.json({ ok: true })
-  }
-
   // ── RANDEVU keyword — her state'de çalışır, session'ı sıfırlar ──────────────
   if (textLower === 'randevu') {
     await setSession(supabase, phone, psychologistId, 'idle', {})
@@ -546,7 +537,7 @@ export async function POST(req: NextRequest) {
 
     // Gemini timeout/hata — fallback
     await sendReply(psychologistId, phone,
-      `Merhaba! Size yardımcı olabilmem için:\n\n📅 *randevu* — Yeni randevu almak\n❌ *iptal* — Randevunuzu iptal etmek\n✅ *evet* — Randevunuzu onaylamak`
+      `Merhaba! Randevu almak için *randevu*, iptal için *iptal* yazabilirsiniz.`
     )
     return NextResponse.json({ ok: true })
   }
