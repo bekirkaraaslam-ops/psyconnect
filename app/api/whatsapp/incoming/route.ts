@@ -23,6 +23,7 @@ async function getGeminiResponse(
     work_days: string[]
     harita_linki?: string | null
     online_gorusme_linki?: string | null
+    klinik_adres?: string | null
     tatil_modu: boolean
   },
   packages: { name: string; session_count: number; price_tl: number }[]
@@ -69,6 +70,7 @@ YANIT VEREBİLECEĞİN KONULAR:
 - Çalışma saatleri: ${saatler}
 - Seans türleri: ${seansturleri}
 - Uzmanlık alanı: ${psych.uzmanlik_alani ?? 'Belirtilmemiş'}
+- Klinik adresi: ${psych.klinik_adres ?? 'Belirtilmemiş'}${psych.harita_linki ? ` — Harita: ${psych.harita_linki}` : ''}
 - Paket fiyatları (sadece bunlar, başka fiyat söyleme):
 ${paketlerText}
 
@@ -418,7 +420,7 @@ export async function POST(req: NextRequest) {
 
   const { data: psych } = await supabase
     .from('psychologists')
-    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug, tatil_modu, uzmanlik_alani, harita_linki, online_gorusme_linki')
+    .select('full_name, work_days, work_start_hour, work_end_hour, is_connected, booking_slug, tatil_modu, uzmanlik_alani, harita_linki, online_gorusme_linki, klinik_adres')
     .eq('id', psychologistId)
     .single()
 
