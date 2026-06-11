@@ -55,6 +55,7 @@ const badMacCounts = new Map()     // psychologistId → bad mac error count
 const connectingFlags = new Set()  // psychologistId → bağlantı kurulum süreci devam ediyor
 const lidMaps = new Map()          // psychologistId → Map(@lid → phone number)
 const badMacCooldowns = new Map()  // jid → last yardım menüsü timestamp (spam önleme)
+const processedMsgIds = new Map()  // msgId → timestamp (duplicate önleme)
 // botSessions state türleri:
 //   'awaiting_selection'        → randevu slot seçimi bekliyor
 //   'awaiting_waitlist_response' → bekleme listesi teklifi yanıtı bekliyor
@@ -498,6 +499,19 @@ async function connectWhatsApp(psychologistId) {
       if (msg.key.fromMe) continue
       if (jid === 'status@broadcast') continue
       if (msgAgeMs > 30 * 60 * 1000) continue
+
+      // Duplicate önleme: aynı mesaj ID'si 10 saniye içinde tekrar gelirse atla
+      const msgId = msg.key.id
+      const now = Date.now()
+      if (processedMsgIds.has(msgId)) {
+        console.log(`[dup] ${msgId} zaten işlendi, atlanıyor`)
+        continue
+      }
+      processedMsgIds.set(msgId, now)
+      // 5 dakikadan eski kayıtları temizle
+      for (const [id, ts] of processedMsgIds) {
+        if (now - ts > 5 * 60 * 1000) processedMsgIds.delete(id)
+      }
 
       const isWaNet = jid.endsWith('@s.whatsapp.net')
       const isLid   = jid.endsWith('@lid')
