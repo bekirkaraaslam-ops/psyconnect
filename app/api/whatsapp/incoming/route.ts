@@ -31,8 +31,8 @@ async function getGeminiResponse(
   const t = message.toLowerCase()
   if (KRIZ_KEYWORDS.some(k => t.includes(k))) return '__KRIZ__'
 
-  const hasKey = !!process.env.GEMINI_API_KEY
-  console.log(`[gemini] key=${hasKey} msg="${message.slice(0, 40)}"`)
+  const hasKey = !!process.env.OPENAI_API_KEY
+  console.log(`[openai] key=${hasKey} msg="${message.slice(0, 40)}" klinik="${psych.klinik_adres ?? 'null'}" uzmanlik="${psych.uzmanlik_alani ?? 'null'}"`)
 
   const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
   const gunler = psych.work_days.join(', ')
