@@ -72,7 +72,7 @@ KLİNİK BİLGİLERİ (bu konularda serbestçe yanıt ver):
 - Çalışma saatleri: ${saatler}
 - Seans türleri: ${seansturleri}
 - Uzmanlık alanı: ${psych.uzmanlik_alani ?? 'Belirtilmemiş'}
-- Klinik adresi: ${psych.klinik_adres ?? 'Belirtilmemiş'}${psych.harita_linki ? ` — Harita: ${psych.harita_linki}` : ''}
+- Klinik adresi: ${psych.klinik_adres ?? 'Belirtilmemiş'}${psych.harita_linki ? `\n- Harita linki: ${psych.harita_linki} (konum sorusunda adresi söyledikten sonra bu linki de mutlaka paylaş)` : ''}
 - Paket fiyatları (sadece bunlar, başka fiyat söyleme):
 ${paketlerText}
 
