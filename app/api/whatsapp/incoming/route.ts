@@ -34,7 +34,7 @@ async function getGeminiResponse(
 
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
 
     const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
     const gunler = psych.work_days.join(', ')
