@@ -370,6 +370,7 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
                   const statusInfo = STATUS_LABELS[apt.status] ?? { label: apt.status, color: '#94a3b8', bg: '#f1f5f9' }
                   const isUpdating = updatingId === apt.id
                   const hasUcret = !!apt.ucret
+                  const isCancelled = ['canceled', 'cancelled_by_patient'].includes(apt.status)
                   return (
                     <tr
                       key={apt.id}
@@ -399,7 +400,9 @@ export default function RaporlarClient({ planType = 'free' }: RaporlarClientProp
                         {apt.ucret ? formatCurrency(apt.ucret) : <span style={{ color: 'var(--muted-foreground)' }}>—</span>}
                       </td>
                       <td className="px-4 py-3">
-                        {hasUcret ? (
+                        {isCancelled ? (
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: '#fef2f2', color: '#ef4444' }}>İptal edildi</span>
+                        ) : hasUcret ? (
                           isUpdating ? (
                             <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>...</span>
                           ) : apt.odeme_durumu === 'odendi' ? (

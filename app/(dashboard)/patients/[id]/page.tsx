@@ -9,10 +9,12 @@ import AnamnezAiOzet from '@/components/patients/AnamnezAiOzet'
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ tab?: string }>
 }
 
-export default async function PatientDetailPage({ params }: Props) {
+export default async function PatientDetailPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { tab } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -141,6 +143,7 @@ export default async function PatientDetailPage({ params }: Props) {
               anamnezDecrypted={anamnezData}
               onamForm={onamForm ?? null}
               anamnezEnabled={!!patient.anamnez_enabled}
+              initialTab={tab}
             />
           </div>
 

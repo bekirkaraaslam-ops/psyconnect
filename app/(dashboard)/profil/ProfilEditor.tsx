@@ -171,6 +171,7 @@ export default function ProfilEditor({ psych, paketler, subscriptionStatus }: Pr
       deneyim_yil: deneyimYil ? parseInt(deneyimYil) : null,
       dil: dil ? dil.split(',').map(d => d.trim()).filter(Boolean) : null,
       uzmanlik_alanlari: uzmanliklar.length > 0 ? uzmanliklar : null,
+      uzmanlik_alani: uzmanliklar.length > 0 ? uzmanliklar.join(', ') : null,
       egitim: egitimler.filter(e => e.baslik).length > 0 ? egitimler.filter(e => e.baslik) : null,
       klinik_adi: klinikAdi || null, klinik_adres: klinikAdres || null,
       klinik_tel: klinikTel || null, calisma_saatleri: calismaSaatleri || null,

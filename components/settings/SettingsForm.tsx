@@ -23,7 +23,7 @@ interface Props {
     booking_slug: string | null
     varsayilan_seans_ucreti: number | null
     tatil_modu: boolean | null
-    uzmanlik_alani: string | null
+    uzmanlik_alani?: string | null
   } | null
   email: string
   subscriptionStatus: string | null
@@ -59,7 +59,6 @@ const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
   const [sessionDuration, setSessionDuration] = useState(psychologist?.session_duration_minutes ?? 50)
   const [bufferMinutes, setBufferMinutes] = useState(psychologist?.buffer_minutes ?? 10)
   const [varsayilanUcret, setVarsayilanUcret] = useState(psychologist?.varsayilan_seans_ucreti != null ? String(psychologist.varsayilan_seans_ucreti) : '')
-  const [uzmanlikAlani, setUzmanlikAlani] = useState(psychologist?.uzmanlik_alani ?? '')
   const [tatilModu, setTatilModu] = useState(psychologist?.tatil_modu ?? false)
   const [tatilSaving, setTatilSaving] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -100,7 +99,6 @@ harita_linki: haritaLinki || null,
         buffer_minutes: bufferMinutes,
         varsayilan_seans_ucreti: varsayilanUcret !== '' ? Number(varsayilanUcret) : null,
         tatil_modu: tatilModu,
-        uzmanlik_alani: uzmanlikAlani || null,
         klinik_adres: klinikAdres || null,
       })
       .eq('id', psychologist!.id)
@@ -158,20 +156,6 @@ harita_linki: haritaLinki || null,
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Uzmanlık Alanı</label>
-            <input
-              type="text"
-              value={uzmanlikAlani}
-              onChange={e => setUzmanlikAlani(e.target.value)}
-              placeholder="Örn: Anksiyete, depresyon, ilişki sorunları"
-              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
-              style={{ borderColor: '#dde5e2', color: '#334155' }}
-            />
-            <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>
-              WhatsApp asistanı danışanlara bu bilgiyi paylaşabilir.
-            </p>
-          </div>
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Klinik Numarası</label>

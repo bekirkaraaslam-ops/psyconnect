@@ -51,7 +51,7 @@ export default function MissingNotesAccordion({ appointments }: { appointments: 
             return (
               <Link
                 key={apt.id}
-                href={`/appointments/${apt.id}`}
+                href={`/patients/${apt.patient?.id}?tab=seans`}
                 className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3">

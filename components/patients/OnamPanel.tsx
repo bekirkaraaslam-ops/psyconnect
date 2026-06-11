@@ -36,8 +36,13 @@ export default function OnamPanel({ hastaId, form }: Props) {
     })
     const d = await res.json()
     setSending(false)
-    if (d.link) setLink(d.link)
-    else setSendError(d.error ?? 'Gönderilemedi.')
+    if (d.link) {
+      setLink(d.link)
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(`Merhaba, lütfen aşağıdaki linke tıklayarak onam formunu imzalayınız:\n${d.link}`)}`
+      window.open(waUrl, '_blank')
+    } else {
+      setSendError(d.error ?? 'Gönderilemedi.')
+    }
   }
 
   const icon = (

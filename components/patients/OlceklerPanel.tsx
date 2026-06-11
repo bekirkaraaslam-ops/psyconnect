@@ -346,7 +346,7 @@ export default function OlceklerPanel({ hastaId }: Props) {
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50"
                     style={{ background: 'linear-gradient(135deg, #4a7c6f 0%, #2a5446 100%)' }}
                   >
-                    {sending ? 'Oluşturuluyor…' : 'Link Oluştur'}
+                    {sending ? 'Gönderiliyor…' : 'Gönder'}
                   </button>
                 </div>
               </>

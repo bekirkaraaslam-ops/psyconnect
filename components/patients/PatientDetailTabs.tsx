@@ -59,6 +59,7 @@ interface Props {
   anamnezDecrypted: AnamnezDecrypted | null
   onamForm: OnamForm | null
   anamnezEnabled: boolean
+  initialTab?: string
 }
 
 const TABS = [
@@ -76,8 +77,10 @@ export default function PatientDetailTabs({
   anamnezDecrypted,
   onamForm,
   anamnezEnabled,
+  initialTab,
 }: Props) {
-  const [active, setActive] = useState('genel')
+  const validTabs = TABS.map(t => t.key)
+  const [active, setActive] = useState(initialTab && validTabs.includes(initialTab) ? initialTab : 'genel')
 
   return (
     <div>
