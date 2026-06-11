@@ -87,7 +87,7 @@ DANIŞAN MESAJI: "${message}"`
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
     const result = await Promise.race([
       model.generateContent(systemPrompt),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000)),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000)),
     ])
     const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
     console.log(`[gemini] raw="${raw.slice(0, 80)}"`)
@@ -106,7 +106,7 @@ DANIŞAN MESAJI: "${message}"`
     const msg: string = err?.message ?? String(err)
     console.error('[gemini] hata (1. deneme):', msg)
     if (msg.includes('503') || msg.includes('overload') || msg.includes('yüksek talep') || msg.includes('quota')) {
-      await new Promise(r => setTimeout(r, 2000))
+      await new Promise(r => setTimeout(r, 500))
       try {
         return await callGemini()
       } catch (err2: any) {
