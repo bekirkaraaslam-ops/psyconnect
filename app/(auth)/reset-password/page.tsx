@@ -2,27 +2,34 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (password !== confirm) {
+      setError('Şifreler eşleşmiyor.')
+      return
+    }
+    if (password.length < 6) {
+      setError('Şifre en az 6 karakter olmalıdır.')
+      return
+    }
     setLoading(true)
     setError('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.updateUser({ password })
 
+    setLoading(false)
     if (error) {
-      setError('E-posta veya şifre hatalı.')
-      setLoading(false)
+      setError('Şifre güncellenemedi. Bağlantınızın süresi dolmuş olabilir, tekrar deneyin.')
       return
     }
 
@@ -32,7 +39,10 @@ export default function LoginPage() {
 
   return (
     <>
-      <h2 className="text-xl font-semibold mb-6" style={{ color: '#334155' }}>Giriş Yap</h2>
+      <h2 className="text-xl font-semibold mb-2" style={{ color: '#334155' }}>Yeni Şifre Belirle</h2>
+      <p className="text-sm mb-6" style={{ color: '#64748b' }}>
+        Hesabınız için yeni bir şifre girin.
+      </p>
 
       {error && (
         <div className="mb-4 px-4 py-3 rounded-lg text-sm" style={{ background: '#fee2e2', color: '#dc2626' }}>
@@ -42,29 +52,7 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>
-            E-posta
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
-            style={{ borderColor: '#dde5e2', color: '#334155' }}
-            placeholder="ornek@mail.com"
-            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
-            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
-          />
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-sm font-medium" style={{ color: '#334155' }}>Şifre</label>
-            <Link href="/forgot-password" className="text-xs" style={{ color: '#4a7c6f' }}>
-              Şifremi unuttum
-            </Link>
-          </div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Yeni Şifre</label>
           <input
             type="password"
             value={password}
@@ -78,23 +66,30 @@ export default function LoginPage() {
           />
         </div>
 
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Şifre Tekrar</label>
+          <input
+            type="password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            required
+            className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-150"
+            style={{ borderColor: '#dde5e2', color: '#334155' }}
+            placeholder="••••••••"
+            onFocus={e => { e.target.style.borderColor = '#4a7c6f'; e.target.style.boxShadow = '0 0 0 3px rgba(74,124,111,0.12)' }}
+            onBlur={e => { e.target.style.borderColor = '#dde5e2'; e.target.style.boxShadow = 'none' }}
+          />
+        </div>
+
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+          className="w-full py-2.5 rounded-lg text-sm font-medium text-white disabled:opacity-70 flex items-center justify-center gap-2"
           style={{ background: 'linear-gradient(135deg, #4a7c6f 0%, #2a5446 100%)' }}
         >
-          {loading && <span className="btn-spinner" />}
-          {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+          {loading ? 'Kaydediliyor...' : 'Şifremi Güncelle'}
         </button>
       </form>
-
-      <p className="mt-6 text-center text-sm" style={{ color: '#64748b' }}>
-        Hesabın yok mu?{' '}
-        <Link href="/register" className="font-medium" style={{ color: '#4a7c6f' }}>
-          Kayıt Ol
-        </Link>
-      </p>
     </>
   )
 }
