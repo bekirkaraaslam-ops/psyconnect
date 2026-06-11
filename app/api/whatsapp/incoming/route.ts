@@ -84,14 +84,19 @@ DANIŞAN MESAJI: "${message}"`
 
   const callGemini = async (): Promise<string> => {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
     const result = await Promise.race([
       model.generateContent(systemPrompt),
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000)),
     ])
     const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
     console.log(`[gemini] raw="${raw.slice(0, 80)}"`)
+    // Exact match
     if (SIGNALS.includes(raw)) return raw
+    // Signal embedded in text (e.g. "Kontrol edebilirim. __RANDEVU_AL__")
+    for (const sig of SIGNALS) {
+      if (raw.includes(sig)) return sig
+    }
     return raw || ''
   }
 
@@ -552,6 +557,14 @@ export async function POST(req: NextRequest) {
 
     // Gemini timeout/hata — fallback
     await sendReply(psychologistId, phone, `Şu an yoğunluk nedeniyle yanıt veremiyorum, lütfen birkaç saniye sonra tekrar deneyin.`)
+    return NextResponse.json({ ok: true })
+  }
+
+  if (step === 'awaiting_cancel_confirm') {
+    // Unexpected input — remind user what to do
+    await sendReply(psychologistId, phone,
+      `❗ *${context.appointment_label}* randevunuzu iptal etmek istediğinize emin misiniz?\n\n*evet* — İptal et\n*hayır* — Vazgeç`
+    )
     return NextResponse.json({ ok: true })
   }
 
