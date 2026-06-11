@@ -9,6 +9,14 @@ function isRealTurkishPhone(phone: string): boolean {
 }
 
 
+function keywordIntent(text: string): string | null {
+  const t = text.toLowerCase().replace('i̇', 'i')
+  if (/(randevu\s*(almak|istiyorum|almak\s*istiyorum|alabilir|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|seans\s*(almak|istiyorum)|görüşme\s*(almak|istiyorum|ayarla))/i.test(t)) return '__RANDEVU_AL__'
+  if (/(randevum[ıu]\s*iptal|randevu\s*iptal|iptal\s*etmek\s*istiyorum)/i.test(t)) return '__RANDEVU_IPTAL__'
+  if (/(randevumu?\s*onayl|geliyorum|gelirim|evet\s*geleceğim)/i.test(t)) return '__RANDEVU_ONAYLA__'
+  return null
+}
+
 const KRIZ_KEYWORDS = ['intihar', 'kendimi öldür', 'kendime zarar', 'hayatıma son', 'yaşamak istemiyorum', 'ölmek istiyorum', 'öldürmek istiyorum kendimi']
 const KRIZ_MESAJ = 'Şu an çok zor bir şey yaşıyor olabilirsiniz. Lütfen hemen yardım alın:\n\n🆘 *182* — ALO Psikiyatri Hattı (7/24, ücretsiz)\n🚨 *112* — Acil Servis\n\nRandevu almak ister misiniz? *randevu* yazabilirsiniz.'
 
@@ -31,6 +39,10 @@ async function getGeminiResponse(
 
   const hasKey = !!process.env.GEMINI_API_KEY
   console.log(`[gemini] key=${hasKey} msg="${message.slice(0, 40)}"`)
+
+  // Keyword önce — Gemini API'si çalışmasa bile booking güvenli çalışır
+  const quick = keywordIntent(message)
+  if (quick) return quick
 
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
