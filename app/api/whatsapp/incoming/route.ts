@@ -600,7 +600,9 @@ export async function POST(req: NextRequest) {
     const slots = await getAvailableSlots(supabase, psychologistId, selected.iso, workStart, workEnd)
     if (slots.length === 0) {
       const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
-      await sendReply(psychologistId, phone, `${selected.label} için müsait saat kalmamış. Başka bir gün seçin:\n\n${list}`)
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://seansify.com'
+      const waitSlug = psych.booking_slug ?? psychologistId
+      await sendReply(psychologistId, phone, `${selected.label} için müsait saat kalmamış. Başka bir gün seçin:\n\n${list}\n\nYa da bekleme listesine eklenip boşalan randevulardan haberdar olun 👇\n${appUrl}/bekle/${waitSlug}`)
       return NextResponse.json({ ok: true })
     }
     const slotList = slots.map((s, i) => `${i + 1}️⃣ ${s}`).join('\n')
