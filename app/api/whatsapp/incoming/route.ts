@@ -718,7 +718,7 @@ export async function POST(req: NextRequest) {
         appointment_type: appointmentType,
         selected_paket: null,
       })
-      await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
+      await sendReply(psychologistId, phone, `Adınız ve soyadınız nedir?`)
     }
     return NextResponse.json({ ok: true })
   }
@@ -805,7 +805,7 @@ export async function POST(req: NextRequest) {
         appointment_type: appointmentType,
         selected_paket: selectedPaket,
       })
-      await sendReply(psychologistId, phone, `Son olarak adınızı ve soyadınızı yazar mısınız?`)
+      await sendReply(psychologistId, phone, `Adınız ve soyadınız nedir?`)
     }
     return NextResponse.json({ ok: true })
   }
@@ -833,7 +833,7 @@ export async function POST(req: NextRequest) {
         name_surname: text,
       })
       await sendReply(psychologistId, phone,
-        `Son olarak telefon numaranızı paylaşır mısınız?\n\nÖrnek: *0532 XXX XX XX*`
+        `Son adım: Telefon numaranızı paylaşın.\n\nÖrnek: *0532 XXX XX XX*`
       )
       return NextResponse.json({ ok: true })
     }
