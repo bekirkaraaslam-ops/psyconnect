@@ -316,10 +316,10 @@ async function getSession(supabase: ReturnType<typeof getSupabase>, phone: strin
     .maybeSingle()
   if (error) console.error('[session] getSession hata:', error.message)
   if (!data) return { step: 'idle', context: {} }
-  // 2 saatten eski non-idle session → sıfırla
+  // 20 dakikadan eski non-idle session → sıfırla
   if (data.step !== 'idle' && data.updated_at) {
     const ageMs = Date.now() - new Date(data.updated_at).getTime()
-    if (ageMs > 2 * 60 * 60 * 1000) {
+    if (ageMs > 20 * 60 * 1000) {
       console.log(`[session] timeout — phone=${phone} step=${data.step}, idle'a döndürüldü`)
       return { step: 'idle', context: {} }
     }
@@ -368,7 +368,7 @@ async function tryAnswerMidFlow(
   text: string,
   psych: Parameters<typeof getGeminiResponse>[1],
   stepReminder: string,
-): Promise<boolean> {
+): Promise<'handled' | 'restart' | 'passthrough'> {
   const { data: paketler } = await supabase
     .from('paket_sablonlari')
     .select('name, session_count, price_tl')
@@ -381,16 +381,21 @@ async function tryAnswerMidFlow(
 
   if (response === '__KRIZ__') {
     await sendReply(psychologistId, phone, KRIZ_MESAJ)
-    return true
+    return 'handled'
   }
-  // Booking sinyali geldi — numara beklenen adımda geçersiz numara girilmiş, pas geç
-  if (response.startsWith('__')) return false
+  // Yeni randevu niyeti — session'ı sıfırla, akışı yeniden başlat
+  if (response === '__RANDEVU_AL__') {
+    await setSession(supabase, phone, psychologistId, 'idle', {})
+    return 'restart'
+  }
+  // Diğer sinyaller — adımda kal
+  if (response.startsWith('__')) return 'passthrough'
 
   if (response) {
     await sendReply(psychologistId, phone, `${response}\n\n_(${stepReminder})_`)
-    return true
+    return 'handled'
   }
-  return false
+  return 'passthrough'
 }
 
 export async function POST(req: NextRequest) {
@@ -571,8 +576,9 @@ export async function POST(req: NextRequest) {
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > days.length) {
       const list = days.map((d, i) => `${i + 1}️⃣ ${d.label}`).join('\n')
-      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Randevu günü seçimi için 1-${days.length} arası numara yazabilirsiniz`)
-      if (!handled) await sendReply(psychologistId, phone, `Lütfen 1-${days.length} arası bir numara girin:\n\n${list}`)
+      const midResult = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Randevu günü seçimi için 1-${days.length} arası numara yazabilirsiniz`)
+      if (midResult === 'restart') await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
+      else if (midResult === 'passthrough') await sendReply(psychologistId, phone, `Lütfen 1-${days.length} arası bir numara girin:\n\n${list}`)
       return NextResponse.json({ ok: true })
     }
     const selected = days[n - 1]
@@ -602,8 +608,9 @@ export async function POST(req: NextRequest) {
     const n = parseInt(text)
     if (isNaN(n) || n < 1 || n > times.length) {
       const slotList = times.map((s, i) => `${i + 1}️⃣ ${s}`).join('\n')
-      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Saat seçimi için 1-${times.length} arası numara yazabilirsiniz`)
-      if (!handled) await sendReply(psychologistId, phone, `Lütfen 1-${times.length} arası bir numara girin:\n\n${slotList}`)
+      const midResult = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Saat seçimi için 1-${times.length} arası numara yazabilirsiniz`)
+      if (midResult === 'restart') await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
+      else if (midResult === 'passthrough') await sendReply(psychologistId, phone, `Lütfen 1-${times.length} arası bir numara girin:\n\n${slotList}`)
       return NextResponse.json({ ok: true })
     }
     const selectedTime = times[n - 1]
@@ -626,8 +633,9 @@ export async function POST(req: NextRequest) {
     }
     const n = parseInt(text)
     if (n !== 1 && n !== 2) {
-      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, 'Seans türü için *1* (Yüz yüze) veya *2* (Online) yazabilirsiniz')
-      if (!handled) await sendReply(psychologistId, phone, 'Lütfen *1* (Yüz yüze) veya *2* (Online) yazın.')
+      const midResult = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, 'Seans türü için *1* (Yüz yüze) veya *2* (Online) yazabilirsiniz')
+      if (midResult === 'restart') await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
+      else if (midResult === 'passthrough') await sendReply(psychologistId, phone, 'Lütfen *1* (Yüz yüze) veya *2* (Online) yazın.')
       return NextResponse.json({ ok: true })
     }
     const appointmentType = n === 1 ? 'yuzyuze' : 'online'
@@ -716,8 +724,9 @@ export async function POST(req: NextRequest) {
         const perSeans = Math.round(p.price_tl / p.session_count)
         return `${i + 1}️⃣ ${p.name} — ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')} (₺${perSeans}/seans)`
       }).join('\n')
-      const handled = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Paket seçimi için 1-${tekSeansNum} arası numara yazabilirsiniz`)
-      if (!handled) await sendReply(psychologistId, phone,
+      const midResult = await tryAnswerMidFlow(supabase, psychologistId, phone, text, psych, `Paket seçimi için 1-${tekSeansNum} arası numara yazabilirsiniz`)
+      if (midResult === 'restart') await handleRandevuAl(supabase, psychologistId, phone, psych, workDays, workStart, workEnd)
+      else if (midResult === 'passthrough') await sendReply(psychologistId, phone,
         `Lütfen 1-${tekSeansNum} arası bir numara girin:\n\n${list}\n${tekSeansNum}️⃣ Tek Seans`
       )
       return NextResponse.json({ ok: true })
