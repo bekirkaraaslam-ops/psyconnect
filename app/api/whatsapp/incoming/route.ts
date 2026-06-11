@@ -33,21 +33,17 @@ async function getGeminiResponse(
   const hasKey = !!process.env.GEMINI_API_KEY
   console.log(`[gemini] key=${hasKey} msg="${message.slice(0, 40)}"`)
 
-  try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
+  const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
+  const gunler = psych.work_days.join(', ')
+  const paketlerText = packages.length > 0
+    ? packages.map(p => `- ${p.name}: ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')}`).join('\n')
+    : 'Tanımlanmış paket yok.'
+  const seansturleri = [
+    psych.harita_linki ? `Yüz yüze (harita: ${psych.harita_linki})` : 'Yüz yüze',
+    psych.online_gorusme_linki ? `Online (link: ${psych.online_gorusme_linki})` : 'Online',
+  ].join(', ')
 
-    const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
-    const gunler = psych.work_days.join(', ')
-    const paketlerText = packages.length > 0
-      ? packages.map(p => `- ${p.name}: ${p.session_count} seans, ₺${Number(p.price_tl).toLocaleString('tr-TR')}`).join('\n')
-      : 'Tanımlanmış paket yok.'
-    const seansturleri = [
-      psych.harita_linki ? `Yüz yüze (harita: ${psych.harita_linki})` : 'Yüz yüze',
-      psych.online_gorusme_linki ? `Online (link: ${psych.online_gorusme_linki})` : 'Online',
-    ].join(', ')
-
-    const systemPrompt = `Sen ${psych.full_name} kliniğinin WhatsApp randevu asistanısın. Danışanlarla kısa, samimi ve ölçülü bir dille iletişim kuruyorsun.
+  const systemPrompt = `Sen ${psych.full_name} kliniğinin WhatsApp randevu asistanısın. Danışanlarla kısa, samimi ve ölçülü bir dille iletişim kuruyorsun.
 
 KİMLİK KURALI: Hiçbir zaman "yapay zeka", "AI", "bot" gibi şeyler söyleme. Sorulursa: "Kliniğin randevu hattıyım."
 
@@ -84,17 +80,35 @@ BİLİNMEYEN SORULARA: "Bu konuda size bilgi veremiyorum. Daha fazlası için kl
 
 DANIŞAN MESAJI: "${message}"`
 
+  const SIGNALS = ['__RANDEVU_AL__', '__RANDEVU_IPTAL__', '__RANDEVU_ONAYLA__', '__KRIZ__']
+
+  const callGemini = async (): Promise<string> => {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const result = await Promise.race([
       model.generateContent(systemPrompt),
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000)),
     ])
     const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
     console.log(`[gemini] raw="${raw.slice(0, 80)}"`)
-    const SIGNALS = ['__RANDEVU_AL__', '__RANDEVU_IPTAL__', '__RANDEVU_ONAYLA__', '__KRIZ__']
     if (SIGNALS.includes(raw)) return raw
     return raw || ''
+  }
+
+  try {
+    return await callGemini()
   } catch (err: any) {
-    console.error('[gemini] hata:', err?.message ?? err)
+    const msg: string = err?.message ?? String(err)
+    console.error('[gemini] hata (1. deneme):', msg)
+    if (msg.includes('503') || msg.includes('overload') || msg.includes('yüksek talep') || msg.includes('quota')) {
+      await new Promise(r => setTimeout(r, 2000))
+      try {
+        return await callGemini()
+      } catch (err2: any) {
+        console.error('[gemini] hata (2. deneme):', err2?.message ?? err2)
+        return ''
+      }
+    }
     return ''
   }
 }
@@ -537,7 +551,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Gemini timeout/hata — fallback
-    await sendReply(psychologistId, phone, `Merhaba! Size nasıl yardımcı olabilirim?`)
+    await sendReply(psychologistId, phone, `Şu an yoğunluk nedeniyle yanıt veremiyorum, lütfen birkaç saniye sonra tekrar deneyin.`)
     return NextResponse.json({ ok: true })
   }
 
