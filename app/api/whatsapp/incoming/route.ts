@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getAktifPaket, incrementPaket } from '@/lib/paket'
 import { normalizePhone } from '@/lib/utils'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import OpenAI from 'openai'
 
 function isRealTurkishPhone(phone: string): boolean {
   return /^905[0-9]{9}$/.test(phone)
@@ -82,38 +82,23 @@ DANIŞAN MESAJI: "${message}"`
 
   const SIGNALS = ['__RANDEVU_AL__', '__RANDEVU_IPTAL__', '__RANDEVU_ONAYLA__', '__KRIZ__']
 
-  const callGemini = async (): Promise<string> => {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!, { apiVersion: 'v1' })
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-    const result = await Promise.race([
-      model.generateContent(systemPrompt),
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000)),
-    ])
-    const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
-    console.log(`[gemini] raw="${raw.slice(0, 80)}"`)
-    // Exact match
+  try {
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: systemPrompt }],
+      max_tokens: 300,
+      temperature: 0.4,
+    })
+    const raw = completion.choices[0]?.message?.content?.trim() ?? ''
+    console.log(`[openai] raw="${raw.slice(0, 80)}"`)
     if (SIGNALS.includes(raw)) return raw
-    // Signal embedded in text (e.g. "Kontrol edebilirim. __RANDEVU_AL__")
     for (const sig of SIGNALS) {
       if (raw.includes(sig)) return sig
     }
     return raw || ''
-  }
-
-  try {
-    return await callGemini()
   } catch (err: any) {
-    const msg: string = err?.message ?? String(err)
-    console.error('[gemini] hata (1. deneme):', msg)
-    if (msg.includes('503') || msg.includes('overload') || msg.includes('yüksek talep') || msg.includes('quota')) {
-      await new Promise(r => setTimeout(r, 500))
-      try {
-        return await callGemini()
-      } catch (err2: any) {
-        console.error('[gemini] hata (2. deneme):', err2?.message ?? err2)
-        return ''
-      }
-    }
+    console.error('[openai] hata:', err?.message ?? err)
     return ''
   }
 }
