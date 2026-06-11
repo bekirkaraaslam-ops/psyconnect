@@ -8,13 +8,6 @@ function isRealTurkishPhone(phone: string): boolean {
   return /^905[0-9]{9}$/.test(phone)
 }
 
-function keywordIntent(text: string): string | null {
-  const t = text.toLowerCase().replace('i̇', 'i')
-  if (/(^randevu[.!?,]?\s*$|randevu\s*(almak|istiyorum|almak\s*istiyorum|al|var\s*m[ıi]|m[üu]sait|saat)|ne\s*zaman\s*(müsait|var)|randevu\s*alabilir)/i.test(t)) return 'RANDEVU_AL'
-  if (/(iptal|cancel|randevum[ıu]\s*iptal|randevu\s*iptal)/i.test(t)) return 'RANDEVU_IPTAL'
-  if (/(evet|onay|geliyorum|gelirim|onayl)/i.test(t)) return 'RANDEVU_ONAYLA'
-  return null
-}
 
 const KRIZ_KEYWORDS = ['intihar', 'kendimi öldür', 'kendime zarar', 'hayatıma son', 'yaşamak istemiyorum', 'ölmek istiyorum', 'öldürmek istiyorum kendimi']
 const KRIZ_MESAJ = 'Şu an çok zor bir şey yaşıyor olabilirsiniz. Lütfen hemen yardım alın:\n\n🆘 *182* — ALO Psikiyatri Hattı (7/24, ücretsiz)\n🚨 *112* — Acil Servis\n\nRandevu almak ister misiniz? *randevu* yazabilirsiniz.'
@@ -35,11 +28,6 @@ async function getGeminiResponse(
 ): Promise<string> {
   const t = message.toLowerCase()
   if (KRIZ_KEYWORDS.some(k => t.includes(k))) return '__KRIZ__'
-
-  const quick = keywordIntent(message)
-  if (quick === 'RANDEVU_AL') return '__RANDEVU_AL__'
-  if (quick === 'RANDEVU_IPTAL') return '__RANDEVU_IPTAL__'
-  if (quick === 'RANDEVU_ONAYLA') return '__RANDEVU_ONAYLA__'
 
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
