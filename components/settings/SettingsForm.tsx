@@ -22,6 +22,7 @@ interface Props {
     booking_slug: string | null
     varsayilan_seans_ucreti: number | null
     tatil_modu: boolean | null
+    seans_turleri?: string[] | null
     uzmanlik_alani?: string | null
   } | null
   email: string
@@ -59,6 +60,9 @@ const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
   const [bufferMinutes, setBufferMinutes] = useState(psychologist?.buffer_minutes ?? 10)
   const [varsayilanUcret, setVarsayilanUcret] = useState(psychologist?.varsayilan_seans_ucreti != null ? String(psychologist.varsayilan_seans_ucreti) : '')
   const [tatilModu, setTatilModu] = useState(psychologist?.tatil_modu ?? false)
+  const [seansTurleri, setSeansTurleri] = useState<string[]>(
+    psychologist?.seans_turleri ?? ['online', 'yuzyuze']
+  )
   const [tatilSaving, setTatilSaving] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -98,6 +102,7 @@ harita_linki: haritaLinki || null,
         buffer_minutes: bufferMinutes,
         varsayilan_seans_ucreti: varsayilanUcret !== '' ? Number(varsayilanUcret) : null,
         tatil_modu: tatilModu,
+        seans_turleri: seansTurleri,
         klinik_adres: klinikAdres || null,
       })
       .eq('id', psychologist!.id)
@@ -279,6 +284,34 @@ harita_linki: haritaLinki || null,
                 Tatil modu aktif — danışanlar randevu alamıyor.
               </div>
             )}
+          </div>
+
+          {/* Seans Türleri */}
+          <div className="pt-3 border-t" style={{ borderColor: '#f1f5f9' }}>
+            <p className="text-sm font-medium mb-2" style={{ color: '#334155' }}>Seans Türleri</p>
+            <div className="flex gap-2">
+              {[{ key: 'yuzyuze', label: 'Yüz yüze' }, { key: 'online', label: 'Online' }].map(({ key, label }) => {
+                const active = seansTurleri.includes(key)
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() =>
+                      setSeansTurleri(prev =>
+                        active && prev.length > 1 ? prev.filter(t => t !== key) : !active ? [...prev, key] : prev
+                      )
+                    }
+                    className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    style={{ background: active ? '#4a7c6f' : '#f1f5f9', color: active ? '#fff' : '#64748b' }}
+                  >
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+            <p className="text-xs mt-1.5" style={{ color: '#94a3b8' }}>
+              Randevu akışında sadece seçilen türler gösterilir.
+            </p>
           </div>
         </div>
       </div>
