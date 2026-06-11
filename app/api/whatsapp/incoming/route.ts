@@ -29,9 +29,12 @@ async function getGeminiResponse(
   const t = message.toLowerCase()
   if (KRIZ_KEYWORDS.some(k => t.includes(k))) return '__KRIZ__'
 
+  const hasKey = !!process.env.GEMINI_API_KEY
+  console.log(`[gemini] key=${hasKey} msg="${message.slice(0, 40)}"`)
+
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const saatler = `${String(psych.work_start_hour).padStart(2, '0')}:00 - ${String(psych.work_end_hour).padStart(2, '0')}:00`
     const gunler = psych.work_days.join(', ')
@@ -85,6 +88,7 @@ DANIŞAN MESAJI: "${message}"`
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000)),
     ])
     const raw = (result as Awaited<ReturnType<typeof model.generateContent>>).response.text().trim()
+    console.log(`[gemini] raw="${raw.slice(0, 80)}"`)
     const SIGNALS = ['__RANDEVU_AL__', '__RANDEVU_IPTAL__', '__RANDEVU_ONAYLA__', '__KRIZ__']
     if (SIGNALS.includes(raw)) return raw
     return raw || ''
