@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { normalizePhone } from '@/lib/utils'
-import PackagesPanel from './PackagesPanel'
 
 interface Props {
   psychologist: {
@@ -388,8 +387,6 @@ harita_linki: haritaLinki || null,
 
         </div>
       </div>
-
-      <PackagesPanel />
 
       {/* Satır 3: Hoş Geldiniz Mesajı */}
       <div className="bg-white rounded-2xl border p-5 space-y-4" style={{ borderColor: '#dde5e2' }}>
