@@ -86,7 +86,10 @@ DANIŞAN MESAJI: "${message}"`
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: systemPrompt }],
+      messages: [
+        { role: 'system', content: systemPrompt.replace(`\n\nDANIŞAN MESAJI: "${message}"`, '') },
+        { role: 'user', content: message },
+      ],
       max_tokens: 300,
       temperature: 0.4,
     })
