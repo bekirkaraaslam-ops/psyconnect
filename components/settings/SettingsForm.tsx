@@ -45,6 +45,7 @@ export default function SettingsForm({ psychologist, email, subscriptionStatus, 
   const [fullName, setFullName] = useState(psychologist?.full_name ?? '')
   const [phone, setPhone] = useState(psychologist?.phone_number ?? '')
 const [haritaLinki, setHaritaLinki] = useState(psychologist?.harita_linki ?? '')
+  const [klinikAdres, setKlinikAdres] = useState(psychologist?.klinik_adres ?? '')
   const [onlineGorusmeLinki, setOnlineGorusmeLinki] = useState(psychologist?.online_gorusme_linki ?? '')
   const [hosgeldinizMesaji, setHosgeldinizMesaji] = useState(
     psychologist?.hosgeldiniz_mesaji ??
@@ -100,6 +101,7 @@ harita_linki: haritaLinki || null,
         varsayilan_seans_ucreti: varsayilanUcret !== '' ? Number(varsayilanUcret) : null,
         tatil_modu: tatilModu,
         uzmanlik_alani: uzmanlikAlani || null,
+        klinik_adres: klinikAdres || null,
       })
       .eq('id', psychologist!.id)
 
@@ -227,6 +229,18 @@ harita_linki: haritaLinki || null,
           <div>
             <h3 className="text-sm font-semibold" style={{ color: '#334155' }}>Klinik Bilgileri</h3>
             <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>Klinik adı ve adresi için <a href="/profil" className="underline" style={{ color: '#4a7c6f' }}>Profilim</a> sekmesine gidin.</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5" style={{ color: '#334155' }}>Klinik Adresi</label>
+            <input
+              type="text"
+              value={klinikAdres}
+              onChange={e => setKlinikAdres(e.target.value)}
+              placeholder="Örnek: Bağcılar Mah. Atatürk Cad. No:12, İstanbul"
+              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none"
+              style={{ borderColor: '#dde5e2', color: '#334155' }}
+            />
           </div>
 
           <div>
