@@ -15,6 +15,19 @@ export const metadata: Metadata = {
     icon: '/icon.svg',
     apple: '/apple-icon.svg',
   },
+  openGraph: {
+    title: 'Seansify – Psikologlar için Klinik Yönetim',
+    description: 'Randevu yönetimi, WhatsApp otomasyonu, SOAP seans notu ve ödeme takibi tek platformda.',
+    url: 'https://seansify.com',
+    siteName: 'Seansify',
+    type: 'website',
+    locale: 'tr_TR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Seansify – Psikologlar için Klinik Yönetim',
+    description: 'Randevu yönetimi, WhatsApp otomasyonu, SOAP seans notu ve ödeme takibi tek platformda.',
+  },
 }
 
 export default function RootLayout({
