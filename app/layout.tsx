@@ -39,8 +39,8 @@ export default function RootLayout({
     <html lang="tr" className={`${inter.variable} h-full`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('theme'),p=window.matchMedia('(prefers-color-scheme: dark)').matches,path=window.location.pathname,isDash=/^\/(dashboard|appointments|patients|calendar|settings|whatsapp|yorumlar|bloglar|raporlar|upgrade|waiting-list|profil|login|register)(\/|$)/.test(path);if(isDash&&(t==='dark'||(t===null&&p))){document.documentElement.classList.add('dark')}}catch(e){}` }} />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18248822768" />
-        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18248822768');` }} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMDTD622GJ" />
+        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-NMDTD622GJ');gtag('config','AW-18248822768');` }} />
       </head>
       <body className="min-h-full">
         {children}
